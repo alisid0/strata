@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Strata &mdash; Physics, layer by layer</title>
+
+<!-- ===== PWA ===== -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f3b30">
+<meta name="description" content="A swipeable, tap-to-descend physics microlearning deck. Chalk on a greenboard.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Strata">
+<link rel="apple-touch-icon" href="icons/apple-touch-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* chalkboard palette */
+    --board-1:#1f3b30;   /* surface — fresh dark green slate */
+    --board-2:#24463a;
+    --board-3:#2c2f2a;   /* deeper — older, greyer board */
+    --board-4:#262422;   /* bedrock — near-black slate */
+    --frame:#5a4632;     /* wood chalk-tray brown */
+    --frame-dark:#3f3022;
+    --chalk:#f4f1e9;     /* main chalk white, slightly warm */
+    --chalk-dim:#c7ccc0; /* faded chalk */
+    --chalk-faint:#8fa093;
+    --chalk-yellow:#f2d585; /* yellow chalk for emphasis */
+    --chalk-green:#a9d6a0;  /* pale green chalk */
+    --chalk-blue:#9ec6d8;
+    --line:rgba(244,241,233,0.16);
+    --hand:"Kalam","Comic Sans MS",cursive;
+    --hand-display:"Architects Daughter","Kalam",cursive;
+    --print:"Patrick Hand","Kalam",cursive;
+    --sans:"Nunito Sans","Helvetica Neue",system-ui,sans-serif;
+    --mono:"Patrick Hand",ui-monospace,monospace;
+    --paper:var(--chalk);
+    --paper-dim:var(--chalk-dim);
+    --gold:var(--chalk-yellow);
+    --gold-dim:#bfa55f;
+    --ink:#1f3b30;
+    --bg-1:#152a22;
+    --serif:var(--hand);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+  html,body{height:100%;overflow:hidden;background:#15281f;}
+  body{
+    font-family:var(--hand);
+    color:var(--chalk);
+    position:fixed;width:100%;
+    overscroll-behavior:none;
+    background:radial-gradient(ellipse at 50% 45%,#1c3528,#11201a 80%);
+  }
+
+  body::after{
+    content:"";position:fixed;inset:0;z-index:30;pointer-events:none;
+    background:
+      radial-gradient(circle at 20% 30%,rgba(255,255,255,0.025),transparent 40%),
+      radial-gradient(circle at 80% 70%,rgba(255,255,255,0.02),transparent 45%);
+    mix-blend-mode:screen;
+  }
+
+  #field{position:fixed;inset:0;z-index:0;opacity:0.5;}
+
+  #rail{
+    position:fixed;top:0;left:0;z-index:1;
+    width:100%;height:100%;
+    display:flex;
+    transition:transform 0.62s cubic-bezier(0.16,0.84,0.24,1);
+    will-change:transform;
+  }
+  .card{
+    position:relative;
+    flex:0 0 100%;
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    padding:clamp(64px,8vh,96px) clamp(22px,5vw,80px) clamp(56px,7vh,84px);
+  }
+
+  .slab{
+    position:relative;
+    width:min(680px,100%);
+    max-height:100%;
+    border-radius:4px;
+    background:var(--board-1);
+    border:12px solid var(--frame);
+    box-shadow:
+      0 0 0 2px var(--frame-dark),
+      0 2px 0 4px rgba(0,0,0,0.25) inset,
+      0 30px 70px -28px rgba(0,0,0,0.85),
+      inset 0 0 80px rgba(0,0,0,0.35);
+    transition:background 0.7s ease, box-shadow 0.7s ease, border-color 0.7s ease, transform 0.45s cubic-bezier(0.2,0.8,0.2,1);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .slab[data-depth="0"]{background:#1f3b30;}
+  .slab[data-depth="1"]{background:#26443a;}
+  .slab[data-depth="2"]{background:#2c3a33;}
+  .slab[data-depth="3"]{background:#2b2f2a;}
+  .slab[data-depth="4"]{background:#24221f;}
+
+  .slab-inner{
+    padding:clamp(28px,4.5vw,54px);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--chalk-faint) transparent;
+  }
+  .slab-inner::-webkit-scrollbar{width:5px;}
+  .slab-inner::-webkit-scrollbar-thumb{background:var(--chalk-faint);border-radius:3px;}
+
+  .slab.imgmode{width:min(860px,100%);height:100%;}
+  .slab.imgmode .slab-inner{padding:0;display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:hidden;}
+  .card-image{
+    flex:1;width:100%;
+    background-size:contain;background-position:center;background-repeat:no-repeat;
+    background-color:#1e3b2e;
+    min-height:0;
+  }
+  .slab.imgmode .descend{
+    margin:0;padding:14px clamp(18px,4vw,28px);
+    background:linear-gradient(to top,rgba(15,28,20,0.92),rgba(15,28,20,0.55) 70%,transparent);
+    backdrop-filter:blur(2px);
+  }
+
+  .eyebrow{
+    display:flex;align-items:center;gap:12px;
+    margin-bottom:clamp(16px,2.6vw,26px);
+    font-family:var(--print);
+    font-size:14px;letter-spacing:0.04em;
+    color:var(--chalk-dim);
+  }
+  .eyebrow .num{color:var(--chalk-yellow);font-weight:400;}
+  .eyebrow .act{flex:1;color:var(--chalk-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .eyebrow .depthtag{
+    color:var(--chalk-green);
+    border:1.5px dashed var(--chalk-faint);
+    border-radius:14px;padding:2px 11px;
+    font-size:12px;letter-spacing:0.02em;
+    transform:rotate(-1.2deg);
+  }
+
+  .kicker{
+    font-family:var(--print);
+    font-size:15px;letter-spacing:0.03em;
+    color:var(--chalk-yellow);margin-bottom:10px;
+    transform:rotate(-0.6deg);
+  }
+  h1.title{
+    font-family:var(--hand-display);
+    font-weight:400;
+    font-size:clamp(30px,6.4vw,50px);
+    line-height:1.06;letter-spacing:0.005em;
+    margin-bottom:clamp(16px,3vw,26px);
+    color:var(--chalk);
+    text-shadow:0 1px 0 rgba(0,0,0,0.25);
+  }
+  .body{
+    font-family:var(--hand);
+    font-size:clamp(18px,2.5vw,22px);
+    line-height:1.62;
+    color:var(--chalk);
+  }
+  .body p{margin-bottom:0.85em;}
+  .body p:last-child{margin-bottom:0;}
+  .body strong{color:var(--chalk-yellow);font-weight:700;}
+  .body em{color:var(--chalk-green);font-style:normal;border-bottom:1.5px dotted var(--chalk-faint);}
+  .formula{
+    font-family:var(--hand);font-weight:700;
+    font-size:clamp(19px,2.9vw,25px);
+    color:#fff;
+    background:rgba(0,0,0,0.22);
+    border:1.5px dashed var(--chalk-green);
+    padding:14px 18px;margin:18px 0;
+    border-radius:6px;
+    line-height:1.45;
+    transform:rotate(-0.4deg);
+    box-shadow:0 2px 0 rgba(0,0,0,0.2);
+  }
+  .formula .gloss{
+    display:block;font-family:var(--hand);font-weight:400;
+    font-size:0.72em;color:var(--chalk-dim);margin-top:7px;font-style:normal;
+  }
+
+  .descend{
+    margin-top:clamp(20px,3.5vw,30px);
+    display:flex;align-items:center;gap:13px;
+    cursor:pointer;
+    border:none;background:none;color:inherit;
+    font-family:var(--print);
+    font-size:15px;letter-spacing:0.02em;
+    padding:6px 0;
+    transition:opacity 0.3s;
+    opacity:0.92;
+  }
+  .descend:hover{opacity:1;}
+  .descend .chev{
+    width:34px;height:34px;border-radius:50%;
+    border:1.5px dashed var(--chalk-green);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--chalk-green);flex-shrink:0;font-size:17px;
+    transition:transform 0.3s, border-color 0.3s, background 0.3s;
+  }
+  .descend:hover .chev{transform:translateY(3px);background:rgba(169,214,160,0.14);}
+  .descend .label-top{color:var(--chalk);}
+  .descend .label-sub{color:var(--chalk-faint);display:block;font-size:12.5px;margin-top:0px;}
+  .descend.atfloor{opacity:0.45;cursor:default;}
+  .descend.atfloor .chev{border-style:dotted;color:var(--chalk-faint);}
+
+  .ascend{
+    position:absolute;top:12px;right:12px;z-index:5;
+    width:36px;height:36px;border-radius:50%;
+    border:1.5px dashed var(--chalk-faint);background:rgba(0,0,0,0.2);
+    color:var(--chalk-dim);cursor:pointer;
+    display:none;align-items:center;justify-content:center;
+    font-size:17px;transition:color 0.25s,border-color 0.25s;
+  }
+  .ascend:hover{color:var(--chalk-yellow);border-color:var(--chalk-yellow);}
+  .slab[data-depth="0"] .ascend{display:none !important;}
+
+  .ladder{
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    z-index:5;display:flex;flex-direction:column;gap:9px;
+  }
+  .rung{
+    width:9px;height:9px;border-radius:50%;
+    border:1.5px solid var(--chalk-faint);
+    background:transparent;transition:all 0.4s;
+  }
+  .rung.filled{background:var(--chalk-yellow);border-color:var(--chalk-yellow);box-shadow:0 0 9px rgba(242,213,133,0.55);}
+  .rung.passed{background:var(--chalk-faint);border-color:var(--chalk-faint);}
+
+  .slab.descending{animation:sink 0.5s cubic-bezier(0.4,0,0.2,1);}
+  @keyframes sink{
+    0%{transform:translateY(0) scale(1);}
+    35%{transform:translateY(14px) scale(0.975);}
+    100%{transform:translateY(0) scale(1);}
+  }
+  .slab.rising{animation:rise 0.45s cubic-bezier(0.4,0,0.2,1);}
+  @keyframes rise{
+    0%{transform:translateY(0) scale(1);}
+    35%{transform:translateY(-12px) scale(1.015);}
+    100%{transform:translateY(0) scale(1);}
+  }
+
+  #topbar{
+    position:fixed;top:0;left:0;right:0;z-index:10;
+    display:flex;align-items:center;gap:16px;
+    padding:16px clamp(18px,4vw,34px);
+    pointer-events:none;
+  }
+  #brand{
+    font-family:var(--print);font-size:17px;letter-spacing:0.04em;
+    color:var(--chalk);
+  }
+  #brand b{color:var(--chalk-yellow);font-weight:400;}
+  #progress-wrap{flex:1;height:0;border-top:2px dashed rgba(244,241,233,0.25);position:relative;}
+  #progress{position:absolute;top:-2px;left:0;height:0;border-top:2px solid var(--chalk-yellow);width:0;transition:width 0.5s ease;}
+  #counter{font-family:var(--print);font-size:15px;color:var(--chalk-dim);letter-spacing:0.02em;min-width:54px;text-align:right;}
+
+  .nav{
+    position:fixed;top:50%;transform:translateY(-50%);z-index:8;
+    width:48px;height:48px;border-radius:50%;
+    border:1.5px dashed var(--chalk-faint);background:rgba(21,42,34,0.6);
+    backdrop-filter:blur(6px);
+    color:var(--chalk-dim);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;transition:all 0.25s;
+  }
+  .nav:hover{color:var(--chalk-yellow);border-color:var(--chalk-yellow);background:rgba(21,42,34,0.85);}
+  #prev{left:18px;}#next{right:18px;}
+  .nav:disabled{opacity:0.18;cursor:default;}
+  @media(max-width:720px){.nav{display:none;}}
+
+  #hint{
+    position:fixed;bottom:0;left:0;right:0;z-index:9;
+    text-align:center;padding:14px;
+    font-family:var(--print);font-size:14px;letter-spacing:0.02em;
+    color:var(--chalk-dim);opacity:0.7;
+    pointer-events:none;
+    transition:opacity 0.6s;
+  }
+  #hint b{color:var(--chalk-yellow);}
+  #hint.gone{opacity:0;}
+
+  #intro{
+    position:fixed;inset:0;z-index:40;
+    background:
+      radial-gradient(ellipse at 50% 38%,rgba(255,255,255,0.04),transparent 55%),
+      #20392f;
+    border:18px solid var(--frame);
+    box-shadow:inset 0 0 0 3px var(--frame-dark), inset 0 0 120px rgba(0,0,0,0.4);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:30px;
+    overflow-y:auto;
+    transition:opacity 0.8s ease;
+  }
+  #intro .chalk-eyebrow{
+    font-family:var(--print);font-size:clamp(15px,2.4vw,19px);
+    color:var(--chalk-green);margin-bottom:18px;letter-spacing:0.03em;
+    transform:rotate(-1deg);
+  }
+  #intro h1{
+    font-family:var(--hand-display);
+    font-size:clamp(40px,10vw,88px);line-height:1.04;
+    letter-spacing:0.01em;font-weight:400;margin-bottom:clamp(16px,3.4vh,26px);
+    color:var(--chalk);text-shadow:0 2px 0 rgba(0,0,0,0.25);
+  }
+  #intro h1 em{color:var(--chalk-yellow);font-style:normal;border-bottom:4px solid var(--chalk-yellow);padding-bottom:2px;}
+  #intro .sub{
+    font-family:var(--hand);
+    font-size:clamp(17px,2.5vw,22px);color:var(--chalk-dim);
+    max-width:32ch;line-height:1.55;margin-bottom:42px;
+  }
+  #enter{
+    font-family:var(--print);font-size:18px;letter-spacing:0.02em;
+    color:var(--chalk);background:transparent;
+    border:2px dashed var(--chalk-yellow);cursor:pointer;
+    padding:13px 32px;border-radius:30px;
+    transition:transform 0.25s,background 0.25s,color 0.25s;
+    transform:rotate(-0.8deg);
+  }
+  #enter:hover{transform:rotate(-0.8deg) translateY(-2px);background:var(--chalk-yellow);color:#20392f;}
+  #intro .legend{
+    margin-top:40px;display:flex;gap:30px;flex-wrap:wrap;justify-content:center;
+    font-family:var(--print);font-size:15px;letter-spacing:0.01em;color:var(--chalk-faint);
+  }
+  #intro .legend span b{color:var(--chalk-yellow);}
+  #intro.gone{opacity:0;pointer-events:none;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+
+  @supports (padding:env(safe-area-inset-top)){
+    #topbar{
+      padding-top:calc(16px + env(safe-area-inset-top));
+      padding-left:calc(clamp(18px,4vw,34px) + env(safe-area-inset-left));
+      padding-right:calc(clamp(18px,4vw,34px) + env(safe-area-inset-right));
+    }
+    #hint{padding-bottom:calc(14px + env(safe-area-inset-bottom));}
+    .card{
+      padding-top:calc(clamp(64px,8vh,96px) + env(safe-area-inset-top));
+      padding-bottom:calc(clamp(56px,7vh,84px) + env(safe-area-inset-bottom));
+      padding-left:calc(clamp(22px,5vw,80px) + env(safe-area-inset-left));
+      padding-right:calc(clamp(22px,5vw,80px) + env(safe-area-inset-right));
+    }
+    #intro{
+      padding-top:calc(30px + env(safe-area-inset-top));
+      padding-bottom:calc(30px + env(safe-area-inset-bottom));
+    }
+    #prev{left:calc(18px + env(safe-area-inset-left));}
+    #next{right:calc(18px + env(safe-area-inset-right));}
+  }
+  #brand{pointer-events:auto;cursor:pointer;}
+
+  #install{
+    position:fixed;z-index:12;
+    right:calc(16px + env(safe-area-inset-right,0px));
+    bottom:calc(58px + env(safe-area-inset-bottom,0px));
+    display:none;align-items:center;gap:9px;
+    font-family:var(--print);font-size:15px;letter-spacing:0.02em;
+    color:var(--chalk);background:rgba(21,42,34,0.82);
+    backdrop-filter:blur(6px);
+    border:1.6px dashed var(--chalk-yellow);border-radius:24px;
+    padding:9px 17px;cursor:pointer;
+    transform:rotate(-0.8deg);
+    transition:transform 0.25s,background 0.25s,color 0.25s;
+    box-shadow:0 6px 22px -10px rgba(0,0,0,0.7);
+  }
+  #install:hover{transform:rotate(-0.8deg) translateY(-2px);background:var(--chalk-yellow);color:#20392f;}
+  #install .plus{font-size:18px;line-height:1;color:var(--chalk-yellow);}
+  #install:hover .plus{color:#20392f;}
+</style>
+</head>
+<body>
+<canvas id="field"></canvas>
+
+<div id="topbar">
+  <div id="brand"><b>STRATA</b> &middot; physics</div>
+  <div id="progress-wrap"><div id="progress"></div></div>
+  <div id="counter">01 / 11</div>
+</div>
+
+<div id="rail"></div>
+
+<button id="prev" class="nav" aria-label="Previous">&#8249;</button>
+<button id="next" class="nav" aria-label="Next">&#8250;</button>
+
+<div id="hint">swipe <b>&larr; &rarr;</b> across ideas &nbsp;&middot;&nbsp; tap <b>&darr; dig in</b> to go a layer deeper</div>
+
+<button id="install" aria-label="Install Strata"><span class="plus">&#xff0b;</span><span>Install Strata</span></button>
+
+<div id="intro">
+  <div class="chalk-eyebrow">&mdash; Physics, from scratch &mdash;</div>
+  <h1>One formula<br>to rule them <em>all</em></h1>
+  <div class="sub">Fifty ideas, from &ldquo;things move&rdquo; to the law beneath gravity, light and heat. Each one digs five layers deep &mdash; as far as you care to go.</div>
+  <button id="enter">Start the lesson</button>
+  <div class="legend">
+    <span><b>&rarr;</b> across &mdash; the next idea</span>
+    <span><b>&darr;</b> down &mdash; deeper into this one</span>
+  </div>
+</div>
+
+<script>
+const ACTS = {
+  I:"I &middot; Things move, and something makes them",
+  II:"II &middot; Energy and the idea of change",
+  III:"III &middot; Motion is change stacked on change",
+  IV:"IV &middot; The reaching forces &amp; the shape they share",
+  V:"V &middot; One formula to rule them all"
+};
+
+const DEPTH_NAMES=["Idea","Concrete","Definition","In action","The law"];
+
+function C(act,kicker,title,layers,img){return {act,kicker,title,layers,img:img||null};}
+
+const DECK=[
+  C("I","Card 01","The whole game",[
+    "<p>Physics is the science of stillness, movement, force and energy, and how they play out over time.</p><p>Why do bridges stand? How long does coffee stay hot? Why do things fall <em>down</em>, and why do planets and asteroids collide?</p><p>Can time run backwards? Is teleportation possible? Could anything survive falling into a black hole? Those are physics too. We'll keep them aside for a while.</p>"
+  ],"images/card-01.png"),
+
+  C("I","Card 02","Stuff takes up space",[
+    "<p>Matter is anything that takes up space and weighs something. It doesn't matter how much of either.</p><p>From microorganisms to stars, it's all matter. Anything that exists in physical form.</p>",
+    null,
+    "<p><strong>What's the matter with mass?</strong></p><p>Mass is a measure of resistance. It takes an external action, a force, to change where it sits.</p><p>Weight is one way to measure mass. It isn't the mass itself.</p><p>A brick has the same mass underwater, in space, or on the surface of the sun, assuming it doesn't melt.</p>"
+  ],"images/card-02.png"),
+
+  C("I","Card 03","Rocks do not move (on their own)",[
+    "<p>Leave a thing alone and its motion never changes. Something still stays still. Something moving keeps moving in a straight line, and keeps going.</p>",
+    "<p>Slide a hockey puck across rough ground and it stops fast, so stopping feels like the natural thing. It isn't. The ground is quietly pushing back, with friction.</p><p>On smooth ice the puck glides much further. On a frictionless surface in space, it would never stop. The moving was never the strange part. The stopping is.</p>"
+  ],"images/card-03.png"),
+
+  C("I","Card 04","The thing your eyes can't see",[
+    "<p>How rough or smooth two surfaces are decides how easily one slides over the other. The rougher they are, the more they resist. The smoother they are, the easier the glide.</p>",
+    "<p>Why does a hockey puck stop dead on a concrete street but keep gliding on ice?</p><p>Same puck, same push. The only thing that changed is the surface under it. Something is happening down there, too small for the eye to catch. To see why, we have to look closer.</p>"
+  ],"images/card-04.png"),
+
+  C("I","Card 05","The second big rule",[
+    "<p>Force, mass, and how fast something speeds up (its acceleration) are locked together in one exact relationship.</p><p>More force, more speed-up. More mass, less speed-up.</p>",
+    "<p>Give a child on a skateboard one firm push and they roll off at a modest pace. Push harder, they roll faster.</p><p>Now tie a bag of bricks to the skateboard, at least ten times as heavy as the child, and push. It barely moves.</p><p>Force and mass aren't acting in a straight line. They're acting proportionally.</p>",
+    null,
+    null,
+    "<p>Put the two together. Push harder on the same object and it speeds up more, so force tracks acceleration. Add more mass but push just as hard, and it speeds up less, so for a fixed force, mass and acceleration trade off against each other inversely.</p><p>Written down as one equation:</p><div class='formula'>F = m &middot; a<span class='gloss'>Force equals mass times acceleration.</span></div><p>Newton was the first to prove this formally, as a theorem. We've been designing machines and mechanical parts on it ever since, and it hasn't been disproved. There's a nuance to it, but we're not going there yet. We're still in observable physics.</p>"
+  ],"images/card-05.png"),
+
+  C("I","Card 06","A bus between stops",[
+    "<p>A bus waits at the stop. It isn't moving at all. Then the driver pulls away, rolls down the road, and brakes at a red light half a mile on.</p><p>Three different things are changing during that short trip. Dig down to see each one.</p>",
+    "<p>Speed is simply how fast the bus is going. Nothing more. Standing at the stop, its speed is zero. Pulling away, the speed climbs. At the light, it falls back to zero.</p><p>Speed is a single number: twenty miles an hour, thirty, zero. It says how fast, and nothing about which way.</p>",
+    "<p>Velocity is speed with a direction attached. &ldquo;Twenty miles an hour&rdquo; is a speed. &ldquo;Twenty miles an hour down the high street&rdquo; is a velocity.</p><p>It matters more than it sounds. A bus going twenty north and one going twenty south have the same speed but opposite velocities. The moment direction is part of the answer, you're talking about velocity.</p>",
+    "<p>Acceleration is how quickly the velocity is changing. As the bus pulls away, its speed is climbing, so it's accelerating. As it brakes for the light, its speed is dropping, so it's accelerating the other way.</p><p>Sitting still at the stop, nothing changes, so acceleration is zero. Cruising at a steady speed in a straight line, also zero. Acceleration only exists when the motion itself is changing.</p>"
+  ],"images/card-06.png"),
+
+  C("I","Card 07","It always pushes back",[
+    "<p>Push on a wall and the wall pushes back on you, exactly as hard. This holds for everything. There is no such thing as a one-sided force. This one is called Newton's third law.</p><p>Step off a small boat onto the dock and the boat shoots backward beneath you, sometimes dropping you in the water. You pushed the boat back; the boat pushed you forward. A rocket works the same way: it throws gas downward, and the gas throws the rocket up. Nothing is pushing against the ground. The two are pushing on each other.</p>"
+  ],"images/card-07.png"),
+
+  C("I","Card 08","How hard the stop is",[
+    "<p>When something moving comes to a stop, what hurts isn't the speed it had. It's how sharply that speed was taken away.</p><p>Drop the same speed to zero over two seconds and the stop is gentle. Drop it over a tenth of a second and it's brutal. The force depends on the rate the speed falls, and squeezing the same drop into less time makes that rate, and the force, far bigger.</p>",
+    "<p>Jump off a chair onto a concrete floor and it jars your knees. Jump from the same height onto a thick crash mat and you feel almost nothing.</p><p>You hit at the same speed both times. The mat doesn't change your speed, it changes how quickly that speed is taken off you, spreading the drop over a longer moment. Slower drop, gentler force. Airbags, foam packaging, boxing gloves, a fielder drawing their hands back as they catch: each one stretches the stop, which softens the rate, which shrinks the force.</p>"
+  ],"images/card-08.png"),
+
+  C("I","Card 09","Why crumple zones exist",[
+    "<p>A car's nose is built to crumple on purpose. It seems backwards to design something to fall apart, but the crumpling is the point.</p><p>By folding, the nose stretches the stop from a sudden instant into a fraction of a second longer. That extra sliver of time is what drops the force from deadly to survivable. The passenger, held by the belt, is brought to rest over that stretched moment instead of all at once.</p>"
+  ],"images/card-09.png"),
+
+  C("II","Card 10","Energy",[
+    "<p>Energy is the reason for existence. For anything to exist, it has to do something, and what matter does is consume energy and release it.</p><p>That is the closest thing matter has to a purpose: to take energy in, and give it back out.</p>",
+    "<p>The formal definition: energy is the capacity to do work. &ldquo;Work&rdquo; here means a force moving something over a distance. If something can push, lift, heat, or move anything else, it has energy. Energy is measured in joules.</p>",
+    "<p>Energy comes in a handful of forms, and they turn into one another.</p><p>Kinetic energy is the energy of motion. Potential energy is stored energy, waiting, like a weight held up high. Heat is the energy of jiggling particles. Chemical energy sits in the bonds between atoms, in food and fuel. Light carries energy too.</p><p>Different names, but it's all the same thing in different clothing.</p>"
+  ],"images/card-10.png"),
+
+  C("II","Card 11","Energy is never lost",[
+    "<p>A boulder at the top of a hill holds stored energy, waiting. Let it roll and that stored energy turns into the energy of motion. None of it appears from nowhere, and none of it vanishes.</p><p>You cannot make energy from nothing, and you cannot destroy what's there. You can only turn it from one form into another. The total always stays the same.</p>"
+  ],"images/card-11.png"),
+];
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const rail=document.getElementById('rail');
+const progress=document.getElementById('progress');
+const counter=document.getElementById('counter');
+const hint=document.getElementById('hint');
+let idx=0;
+let depthOf=DECK.map(()=>0);
+
+DECK.forEach((col,i)=>{
+  const card=document.createElement('div');
+  card.className='card';
+  card.dataset.i=i;
+  card.innerHTML=`
+    <div class="slab" data-depth="0" data-col="${i}">
+      <button class="ascend" aria-label="Back up a layer">&#8593;</button>
+      <div class="ladder"></div>
+      <div class="slab-inner"></div>
+    </div>`;
+  rail.appendChild(card);
+});
+
+const slabs=[...document.querySelectorAll('.slab')];
+
+function renderColumn(i){
+  const col=DECK[i];
+  const d=depthOf[i];
+  const slab=slabs[i];
+  const inner=slab.querySelector('.slab-inner');
+  const ladder=slab.querySelector('.ladder');
+  const available=col.layers.map((l,k)=>l!==null?k:-1).filter(k=>k>=0);
+  const maxDepth=Math.max(...available);
+  const content=col.layers[d];
+
+  if(d===0 && col.img && !col.imgFailed){
+    slab.classList.add('imgmode');
+    inner.innerHTML=`
+      <div class="card-image" style="background-image:url('${col.img}')" role="img" aria-label="${col.title}"></div>
+      ${buildDescend(i,d,maxDepth,available)}
+    `;
+  } else {
+    slab.classList.remove('imgmode');
+    inner.innerHTML=`
+      <div class="eyebrow">
+        <span class="num">${col.kicker}</span>
+        <span class="act">${ACTS[col.act]}</span>
+        <span class="depthtag">${DEPTH_NAMES[d]}</span>
+      </div>
+      <h1 class="title">${col.title}</h1>
+      <div class="body">${content}</div>
+      ${buildDescend(i,d,maxDepth,available)}
+    `;
+  }
+  slab.dataset.depth=d;
+
+  ladder.innerHTML='';
+  for(let k=0;k<=maxDepth;k++){
+    if(col.layers[k]===null) continue;
+    const r=document.createElement('div');
+    r.className='rung'+(k===d?' filled':(k<d?' passed':''));
+    ladder.appendChild(r);
+  }
+  const asc=slab.querySelector('.ascend');
+  asc.style.display = d>0 ? 'flex':'none';
+
+  const desc=inner.querySelector('.descend');
+  if(desc && !desc.classList.contains('atfloor')){
+    desc.onclick=(e)=>{e.stopPropagation();goDeeper(i);};
+  }
+  asc.onclick=(e)=>{e.stopPropagation();goShallower(i);};
+}
+
+function buildDescend(i,d,maxDepth,available){
+  const next=available.find(k=>k>d);
+  if(next===undefined){
+    return `<button class="descend atfloor"><span class="chev">&#8595;</span><span><span class="label-top">Bedrock reached</span><span class="label-sub">nothing deeper here</span></span></button>`;
+  }
+  const labels=[
+    ["Dig in","make it concrete"],
+    ["Dig deeper","define the idea"],
+    ["Go deeper","watch it act"],
+    ["The law","see it written"]
+  ];
+  const lab=labels[Math.min(next-1,labels.length-1)];
+  return `<button class="descend"><span class="chev">&#8595;</span><span><span class="label-top">${lab[0]}</span><span class="label-sub">${lab[1]}</span></span></button>`;
+}
+
+function goDeeper(i){
+  const col=DECK[i];
+  const available=col.layers.map((l,k)=>l!==null?k:-1).filter(k=>k>=0);
+  const next=available.find(k=>k>depthOf[i]);
+  if(next===undefined) return;
+  depthOf[i]=next;
+  save();
+  slabs[i].classList.remove('rising');
+  slabs[i].classList.add('descending');
+  setTimeout(()=>slabs[i].classList.remove('descending'),520);
+  renderColumn(i);
+  fadeHint();
+}
+function goShallower(i){
+  const col=DECK[i];
+  const available=col.layers.map((l,k)=>l!==null?k:-1).filter(k=>k>=0);
+  const below=[...available].reverse().find(k=>k<depthOf[i]);
+  if(below===undefined) return;
+  depthOf[i]=below;
+  save();
+  slabs[i].classList.remove('descending');
+  slabs[i].classList.add('rising');
+  setTimeout(()=>slabs[i].classList.remove('rising'),460);
+  renderColumn(i);
+}
+
+function move(to){
+  idx=Math.max(0,Math.min(DECK.length-1,to));
+  rail.style.transform=`translateX(${-idx*rail.clientWidth}px)`;
+  progress.style.width=((idx+1)/DECK.length*100)+'%';
+  counter.textContent=String(idx+1).padStart(2,'0')+' / '+DECK.length;
+  document.getElementById('prev').disabled=idx===0;
+  document.getElementById('next').disabled=idx===DECK.length-1;
+  save();
+}
+
+const SAVE_KEY='strata.progress.v1';
+let introSeen=false;
+function save(){
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify({idx, depth:depthOf, seen:introSeen})); }catch(e){}
+}
+try{
+  const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
+  if(s){
+    if(Number.isInteger(s.idx)) idx=Math.max(0,Math.min(DECK.length-1,s.idx));
+    if(Array.isArray(s.depth)) s.depth.forEach((d,i)=>{ if(i<depthOf.length && Number.isInteger(d)) depthOf[i]=d; });
+    introSeen=!!s.seen;
+  }
+}catch(e){}
+
+DECK.forEach((_,i)=>renderColumn(i));
+move(idx);
+counter.textContent=String(idx+1).padStart(2,'0')+' / '+DECK.length;
+
+DECK.forEach((col,i)=>{
+  if(!col.img) return;
+  const probe=new Image();
+  probe.onerror=()=>{ col.imgFailed=true; renderColumn(i); };
+  probe.src=col.img;
+});
+
+if(introSeen){
+  const intro=document.getElementById('intro');
+  if(intro) intro.remove();
+}
+
+document.getElementById('next').onclick=()=>move(idx+1);
+document.getElementById('prev').onclick=()=>move(idx-1);
+
+document.addEventListener('keydown',e=>{
+  const intro=document.getElementById('intro');
+  if(intro && !intro.classList.contains('gone')) return;
+  if(e.key==='ArrowRight') move(idx+1);
+  else if(e.key==='ArrowLeft') move(idx-1);
+  else if(e.key==='ArrowDown'){e.preventDefault();goDeeper(idx);}
+  else if(e.key==='ArrowUp'){e.preventDefault();goShallower(idx);}
+});
+
+let tx=0,ty=0,tdx=0,tdy=0,touching=false;
+rail.addEventListener('touchstart',e=>{
+  touching=true;tx=e.touches[0].clientX;ty=e.touches[0].clientY;tdx=0;tdy=0;
+},{passive:true});
+rail.addEventListener('touchmove',e=>{
+  if(!touching)return;
+  tdx=e.touches[0].clientX-tx;tdy=e.touches[0].clientY-ty;
+},{passive:true});
+rail.addEventListener('touchend',()=>{
+  touching=false;
+  const ax=Math.abs(tdx),ay=Math.abs(tdy);
+  if(ax<30&&ay<30) return;
+  if(ax>ay){ if(tdx<0) move(idx+1); else move(idx-1); }
+  else{ if(tdy<0) goDeeper(idx); else goShallower(idx); }
+},{passive:true});
+
+function fadeHint(){hint.classList.add('gone');}
+setTimeout(fadeHint,7000);
+
+const enterBtn=document.getElementById('enter');
+if(enterBtn) enterBtn.onclick=()=>{
+  const intro=document.getElementById('intro');
+  if(!intro) return;
+  intro.classList.add('gone');
+  introSeen=true; save();
+  setTimeout(()=>intro.remove(),850);
+};
+
+document.getElementById('brand').onclick=()=>{
+  depthOf=DECK.map(()=>0);
+  DECK.forEach((_,i)=>renderColumn(i));
+  move(0);
+};
+
+const installBtn=document.getElementById('install');
+let deferredPrompt=null;
+const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  if(!standalone) installBtn.style.display='flex';
+});
+installBtn.onclick=async()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  installBtn.style.display='none';
+};
+window.addEventListener('appinstalled',()=>{ installBtn.style.display='none'; deferredPrompt=null; });
+
+if('serviceWorker' in navigator){
+  let refreshing=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(refreshing) return; refreshing=true; location.reload();
+  });
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js',{scope:'./'})
+      .then(reg=>{ try{ reg.update(); }catch(e){} })
+      .catch(()=>{});
+  });
+}
+
+/* ============================================================
+   AMBIENT PARTICLE FIELD
+   ============================================================ */
+const cv=document.getElementById('field');
+const ctx=cv.getContext('2d');
+let W,H,parts;
+function size(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;}
+size();addEventListener('resize',()=>{size();move(idx);});
+function seed(){
+  parts=[];
+  const n=Math.min(90,Math.floor(innerWidth/14));
+  for(let i=0;i<n;i++){
+    parts.push({
+      x:Math.random()*W,y:Math.random()*H,
+      r:(Math.random()*1.6+0.3)*devicePixelRatio,
+      vx:(Math.random()-0.5)*0.12*devicePixelRatio,
+      vy:(Math.random()-0.5)*0.12*devicePixelRatio,
+      a:Math.random()*0.5+0.15
+    });
+  }
+}
+seed();
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function tick(){
+  ctx.clearRect(0,0,W,H);
+  const act=DECK[idx].act;
+  const tint = act==="V"?[242,213,133] : act==="IV"?[169,214,160] : [225,228,218];
+  for(const p of parts){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.beginPath();
+    ctx.fillStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},${p.a})`;
+    ctx.arc(p.x,p.y,p.r,0,7);
+    ctx.fill();
+  }
+  if(!reduce) requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>
