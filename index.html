@@ -387,7 +387,7 @@
 <div id="topbar">
   <div id="brand"><b>STRATA</b> &middot; physics</div>
   <div id="progress-wrap"><div id="progress"></div></div>
-  <div id="counter">01 / 11</div>
+  <div id="counter">01 / 43</div>
 </div>
 
 <div id="rail"></div>
@@ -424,63 +424,203 @@ const DEPTH_NAMES=["Idea","Concrete","Definition","In action","The law"];
 function C(act,kicker,title,layers,img){return {act,kicker,title,layers,img:img||null};}
 
 const DECK=[
+  /* ---------- ACT I ---------- */
   C("I","Card 01","The whole game",[
     "<p>Physics is the science of stillness, movement, force and energy, and how they play out over time.</p><p>Why do bridges stand? How long does coffee stay hot? Why do things fall <em>down</em>, and why do planets and asteroids collide?</p><p>Can time run backwards? Is teleportation possible? Could anything survive falling into a black hole? Those are physics too. We'll keep them aside for a while.</p>"
-  ],"images/card-01.png"),
-
+  ]),
   C("I","Card 02","Stuff takes up space",[
     "<p>Matter is anything that takes up space and weighs something. It doesn't matter how much of either.</p><p>From microorganisms to stars, it's all matter. Anything that exists in physical form.</p>",
     null,
     "<p><strong>What's the matter with mass?</strong></p><p>Mass is a measure of resistance. It takes an external action, a force, to change where it sits.</p><p>Weight is one way to measure mass. It isn't the mass itself.</p><p>A brick has the same mass underwater, in space, or on the surface of the sun, assuming it doesn't melt.</p>"
-  ],"images/card-02.png"),
-
+  ]),
   C("I","Card 03","Rocks do not move (on their own)",[
     "<p>Leave a thing alone and its motion never changes. Something still stays still. Something moving keeps moving in a straight line, and keeps going.</p>",
     "<p>Slide a hockey puck across rough ground and it stops fast, so stopping feels like the natural thing. It isn't. The ground is quietly pushing back, with friction.</p><p>On smooth ice the puck glides much further. On a frictionless surface in space, it would never stop. The moving was never the strange part. The stopping is.</p>"
-  ],"images/card-03.png"),
-
+  ]),
   C("I","Card 04","The thing your eyes can't see",[
     "<p>How rough or smooth two surfaces are decides how easily one slides over the other. The rougher they are, the more they resist. The smoother they are, the easier the glide.</p>",
     "<p>Why does a hockey puck stop dead on a concrete street but keep gliding on ice?</p><p>Same puck, same push. The only thing that changed is the surface under it. Something is happening down there, too small for the eye to catch. To see why, we have to look closer.</p>"
-  ],"images/card-04.png"),
-
-  C("I","Card 05","The second big rule",[
+  ]),
+  C("I","Card 05","Look closer at the surface",[
+    "<p>A rough surface is covered in tiny pores and bumps, far more than a smooth one. Press two rough surfaces together and all those bumps catch on each other. They lock, they drag, and whatever's moving slows down.</p><p>A smooth surface has fewer pores, and far less unevenness. The catching still happens. It's just much weaker.</p>"
+  ]),
+  C("I","Card 06","The second big rule",[
     "<p>Force, mass, and how fast something speeds up (its acceleration) are locked together in one exact relationship.</p><p>More force, more speed-up. More mass, less speed-up.</p>",
     "<p>Give a child on a skateboard one firm push and they roll off at a modest pace. Push harder, they roll faster.</p><p>Now tie a bag of bricks to the skateboard, at least ten times as heavy as the child, and push. It barely moves.</p><p>Force and mass aren't acting in a straight line. They're acting proportionally.</p>",
     null,
     null,
-    "<p>Put the two together. Push harder on the same object and it speeds up more, so force tracks acceleration. Add more mass but push just as hard, and it speeds up less, so for a fixed force, mass and acceleration trade off against each other inversely.</p><p>Written down as one equation:</p><div class='formula'>F = m &middot; a<span class='gloss'>Force equals mass times acceleration.</span></div><p>Newton was the first to prove this formally, as a theorem. We've been designing machines and mechanical parts on it ever since, and it hasn't been disproved. There's a nuance to it, but we're not going there yet. We're still in observable physics.</p>"
-  ],"images/card-05.png"),
-
-  C("I","Card 06","A bus between stops",[
+    "<p>Put the two together. Push harder on the same object and it speeds up more, so force tracks acceleration. Add more mass but push just as hard, and it speeds up less, so for a fixed force, mass and acceleration trade off against each other inversely.</p><p>Written down as one equation:</p><div class='formula'>F = m · a<span class='gloss'>Force equals mass times acceleration.</span></div><p>Newton was the first to prove this formally, as a theorem. We've been designing machines and mechanical parts on it ever since, and it hasn't been disproved. There's a nuance to it, but we're not going there yet. We're still in observable physics.</p>"
+  ]),
+  C("I","Card 07","A bus between stops",[
     "<p>A bus waits at the stop. It isn't moving at all. Then the driver pulls away, rolls down the road, and brakes at a red light half a mile on.</p><p>Three different things are changing during that short trip. Dig down to see each one.</p>",
     "<p>Speed is simply how fast the bus is going. Nothing more. Standing at the stop, its speed is zero. Pulling away, the speed climbs. At the light, it falls back to zero.</p><p>Speed is a single number: twenty miles an hour, thirty, zero. It says how fast, and nothing about which way.</p>",
-    "<p>Velocity is speed with a direction attached. &ldquo;Twenty miles an hour&rdquo; is a speed. &ldquo;Twenty miles an hour down the high street&rdquo; is a velocity.</p><p>It matters more than it sounds. A bus going twenty north and one going twenty south have the same speed but opposite velocities. The moment direction is part of the answer, you're talking about velocity.</p>",
+    "<p>Velocity is speed with a direction attached. \"Twenty miles an hour\" is a speed. \"Twenty miles an hour down the high street\" is a velocity.</p><p>It matters more than it sounds. A bus going twenty north and one going twenty south have the same speed but opposite velocities. The moment direction is part of the answer, you're talking about velocity.</p>",
     "<p>Acceleration is how quickly the velocity is changing. As the bus pulls away, its speed is climbing, so it's accelerating. As it brakes for the light, its speed is dropping, so it's accelerating the other way.</p><p>Sitting still at the stop, nothing changes, so acceleration is zero. Cruising at a steady speed in a straight line, also zero. Acceleration only exists when the motion itself is changing.</p>"
-  ],"images/card-06.png"),
-
-  C("I","Card 07","It always pushes back",[
+  ]),
+  C("I","Card 08","It always pushes back",[
     "<p>Push on a wall and the wall pushes back on you, exactly as hard. This holds for everything. There is no such thing as a one-sided force. This one is called Newton's third law.</p><p>Step off a small boat onto the dock and the boat shoots backward beneath you, sometimes dropping you in the water. You pushed the boat back; the boat pushed you forward. A rocket works the same way: it throws gas downward, and the gas throws the rocket up. Nothing is pushing against the ground. The two are pushing on each other.</p>"
-  ],"images/card-07.png"),
-
-  C("I","Card 08","How hard the stop is",[
+  ]),
+  C("I","Card 09","How hard the stop is",[
     "<p>When something moving comes to a stop, what hurts isn't the speed it had. It's how sharply that speed was taken away.</p><p>Drop the same speed to zero over two seconds and the stop is gentle. Drop it over a tenth of a second and it's brutal. The force depends on the rate the speed falls, and squeezing the same drop into less time makes that rate, and the force, far bigger.</p>",
     "<p>Jump off a chair onto a concrete floor and it jars your knees. Jump from the same height onto a thick crash mat and you feel almost nothing.</p><p>You hit at the same speed both times. The mat doesn't change your speed, it changes how quickly that speed is taken off you, spreading the drop over a longer moment. Slower drop, gentler force. Airbags, foam packaging, boxing gloves, a fielder drawing their hands back as they catch: each one stretches the stop, which softens the rate, which shrinks the force.</p>"
-  ],"images/card-08.png"),
-
-  C("I","Card 09","Why crumple zones exist",[
+  ]),
+  C("I","Card 10","Why crumple zones exist",[
     "<p>A car's nose is built to crumple on purpose. It seems backwards to design something to fall apart, but the crumpling is the point.</p><p>By folding, the nose stretches the stop from a sudden instant into a fraction of a second longer. That extra sliver of time is what drops the force from deadly to survivable. The passenger, held by the belt, is brought to rest over that stretched moment instead of all at once.</p>"
-  ],"images/card-09.png"),
+  ]),
 
-  C("II","Card 10","Energy",[
+  /* ---------- ACT II ---------- */
+  C("II","Card 11","Energy",[
     "<p>Energy is the reason for existence. For anything to exist, it has to do something, and what matter does is consume energy and release it.</p><p>That is the closest thing matter has to a purpose: to take energy in, and give it back out.</p>",
-    "<p>The formal definition: energy is the capacity to do work. &ldquo;Work&rdquo; here means a force moving something over a distance. If something can push, lift, heat, or move anything else, it has energy. Energy is measured in joules.</p>",
+    "<p>The formal definition: energy is the capacity to do work. \"Work\" here means a force moving something over a distance. If something can push, lift, heat, or move anything else, it has energy. Energy is measured in joules.</p>",
     "<p>Energy comes in a handful of forms, and they turn into one another.</p><p>Kinetic energy is the energy of motion. Potential energy is stored energy, waiting, like a weight held up high. Heat is the energy of jiggling particles. Chemical energy sits in the bonds between atoms, in food and fuel. Light carries energy too.</p><p>Different names, but it's all the same thing in different clothing.</p>"
-  ],"images/card-10.png"),
-
-  C("II","Card 11","Energy is never lost",[
+  ]),
+  C("II","Card 12","Energy is never lost",[
     "<p>A boulder at the top of a hill holds stored energy, waiting. Let it roll and that stored energy turns into the energy of motion. None of it appears from nowhere, and none of it vanishes.</p><p>You cannot make energy from nothing, and you cannot destroy what's there. You can only turn it from one form into another. The total always stays the same.</p>"
-  ],"images/card-11.png"),
+  ]),
+  C("II","Card 13","Steepness decides everything",[
+    "<p>On that coaster, the steepest part is where you gain speed fastest. Gentle slope, gentle change. Flat ground, no change at all.</p><p>The <strong>shape</strong> of the track decides how violently things change. Hold that thought — it matters soon.</p>"
+  ]),
+  C("II","Card 14","Average versus exact",[
+    "<p>Drive 60 miles in an hour and your <strong>average</strong> speed is 60. But you weren't doing 60 the whole time — you stopped, sped up, slowed down.</p><p>Average hides what's really happening moment to moment.</p>",
+    "<p>A motorway average-speed camera works on exactly this gap. It clocks your time in and out of a stretch and divides distance by time — your <em>average</em>.</p><p>Brake hard past each camera, floor it between, and you're still caught: your average over the whole stretch betrays you. Your speedometer shows the <strong>exact</strong> speed at each instant. Genuinely different numbers.</p>"
+  ]),
+  C("II","Card 15","The impossible question",[
+    "<p>So what was your <strong>exact</strong> speed at one frozen instant?</p><p>Speed is distance over time — but in a single instant, no time passes and no distance is covered. You'd divide nothing by nothing. The question seems to break.</p>"
+  ]),
+  C("II","Card 16","The ancient trick",[
+    "<p>The Greeks wanted the area of a circle, which has no straight edges. So they drew a many-sided shape <strong>inside</strong> it. More sides, closer fit. Infinite sides — the gap vanishes.</p><p>You don't solve the impossible. You <strong>sneak up</strong> on it.</p>",
+    "<p>Look at a pizza cut into 4 fat wedges, rearranged alternating up-down — a lumpy strip, only roughly a rectangle. Cut into 16 — much straighter. Into 100 needle-thin slices — almost a perfect rectangle, whose area is easy.</p><p>The circle never <em>became</em> a rectangle. But the more slices, the closer it gets, with no limit. That \"closer and closer, no limit\" is the whole trick behind calculus.</p>"
+  ]),
+  C("II","Card 17","Sneaking up on the instant",[
+    "<p>Use the same trick for speed. Don't freeze time — shrink it. Speed over one second, then a tenth, then a hundredth.</p><p>Watch where the answer is <strong>heading</strong>. That destination is the exact answer. This sneaking-up is the heart of calculus.</p>"
+  ]),
+  C("II","Card 18","The rate of change",[
+    "<p>That's all calculus really gives you here: a way to ask <strong>how fast is something changing, right now, at this exact instant?</strong></p><p>The steepness of a curve at a single point. It sounds small. It cracks the universe open.</p>",
+    "<p><strong>Made physical.</strong> Film a falling apple at 10 frames per second and measure its speed between two neighbouring frames — close to the truth. At 1,000 frames — closer. At a million — the gap between frames shrinks toward an instant, and the speed homes in on the apple's <em>exact</em> speed at that moment.</p><p>You never reach a zero gap — but you see precisely where the answer is heading. That homing-in is the rate of change calculus was built to capture.</p>"
+  ]),
+
+  /* ---------- ACT III ---------- */
+  C("III","Card 19","Why Newton invented new maths",[
+    "<p>To talk about acceleration properly, Newton needed a way to describe rates of change exactly. No such maths existed.</p><p>So he built it. Calculus wasn't a hobby — it was the <strong>only</strong> tool that could say what acceleration even is.</p>"
+  ]),
+  C("III","Card 20","The second rule, revealed",[
+    "<p>Now \"force equals mass times acceleration\" tells the truth about itself.</p><p>Force is what you get when mass meets a change-of-a-change in position. The crash, the orbit, the falling apple — all of it is this one sentence, in the language of change.</p>"
+  ]),
+  C("III","Card 21","Pause and look back",[
+    "<p>You now know what makes things move, what energy is, and how change stacks into motion. That's the <strong>foundation</strong>.</p><p>Everything from here is the universe using these ideas to build forces that reach across empty space.</p>",
+    null,
+    null,
+    "<p><strong>The foundation, acting as one.</strong> Drop a ball and everything happens together in under a second. Gravity <em>acts</em> as the force. The ball <em>accelerates</em> — velocity changing every instant. Its stored height-energy <em>converts</em> to motion.</p><p>It hits the ground; by the pairing rule the ground strikes back equally, stopping it over a tiny crush of time, the energy fleeing as sound and heat. One dropped ball exercises the entire foundation at once.</p>"
+  ]),
+
+  /* ---------- ACT IV ---------- */
+  C("IV","Card 22","Some forces reach across nothing",[
+    "<p>The Sun pulls the Earth across 93 million miles of empty space. A magnet grabs a paperclip without touching it.</p><p>Some forces don't need contact at all. They <strong>reach</strong>. This act is about those forces — and a secret they share.</p>"
+  ]),
+  C("IV","Card 23","Gravity, in one breath",[
+    "<p>Every two objects in the universe pull on each other. You and your phone. The Earth and the Moon. Always.</p><p>This pull is <strong>gravity</strong>, and it can be written as a simple formula — but here's the plain version.</p>",
+    null,
+    null,
+    "<p><strong>Gravity, acting across space.</strong> The Moon is falling — right now, and forever. Earth's gravity reaches across a quarter-million miles and pulls it; the Moon, moving sideways fast enough, keeps <em>missing</em> the Earth as it falls, curving endlessly around instead.</p><p>That is what an orbit <strong>is</strong>: perpetual falling that never lands. The same reaching pull that drops an apple holds the Moon in its month-long loop.</p>"
+  ]),
+  C("IV","Card 24","What gravity depends on",[
+    "<p>The pull is stronger when the objects are more massive, and weaker when they're farther apart.</p><p>Big things pull hard. Distant things pull softly. That's the whole idea.</p>",
+    null,
+    null,
+    null,
+    "<p>The pull grows in lockstep with either mass — twice the mass, twice the pull (<strong>directly proportional</strong>) — and it can be written exactly:</p><div class='formula'>F = G · (M · m) / r²<span class='gloss'>The pull = G, times the two masses, over the distance squared.</span></div><p>G is the universe's dial setting for gravity. This law predicted the planet <strong>Neptune before anyone saw it</strong>, from wobbles in another planet's path. Theory pointed at empty sky; the telescope looked; the planet was there.</p>"
+  ]),
+  C("IV","Card 25","The strange part of distance",[
+    "<p>Move twice as far away and the pull doesn't drop to half. It drops to a <strong>quarter</strong>. Three times as far — a <strong>ninth</strong>.</p><p>Distance bites back far harder than you'd expect. This odd pattern has a name.</p>",
+    "<p>Stand near a campfire and feel its warmth. Step twice as far back and you don't feel half — you feel about a <strong>quarter</strong>. Three times as far, roughly a ninth.</p><p>The heat hasn't disappeared; it's spread out. Same for a lamp's brightness, a speaker's loudness. Distance weakens these far faster than instinct expects — always by the distance <em>squared</em>.</p>"
+  ]),
+  C("IV","Card 26","The inverse square law",[
+    "<p>That pattern — strength falling as the <strong>square</strong> of the distance — is called an inverse square law.</p><p>Twice as far, a quarter as strong. Remember this shape. You're about to meet it where you'd never expect it.</p>",
+    null,
+    null,
+    null,
+    "<p>The shape, written plainly:</p><div class='formula'>force  ∝  1 / distance²<span class='gloss'>An inverse relationship, with a square stacked on top.</span></div><p>It's the form gravity takes — but keep watching. The very same shape is about to appear in something that has <em>nothing</em> to do with gravity.</p>"
+  ]),
+  C("IV","Card 27","Now, electricity",[
+    "<p>Forget gravity for a second. Think of the spark when you touch a doorknob in winter.</p><p>That's <strong>electric charge</strong> — the force between charged things. Lightning, static, the cling of a balloon on hair. A completely different phenomenon.</p>"
+  ]),
+  C("IV","Card 28","Coulomb's law, in one breath",[
+    "<p>Two charged objects push or pull on each other. Stronger when the charges are bigger, weaker when they're farther apart.</p><p>Sound familiar? It should.</p>",
+    "<p>Rub a balloon on your hair and hold it to a wall — it clings, no glue, no hook. Charged particles reach across the gap and pull on charges in the wall.</p><p>Bring two balloons rubbed the same way together and they <strong>refuse</strong> to touch, pushing apart through empty air. A force acting with no contact whatsoever — attracting, repelling, reaching.</p>",
+    null,
+    null,
+    "<p>The identical skeleton, now for charges, with its own constant k:</p><div class='formula'>F = k · (Q · q) / r²<span class='gloss'>The force = k, times the two charges, over the distance squared.</span></div><p>Set this beside gravity and they are the <strong>same equation</strong> in different clothes — masses swapped for charges, G swapped for k. Coulomb measured it with a delicate twisting balance; it has anchored all of electronics ever since.</p>"
+  ]),
+  C("IV","Card 29","The same shape appears",[
+    "<p>The electric force falls off with distance as the <strong>square</strong> — twice as far, a quarter as strong. The exact same pattern as gravity.</p><p>Two unrelated forces, wearing the identical mathematical shape. This is not a coincidence.</p>"
+  ]),
+  C("IV","Card 30","Why on earth would they match?",[
+    "<p>Gravity and electricity have nothing to do with each other. So why the same law?</p><p>The answer isn't about gravity or charge at all. It's about the shape of <strong>space itself</strong>.</p>"
+  ]),
+  C("IV","Card 31","Influence spreading out",[
+    "<p>Picture anything spreading from a point — light from a bulb, a force, a field.</p><p>It spreads outward over the surface of a <strong>growing sphere</strong>. The farther out, the more it's stretched thin.</p>",
+    "<p>Blow up a balloon with a dot-grid drawn on it: as it inflates, every dot drifts apart, the grid spreading over more surface.</p><p>Now imagine paint sprayed evenly over it — when small, thick; as it inflates, the <em>same</em> paint must cover far more surface, so it thins. Light, gravity, heat all behave like that paint, spreading ever thinner over an invisible sphere.</p>"
+  ]),
+  C("IV","Card 32","The geometry that does it",[
+    "<p>The surface of a sphere grows as the <strong>square</strong> of its radius. So anything spreading across it gets diluted by that square.</p><p>That's <strong>why</strong> the strength drops as one-over-distance-squared. The inverse square law is really a law about 3D space.</p>",
+    "<p>The why, made concrete: take a balloon and double its radius. Its surface doesn't double — it becomes <strong>four times</strong> bigger. Triple the radius, <strong>nine times</strong> bigger.</p><p>So a fixed amount of light or heat spreading over it gets diluted by that square. Double the distance, four times the area, one quarter the strength. The inverse square isn't a fact about gravity — it's a fact about the shape of a sphere.</p>"
+  ]),
+  C("IV","Card 33","Once you see it, it's everywhere",[
+    "<p>Light gets dimmer with distance — inverse square. Sound gets quieter — inverse square. Radiation weakens — inverse square.</p><p>The same shape, again and again, because they're all just influence spreading over a sphere.</p>",
+    null,
+    null,
+    "<p><strong>Made to act.</strong> Switch on a bare bulb in a dark room. Close to it, a small patch of wall is fiercely bright. The same cone of light reaching a wall twice as far must spread across <em>four times</em> the area — so each patch is a quarter as bright.</p><p>The light didn't weaken; it <strong>thinned</strong>, spreading over the swelling surface of an invisible sphere. You're seeing the inverse square law happening, in real time, on your wall.</p>"
+  ]),
+  C("IV","Card 34","The third great realm: heat",[
+    "<p>Now meet <strong>thermodynamics</strong> — the physics of heat and energy.</p><p>It runs the engine, the star, the cooling cup of coffee. It has its own rules, and the most famous is one you've already met in disguise.</p>",
+    null,
+    "<p><strong>What is temperature, really?</strong></p><p>A measure of how vigorously the tiny particles inside a thing are jiggling. Hot = fast; cold = slow. The <em>average</em> energy of that random microscopic motion.</p><p>Temperature is <strong>not</strong> heat. A firework spark is at a ferocious temperature but carries almost no heat — it's tiny. A warm bath is mild but holds enormous heat — it's huge. Measured in <strong>kelvin</strong>, starting at absolute zero where jiggling all but stops.</p>"
+  ]),
+  C("IV","Card 35","Heat flows one way",[
+    "<p>Heat always flows from hot to cold, never the reverse on its own. A hot drink cools; it never spontaneously heats up.</p><p>And every time energy changes form, a little slips into disorder. That creeping disorder is called <strong>entropy</strong>.</p>",
+    "<p>Drop an ice cube into hot tea. The tea cools and the ice melts until everything is lukewarm.</p><p>You'll <strong>never</strong> see the reverse — the tea heating back up while the puddle refreezes — even though it wouldn't break the energy rule. Heat only flows hot-to-cold, smoothing differences, never sharpening them. That one-way drift is why time seems to have a direction at all.</p>"
+  ]),
+  C("IV","Card 36","Hot things glow, and it spreads",[
+    "<p>A hot object radiates energy outward as waves of heat and light. And how does that radiation spread? Outward, over the surface of a growing sphere.</p><p>Which means its intensity falls off as — yes — the <strong>square</strong> of the distance. The same shape, now in heat.</p>",
+    "<p>Hold one end of a metal strip in a flame for five seconds, then pull it out. Two things happen at once. <strong>Conduction:</strong> fiercely jiggling atoms at the hot end jostle their neighbours, who jostle theirs — heat creeps up the strip, searing end, warm middle, cool tip.</p><p><strong>Radiation:</strong> the whole strip broadcasts heat into the room (glowing red if hot enough), weakening with distance by the inverse square. The strip both <em>carries</em> heat along itself and <em>broadcasts</em> it outward.</p>",
+    null,
+    "<p><strong>Heat flowing and radiating, completed.</strong> Conduction walks energy up the metal atom by atom. Radiation throws it into the room as invisible waves, fading by the inverse square as it spreads.</p><p>Push the flame hotter and the glow leaps from dull red to bright orange — the fourth-power twist acting before your eyes. Heat flowing one way, heat radiating outward, the colour betraying the temperature: the whole thermodynamics topic, in one strip of metal.</p>"
+  ]),
+  C("IV","Card 37","Heat's own violent twist",[
+    "<p>But heat adds a kick of its own. How much a hot thing radiates depends on its temperature raised to the <strong>fourth power</strong>.</p><p>Make it a little hotter and it glows enormously brighter. It's why stars blaze and a slightly hotter fire is dazzling.</p>",
+    "<p>Watch an electric hob ring heat up. Warm, nothing visible. Hotter, a dull red glow. Hotter still, bright orange.</p><p>That dramatic jump in brightness from a modest rise in temperature is the fourth power at work: doubling the temperature radiates roughly <strong>sixteen times</strong> more energy. It's why a blacksmith reads metal's heat by its colour.</p>",
+    null,
+    null,
+    "<p>The fourth-power shape, hardened with its constant &#963;:</p><div class='formula'>P = &#963; · T&#8308;<span class='gloss'>Radiated power = &#963; times temperature to the fourth.</span></div><p>This is how we take the temperature of a star we can never visit — by reading the light it pours out. Found by measurement, then derived from deeper principles, then confirmed against furnace and star alike.</p>"
+  ]),
+
+  /* ---------- ACT V ---------- */
+  C("V","Card 38","Three realms, one pattern",[
+    "<p>Gravity. Electricity. Heat radiation. Three utterly different corners of physics.</p><p>And the same <strong>inverse square law</strong> sits at the centre of all three — because all three are influence spreading across the geometry of space.</p>",
+    null,
+    null,
+    null,
+    "<p>Lay the great laws together and the deck's secret stands exposed:</p><div class='formula'>Gravity:&nbsp;&nbsp;&nbsp;&nbsp;F &#8733; 1 / r&#178;<br>Electricity:&nbsp;F &#8733; 1 / r&#178;<br>Light &middot; sound &middot; radiation:&nbsp;&#8733; 1 / r&#178;<span class='gloss'>The same inverse square, written again and again.</span></div><p>All of them are influence spreading across the surface of a sphere — and a sphere's surface grows as r&#178;. The geometry of space, signing its name on every reaching force.</p>"
+  ]),
+  C("V","Card 39","What \"one formula\" really means",[
+    "<p>It was never about a single line of algebra.</p><p>It's a suspicion: that under gravity and charge and heat and light, the universe runs a <strong>tiny set of structural rules</strong> — and those rules keep surfacing, in disguise, everywhere we look.</p>"
+  ]),
+  C("V","Card 40","The bet physics is making",[
+    "<p>Every \"unified theory\" anyone has chased is one bet: dig deep enough, and all these separate formulas turn out to be the <strong>same formula</strong>, seen from different angles.</p><p>We haven't reached the bottom. Maybe there isn't one. But the pattern keeps holding.</p>"
+  ]),
+  C("V","Card 41","You came in knowing nothing",[
+    "<p>Things move and something makes them. Then: energy, traded and never lost. Then: change stacked into motion, needing a whole new maths. Then: forces reaching across space, all sharing one shape.</p><p>You built the whole picture, <strong>brick by brick</strong>.</p>"
+  ]),
+  C("V","Card 42","The shiver of recognition",[
+    "<p>That feeling when the same inverse square law turns up where it has no business being — that shiver is the whole reason people do physics.</p><p>It's the universe, quietly <strong>repeating itself</strong>, and letting you catch it.</p>"
+  ]),
+  C("V","Card 43","The gap that never closes",[
+    "<p>You hold the proven laws now. So here's the question that should haunt you: if the laws are perfect, <strong>why do rockets still explode on the pad?</strong> Why is a missile not always intercepted?</p><p>The laws are perfect. Our use of them never is.</p>",
+    "<p>Every equation assumes you <em>know</em> every force acting. But a real rocket meets a gust no model saw, a fuel line a fraction too cold, a weld with an invisible flaw.</p><p>The law says F = ma exactly. But the real F, in the real moment, has a thousand tiny contributors we can never fully list. The map is breathtakingly accurate — and still not the territory.</p>",
+    "<p><strong>The language we can't fully translate.</strong> Think of the universe as written in a language we're slowly learning to read. Our formulas are translations — astonishingly good. Good enough to land craft on other worlds, hold bridges up for a century, put a voice in the glass in your pocket.</p><p>But a translation is never the original. Something always escapes — a residue between what the law predicts and what the world does. It looks built-in: finite minds reading an infinite text.</p>",
+    null,
+    "<p><strong>What we call the gap.</strong> That distance — between the smooth ideal and the messy real, between the average and the exact, between where the answer is <em>heading</em> and where it actually <em>is</em> — has a name in mathematics.</p><p>It is the <strong>limit</strong>. It is <strong>calculus</strong> — the machinery built to <em>approach</em> a value you can never quite touch. The circle filled with ever-more polygons. The camera at ever-higher frame rates. Always closer, never arrived.</p><p>And so is <strong>this</strong> — what you are doing right now. Learning is the act of getting closer, narrowing the distance between not-knowing and knowing, without ever reaching a final, finished understanding. There is always another decimal place. Another layer.</p><p style='color:var(--gold);font-style:italic;margin-top:1.2em'>The text is infinite. So the reading never ends.</p>"
+  ])
 ];
 
 /* ============================================================
