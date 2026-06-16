@@ -411,6 +411,12 @@
 </div>
 
 <script>
+// ── SUPABASE CONFIG ───────────────────────────────────────────
+// After creating your project at supabase.com, paste in your values.
+// Leave both null to run from the built-in deck (offline / pre-setup).
+const SUPABASE_URL      = null; // 'https://xxxxxxxxxxxx.supabase.co'
+const SUPABASE_ANON_KEY = null; // your project's anon / public key
+
 const ACTS = {
   I:"I &middot; Things move, and something makes them",
   II:"II &middot; Energy and the idea of change",
@@ -423,7 +429,7 @@ const DEPTH_NAMES=["Idea","Concrete","Definition","In action","The law"];
 
 function C(act,kicker,title,layers,img,tags){return {act,kicker,title,layers,img:img||null,tags:tags||null};}
 
-const DECK=[
+const FALLBACK_DECK=[
   /* ---------- ACT I ---------- */
   C("I","Card 01","The whole game",[
     "<p>Physics is the science of stillness, movement, force and energy, and how they play out over time.</p><p>Why do bridges stand? How long does coffee stay hot? Why do things fall <em>down</em>, and why do planets and asteroids collide?</p><p>Can time run backwards? Is teleportation possible? Could anything survive falling into a black hole? Those are physics too. We'll keep them aside for a while.</p>"
@@ -687,9 +693,30 @@ const DECK=[
   ],null,{subject:"chemistry",topic:"atomic-structure",concept:"protons-neutrons-electrons; atomic-number",ground:"g0",buildsOn:["Card 36"]}),
 ];
 
+// ── SUPABASE LOADER ───────────────────────────────────────────
+// Stale-while-revalidate: serves from localStorage cache instantly,
+// then background-fetches Supabase so the next load gets fresh data.
+function loadCards(fallback){
+  const KEY='strata-cards-v1';
+  let cards;
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw) cards=JSON.parse(raw).map(r=>C(r.act,r.kicker,r.title,r.layers,r.img_url,r.tags));
+  }catch(e){}
+  if(SUPABASE_URL&&SUPABASE_ANON_KEY){
+    fetch(`${SUPABASE_URL}/rest/v1/cards?select=*&order=sort_order`,
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:`Bearer ${SUPABASE_ANON_KEY}`}})
+      .then(r=>r.ok?r.json():null)
+      .then(data=>{if(data)try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}})
+      .catch(()=>{});
+  }
+  return cards||fallback;
+}
+
 /* ============================================================
    ENGINE
    ============================================================ */
+const DECK=loadCards(FALLBACK_DECK);
 const rail=document.getElementById('rail');
 const progress=document.getElementById('progress');
 const counter=document.getElementById('counter');

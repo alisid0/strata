@@ -29,6 +29,8 @@ function onOpen() {
     .addSeparator()
     .addItem('② Generate Card Code', 'generateCardCode')
     .addSeparator()
+    .addItem('③ Publish to Supabase', 'publishToSupabase')
+    .addSeparator()
     .addItem('Help', 'showHelp')
     .addToUi();
 }
@@ -279,6 +281,131 @@ function generateCardCode() {
     'See the "Generated Code" tab.\n' +
     'Copy everything and paste into index.html above the closing ];'
   );
+}
+
+// ── PUBLISH TO SUPABASE ──────────────────────────────────────
+// Store credentials in Extensions > Apps Script > Project settings
+// > Script properties:
+//   SUPABASE_URL         https://xxxx.supabase.co
+//   SUPABASE_SERVICE_KEY your service_role key (NOT the anon key)
+//
+// The service_role key bypasses Row-Level Security so the script
+// can write to the cards table. Never paste it in client-side code.
+
+function getSupabaseConfig() {
+  var props = PropertiesService.getScriptProperties();
+  return {
+    url: (props.getProperty('SUPABASE_URL') || '').replace(/\/$/, ''),
+    key: props.getProperty('SUPABASE_SERVICE_KEY') || ''
+  };
+}
+
+function getNextSortOrder(config) {
+  try {
+    var r = UrlFetchApp.fetch(
+      config.url + '/rest/v1/cards?select=sort_order&order=sort_order.desc&limit=1',
+      { headers: { apikey: config.key, Authorization: 'Bearer ' + config.key },
+        muteHttpExceptions: true }
+    );
+    if (r.getResponseCode() !== 200) return null;
+    var data = JSON.parse(r.getContentText());
+    return data.length > 0 ? data[0].sort_order + 1 : 1;
+  } catch(e) { return null; }
+}
+
+function publishToSupabase() {
+  var config = getSupabaseConfig();
+  if (!config.url || !config.key) {
+    SpreadsheetApp.getUi().alert(
+      'Supabase not configured.\n\n' +
+      'Go to Extensions > Apps Script > Project settings > Script properties and add:\n' +
+      '  SUPABASE_URL         https://xxxx.supabase.co\n' +
+      '  SUPABASE_SERVICE_KEY your service_role key'
+    );
+    return;
+  }
+
+  var nextOrder = getNextSortOrder(config);
+  if (nextOrder === null) {
+    SpreadsheetApp.getUi().alert('Cannot reach Supabase. Check SUPABASE_URL and SUPABASE_SERVICE_KEY.');
+    return;
+  }
+
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Form Responses 1');
+  if (!sheet) { SpreadsheetApp.getUi().alert('No "Form Responses 1" sheet found.'); return; }
+
+  var data    = sheet.getDataRange().getValues();
+  if (data.length < 2) { SpreadsheetApp.getUi().alert('No responses yet.'); return; }
+
+  var headers   = data[0].map(function(h){ return h.toString().trim(); });
+  var statusCol = headers.indexOf('Status');
+  if (statusCol < 0) { SpreadsheetApp.getUi().alert('No "Status" column found.'); return; }
+
+  function col(name){ var i = headers.indexOf(name); return i >= 0 ? i : -1; }
+
+  // Subject lookup by act
+  var SUBJECT = { I:'physics', II:'physics', III:'maths', IV:'physics', V:'maths' };
+
+  var count  = 0;
+  var errors = [];
+
+  for (var r = 1; r < data.length; r++) {
+    var row    = data[r];
+    var status = (row[statusCol] || '').toString().trim().toLowerCase();
+    if (status !== 'ready') continue;
+
+    var actRaw = val(row, col('Act'));
+    var title  = val(row, col('Card Title'));
+    var l0     = val(row, col('Layer 0 — The idea (swipe card)'));
+    if (!title || !l0) continue;
+
+    var act    = actRaw.split('·')[0].trim().split(' ')[0];
+    var cardNo = nextOrder + count;
+    var kicker = 'Card ' + pad(cardNo);
+
+    var layers = [
+      l0 ? wrap(l0) : null,
+      val(row, col('Layer 1 — Concrete example'))   ? wrap(val(row, col('Layer 1 — Concrete example')))   : null,
+      val(row, col('Layer 2 — The definition'))      ? wrap(val(row, col('Layer 2 — The definition')))      : null,
+      val(row, col('Layer 3 — In action'))            ? wrap(val(row, col('Layer 3 — In action')))            : null,
+      buildLayer4(val(row, col('Layer 4 — The law')), val(row, col('Formula')), val(row, col('Formula explanation')))
+    ];
+    while (layers.length > 0 && layers[layers.length - 1] === null) layers.pop();
+
+    var tagsRaw = val(row, col('Tags'));
+    var tags = {
+      subject:   SUBJECT[act] || 'physics',
+      topic:     tagsRaw ? tagsRaw.split(',')[0].trim() : '',
+      concept:   tagsRaw ? tagsRaw.replace(/,\s*/g, '; ').trim() : '',
+      ground:    'g0',
+      buildsOn:  []
+    };
+
+    var card = { sort_order: cardNo, act: act, kicker: kicker, title: title,
+                 layers: layers, img_url: null, tags: tags };
+
+    var res = UrlFetchApp.fetch(config.url + '/rest/v1/cards', {
+      method:  'POST',
+      headers: { apikey: config.key, Authorization: 'Bearer ' + config.key,
+                 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      payload: JSON.stringify(card),
+      muteHttpExceptions: true
+    });
+
+    if (res.getResponseCode() === 201) {
+      sheet.getRange(r + 1, statusCol + 1).setValue('Published');
+      count++;
+    } else {
+      errors.push('Row ' + (r + 1) + ': HTTP ' + res.getResponseCode() + ' — ' + res.getContentText().substring(0, 120));
+    }
+  }
+
+  var msg = count > 0
+    ? '✓ Published ' + count + ' card(s) to Supabase!\n\nRemember to bump sw.js (strata-vN) and git push.'
+    : 'No rows with Status = "Ready" found.';
+  if (errors.length > 0) msg += '\n\nErrors:\n' + errors.join('\n');
+  SpreadsheetApp.getUi().alert(msg);
 }
 
 // ── HELPERS ──────────────────────────────────────────────────
