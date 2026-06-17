@@ -80,7 +80,8 @@ const TIER_00_THE_PLANE = [
   // CG9 — The x-axis and y-axis
   C("V","CG9","Two number lines, crossed at a right angle",[
     "<p>Lay one number line flat. Stand a second one upright, crossing it at a right angle. The flat one is the x-axis, the upright one is the y-axis.</p><p>Together they don't just measure two separate things. They measure one thing: position, in a way one line alone never could.</p>"
-  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"x-axis; y-axis; cartesian-plane",ground:"g0",buildsOn:["CG8"]}),
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"x-axis; y-axis; cartesian-plane",ground:"g0",buildsOn:["CG8"],
+    snippet:"René Descartes published this idea in 1637 — not as its own book, but as an appendix called La Géométrie, tucked onto the back of a philosophy book, Discourse on the Method.\n\nLegend says it came to him while lying in bed, watching a fly walk across the ceiling. He realised he could pin down the fly's exact position at any instant using just its distance from two walls.\n\nThe twist: the footnote outlived the book. Almost nobody reads Discourse on the Method for its philosophy anymore. The entire system is named after the appendix that was barely the point."}),
 
   // CG10 — The origin
   C("V","CG10","Where the two lines meet",[
@@ -122,6 +123,11 @@ const TIER_00_THE_PLANE = [
   C("V","CG17","A shape is just a few points, joined up",[
     "<p>Plot three points and join them and you have a triangle. Plot four and you might have a rectangle, a kite, or nothing recognisable at all, depending where they sit.</p><p>Every shape on a grid, however complicated, is built the same way: a list of points, connected in order.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"shapes-from-points",ground:"g0",buildsOn:["CG11"]}),
+
+  // RECAP — Tier 0
+  C("V","RECAP-T0","Quick things to remember — Tier 0",[
+    "<ul><li>A number line orders every real number — equal spacing means equal difference.</li><li>Zero is the reference point, not the start. Right = positive, left = negative, by convention.</li><li>Between any two numbers there are infinitely many more.</li><li>Distance on a line = |a − b|. Midpoint = (a + b) / 2.</li><li>Two number lines crossed at a right angle make the x-axis (horizontal) and y-axis (vertical).</li><li>A point's address is the ordered pair (x, y) — x first, always.</li><li>The origin (0, 0) is where both axes' zeros meet.</li><li>Distance on the grid: d = √((x₂−x₁)² + (y₂−y₁)²). Midpoint: ((x₁+x₂)/2, (y₁+y₂)/2).</li><li>Four quadrants, I–IV, anticlockwise from top-right: (+,+), (−,+), (−,−), (+,−).</li></ul>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"tier-0-recap",kind:"recap",ground:"g0",buildsOn:["CG17"]}),
 
 ];
 /* ============================================================

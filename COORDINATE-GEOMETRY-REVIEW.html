@@ -130,6 +130,26 @@
   }
   .bb-tags b{color:var(--chalk-faint);}
 
+  .snippet{
+    margin-top:10px;margin-bottom:10px;padding:12px 16px;
+    background:rgba(242,213,133,0.08);border:1.5px dashed var(--chalk-yellow);
+    border-radius:6px;
+  }
+  .snippet-label{
+    font-family:var(--print);font-size:11px;color:var(--chalk-yellow);
+    text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;
+  }
+  .snippet p{font-family:var(--hand);font-size:14.5px;line-height:1.5;color:var(--chalk-dim);margin-bottom:6px;}
+  .snippet p:last-child{margin-bottom:0;}
+
+  .recap-card{border-color:var(--chalk-yellow);background:var(--board-2);}
+  .recap-badge{
+    background:var(--chalk-yellow);color:var(--board-2);font-weight:700;
+    border-radius:10px;padding:1px 8px;font-size:10px;letter-spacing:0.03em;
+  }
+  .recap-card .floor ul{padding-left:18px;}
+  .recap-card .floor li{font-family:var(--hand);font-size:15px;line-height:1.6;color:var(--chalk-dim);margin-bottom:4px;}
+
   #search{
     width:100%;margin-bottom:14px;padding:8px 10px;border-radius:5px;
     border:1px solid var(--chalk-faint);background:#0f1f17;color:var(--chalk);
@@ -216,21 +236,33 @@ TIERS.forEach((tier,ti)=>{
     div.id=bb.kicker.toLowerCase();
     div.dataset.search=(bb.title+' '+bb.kicker+' '+(bb.tags&&bb.tags.concept||'')).toLowerCase();
 
+    const tags=bb.tags||{};
+    const isRecap = tags.kind === 'recap';
+
     let floorsHTML='';
     bb.layers.forEach((layer,d)=>{
       if(layer===null) return;
-      floorsHTML+=`<div class="floor"><div class="floor-label">${FLOOR_NAMES[d]||('Floor '+d)}</div>${layer}</div>`;
+      const label = isRecap ? 'Quick recap' : (FLOOR_NAMES[d]||('Floor '+d));
+      floorsHTML+=`<div class="floor"><div class="floor-label">${label}</div>${layer}</div>`;
     });
 
-    const tags=bb.tags||{};
+    let snippetHTML = '';
+    if(tags.snippet){
+      const paras = tags.snippet.split('\n\n').map(p=>`<p>${p}</p>`).join('');
+      snippetHTML = `<div class="snippet"><div class="snippet-label">Did you know</div>${paras}</div>`;
+    }
+
     const buildsOn=(tags.buildsOn||[]).join(', ')||'—';
     const spec = DIAGRAM_SPECS[bb.kicker];
 
+    if(isRecap) div.classList.add('recap-card');
+
     div.innerHTML=`
       <div class="bb-text">
-        <div class="bb-eyebrow"><span class="cgnum">${bb.kicker}</span></div>
+        <div class="bb-eyebrow"><span class="cgnum">${bb.kicker}</span>${isRecap?'<span class="recap-badge">RECAP</span>':''}</div>
         <h3>${bb.title}</h3>
         ${floorsHTML}
+        ${snippetHTML}
         <div class="bb-tags"><b>subject:</b> ${tags.subject||'—'} &nbsp; <b>concept:</b> ${tags.concept||'—'} &nbsp; <b>buildsOn:</b> ${buildsOn}</div>
       </div>
       <div class="bb-diagram${spec?'':' empty'}"></div>

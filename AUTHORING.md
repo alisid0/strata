@@ -114,6 +114,30 @@ Three independent discoveries. One law. The universe kept the same secret until 
 
 ---
 
+## Recap boards
+
+A Recap board is a single BB that closes out a tier: a plain bullet list of the key facts and formulas just locked, nothing narrative. No Loop required to write one — it's compiled directly from BBs already locked, not authored fresh.
+
+**Format:** one Floor, a `<ul>` of short `<li>` bullets, one bullet per major fact/formula from the tier. No hook, no story — purely a quick-reference, meant for scanning right before a quiz or a recall check.
+
+**Placement:** last BB in the tier, `buildsOn` the tier's final topic. Tagged `kind:"recap"` so tooling (the review page, future quiz generation) can treat it differently from a normal BB — e.g. never quizzed directly, styled distinctly.
+
+**When to write one:** every tier, once every BB in it is locked. Not before — a Recap is a summary of settled content, not a preview.
+
+### Tier 0 — Recap (example)
+
+- A number line orders every real number — equal spacing means equal difference.
+- Zero is the reference point, not the start. Right = positive, left = negative, by convention.
+- Between any two numbers there are infinitely many more.
+- Distance on a line = |a − b|. Midpoint = (a + b) / 2.
+- Two number lines crossed at a right angle make the x-axis (horizontal) and y-axis (vertical).
+- A point's address is the ordered pair (x, y) — x first, always.
+- The origin (0, 0) is where both axes' zeros meet.
+- Distance on the grid: d = √((x₂−x₁)² + (y₂−y₁)²). Midpoint: ((x₁+x₂)/2, (y₁+y₂)/2).
+- Four quadrants, I–IV, anticlockwise from top-right: (+,+), (−,+), (−,−), (+,−).
+
+---
+
 ## What the final BB looks like
 
 | Floor | Content |
