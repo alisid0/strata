@@ -92,6 +92,28 @@ These come from `CONTENT.md` and apply without exception:
 
 ---
 
+## Snippets
+
+Snippets are short historical or contextual notes attached to a BB. They are not part of the Floors — they are optional bait. Their job is to stop the content feeling like a textbook and remind the reader that real people discovered this, often in unexpected order, often in the wrong century, often without credit.
+
+**Format:** 3–5 sentences. Who, when, the twist. End on something that reframes the whole thing — an irony, a rivalry, a gap between discovery and recognition.
+
+**Tone:** Same editorial voice as the BBs — no hype, no over-dramatising. Let the facts carry it. The author will always polish the raw Snippet before it goes live.
+
+**When to write one:** Every BB that introduces a named law or concept should have a Snippet. Anonymous or purely descriptive BBs (e.g. "what a vector is") don't need one.
+
+### Snell's Law — Snippet (raw draft for author to polish)
+
+Willebrord Snellius, a Dutch astronomer, worked out the exact relationship between the angles in 1621. He never published it. After his death, Christiaan Huygens found the manuscript and gave him the credit.
+
+The twist: an Arab mathematician named Ibn Sahl had described the exact same law in Baghdad in 984 AD — more than 600 years earlier — in a treatise on how curved mirrors focus light. His work was lost to European science for centuries.
+
+In France they still call it Descartes' Law, after René Descartes who published it in 1637, unaware Snell had it first — and unaware Ibn Sahl had it long before either of them.
+
+Three independent discoveries. One law. The universe kept the same secret until each of them found it on their own.
+
+---
+
 ## What the final BB looks like
 
 | Floor | Content |
@@ -101,6 +123,7 @@ These come from `CONTENT.md` and apply without exception:
 | 2 | The definition — the clean textbook version, formula introduced here if applicable. |
 | 3 | In action — where it's applied, what it predicts, what it explains. |
 | 4 | The law / bedrock — the full formal statement, edge cases, what breaks it. |
+| — | **Snippet** — historical/contextual note. Not a Floor. Author-polished before publishing. |
 
 Not every BB needs all 5 Floors. Shallow ideas are complete at Floor 1 or 2.
 
