@@ -149,6 +149,20 @@
     backdrop-filter:blur(2px);
   }
 
+  /* ===== textbook floor: diagram inline with explanation text ===== */
+  .textbook-img{
+    width:100%;max-height:38vh;
+    background-size:contain;background-position:center;background-repeat:no-repeat;
+    border-radius:6px;margin-bottom:16px;
+    aspect-ratio:1/1;
+  }
+  .textbook-img.pos-below{margin-bottom:0;margin-top:16px;}
+  @media(min-width:760px){
+    .body.has-side-img{display:flex;gap:24px;align-items:flex-start;}
+    .body.has-side-img .textbook-img.pos-side{flex:0 0 42%;max-height:none;margin:0;}
+    .body.has-side-img .text-block{flex:1;min-width:0;}
+  }
+
   /* ====== eyebrow row (chalk hand-print) ====== */
   .eyebrow{
     display:flex;align-items:center;gap:12px;
@@ -483,7 +497,7 @@ const FALLBACK_DECK=[
   /* ---------- ACT II ---------- */
   C("II","Card 10","Energy",[
     "<p>Energy is the reason for existence. For anything to exist, it has to do something, and what matter does is consume energy and release it.</p><p>That is the closest thing matter has to a purpose: to take energy in, and give it back out.</p>",
-    "<p>The formal definition: energy is the capacity to do work. \"Work\" here means a force moving something over a distance. If something can push, lift, heat, or move anything else, it has energy. Energy is measured in joules.</p>",
+    {text:"<p>The formal definition: energy is the capacity to do work. \"Work\" here means a force moving something over a distance. If something can push, lift, heat, or move anything else, it has energy. Energy is measured in joules.</p>",img:"images/card-10-b.png",imgPos:"below"},
     "<p>Energy comes in a handful of forms, and they turn into one another.</p><p>Kinetic energy is the energy of motion. Potential energy is stored energy, waiting, like a weight held up high. Heat is the energy of jiggling particles. Chemical energy sits in the bonds between atoms, in food and fuel. Light carries energy too.</p><p>Different names, but it's all the same thing in different clothing.</p>"
   ],"images/card-10.png",{subject:"physics",topic:"energy",concept:"what-energy-is; work; joules",ground:"g0",buildsOn:[]}),
 
@@ -751,16 +765,31 @@ function renderColumn(i){
   const available=col.layers.map((l,k)=>l!==null?k:-1).filter(k=>k>=0);
   const maxDepth=Math.max(...available);
   const content=col.layers[d];
+  // a floor may be a plain string (text-only, back-compat) or an object
+  // { text, img, imgPos } — see FLOOR-LAYOUT-SPEC.md
+  const isObj=content && typeof content==='object';
+  const floor0Img=(d===0 && isObj && content.img && !content.text) ? content.img : col.img;
 
-  // L1 with an illustration: show the image as the whole card
-  if(d===0 && col.img){
+  // floor 0 with an illustration: show the image as the whole card
+  if(d===0 && floor0Img){
     slab.classList.add('imgmode');
     inner.innerHTML=`
-      <div class="card-image" style="background-image:url('${col.img}')" role="img" aria-label="${col.title}"></div>
+      <div class="card-image" style="background-image:url('${floor0Img}')" role="img" aria-label="${col.title}"></div>
       ${buildDescend(i,d,maxDepth,available)}
     `;
   } else {
     slab.classList.remove('imgmode');
+    let bodyHTML;
+    if(isObj){
+      const text=content.text||'';
+      const imgPos=content.imgPos||'above';
+      const imgBlock=content.img?`<div class="textbook-img pos-${imgPos}" style="background-image:url('${content.img}')" role="img" aria-label="${col.title}"></div>`:'';
+      const textBlock=text?`<div class="text-block">${text}</div>`:'';
+      const sideClass=imgPos==='side'?' has-side-img':'';
+      bodyHTML=`<div class="body${sideClass}">${imgPos==='below'?textBlock+imgBlock:imgBlock+textBlock}</div>`;
+    } else {
+      bodyHTML=`<div class="body">${content}</div>`;
+    }
     inner.innerHTML=`
       <div class="eyebrow">
         <span class="num">${col.kicker}</span>
@@ -768,7 +797,7 @@ function renderColumn(i){
         <span class="depthtag">${DEPTH_NAMES[d]}</span>
       </div>
       <h1 class="title">${col.title}</h1>
-      <div class="body">${content}</div>
+      ${bodyHTML}
       ${buildDescend(i,d,maxDepth,available)}
     `;
   }

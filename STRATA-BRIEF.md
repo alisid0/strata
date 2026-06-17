@@ -117,7 +117,7 @@ V   · Trigonometry, vectors and angles
 | 36 | II | chemistry | atomic-structure | ⬜ | The 80th cut |
 | 37 | II | chemistry | atomic-structure | ⬜ | The three puzzle pieces |
 
-**Illustrations exist only for cards 1–11.** Cards 12–37 (26 cards) are text-only — the biggest visible gap.
+**Illustrations:** floor-0 images exist for BBs 1–11 and 21 (BBs 1–9 and 21 are **1:1 square**; 10–11 floor-0 still older landscape). Deeper-floor (textbook) diagrams now exist for BB10 (`card-10-b`), BB11 (`card-11-b`), and BB21 (`card-21-b`). Remaining BBs (12–20, 22–37) floor-0 art and most deeper-floor diagrams are still to be made — see IMAGE-PROMPTS.md. Naming: floor-0 = `card-NN.png`; deeper-floor diagrams = `card-NN-b.png`, `-c.png`… The layout model (image-led floor 0 + textbook deeper floors) is specced in **FLOOR-LAYOUT-SPEC.md** — not yet built into the engine.
 
 ---
 
@@ -241,6 +241,7 @@ State/progress will attach to a **path** (a curated ordered group of related car
 - **Illustrations: cards 1–11 only.** 26 cards await images.
 - Mastery system, quizzes, backend: designed, not built.
 - **App-shell designs exist** (auth, first-run, learning map, leaderboard) as prototypes in `design/` — see §9.
+- **The full curriculum is mapped** — 50 pre-university STEM topics (the target territory) with the 37 existing BBs plotted against them — in **CURRICULUM.md**. Shows what's started vs the big gaps (Phase 1 arithmetic/algebra is empty; large physics & chemistry blocks untouched).
 - Immediate candidate next steps: illustrate cards 12–37; resolve the act/path restructure (§6); build the app shell from the `design/` prototypes; or begin the mastery manifest (§7).
 
 ---
