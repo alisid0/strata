@@ -73,30 +73,25 @@ To write (~14):
 
 ---
 
-### P5 · Waves
+### P5 · Optics
+**Renamed from "Waves" — wave mechanics moved into M3's Tier 9 (waves as moving trig graphs). What's left here is genuinely optics: ray-based, not graph-driven.**
 *Existing (0)*
 
-To write (~20):
-- What is a wave — disturbance, not matter
-- Transverse waves — up and down
-- Longitudinal waves — back and forth
-- Amplitude, frequency, wavelength, period — the four numbers
-- The wave equation — v = fλ
-- The electromagnetic spectrum — one family, many names
-- Sound waves — compressions in air
+To write (~14):
 - Reflection — bouncing at the same angle
 - Refraction — bending at the boundary (Snell's Law)
 - Snell's Law — the exact relationship
 - Total internal reflection — when the angle is too steep
 - Optical fibres — light trapped inside glass
 - Diffraction — bending around corners
-- Interference — waves adding and cancelling
-- Standing waves — the trapped pattern
-- Resonance — when the frequency matches
-- The Doppler effect — why the pitch changes
+- Interference — waves adding and cancelling (the optics-specific case: double slit)
 - Light as a wave — evidence
 - Light as a particle — the photoelectric effect
 - Wave-particle duality — both, depending on how you look
+- Lenses — converging and diverging
+- Image formation — real vs virtual images
+- Magnification
+- Mirrors — concave and convex
 
 ---
 
@@ -187,29 +182,12 @@ To write (~16):
 
 ---
 
-### M2 · Trigonometry
-*Existing (5): 17 What trig is · 18 Parts of a right triangle · 19 Sine, cosine, tangent · 20 Cracking the captain's problem · 24 The made-up 360 (radians)*
-
-To write (~10):
-- The unit circle — where trig really lives
-- Trig beyond 90° — extending sin and cos
-- Graphs of sin and cos — the wave shapes
-- Graph of tan — the repeating leap
-- The key identity — sin²θ + cos²θ = 1
-- The sine rule — for any triangle
-- The cosine rule — for any triangle
-- Area of a triangle — ½ab sinC
-- Solving trig equations
-- Inverse trig functions — arcsin, arccos, arctan
-
----
-
 ### M3 · Coordinate geometry
-**100 BBs — the umbrella path.** Coordinate geometry isn't one topic among many here; it's the lens most of STEM gets taught through — limits, derivatives, integration, vectors, and kinematics all turn out to be "something on a grid that responds to a parameter." Full 100-topic sequence, ordered from the number line up through the gateway into calculus, now lives in **`COORDINATE-GEOMETRY-100.md`** (this section is a pointer, not a duplicate — edit the topic list there).
+**~220 BBs — the umbrella path, expanded.** Coordinate geometry is the lens most of STEM gets taught through — limits, derivatives, integration, vectors, kinematics, trigonometry, and waves all turn out to be "something on a grid that responds to a parameter." This absorbed the old M3 (graphs/curves), P4 (vectors/2D motion), M2 (trigonometry), and P5 (waves) — all four kept describing the same grid from different angles. Full topic sequence — now 17 tiers, from the number line through calculus into polar coordinates, parametric equations, the complex plane, conics, vector fields, matrices, and an optimization/problem-solving toolkit — lives in **`COORDINATE-GEOMETRY.md`** (renamed from `COORDINATE-GEOMETRY-100.md`; this section is a pointer, not a duplicate).
 
-*Existing (11): 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32 — mapped against the 100-topic spine in that file.*
+*Existing (16): 17, 18, 19, 20, 24 (trig) · 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32 (vectors/grid/curves) — mapped against the full spine in that file.*
 
-*Note: this path mixes physics-tagged BBs (kinematics) and maths-tagged BBs (lines, curves) under one umbrella — a deliberate exception to the usual one-subject-per-path rule, because the grid is the actual throughline. Individual BBs keep their own `tags.subject` (physics/maths) even though the path itself is cross-subject. Many of these 100 are strong candidates for the **interactive floor** type (unit-circle prototype built; reusable engine not yet built).*
+*Note: this path mixes physics-tagged BBs (kinematics, waves) and maths-tagged BBs (lines, curves, trig) under one umbrella — a deliberate exception to the usual one-subject-per-path rule, because the grid is the actual throughline. Individual BBs keep their own `tags.subject` even though the path itself is cross-subject. Optics and thermodynamics were considered for merging in too but rejected — only their PV-diagram/ray-diagram BBs genuinely depend on the grid; the rest of those subjects isn't graph-driven and stays in P7/P8. Many of these BBs are strong candidates for the **interactive floor** type (unit-circle prototype built; reusable engine not yet built).*
 
 ---
 
@@ -392,13 +370,13 @@ These sit outside all paths. They are the deck's opening — orienting the reade
 
 | Subject | Existing | To write | Total |
 |---------|----------|----------|-------|
-| Physics (P1, P2, P3, P5-P8) | 10 | ~101 | ~111 |
-| Maths (M1, M2, M3 [100], M4-M6) | 20 | ~165 | ~185 |
+| Physics (P1, P2, P3, P5 Optics, P6-P8) | 10 | ~95 | ~105 |
+| Maths (M1, M3 [~220, merged trig+waves+ext], M4-M6) | 20 | ~270 | ~290 |
 | Chemistry (C1-C5) | 5 | ~60 | ~65 |
 | Intro (unpathed) | 2 | 0 | 2 |
-| **Total** | **37** | **~326** | **~363** |
+| **Total** | **37** | **~425** | **~462** |
 
-Well over the original 300 — M3's jump from ~60 to 100 BBs (see `COORDINATE-GEOMETRY-100.md`) accounts for most of the overage. This is an intentional scope expansion, not drift: coordinate geometry is being treated as the primary teaching lens across multiple subjects, not one path among equals. Trim elsewhere later if 363 proves too large, or treat it as the real target now.
+Far past the original 300 — and past the 363 from the last revision too. This isn't drift: M3 went from "one path among many" to "the encyclopedia," absorbing trigonometry and wave mechanics on top of vectors/kinematics/curves, plus genuinely new territory (polar, parametric, complex plane, conics, vector fields, matrices, optimization). At this scale M3 alone (~220) is bigger than the rest of Physics or Maths combined — which is the explicit, deliberate point: coordinate geometry isn't a path among equals, it's the spine. Total target is now **~462**, understood as a long-term build, not a launch-blocking number — see `STRATA-BRIEF.md`/`AUTHORING.md` for how individual BBs get written regardless of how large the master list grows.
 
 ---
 

@@ -14,9 +14,9 @@ Paths are **curated**, not auto-derived from the `topic` tag (raw tags fragment 
 
 ---
 
-## 2. The path map (37 cards → 7 paths)
+## 2. The path map (37 cards → 6 paths)
 
-**Update:** P4 and the old M3 have been merged into one umbrella path, **M3 · Coordinate geometry** (~60 BBs at full scope, see `CONTENT-MAP.md`). Coordinate geometry isn't a topic alongside vectors and kinematics — it's the lens they're taught through, which is why those two paths kept colliding on cards 26/27 in the first place. Full sub-thread breakdown lives in `CONTENT-MAP.md`; this file keeps the short version.
+**Update:** P4, the old M3, M2 (Trigonometry), and the wave-mechanics half of the old P5 have all been merged into one umbrella path, **M3 · Coordinate geometry** (~220 BBs at full scope, see `COORDINATE-GEOMETRY.md` for the full sequence, `CONTENT-MAP.md` for the high-level pointer). Coordinate geometry isn't a topic alongside vectors, kinematics, trig, and waves — it's the lens they're all taught through, which is why these paths kept colliding (cards 26/27 across two paths was the first sign; trig's unit circle and waves' sine graphs were the second). What's left of the old P5 is genuinely optics (ray-based, not graph-driven) — renamed **P5 · Optics** in `CONTENT-MAP.md`.
 
 ### Physics
 **P1 · Forces & motion** — cards 3, 4, 5, 6, 7, 8, 9
@@ -32,11 +32,8 @@ Everything pulls on everything. *(stub; will grow)*
 **M1 · Getting infinitely close** — cards 12, 13, 14, 15
 Limits → measuring a circle → functions → applying a limit.
 
-**M2 · Trigonometry** — cards 17, 18, 19, 20, 24
-What trig is → right triangle → sin/cos/tan → captain's problem → radians.
-
-**M3 · Coordinate geometry** — cards 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32
-Scalars & vectors → resultants → resolving → three accelerators → number line → the grid → falling rock → the perfect arc → Dot's parabola → Dash's line → the kissing curves. Cross-subject: vectors and kinematics here keep their `tags.subject:physics`; lines and curves keep `tags.subject:maths`. The path itself sits under Maths because the grid is the throughline.
+**M3 · Coordinate geometry** — cards 17, 18, 19, 20, 24 (trig) · 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32 (vectors/grid/curves)
+What trig is → right triangle → sin/cos/tan → captain's problem → radians → scalars & vectors → resultants → resolving → three accelerators → number line → the grid → falling rock → the perfect arc → Dot's parabola → Dash's line → the kissing curves. Cross-subject: vectors, kinematics, and waves here keep their `tags.subject:physics`; trig, lines, and curves keep `tags.subject:maths`. The path itself sits under Maths because the grid is the throughline. Full 17-tier sequence (the plane → lines → curves → trig → waves → polar → parametric → complex plane → conics → vector fields → matrices → optimization) is in `COORDINATE-GEOMETRY.md`.
 
 ### Chemistry
 **C1 · Into the atom** — cards 33, 34, 35, 36, 37
