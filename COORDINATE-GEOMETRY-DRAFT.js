@@ -80,8 +80,7 @@ const TIER_00_THE_PLANE = [
   // CG9 — The x-axis and y-axis
   C("V","CG9","Two number lines, crossed at a right angle",[
     "<p>Lay one number line flat. Stand a second one upright, crossing it at a right angle. The flat one is the x-axis, the upright one is the y-axis.</p><p>Together they don't just measure two separate things. They measure one thing: position, in a way one line alone never could.</p>"
-  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"x-axis; y-axis; cartesian-plane",ground:"g0",buildsOn:["CG8"],
-    snippet:"René Descartes published this idea in 1637 — not as its own book, but as an appendix called La Géométrie, tucked onto the back of a philosophy book, Discourse on the Method.\n\nLegend says it came to him while lying in bed, watching a fly walk across the ceiling. He realised he could pin down the fly's exact position at any instant using just its distance from two walls.\n\nThe twist: the footnote outlived the book. Almost nobody reads Discourse on the Method for its philosophy anymore. The entire system is named after the appendix that was barely the point."}),
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"x-axis; y-axis; cartesian-plane",ground:"g0",buildsOn:["CG8"]}),
 
   // CG10 — The origin
   C("V","CG10","Where the two lines meet",[
@@ -123,6 +122,11 @@ const TIER_00_THE_PLANE = [
   C("V","CG17","A shape is just a few points, joined up",[
     "<p>Plot three points and join them and you have a triangle. Plot four and you might have a rectangle, a kite, or nothing recognisable at all, depending where they sit.</p><p>Every shape on a grid, however complicated, is built the same way: a list of points, connected in order.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"shapes-from-points",ground:"g0",buildsOn:["CG11"]}),
+
+  // SNIPPET — Descartes / Cartesian coordinates
+  C("V","SNIPPET-T0","Did you know? The footnote that ate the book",[
+    "<p>René Descartes published this idea in 1637 — not as its own book, but as an appendix called La Géométrie, tucked onto the back of a philosophy book, Discourse on the Method.</p><p>Legend says it came to him while lying in bed, watching a fly walk across the ceiling. He realised he could pin down the fly's exact position at any instant using just its distance from two walls.</p><p>The twist: the footnote outlived the book. Almost nobody reads Discourse on the Method for its philosophy anymore. The entire system is named after the appendix that was barely the point.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"history-descartes",kind:"snippet",ground:"g0",buildsOn:["CG9"]}),
 
   // RECAP — Tier 0
   C("V","RECAP-T0","Quick things to remember — Tier 0",[

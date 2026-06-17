@@ -94,13 +94,15 @@ These come from `CONTENT.md` and apply without exception:
 
 ## Snippets
 
-Snippets are short historical or contextual notes attached to a BB. They are not part of the Floors — they are optional bait. Their job is to stop the content feeling like a textbook and remind the reader that real people discovered this, often in unexpected order, often in the wrong century, often without credit.
+Snippets are short historical or contextual notes, conceptually tied to whichever BB introduces the named law or idea — but they render as their **own standalone card**, not as a box nested inside that BB. They are not a Floor of the BB they reference, and not the BB's swipe card either.
 
 **Format:** 3–5 sentences. Who, when, the twist. End on something that reframes the whole thing — an irony, a rivalry, a gap between discovery and recognition.
 
 **Tone:** Same editorial voice as the BBs — no hype, no over-dramatising. Let the facts carry it. The author will always polish the raw Snippet before it goes live.
 
-**When to write one:** Every BB that introduces a named law or concept should have a Snippet. Anonymous or purely descriptive BBs (e.g. "what a vector is") don't need one.
+**Placement:** as its own card, positioned at the end of the tier, immediately before that tier's Recap board. Tagged `kind:"snippet"`, with `buildsOn` pointing at the BB it's actually about (so the connection is still traceable, just not visually nested).
+
+**When to write one:** Every tier that introduces a named law or concept worth a story should have at least one Snippet. Anonymous or purely descriptive BBs (e.g. "what a vector is") don't need one, and not every tier will have a good one — don't force it.
 
 ### Snell's Law — Snippet (raw draft for author to polish)
 
