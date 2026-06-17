@@ -58,8 +58,8 @@ const TIER_00_THE_PLANE = [
 
   // CG5 — Comparing numbers — the line tells you
   C("V","CG5","The line settles every argument about size",[
-    "<p>Which is bigger, −3 or −8? Find them on the line. Whichever one sits further right is the bigger number, no matter how the digits look.</p><p>−3 is to the right of −8, so −3 is bigger, even though 8 looks like the larger digit.</p>"
-  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"comparing-numbers; ordering",ground:"g0",buildsOn:["CG3"]}),
+    "<p>Which is bigger, −3 or −8? Find them on the line. Whichever one sits further right is the bigger number, no matter how the digits look.</p><p>−3 is to the right of −8, so −3 is bigger, even though 8 looks like the larger digit.</p><p>Since the line never ends in either direction, there's always a bigger number and always a smaller one. That's exactly what +∞ and −∞ mean — not numbers you can land on, just the fact that comparison never runs out.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"comparing-numbers; ordering; infinity-notation",ground:"g0",buildsOn:["CG3"]}),
 
   // CG6 — Distance on a number line — subtraction as length
   C("V","CG6","Subtraction is just a length",[
