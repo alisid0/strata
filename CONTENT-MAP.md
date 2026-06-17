@@ -205,71 +205,11 @@ To write (~10):
 ---
 
 ### M3 · Coordinate geometry
-**~60 BBs — the umbrella path.** Coordinate geometry isn't one topic among many here; it's the lens other topics (kinematics, vectors, calculus's tangent) get taught through. This path absorbs what used to be the separate "Graphs & curves" and "Vectors & motion in 2D" paths — they were already overlapping (the grid, the number line) because both were really coordinate geometry wearing different clothes.
+**100 BBs — the umbrella path.** Coordinate geometry isn't one topic among many here; it's the lens most of STEM gets taught through — limits, derivatives, integration, vectors, and kinematics all turn out to be "something on a grid that responds to a parameter." Full 100-topic sequence, ordered from the number line up through the gateway into calculus, now lives in **`COORDINATE-GEOMETRY-100.md`** (this section is a pointer, not a duplicate — edit the topic list there).
 
-*Existing (11): 21 How much isn't enough (scalars vs vectors) · 22 When two things push at once (resultants) · 23 Splitting a diagonal (resolving vectors) · 25 The three accelerators · 26 The infinite tightrope (number line) · 27 The grid of reality (2D Cartesian) · 28 The two lives of a falling rock · 29 The perfect arc · 30 Dot and the square game (y=x²) · 31 Dash and the staircase (y=mx+c) · 32 The kissing curves (tangent)*
+*Existing (11): 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32 — mapped against the 100-topic spine in that file.*
 
-**Sub-thread: The plane**
-- Distance between two points
-- The midpoint
-- Plotting and reading coordinates — the grid as an address system
-
-**Sub-thread: Vectors on the grid**
-*(existing: 21, 22, 23)*
-- Vectors as (x, y) — components, not just arrows
-- Adding vectors by their components
-- Magnitude of a vector — Pythagoras on the grid
-- Unit vectors
-- The dot product — what multiplying vectors means
-- 3D vectors — adding the z-axis
-
-**Sub-thread: Lines**
-*(existing: 31)*
-- Gradient between two points
-- The equation of a line through two points
-- Parallel lines — same gradient
-- Perpendicular lines — negative reciprocal
-- The perpendicular bisector
-
-**Sub-thread: Curves**
-*(existing: 30)*
-- The quadratic — shape and meaning
-- The quadratic formula — where it comes from
-- Completing the square — the method behind the formula
-- The discriminant — how many solutions?
-- Factorising quadratics
-- Cubic curves — the S-shape
-- The circle equation — x² + y² = r²
-- Transformations of graphs — shift, stretch, reflect
-- Asymptotes — lines that are never quite reached
-
-**Sub-thread: The calculus connection**
-*(existing: 32)*
-- Gradient as a limit — where calculus meets the grid
-- Tangent and normal to a curve
-- Stationary points, read on a graph
-
-**Sub-thread: Kinematics on the grid**
-*(existing: 25, 28, 29 — kinematics taught through coordinate geometry, not separately)*
-- The SUVAT equations — where they come from
-- Using SUVAT: finding distance
-- Using SUVAT: finding time
-- Using SUVAT: finding final velocity
-- Displacement-time graphs — reading the slope
-- Velocity-time graphs — reading the area
-- Relative velocity — speed depends on the observer
-- Projectile motion: the horizontal story
-- Projectile motion: the vertical story
-- Projectile motion: putting it together
-- Banked curves — why roads tilt at corners
-- Variable acceleration — when a isn't constant
-
-**Sub-thread: Graphing skill**
-- Inequalities on a graph
-- Regions and shading
-- Sketching curves — what to look for
-
-*Note: this path mixes physics-tagged BBs (kinematics) and maths-tagged BBs (lines, curves) under one umbrella — a deliberate exception to the usual one-subject-per-path rule, because the grid is the actual throughline. Individual BBs keep their own `tags.subject` (physics/maths) even though the path itself is cross-subject.*
+*Note: this path mixes physics-tagged BBs (kinematics) and maths-tagged BBs (lines, curves) under one umbrella — a deliberate exception to the usual one-subject-per-path rule, because the grid is the actual throughline. Individual BBs keep their own `tags.subject` (physics/maths) even though the path itself is cross-subject. Many of these 100 are strong candidates for the **interactive floor** type (unit-circle prototype built; reusable engine not yet built).*
 
 ---
 
@@ -453,12 +393,12 @@ These sit outside all paths. They are the deck's opening — orienting the reade
 | Subject | Existing | To write | Total |
 |---------|----------|----------|-------|
 | Physics (P1, P2, P3, P5-P8) | 10 | ~101 | ~111 |
-| Maths (M1, M2, M3, M4-M6) | 20 | ~125 | ~145 |
+| Maths (M1, M2, M3 [100], M4-M6) | 20 | ~165 | ~185 |
 | Chemistry (C1-C5) | 5 | ~60 | ~65 |
 | Intro (unpathed) | 2 | 0 | 2 |
-| **Total** | **37** | **~286** | **~323** |
+| **Total** | **37** | **~326** | **~363** |
 
-A bit over 300 — coordinate geometry's expanded ~60-BB scope pushed it up. Trim during planning if needed, or treat the extra ~23 as buffer for topics that grow once writing starts.
+Well over the original 300 — M3's jump from ~60 to 100 BBs (see `COORDINATE-GEOMETRY-100.md`) accounts for most of the overage. This is an intentional scope expansion, not drift: coordinate geometry is being treated as the primary teaching lens across multiple subjects, not one path among equals. Trim elsewhere later if 363 proves too large, or treat it as the real target now.
 
 ---
 
