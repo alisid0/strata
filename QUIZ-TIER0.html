@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz — Coordinate Geometry, CG1-CG14</title>
+<title>Quiz — Coordinate Geometry, Tier 0 (CG1-CG17)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&display=swap" rel="stylesheet">
@@ -76,8 +76,8 @@
 </head>
 <body>
 <main>
-  <h1>Quick Quiz — CG1 to CG14</h1>
-  <div class="sub">Tier 0, the plane itself · 14 questions · one per locked BB</div>
+  <h1>Quick Quiz — Tier 0 complete</h1>
+  <div class="sub">CG1 to CG17, the plane itself · 17 questions · one per locked BB</div>
   <div id="progressWrap"><div id="progressBar"></div></div>
   <div id="quizArea"></div>
   <div id="resultCard">
@@ -143,6 +143,17 @@ const QUESTIONS = [
   {cg:"CG14", q:"A point at (−3, 5) sits in which quadrant?", type:"mcq",
    opts:["I","II","III","IV"], answer:1,
    explain:"x negative, y positive = (−, +) = Quadrant II."},
+
+  {cg:"CG15", q:"What is the distance between (0,0) and (6,8)?", type:"numeric", answer:10,
+   explain:"distance² = 6² + 8² = 36 + 64 = 100, so distance = 10. The horizontal and vertical gaps are the two legs of a right triangle; the distance is the hypotenuse."},
+
+  {cg:"CG16", q:"What is the midpoint of (2,2) and (8,6)?", type:"mcq",
+   opts:["(5, 4)","(4, 5)","(10, 8)","(3, 2)"], answer:0,
+   explain:"Average each axis separately: ((2+8)/2, (2+6)/2) = (5, 4)."},
+
+  {cg:"CG17", q:"Four points form a shape. Two opposite sides measure 4 and 4, the other two measure 3 and 3, using the distance formula. What does that prove?", type:"mcq",
+   opts:["Nothing — you'd still need to look at it","The shape's opposite sides are equal, confirming a rectangle","The shape must be a circle","The points aren't connected"], answer:1,
+   explain:"Equal opposite-side lengths, found by calculation rather than by eye, is exactly how you prove a shape is a rectangle."},
 ];
 
 let current = 0;
@@ -243,7 +254,7 @@ function showResult(){
   card.style.display = 'block';
   document.getElementById('scoreText').textContent = score + ' / ' + QUESTIONS.length;
   let msg;
-  if(score === QUESTIONS.length) msg = "Clean sweep. Tier 0's foundations are solid.";
+  if(score === QUESTIONS.length) msg = "Clean sweep. Tier 0's foundations are solid — ready for Tier 1 (Lines).";
   else if(score >= QUESTIONS.length*0.7) msg = "Solid. Worth a quick second pass on the ones you missed.";
   else msg = "A few gaps worth revisiting before moving to Tier 1.";
   document.getElementById('scoreSub').textContent = msg;
