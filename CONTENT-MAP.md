@@ -33,6 +33,7 @@ To write (~13):
 
 ### P2 · Energy
 *Existing (2): 10 Energy · 11 Energy is never lost*
+*⚠️ Image debt: both BBs' floor-0 images are still 1280×720 landscape — every other illustrated BB (01-09, 21) has been regenerated to 1:1 square. Needs regeneration before the deck is visually consistent.*
 
 To write (~13):
 - Work done — force times distance

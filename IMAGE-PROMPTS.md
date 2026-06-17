@@ -55,13 +55,13 @@ Chalkboard illustrations, **~2 per BB**. Every prompt is grounded in what that B
 
 # ACT II-equivalent — Energy
 
-## BB 10 — Energy *(has image)*
+## BB 10 — Energy *(has image)* — ⚠️ **floor-0 image still 1280×720 landscape, needs 1:1 regeneration**
 - **a.** Style as above. A central chalk box "ENERGY" with three arrows fanning out to three small scenes: a figure pushing a block ("push"), a figure lifting a weight overhead with height arrow "h" ("lift"), a pot over flame with heat squiggles ("heat"). Labels in pale green.
-- **b.** Style as above. A chalk cycle of energy forms turning into one another: motion (a running figure) → heat (flame) → stored (a coiled spring) → back, arrows in a loop. "kinetic / potential" labelled. Centered.
+- **b.** *(done — `card-10-b.png`, 1:1, wired into floor 1)* Style as above. A chalk cycle of energy forms turning into one another: motion (a running figure) → heat (flame) → stored (a coiled spring) → back, arrows in a loop. "kinetic / potential" labelled. Centered.
 
-## BB 11 — Energy is never lost *(has image)*
+## BB 11 — Energy is never lost *(has image)* — ⚠️ **floor-0 image still 1280×720 landscape, needs 1:1 regeneration**
 - **a.** Style as above. A chalk hill with a boulder at the top labelled "stored" (pale yellow) and the same boulder rolling at the bottom with motion lines labelled "motion" (pale green). A dashed arc tracing its path. "same amount, different form" underneath.
-- **b.** Style as above. A simple chalk balance/equation feel: "stored + motion = same total", a pie or bar showing the split shifting from all-stored to all-motion while the total stays equal. Diagrammatic. (Proof text.)
+- **b.** *(generated as `card-11-b.png`, 1:1 — not yet wired in, BB11 only has one floor; needs a floor 1 added before it can attach)* Style as above. A simple chalk balance/equation feel: "stored + motion = same total", a pie or bar showing the split shifting from all-stored to all-motion while the total stays equal. Diagrammatic. (Proof text.)
 
 ---
 
