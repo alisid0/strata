@@ -79,6 +79,18 @@
     border:2px solid var(--frame);border-radius:6px;
     padding:20px 24px;margin-bottom:18px;
     scroll-margin-top:20px;
+    display:flex;gap:20px;align-items:flex-start;
+  }
+  .bb-text{flex:1;min-width:0;}
+  .bb-diagram{
+    flex-shrink:0;width:200px;height:154px;
+    background:rgba(0,0,0,0.18);border:1.5px solid rgba(244,241,233,0.15);
+    border-radius:6px;overflow:hidden;
+  }
+  .bb-diagram.empty{display:none;}
+  @media (max-width: 700px){
+    .bb{flex-direction:column;}
+    .bb-diagram{width:100%;height:170px;}
   }
   .bb-eyebrow{
     display:flex;align-items:baseline;gap:10px;margin-bottom:8px;
@@ -150,6 +162,8 @@
 function C(act,kicker,title,layers,img,tags){return {act,kicker,title,layers,img:img||null,tags:tags||null};}
 </script>
 <script src="COORDINATE-GEOMETRY-DRAFT.js"></script>
+<script src="diagram-engine.js"></script>
+<script src="diagram-specs.js"></script>
 <script>
 const TIERS = [
   {name:"Tier 0 — The plane itself", range:"CG1–17", data:TIER_00_THE_PLANE},
@@ -202,14 +216,19 @@ TIERS.forEach((tier,ti)=>{
 
     const tags=bb.tags||{};
     const buildsOn=(tags.buildsOn||[]).join(', ')||'—';
+    const spec = DIAGRAM_SPECS[bb.kicker];
 
     div.innerHTML=`
-      <div class="bb-eyebrow"><span class="cgnum">${bb.kicker}</span></div>
-      <h3>${bb.title}</h3>
-      ${floorsHTML}
-      <div class="bb-tags"><b>subject:</b> ${tags.subject||'—'} &nbsp; <b>concept:</b> ${tags.concept||'—'} &nbsp; <b>buildsOn:</b> ${buildsOn}</div>
+      <div class="bb-text">
+        <div class="bb-eyebrow"><span class="cgnum">${bb.kicker}</span></div>
+        <h3>${bb.title}</h3>
+        ${floorsHTML}
+        <div class="bb-tags"><b>subject:</b> ${tags.subject||'—'} &nbsp; <b>concept:</b> ${tags.concept||'—'} &nbsp; <b>buildsOn:</b> ${buildsOn}</div>
+      </div>
+      <div class="bb-diagram${spec?'':' empty'}"></div>
     `;
     section.appendChild(div);
+    if(spec) DG.render(div.querySelector('.bb-diagram'), spec);
 
     const link=document.createElement('a');
     link.href='#'+bb.kicker.toLowerCase();
