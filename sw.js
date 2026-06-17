@@ -6,7 +6,7 @@
    - Google Fonts       : cache-first (works offline after first load)
    Bump CACHE when you ship changes; old caches are purged on activate.
    ============================================================ */
-const CACHE = 'strata-v12';
+const CACHE = 'strata-v13';
 
 const CORE = [
   './',

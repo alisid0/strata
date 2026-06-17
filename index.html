@@ -20,11 +20,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* chalkboard palette */
-    --board-1:#1f3b30;   /* surface — fresh dark green slate */
-    --board-2:#24463a;
-    --board-3:#2c2f2a;   /* deeper — older, greyer board */
-    --board-4:#262422;   /* bedrock — near-black slate */
+    /* chalkboard palette — matched to illustrated card images */
+    --board-1:#2e5642;   /* surface — fresh classroom green */
+    --board-2:#355e4a;
+    --board-3:#2d3d36;   /* deeper — older, greyer board */
+    --board-4:#252b27;   /* bedrock — near-black slate */
     --frame:#5a4632;     /* wood chalk-tray brown */
     --frame-dark:#3f3022;
     --chalk:#f4f1e9;     /* main chalk white, slightly warm */
@@ -44,29 +44,38 @@
     --paper-dim:var(--chalk-dim);
     --gold:var(--chalk-yellow);
     --gold-dim:#bfa55f;
-    --ink:#1f3b30;
-    --bg-1:#152a22;
+    --ink:#2e5642;
+    --bg-1:#1d3829;
     --serif:var(--hand);
   }
 
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
-  html,body{height:100%;overflow:hidden;background:#15281f;}
+  html,body{height:100%;overflow:hidden;background:#22382d;}
   body{
     font-family:var(--hand);
     color:var(--chalk);
     position:fixed;width:100%;
     overscroll-behavior:none;
     background:
-      radial-gradient(ellipse at 50% 45%,#1c3528,#11201a 80%);
+      radial-gradient(ellipse at 50% 40%,#325c46,#1d3a2a 80%);
   }
 
-  /* faint chalk-dust / board-texture overlay on the whole page */
+  /* chalk grain texture — SVG fractalNoise tiled at low opacity */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
+    opacity:0.055;
+    mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:256px 256px;
+  }
+
+  /* soft chalk-dust light bloom */
   body::after{
-    content:"";position:fixed;inset:0;z-index:30;pointer-events:none;
+    content:"";position:fixed;inset:0;z-index:31;pointer-events:none;
     background:
-      radial-gradient(circle at 20% 30%,rgba(255,255,255,0.025),transparent 40%),
-      radial-gradient(circle at 80% 70%,rgba(255,255,255,0.02),transparent 45%);
+      radial-gradient(ellipse at 30% 25%,rgba(255,255,255,0.03),transparent 50%),
+      radial-gradient(ellipse at 75% 75%,rgba(255,255,255,0.025),transparent 45%);
     mix-blend-mode:screen;
   }
 
@@ -109,11 +118,11 @@
     display:flex;flex-direction:column;
   }
   /* depth tint: fresh green board → older greyer → near-black slate */
-  .slab[data-depth="0"]{background:#1f3b30;}
-  .slab[data-depth="1"]{background:#26443a;}
-  .slab[data-depth="2"]{background:#2c3a33;}
-  .slab[data-depth="3"]{background:#2b2f2a;}
-  .slab[data-depth="4"]{background:#24221f;}
+  .slab[data-depth="0"]{background:#2e5642;}
+  .slab[data-depth="1"]{background:#305848;}
+  .slab[data-depth="2"]{background:#2d3d36;}
+  .slab[data-depth="3"]{background:#292e2b;}
+  .slab[data-depth="4"]{background:#232723;}
 
   .slab-inner{
     padding:clamp(28px,4.5vw,54px);
