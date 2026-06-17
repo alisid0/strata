@@ -76,7 +76,7 @@ const DG = (function(){
 
       case "numberline": {
         const y = H/2;
-        svg.appendChild(el("line",{x1:20,y1,x2:W-20,y2:y,stroke:"#8fa093","stroke-width":1.6}));
+        svg.appendChild(el("line",{x1:20,y1:y,x2:W-20,y2:y,stroke:"#8fa093","stroke-width":1.6}));
         const lo=-6, hi=6, span=W-40;
         const px = (v)=> 20 + (v-lo)/(hi-lo)*span;
         for(let i=lo;i<=hi;i++){
