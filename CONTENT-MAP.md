@@ -73,25 +73,6 @@ To write (~14):
 
 ---
 
-### P4 · Vectors & motion in 2D
-*Existing (8): 21 Scalars vs vectors · 22 Resultants · 23 Resolving a diagonal · 25 The three accelerators · 26 The infinite tightrope · 27 The grid of reality · 28 The two lives of a falling rock · 29 The perfect arc*
-
-To write (~12):
-- The SUVAT equations — where they come from
-- Using SUVAT: finding distance
-- Using SUVAT: finding time
-- Using SUVAT: finding final velocity
-- Relative velocity — speed depends on the observer
-- Projectile motion: the horizontal story
-- Projectile motion: the vertical story
-- Projectile motion: putting it together
-- Banked curves — why roads tilt at corners
-- Variable acceleration — when a isn't constant
-- Displacement-time graphs — reading the slope
-- Velocity-time graphs — reading the area
-
----
-
 ### P5 · Waves
 *Existing (0)*
 
@@ -223,10 +204,35 @@ To write (~10):
 
 ---
 
-### M3 · Graphs & curves
-*Existing (5): 26 The infinite tightrope · 27 The grid of reality · 30 Dot and the square game · 31 Dash and the staircase · 32 The kissing curves*
+### M3 · Coordinate geometry
+**~60 BBs — the umbrella path.** Coordinate geometry isn't one topic among many here; it's the lens other topics (kinematics, vectors, calculus's tangent) get taught through. This path absorbs what used to be the separate "Graphs & curves" and "Vectors & motion in 2D" paths — they were already overlapping (the grid, the number line) because both were really coordinate geometry wearing different clothes.
 
-To write (~15):
+*Existing (11): 21 How much isn't enough (scalars vs vectors) · 22 When two things push at once (resultants) · 23 Splitting a diagonal (resolving vectors) · 25 The three accelerators · 26 The infinite tightrope (number line) · 27 The grid of reality (2D Cartesian) · 28 The two lives of a falling rock · 29 The perfect arc · 30 Dot and the square game (y=x²) · 31 Dash and the staircase (y=mx+c) · 32 The kissing curves (tangent)*
+
+**Sub-thread: The plane**
+- Distance between two points
+- The midpoint
+- Plotting and reading coordinates — the grid as an address system
+
+**Sub-thread: Vectors on the grid**
+*(existing: 21, 22, 23)*
+- Vectors as (x, y) — components, not just arrows
+- Adding vectors by their components
+- Magnitude of a vector — Pythagoras on the grid
+- Unit vectors
+- The dot product — what multiplying vectors means
+- 3D vectors — adding the z-axis
+
+**Sub-thread: Lines**
+*(existing: 31)*
+- Gradient between two points
+- The equation of a line through two points
+- Parallel lines — same gradient
+- Perpendicular lines — negative reciprocal
+- The perpendicular bisector
+
+**Sub-thread: Curves**
+*(existing: 30)*
 - The quadratic — shape and meaning
 - The quadratic formula — where it comes from
 - Completing the square — the method behind the formula
@@ -234,14 +240,36 @@ To write (~15):
 - Factorising quadratics
 - Cubic curves — the S-shape
 - The circle equation — x² + y² = r²
-- Gradient between two points
-- Gradient as a limit — the calculus connection
-- Tangent and normal to a curve
-- Asymptotes — lines that are never quite reached
 - Transformations of graphs — shift, stretch, reflect
+- Asymptotes — lines that are never quite reached
+
+**Sub-thread: The calculus connection**
+*(existing: 32)*
+- Gradient as a limit — where calculus meets the grid
+- Tangent and normal to a curve
+- Stationary points, read on a graph
+
+**Sub-thread: Kinematics on the grid**
+*(existing: 25, 28, 29 — kinematics taught through coordinate geometry, not separately)*
+- The SUVAT equations — where they come from
+- Using SUVAT: finding distance
+- Using SUVAT: finding time
+- Using SUVAT: finding final velocity
+- Displacement-time graphs — reading the slope
+- Velocity-time graphs — reading the area
+- Relative velocity — speed depends on the observer
+- Projectile motion: the horizontal story
+- Projectile motion: the vertical story
+- Projectile motion: putting it together
+- Banked curves — why roads tilt at corners
+- Variable acceleration — when a isn't constant
+
+**Sub-thread: Graphing skill**
 - Inequalities on a graph
 - Regions and shading
 - Sketching curves — what to look for
+
+*Note: this path mixes physics-tagged BBs (kinematics) and maths-tagged BBs (lines, curves) under one umbrella — a deliberate exception to the usual one-subject-per-path rule, because the grid is the actual throughline. Individual BBs keep their own `tags.subject` (physics/maths) even though the path itself is cross-subject.*
 
 ---
 
@@ -424,14 +452,13 @@ These sit outside all paths. They are the deck's opening — orienting the reade
 
 | Subject | Existing | To write | Total |
 |---------|----------|----------|-------|
-| Physics | 21 | ~99 | ~120 |
-| Maths | 13 | ~91 | ~104 |
-| Chemistry | 5 | ~55 | ~60 |
+| Physics (P1, P2, P3, P5-P8) | 10 | ~101 | ~111 |
+| Maths (M1, M2, M3, M4-M6) | 20 | ~125 | ~145 |
+| Chemistry (C1-C5) | 5 | ~60 | ~65 |
 | Intro (unpathed) | 2 | 0 | 2 |
-| Intro (unpathed) | 2 | 0 | 2 |
-| **Total** | **41** | **~245** | **~286** |
+| **Total** | **37** | **~286** | **~323** |
 
-Close to 300. Buffer left for topics that expand as writing proceeds.
+A bit over 300 — coordinate geometry's expanded ~60-BB scope pushed it up. Trim during planning if needed, or treat the extra ~23 as buffer for topics that grow once writing starts.
 
 ---
 

@@ -14,7 +14,9 @@ Paths are **curated**, not auto-derived from the `topic` tag (raw tags fragment 
 
 ---
 
-## 2. The path map (37 cards → 8 paths)
+## 2. The path map (37 cards → 7 paths)
+
+**Update:** P4 and the old M3 have been merged into one umbrella path, **M3 · Coordinate geometry** (~60 BBs at full scope, see `CONTENT-MAP.md`). Coordinate geometry isn't a topic alongside vectors and kinematics — it's the lens they're taught through, which is why those two paths kept colliding on cards 26/27 in the first place. Full sub-thread breakdown lives in `CONTENT-MAP.md`; this file keeps the short version.
 
 ### Physics
 **P1 · Forces & motion** — cards 3, 4, 5, 6, 7, 8, 9
@@ -26,9 +28,6 @@ Energy → energy is never lost.
 **P3 · Gravity** — card 16
 Everything pulls on everything. *(stub; will grow)*
 
-**P4 · Vectors & motion in 2D** — cards 21, 22, 23, 25, 26, 27, 28, 29
-Vectors & scalars → resultants → resolving a diagonal → three accelerators → number line → the grid → falling rock → the perfect arc.
-
 ### Maths
 **M1 · Getting infinitely close** — cards 12, 13, 14, 15
 Limits → measuring a circle → functions → applying a limit.
@@ -36,8 +35,8 @@ Limits → measuring a circle → functions → applying a limit.
 **M2 · Trigonometry** — cards 17, 18, 19, 20, 24
 What trig is → right triangle → sin/cos/tan → captain's problem → radians.
 
-**M3 · Graphs & curves** — cards 26, 27, 30, 31, 32
-Number line → the grid → Dot's parabola → Dash's line → the kissing curves.
+**M3 · Coordinate geometry** — cards 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32
+Scalars & vectors → resultants → resolving → three accelerators → number line → the grid → falling rock → the perfect arc → Dot's parabola → Dash's line → the kissing curves. Cross-subject: vectors and kinematics here keep their `tags.subject:physics`; lines and curves keep `tags.subject:maths`. The path itself sits under Maths because the grid is the throughline.
 
 ### Chemistry
 **C1 · Into the atom** — cards 33, 34, 35, 36, 37
@@ -47,10 +46,10 @@ Science of exceptions → the mole → elements → the atom → subatomic parti
 
 ## 3. OPEN DECISIONS (not yet settled by the author — resolve before building)
 
-1. **Can a card belong to more than one path?** Cards 26 & 27 (number line, the grid) are listed in BOTH P4 and M3, because the coordinate grid underpins projectile motion *and* graphing. Default assumed here: **yes, shared membership allowed.** If paths must be disjoint, 26/27 need a single home.
+1. ~~Can a card belong to more than one path?~~ **Resolved.** P4 and M3 merged into one path (cards 26/27 no longer split across two).
 2. **Intro cards.** Cards 1 (The whole game) and 2 (Stuff takes up space) are currently in **no path** — treated as deck intro. Confirm: leave unpathed, or assign.
-3. **Content redundancy across paths.** Card 25 (three accelerators) and Card 6 (the bus) both teach velocity/acceleration, split across P4 and P1. Author chose to keep both earlier; flagged here as intentional, confirm it stays.
-4. Act tags in `index.html` are still provisional (chemistry sits under Act II "Energy"; cards 25–29 under Act I). Paths and acts are different axes — but a future restructure may want acts to mirror these paths.
+3. **Content redundancy across paths.** Card 25 (three accelerators) and Card 6 (the bus) both teach velocity/acceleration, split across the new M3 and P1. Author chose to keep both earlier; flagged here as intentional, confirm it stays.
+4. Act tags in `index.html` are still provisional (chemistry sits under Act II "Energy"; cards 25–29 under Act I). **Acts are removed per NOMENCLATURE.md** — paths are the sections now; this needs the eyebrow/`ACTS` code fix flagged there (still pending the content map rollout).
 
 ---
 
