@@ -143,6 +143,9 @@
   .snippet-card .floor-label{color:var(--chalk-yellow);}
   .snippet-badge{background:transparent;border:1.5px dashed var(--chalk-yellow);color:var(--chalk-yellow);}
 
+  .bridge-card{border-color:var(--chalk-green);background:rgba(169,214,160,0.06);}
+  .bridge-badge{background:var(--chalk-green);color:var(--board-2);border:none;}
+
   #search{
     width:100%;margin-bottom:14px;padding:8px 10px;border-radius:5px;
     border:1px solid var(--chalk-faint);background:#0f1f17;color:var(--chalk);
@@ -188,6 +191,7 @@ function C(act,kicker,title,layers,img,tags){return {act,kicker,title,layers,img
 <script>
 const TIERS = [
   {name:"Tier 0 — The plane itself", range:"CG1–17", data:TIER_00_THE_PLANE},
+  {name:"Bridge — everything is a machine", range:"connects to Card 14", data:BRIDGE_FUNCTIONS},
   {name:"Tier 1 — Lines", range:"CG18–31", data:TIER_01_LINES},
   {name:"Tier 2 — Curves", range:"CG32–50", data:TIER_02_CURVES},
   {name:"Tier 3 — Functions as machines on the grid", range:"CG51–59", data:TIER_03_FUNCTIONS},
@@ -232,9 +236,11 @@ TIERS.forEach((tier,ti)=>{
     const tags=bb.tags||{};
     const isRecap = tags.kind === 'recap';
     const isSnippet = tags.kind === 'snippet';
+    const isBridge = tags.kind === 'bridge';
 
     let floorLabel = 'Quick recap';
     if(isSnippet) floorLabel = 'Did you know';
+    else if(isBridge) floorLabel = null;
     else if(!isRecap) floorLabel = null;
 
     let floorsHTML='';
@@ -249,9 +255,11 @@ TIERS.forEach((tier,ti)=>{
 
     if(isRecap) div.classList.add('recap-card');
     if(isSnippet) div.classList.add('snippet-card');
+    if(isBridge) div.classList.add('bridge-card');
     let badge = '';
     if(isRecap) badge = '<span class="recap-badge">RECAP</span>';
     if(isSnippet) badge = '<span class="recap-badge snippet-badge">DID YOU KNOW</span>';
+    if(isBridge) badge = '<span class="recap-badge bridge-badge">BRIDGE</span>';
 
     div.innerHTML=`
       <div class="bb-text">

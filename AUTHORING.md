@@ -116,6 +116,22 @@ Three independent discoveries. One law. The universe kept the same secret until 
 
 ---
 
+## Bridge cards
+
+A Bridge card connects a new tier to something that already exists elsewhere in the deck (a different path, a different subject) — making the link explicit instead of leaving it implicit. Like Snippets and Recaps, it's not CG-numbered, to avoid renumbering the whole path for a connective card.
+
+**Format:** short, 1-2 Floors. Names the existing thing it's bridging from directly (don't paraphrase around it — say "Card 14" or whatever it is), states the new framing plainly, and can forward-flag an exception or wrinkle worth keeping rather than smoothing over.
+
+**Placement:** wherever the connection is most useful — typically between two tiers, not inside one. Tagged `kind:"bridge"`.
+
+**When to write one:** when a new tier's framing genuinely depends on or reframes something already taught elsewhere (e.g. Coordinate Geometry's Tier 1 reframing lines as functions, connecting back to the existing M1 path's "Functions" card). Don't force one just to cross-link for its own sake.
+
+### Bridge — Tier 0 to Tier 1 (example)
+
+Connects to existing Card 14 ("Functions," the vending machine, in path M1). States: a line is a "multiply, then add" machine — f(x) = mx + c. Forward-flags that a circle will break the one-input-one-output rule, which is why it isn't a function — kept as an exception, not glossed over.
+
+---
+
 ## Recap boards
 
 A Recap board is a single BB that closes out a tier: a plain bullet list of the key facts and formulas just locked, nothing narrative. No Loop required to write one — it's compiled directly from BBs already locked, not authored fresh.

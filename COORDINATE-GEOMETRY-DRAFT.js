@@ -134,6 +134,25 @@ const TIER_00_THE_PLANE = [
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"tier-0-recap",kind:"recap",ground:"g0",buildsOn:["CG17"]}),
 
 ];
+
+/* ============================================================
+   BRIDGE — Tier 0 to Tier 1: everything from here is a machine
+   DRAFT BATCH — Editor Mode (see AUTHORING.md)
+   Connects to existing production Card 14 ("Functions" / the
+   vending machine). Not CG-numbered — same non-numbered pattern
+   as Snippet/Recap cards, to avoid renumbering the whole path.
+   ============================================================ */
+
+const BRIDGE_FUNCTIONS = [
+
+  // BRIDGE — A line is a machine, in disguise
+  C("V","BRIDGE-FN1","Every curve from here is the same machine",[
+    "<p>The vending machine: press a button, get back a snack, every time. One input, one output, no surprises. A line works exactly the same way: feed it an x, it hands back a y. f(x) = mx + c is just a \"multiply, then add\" machine.</p>",
+    "<p>From here, every shape in this path is the same idea wearing a different formula. y = x² is a \"square it\" machine. A wave is a \"feed it time, get back height\" machine. Even s = ut + ½at², from physics, is just a machine that takes a time and hands back a displacement — nothing physics-specific about the shape of that idea.</p><p>One exception is coming soon: a circle. Feed it an x, and sometimes you get two y's back, not one. That breaks the one-input-one-output rule — which is exactly why a circle isn't a function, and why that distinction is worth keeping rather than glossing over.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"function-bridge",kind:"bridge",ground:"g0",buildsOn:["card14","CG17"]}),
+
+];
+
 /* ============================================================
    COORDINATE GEOMETRY — Tier 1: Lines
    DRAFT BATCH — Editor Mode (see AUTHORING.md)
