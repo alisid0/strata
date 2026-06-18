@@ -175,67 +175,79 @@ const TIER_01_LINES = [
   // CG19 — Vertical change and horizontal change between two points
   C("V","CG19","How far up, how far along",[
     "<p>Pick two points on a line. There are exactly two distances worth measuring between them: how far up (or down) you went, and how far along you went. Mathematicians write these as Δy (vertical change) and Δx (horizontal change) — Δ just means \"change in.\"</p><p>A steep line has a big Δy for a small Δx. A gentle line has the opposite.</p>",
-    "<p>Some textbooks give these two distances nicknames: \"rise\" for Δy, \"run\" for Δx — common in American classrooms, less so elsewhere. NCERT and most other curricula skip the nicknames and go straight to Δy and Δx, which is what actually carries forward into the formula.</p>"
+    "<p>Take the points (1, 2) and (4, 8) on a line. Δy = 8 − 2 = 6. Δx = 4 − 1 = 3. That's the whole measurement: 6 up, 3 along.</p><p>Some textbooks give these two distances nicknames: \"rise\" for Δy, \"run\" for Δx — common in American classrooms, less so elsewhere. NCERT and most other curricula skip the nicknames and go straight to Δy and Δx, which is what actually carries forward into the formula.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"delta-y; delta-x; rise-run",ground:"g0",buildsOn:["CG18"]}),
 
   // CG20 — The gradient (slope) of a line
   C("V","CG20","Turning the lean into one number",[
-    "<p>Divide Δy by Δx and steepness stops being a vague impression and becomes one exact number: the <strong>gradient</strong> — also called the <strong>slope</strong>. Same number, two names for it.</p><div class='formula'>m = Δy / Δx = (y₂−y₁) / (x₂−x₁)<span class='gloss'>The vertical change between two points on the line, divided by the horizontal change.</span></div><p>Pick any two points on the same straight line and you get the same number. That's what makes a line straight.</p>"
+    "<p>Divide Δy by Δx and steepness stops being a vague impression and becomes one exact number: the <strong>gradient</strong> — also called the <strong>slope</strong>. Same number, two names for it.</p><div class='formula'>m = Δy / Δx = (y₂−y₁) / (x₂−x₁)<span class='gloss'>The vertical change between two points on the line, divided by the horizontal change.</span></div>",
+    "<p>Same two points as before, (1, 2) and (4, 8): m = (8 − 2) / (4 − 1) = 6 / 3 = 2. That line climbs 2 units for every 1 unit it moves right.</p><p>Pick any other two points on that same line, say (2, 4) and (4, 8): m = (8 − 4) / (4 − 2) = 4 / 2 = 2. Same answer. That's what makes a line straight — the gradient never changes, wherever you measure it.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"gradient; slope",ground:"g0",buildsOn:["CG19","CG15"]}),
 
   // CG21 — Positive vs negative gradient
   C("V","CG21","Uphill or downhill, left to right",[
-    "<p>Read a graph left to right. If the line climbs, the gradient is positive. If it falls, the gradient is negative.</p><p>The sign isn't decoration, it's the direction the line is heading, exactly like the sign on a number line.</p>"
+    "<p>Read a graph left to right. If the line climbs, the gradient is positive. If it falls, the gradient is negative.</p><p>The sign isn't decoration, it's the direction the line is heading, exactly like the sign on a number line.</p>",
+    "<p>The line through (1, 2) and (4, 8) has m = 2 — positive, and it climbs left to right. Compare a line through (1, 8) and (4, 2): m = (2 − 8) / (4 − 1) = −6 / 3 = −2. Negative, and it falls left to right. Same two points, reversed heights, opposite sign.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"gradient-sign",ground:"g0",buildsOn:["CG20"]}),
 
   // CG22 — Zero gradient — a flat line
   C("V","CG22","No rise at all",[
-    "<p>A perfectly horizontal line never climbs or falls. Its rise is always zero, whatever the run, so its gradient is zero.</p><p>A gradient of zero doesn't mean \"no line.\" It means a line that goes nowhere up or down.</p>"
+    "<p>A perfectly horizontal line never climbs or falls. Its Δy is always zero, whatever Δx is, so its gradient is zero.</p><p>A gradient of zero doesn't mean \"no line.\" It means a line that goes nowhere up or down.</p>",
+    "<p>Take (1, 4) and (6, 4) — same y, different x. m = (4 − 4) / (6 − 1) = 0 / 5 = 0. Zero on top of the fraction, whatever sits on the bottom, always gives zero.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"zero-gradient",ground:"g0",buildsOn:["CG20"]}),
 
   // CG23 — Undefined gradient — a vertical line
   C("V","CG23","When the formula breaks",[
-    "<p>A perfectly vertical line has zero run — it never moves along at all. The gradient formula needs to divide by that run, and dividing by zero is undefined.</p><p>So a vertical line doesn't have a small gradient or a huge one. It has no gradient. The formula simply doesn't apply.</p>"
+    "<p>A perfectly vertical line has zero Δx — it never moves along at all. The gradient formula needs to divide by that Δx, and dividing by zero is undefined.</p><p>So a vertical line doesn't have a small gradient or a huge one. It has no gradient. The formula simply doesn't apply.</p>",
+    "<p>Take (3, 1) and (3, 9) — same x, different y. m = (9 − 1) / (3 − 3) = 8 / 0. Not zero, not a huge number — undefined. The calculation itself breaks down.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"undefined-gradient; vertical-line",ground:"g0",buildsOn:["CG20"]}),
 
   // CG24 — The equation of a line: y = mx + c
   C("V","CG24","One equation, every point on the line",[
-    "<p>Every point on a straight line obeys the same rule: y = mx + c. Feed in any x, and the equation hands back the matching y, for every single point on that line and no others.</p><div class='formula'>y = mx + c<span class='gloss'>m is the gradient. c is where the line crosses the y-axis.</span></div>"
+    "<p>Every point on a straight line obeys the same rule: y = mx + c. Feed in any x, and the equation hands back the matching y, for every single point on that line and no others.</p><div class='formula'>y = mx + c<span class='gloss'>m is the gradient. c is where the line crosses the y-axis.</span></div>",
+    "<p>Take y = 2x + 3. Feed in x = 1: y = 2(1) + 3 = 5. Feed in x = 4: y = 2(4) + 3 = 11. Every (x, y) pair this equation produces — (1, 5), (4, 11), any other — sits on that one line, and nothing else does.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"line-equation; y-mx-c",ground:"g0",buildsOn:["CG20"]}),
 
   // CG25 — What m and c each control
   C("V","CG25","Two knobs, two jobs",[
-    "<p>In y = mx + c, the two letters do two completely separate jobs. m controls the lean of the line — how steep, and which way. c controls where the line sits — specifically, where it crosses the y-axis.</p><p>Change m and the line tilts. Change c and the line slides up or down without tilting at all.</p>"
+    "<p>In y = mx + c, the two letters do two completely separate jobs. m controls the lean of the line — how steep, and which way. c controls where the line sits — specifically, where it crosses the y-axis.</p><p>Change m and the line tilts. Change c and the line slides up or down without tilting at all.</p>",
+    "<p>y = 2x + 3 and y = 2x + 7 share m = 2, so they're tilted identically — just shifted, since c changed from 3 to 7. y = 2x + 3 and y = 5x + 3 share c = 3, so they cross the y-axis at the same spot — but m changed from 2 to 5, so one is far steeper.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"m-and-c-roles",ground:"g0",buildsOn:["CG24"]}),
 
   // CG26 — Finding the equation from two points
   C("V","CG26","Reverse-engineering the line",[
-    "<p>Given just two points, you can rebuild the whole equation. First find the gradient using rise over run. Then plug one point and that gradient into y = mx + c and solve for c.</p><p>Two points are all a straight line ever needs.</p>"
+    "<p>Given just two points, you can rebuild the whole equation. First find the gradient using Δy/Δx. Then plug one point and that gradient into y = mx + c and solve for c.</p><p>Two points are all a straight line ever needs.</p>",
+    "<p>Take (2, 7) and (5, 16). m = (16 − 7) / (5 − 2) = 9 / 3 = 3. Plug (2, 7) into y = 3x + c: 7 = 3(2) + c, so c = 1. The line is y = 3x + 1. Check it against the other point: 3(5) + 1 = 16. ✓</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"equation-from-two-points",ground:"g0",buildsOn:["CG20","CG24"]}),
 
   // CG27 — Parallel lines
   C("V","CG27","Same lean, different position",[
-    "<p>Two lines are parallel exactly when they share the same gradient. They lean at the same angle, so however far you follow them, they never meet.</p><p>Different c, same m: parallel but never touching.</p>"
+    "<p>Two lines are parallel exactly when they share the same gradient. They lean at the same angle, so however far you follow them, they never meet.</p><p>Different c, same m: parallel but never touching.</p>",
+    "<p>y = 2x + 3 and y = 2x − 4 both have m = 2. Same lean, shifted apart — at every x, the second line sits exactly 7 below the first, so they run side by side forever.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"parallel-lines",ground:"g0",buildsOn:["CG24"]}),
 
   // CG28 — Perpendicular lines
   C("V","CG28","Meeting at a perfect right angle",[
-    "<p>Two lines cross at exactly 90° when their gradients are negative reciprocals of each other: flip one gradient upside down and switch its sign, and you get the other.</p><div class='formula'>m₁ × m₂ = −1<span class='gloss'>Multiply the two gradients of perpendicular lines and you always get −1.</span></div><p>A gradient of 2 pairs with a perpendicular gradient of −1/2. Steep meets shallow, opposite sign, at a perfect corner.</p>"
+    "<p>Two lines cross at exactly 90° when their gradients are negative reciprocals of each other: flip one gradient upside down and switch its sign, and you get the other.</p><div class='formula'>m₁ × m₂ = −1<span class='gloss'>Multiply the two gradients of perpendicular lines and you always get −1.</span></div>",
+    "<p>A gradient of 2 pairs with a perpendicular gradient of −1/2. Check it: 2 × (−1/2) = −1. ✓ Steep meets shallow, opposite sign, at a perfect corner.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"perpendicular-lines; negative-reciprocal",ground:"g0",buildsOn:["CG24"]}),
 
   // CG29 — Where a line crosses the x-axis (the root)
   C("V","CG29","Setting y to zero",[
-    "<p>A line crosses the x-axis exactly where its height, y, is zero. Set y = 0 in the line's equation and solve for x, and that x is where the crossing happens.</p><p>This crossing point has a name: the root.</p>"
+    "<p>A line crosses the x-axis exactly where its height, y, is zero. Set y = 0 in the line's equation and solve for x, and that x is where the crossing happens.</p><p>This crossing point has a name: the root.</p>",
+    "<p>Take y = 2x − 6. Set y = 0: 0 = 2x − 6, so x = 3. The line crosses the x-axis at (3, 0) — its root is 3.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"x-intercept; root",ground:"g0",buildsOn:["CG24"]}),
 
   // CG30 — Where a line crosses the y-axis (the intercept)
   C("V","CG30","Setting x to zero",[
-    "<p>A line crosses the y-axis exactly where x = 0. Plug x = 0 into y = mx + c and everything with m vanishes, leaving y = c.</p><p>That's why c is called the intercept: it's the height the line sits at the instant it crosses the y-axis.</p>"
+    "<p>A line crosses the y-axis exactly where x = 0. Plug x = 0 into y = mx + c and everything with m vanishes, leaving y = c.</p><p>That's why c is called the intercept: it's the height the line sits at the instant it crosses the y-axis.</p>",
+    "<p>Same line as before, y = 2x − 6. At x = 0: y = 2(0) − 6 = −6. It crosses the y-axis at (0, −6) — and sure enough, c = −6, exactly as the equation already said.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"y-intercept",ground:"g0",buildsOn:["CG24"]}),
 
   // CG31 — Solving where two lines meet
   C("V","CG31","One point, shared by two equations",[
-    "<p>Two different lines cross at exactly one point, unless they're parallel. At that point, both equations are true at once: the same x and y satisfy both.</p><p>Set the two equations equal to each other, solve for x, then plug it back in for y. That's the meeting point, found without ever drawing the graph.</p>"
+    "<p>Two different lines cross at exactly one point, unless they're parallel. At that point, both equations are true at once: the same x and y satisfy both.</p><p>Set the two equations equal to each other, solve for x, then plug it back in for y. That's the meeting point, found without ever drawing the graph.</p>",
+    "<p>Take y = 2x − 6 and y = −x + 9. Set them equal: 2x − 6 = −x + 9, so 3x = 15, x = 5. Plug back in: y = 2(5) − 6 = 4. They meet at (5, 4). Check the other equation: −5 + 9 = 4. ✓</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"simultaneous-equations-graphical",ground:"g0",buildsOn:["CG24"]}),
 
 ];
