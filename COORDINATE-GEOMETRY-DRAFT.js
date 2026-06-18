@@ -47,7 +47,7 @@ const TIER_00_THE_PLANE = [
 
   // CG3 — Positive and negative
   C("V","CG3","Two directions from zero",[
-    "<p>Positive numbers sit to the right of zero. Negative numbers sit to the left. The sign in front of a number isn't really about size, it's about which way from zero you're standing.</p><p>−5 isn't a tiny version of 5. It's 5 steps the other direction.</p>",
+    "<p>Positive numbers sit to the right of zero. Negative numbers sit to the left. The sign in front of a number isn't really about size, it's about which way from zero you're standing.</p><p>−5 isn't a tiny version of 5. It's 5 steps the other direction — and which side gets called \"positive\" is a convention, not a law. Everyone just agreed on right, and never had reason to flip it.</p>",
     "<p>A bank balance of −50 isn't a small amount of money. It's a debt of 50. The minus sign carries a direction, not a shrinking.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"positive-negative; sign-as-direction",ground:"g0",buildsOn:["CG2"]}),
 
@@ -63,7 +63,7 @@ const TIER_00_THE_PLANE = [
 
   // CG6 — Distance on a number line — subtraction as length
   C("V","CG6","Subtraction is just a length",[
-    "<p>How far apart are 2 and 9 on the line? Subtract: 9 − 2 = 7. That's not a coincidence, it's the whole point of subtraction. It measures the gap between two points.</p>",
+    "<p>How far apart are 2 and 9 on the line? Count it out, 3-4-5-6-7-8-9, that's seven steps. Or just subtract: 9 − 2 = 7. Same answer — subtraction is just counting, done in one move.</p>",
     "<p>It works with negatives too. The distance between −3 and 4 is 4 − (−3) = 7. Distance can't be negative, so if subtracting one way gives a negative number, just flip it.</p><div class='formula'>distance = |a − b|<span class='gloss'>Subtract the two points, then drop the sign — distance is always positive.</span></div>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"distance-1d; subtraction-as-length",ground:"g0",buildsOn:["CG3"]}),
 
@@ -74,12 +74,12 @@ const TIER_00_THE_PLANE = [
 
   // CG8 — Introducing a second line — why one isn't enough
   C("V","CG8","One line can't hold everything",[
-    "<p>A number line tells you how far along, but the real world isn't a tightrope. A treasure marked \"10 paces from the oak tree\" could be 10 paces north, south, anywhere on a circle around it. One line, one direction, isn't enough to pin down a place.</p><p>To fix that, we don't add more numbers to the same line. We add a second line, crossing the first.</p>"
+    "<p>A number line tells you how far along, but that's not always enough. Picture a movie theatre: \"seat 12\" alone doesn't pin down one place, every row has its own seat 12. You need two independent numbers at once, row and seat, to find the exact one.</p><p>To fix that, we don't add more numbers to the same line. We add a second line, crossing the first.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"limits-of-1d; need-for-2d",ground:"g0",buildsOn:["CG1"]}),
 
   // CG9 — The x-axis and y-axis
   C("V","CG9","Two number lines, crossed at a right angle",[
-    "<p>Lay one number line flat. Stand a second one upright, crossing it at a right angle. The flat one is the x-axis, the upright one is the y-axis.</p><p>Together they don't just measure two separate things. They measure one thing: position, in a way one line alone never could.</p>"
+    "<p>Lay one number line flat. Stand a second one upright, crossing it at a right angle. The flat one is the x-axis, the upright one is the y-axis. x is conventionally the input, chosen first; y is the output, produced after — exactly what \"y = f(x)\" means later on: pick x, get y.</p><p>Together they don't just measure two separate things. They measure one thing: position, in a way one line alone never could.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"x-axis; y-axis; cartesian-plane",ground:"g0",buildsOn:["CG8"]}),
 
   // CG10 — The origin
@@ -89,12 +89,12 @@ const TIER_00_THE_PLANE = [
 
   // CG11 — Plotting a point
   C("V","CG11","Every place on the grid has an address",[
-    "<p>A point on the grid is written (x, y): how far along the x-axis, then how far up the y-axis. (3, 4) means 3 steps right, then 4 steps up from the origin.</p><p>It's an address. Two numbers, one exact place, no confusion possible.</p>"
+    "<p>A point on the grid is written (x, y): how far along the x-axis, then how far up the y-axis. To plot (3, 4), go to 3 on the x-axis first, then move 4 straight up from there. That's the point.</p><p>It's an address — an <strong>ordered pair</strong>. Two numbers, one exact place, and the order is non-negotiable: (3, 4) and (4, 3) are different points entirely.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"plotting-points; ordered-pair",ground:"g0",buildsOn:["CG9","CG10"]}),
 
   // CG12 — Reading a point off the grid
   C("V","CG12","Going backwards: point to address",[
-    "<p>Plotting goes from numbers to a point. Reading a graph goes the other way: see a point, trace straight down to the x-axis and straight across to the y-axis, and read off its two numbers.</p><p>Same skill, run in reverse.</p>"
+    "<p>Plotting goes from numbers to a point. Reading a graph goes the other way: drop a perpendicular from the point to each axis. Where it lands on the x-axis gives you x; where it lands on the y-axis gives you y.</p><p>That trips people up at first, since distance from the y-axis gives the x-coordinate, not the y. It's the reverse of what you'd guess, and it's exactly CG11 run backwards.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"reading-coordinates",ground:"g0",buildsOn:["CG11"]}),
 
   // CG13 — The four quadrants
@@ -104,7 +104,7 @@ const TIER_00_THE_PLANE = [
 
   // CG14 — Which quadrant is which sign combination
   C("V","CG14","The signs of x and y give it away",[
-    "<p>You don't need to look at a picture to know which quadrant a point is in. Just check the signs.</p><p>Both positive: quadrant I. Negative x, positive y: quadrant II. Both negative: quadrant III. Positive x, negative y: quadrant IV.</p>"
+    "<p>You don't need to look at a picture to know which quadrant a point is in. Just check the signs.</p><p>Both positive: quadrant I. Negative x, positive y: quadrant II. Both negative: quadrant III. Positive x, negative y: quadrant IV.</p><p>Notice the pattern: moving between neighbouring quadrants always flips exactly one sign, never both at once.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"quadrant-signs",ground:"g0",buildsOn:["CG13"]}),
 
   // CG15 — Distance between two points (Pythagoras)
@@ -120,7 +120,7 @@ const TIER_00_THE_PLANE = [
 
   // CG17 — Plotting simple shapes from points
   C("V","CG17","A shape is just a few points, joined up",[
-    "<p>Plot three points and join them and you have a triangle. Plot four and you might have a rectangle, a kite, or nothing recognisable at all, depending where they sit.</p><p>Every shape on a grid, however complicated, is built the same way: a list of points, connected in order.</p>"
+    "<p>Plot three points and join them and you have a triangle. Plot four and you might have a rectangle, a kite, or nothing recognisable at all, depending where they sit.</p><p>Don't just eyeball the shape, prove it. Take (0,0), (4,0), (4,3), (0,3): run CG15's distance formula on each side and you get 4, 3, 4, 3. Opposite sides equal, confirmed by calculation rather than by looking, which is exactly how you prove it's a rectangle.</p><p>Every shape on a grid, however complicated, is built the same way: a list of points, connected in order, provable with the tools already in this tier.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"shapes-from-points",ground:"g0",buildsOn:["CG11"]}),
 
   // SNIPPET — Descartes / Cartesian coordinates
