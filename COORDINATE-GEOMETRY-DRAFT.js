@@ -168,7 +168,7 @@ const TIER_01_LINES = [
 
   // CG18 — What "steepness" means
   C("V","CG18","How much a line leans",[
-    "<p>Draw a line that passes through quadrant I, cuts into quadrant II, and eventually reaches quadrant III — never dipping into quadrant IV. Slide your finger along it: as x increases, y increases too, at the same rate the entire way. x and y aren't moving independently, they're locked into a relationship.</p><p>That constant rate — the same the whole way along — is what makes it a line rather than a curve. A curve's rate keeps changing as you move; a line's never does.</p>",
+    "<p>Draw a line that passes through quadrant I, cuts into quadrant II, and eventually reaches quadrant III — never dipping into quadrant IV. Slide your finger along it: as x increases, y increases too, at the same rate the entire way. x and y aren't moving independently, they're locked into a relationship.</p><p>That rate never changes, the whole way along, and that’s what makes it a line rather than a curve. A curve's rate keeps changing as you move; a line's never does.</p>",
     "<p>That constant rate of change has a name: <strong>steepness</strong>. A line climbing left to right (like the one above) has positive steepness. One falling left to right has negative steepness. Either way, it's exactly measurable, not just eyeballed.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"steepness-intro; constant-rate",ground:"g0",buildsOn:["CG11"]}),
 
@@ -205,7 +205,7 @@ const TIER_01_LINES = [
   // CG24 — The equation of a line: y = mx + c
   C("V","CG24","One equation, every point on the line",[
     "<p>Every point on a straight line obeys the same rule: y = mx + c. Feed in any x, and the equation hands back the matching y, for every single point on that line and no others.</p><div class='formula'>y = mx + c<span class='gloss'>m is the gradient. c is where the line crosses the y-axis.</span></div>",
-    "<p>Take y = 2x + 3. Feed in x = 1: y = 2(1) + 3 = 5. Feed in x = 4: y = 2(4) + 3 = 11. Every (x, y) pair this equation produces — (1, 5), (4, 11), any other — sits on that one line, and nothing else does.</p>"
+    "<p>Take y = 2x + 3. Feed in x = 1: y = 2(1) + 3 = 5. Feed in x = 4: y = 2(4) + 3 = 11. Every (x, y) pair this equation produces, (1, 5), (4, 11), or any other, sits on that one line, and nothing else does.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"line-equation; y-mx-c",ground:"g0",buildsOn:["CG20"]}),
 
   // CG25 — What m and c each control

@@ -21,10 +21,10 @@
 <style>
   :root{
     /* chalkboard palette — matched to illustrated card images */
-    --board-1:#2e5642;   /* surface — fresh classroom green */
-    --board-2:#355e4a;
-    --board-3:#2d3d36;   /* deeper — older, greyer board */
-    --board-4:#252b27;   /* bedrock — near-black slate */
+    --board-1:#1f3b30;   /* surface — fresh classroom green */
+    --board-2:#24463a;
+    --board-3:#2c2f2a;   /* deeper — older, greyer board */
+    --board-4:#262422;   /* bedrock — near-black slate */
     --frame:#5a4632;     /* wood chalk-tray brown */
     --frame-dark:#3f3022;
     --chalk:#f4f1e9;     /* main chalk white, slightly warm */
@@ -44,21 +44,20 @@
     --paper-dim:var(--chalk-dim);
     --gold:var(--chalk-yellow);
     --gold-dim:#bfa55f;
-    --ink:#2e5642;
-    --bg-1:#1d3829;
+    --ink:#1f3b30;
+    --bg-1:#152a22;
     --serif:var(--hand);
   }
 
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
-  html,body{height:100%;overflow:hidden;background:#22382d;}
+  html,body{height:100%;overflow:hidden;background:var(--bg-1);}
   body{
     font-family:var(--hand);
     color:var(--chalk);
     position:fixed;width:100%;
     overscroll-behavior:none;
-    background:
-      radial-gradient(ellipse at 50% 40%,#325c46,#1d3a2a 80%);
+    background:var(--bg-1);
   }
 
   /* chalk grain texture — SVG fractalNoise tiled at low opacity */
@@ -118,11 +117,11 @@
     display:flex;flex-direction:column;
   }
   /* depth tint: fresh green board → older greyer → near-black slate */
-  .slab[data-depth="0"]{background:#2e5642;}
-  .slab[data-depth="1"]{background:#305848;}
-  .slab[data-depth="2"]{background:#2d3d36;}
-  .slab[data-depth="3"]{background:#292e2b;}
-  .slab[data-depth="4"]{background:#232723;}
+  .slab[data-depth="0"]{background:var(--board-1);}
+  .slab[data-depth="1"]{background:var(--board-2);}
+  .slab[data-depth="2"]{background:var(--board-3);}
+  .slab[data-depth="3"]{background:var(--board-4);}
+  .slab[data-depth="4"]{background:var(--board-4);}
 
   .slab-inner{
     padding:clamp(28px,4.5vw,54px);
@@ -789,7 +788,7 @@ const FALLBACK_DECK=[
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"tier-0-recap",kind:"recap",ground:"g0",buildsOn:["Card 54"]}),
 
   C("V","Card 57","How much a line leans",[
-    "<p>Draw a line that passes through quadrant I, cuts into quadrant II, and eventually reaches quadrant III — never dipping into quadrant IV. Slide your finger along it: as x increases, y increases too, at the same rate the entire way. x and y aren't moving independently, they're locked into a relationship.</p><p>That constant rate — the same the whole way along — is what makes it a line rather than a curve. A curve's rate keeps changing as you move; a line's never does.</p>",
+    "<p>Draw a line that passes through quadrant I, cuts into quadrant II, and eventually reaches quadrant III — never dipping into quadrant IV. Slide your finger along it: as x increases, y increases too, at the same rate the entire way. x and y aren't moving independently, they're locked into a relationship.</p><p>That rate never changes, the whole way along, and that’s what makes it a line rather than a curve. A curve's rate keeps changing as you move; a line's never does.</p>",
     "<p>That constant rate of change has a name: <strong>steepness</strong>. A line climbing left to right (like the one above) has positive steepness. One falling left to right has negative steepness. Either way, it's exactly measurable, not just eyeballed.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"steepness-intro; constant-rate",ground:"g0",buildsOn:["Card 48"]}),
 
@@ -820,7 +819,7 @@ const FALLBACK_DECK=[
 
   C("V","Card 63","One equation, every point on the line",[
     "<p>Every point on a straight line obeys the same rule: y = mx + c. Feed in any x, and the equation hands back the matching y, for every single point on that line and no others.</p><div class='formula'>y = mx + c<span class='gloss'>m is the gradient. c is where the line crosses the y-axis.</span></div>",
-    "<p>Take y = 2x + 3. Feed in x = 1: y = 2(1) + 3 = 5. Feed in x = 4: y = 2(4) + 3 = 11. Every (x, y) pair this equation produces — (1, 5), (4, 11), any other — sits on that one line, and nothing else does.</p>"
+    "<p>Take y = 2x + 3. Feed in x = 1: y = 2(1) + 3 = 5. Feed in x = 4: y = 2(4) + 3 = 11. Every (x, y) pair this equation produces, (1, 5), (4, 11), or any other, sits on that one line, and nothing else does.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"line-equation; y-mx-c",ground:"g0",buildsOn:["Card 59"]}),
 
   C("V","Card 64","Two knobs, two jobs",[
