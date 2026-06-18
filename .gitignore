@@ -6,3 +6,4 @@ content-database.csv
 manim_anims/media
 manim_anims/__pycache__
 _deepseek_output.txt
+deepseek-drafts-*.md
