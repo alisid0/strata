@@ -26,7 +26,7 @@ const DIAGRAM_SPECS = {
   CG17: {type:"points", pts:[{x:0,y:0},{x:4,y:0},{x:2,y:3}], connect:true},
 
   // ---- Tier 1: Lines ----
-  CG18: {type:"line", m:2, c:0},
+  CG18: {type:"line", m:0.5, c:2},
   CG19: {type:"line", p1:[0,0], p2:[4,3]},
   CG20: {type:"line", m:0.75, c:0},
   CG21: {type:"line", m:-1.5, c:0, color:"green"},

@@ -168,8 +168,9 @@ const TIER_01_LINES = [
 
   // CG18 — What "steepness" means
   C("V","CG18","How much a line leans",[
-    "<p>Some lines barely tilt. Others climb sharply. Steepness is just a word for how much a line leans as you move along it — and on a grid, that lean can be measured exactly, not just eyeballed.</p>"
-  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"steepness-intro",ground:"g0",buildsOn:["CG11"]}),
+    "<p>Draw a line that passes through quadrant I, cuts into quadrant II, and eventually reaches quadrant III — never dipping into quadrant IV. Slide your finger along it: as x increases, y increases too, at the same rate the entire way. x and y aren't moving independently, they're locked into a relationship.</p><p>That constant rate — the same the whole way along — is what makes it a line rather than a curve. A curve's rate keeps changing as you move; a line's never does.</p>",
+    "<p>That constant rate of change has a name: <strong>steepness</strong>. A line climbing left to right (like the one above) has positive steepness. One falling left to right has negative steepness. Either way, it's exactly measurable, not just eyeballed.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"steepness-intro; constant-rate",ground:"g0",buildsOn:["CG11"]}),
 
   // CG19 — Rise and run
   C("V","CG19","Up over along",[
