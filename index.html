@@ -524,8 +524,9 @@ const FALLBACK_DECK=[
     "<p>Imagine a machine that does only one thing. You press a button, it drops out a bag of chips. That's it.</p><p>One button, one result, every time.</p>",
     "<p>You've seen these in malls, railway stations, airports. It's called a vending machine. Press B4, get B4's crisps, every time. Press a microwave's popcorn button, get the popcorn setting, every time.</p><p>Each button is a function: one reliable input, one reliable output. Everything a microwave or a phone can do, all its buttons together, is what we casually call its functionality. The everyday word and the maths word are the same word.</p>",
     "<p>Now we write it down. Mathematicians call the machine f, the input x, and the output f(x).</p><p>So a \"double it\" machine is f(x) = 2x. Feed it 3, it gives 6. Feed it 10, it gives 20. The notation just names the machine and what you feed it.</p><p>Almost everything in physics and maths from here is built on this.</p>",
-    "<p>So how is this different from a plain equation?</p><p>An equation is a question with an answer. \"x + 4 = 10\" is solved by one value: 6. It sits still. A function doesn't have a single answer. It's a machine that keeps running.</p><p>Feed f(x) = 2x a 3 and it gives 6; feed it 10 and it gives 20. An equation pins down a value. A function describes how one thing turns into another, for every input you could give it.</p>"
-  ],null,{subject:"maths",topic:"functions",concept:"function; f-of-x",ground:"g0",buildsOn:[]}),
+    "<p>So how is this different from a plain equation?</p><p>An equation is a question with an answer. \"x + 4 = 10\" is solved by one value: 6. It sits still. A function doesn't have a single answer. It's a machine that keeps running.</p><p>Feed f(x) = 2x a 3 and it gives 6; feed it 10 and it gives 20. An equation pins down a value. A function describes how one thing turns into another, for every input you could give it.</p>",
+    "<p>Everything in this path from here is the same machine, wearing a different formula. A line is f(x) = mx + c, a \"multiply, then add\" machine. A parabola is f(x) = x², a \"square it\" machine. Even s = ut + ½at², from physics, is the same idea: feed it a time, get back a displacement.</p><p>One exception is coming soon: a circle. Feed it an x and sometimes you get two y's back, not one — which is exactly why a circle isn't a function. Worth keeping that exception, not smoothing it over.</p>"
+  ],null,{subject:"maths",topic:"functions",concept:"function; f-of-x; function-bridge",ground:"g0",buildsOn:[]}),
 
   C("III","Card 15","Applying a limit",[
     "<p>A tree grows so slowly you can't see it move. A ship crosses the water at a steady crawl. A supersonic jet tears across the sky.</p><p>Different speeds, but the same question underneath: how fast is this changing? To answer questions like these exactly, we lean on one tool, the limit. Here is how to use it.</p>",
@@ -706,6 +707,156 @@ const FALLBACK_DECK=[
     "<p>At this scale, the \"type\" of matter stops existing. There's only counting.</p><p>The only thing making an atom behave like gold, or oxygen, or iron is the <em>number</em> of these pieces inside. The universe isn't a kitchen with 118 ingredients. It's a Lego set with three kinds of brick.</p>",
     "<p>The key brick is the proton. Its count is an element's ID card. Exactly 26 protons in the centre means iron. 79 means gold.</p><div class='formula'>atomic number (Z) = number of protons<span class='gloss'>Change the proton count and you change the element itself.</span></div><p>That's what the periodic table is really sorting: it starts at hydrogen (1 proton) and counts up, one at a time.</p>"
   ],null,{subject:"chemistry",topic:"atomic-structure",concept:"protons-neutrons-electrons; atomic-number",ground:"g0",buildsOn:["Card 36"]}),
+
+  /* ---------- Cards 38-70: Coordinate Geometry path, Tier 0 (the plane) + Tier 1 (lines) ---------- */
+  C("V","Card 38","A line that holds every number",[
+    "<p>A number line is a straight line where every point stands for a number. Walk along it to the right and the numbers climb. Walk back and they fall.</p><p>It turns \"more\" and \"less\" into \"further right\" and \"further left\" — a quantity becomes a place you can point to.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"number-line",ground:"g0",buildsOn:[]}),
+
+  C("V","Card 39","The point everything is measured from",[
+    "<p>Zero isn't nothing on the line. It's a place, like any other point, and it's the one every other number is measured against.</p><p>A number doesn't just say \"how much.\" It says \"this much more than zero\" or \"this much less.\"</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"zero; origin-1d",ground:"g0",buildsOn:["Card 38"]}),
+
+  C("V","Card 40","Two directions from zero",[
+    "<p>Positive numbers sit to the right of zero. Negative numbers sit to the left. The sign in front of a number isn't really about size, it's about which way from zero you're standing.</p><p>−5 isn't a tiny version of 5. It's 5 steps the other direction — and which side gets called \"positive\" is a convention, not a law. Everyone just agreed on right, and never had reason to flip it.</p>",
+    "<p>A bank balance of −50 isn't a small amount of money. It's a debt of 50. The minus sign carries a direction, not a shrinking.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"positive-negative; sign-as-direction",ground:"g0",buildsOn:["Card 39"]}),
+
+  C("V","Card 41","The gaps between the whole numbers",[
+    "<p>The number line isn't just dots at 1, 2, 3. Between any two whole numbers there's room for halves, quarters, and decimals: 1.5 sits exactly halfway between 1 and 2.</p><p>However finely you slice the gap, there's always a number that lives there.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"fractions-decimals-on-line; density",ground:"g0",buildsOn:["Card 38"]}),
+
+  C("V","Card 42","The line settles every argument about size",[
+    "<p>Which is bigger, −3 or −8? Find them on the line. Whichever one sits further right is the bigger number, no matter how the digits look.</p><p>−3 is to the right of −8, so −3 is bigger, even though 8 looks like the larger digit.</p><p>Since the line never ends in either direction, there's always a bigger number and always a smaller one. That's exactly what +∞ and −∞ mean — not numbers you can land on, just the fact that comparison never runs out.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"comparing-numbers; ordering; infinity-notation",ground:"g0",buildsOn:["Card 40"]}),
+
+  C("V","Card 43","Subtraction is just a length",[
+    "<p>How far apart are 2 and 9 on the line? Count it out, 3-4-5-6-7-8-9, that's seven steps. Or just subtract: 9 − 2 = 7. Same answer — subtraction is just counting, done in one move.</p>",
+    "<p>It works with negatives too. The distance between −3 and 4 is 4 − (−3) = 7. Distance can't be negative, so if subtracting one way gives a negative number, just flip it.</p><div class='formula'>distance = |a − b|<span class='gloss'>Subtract the two points, then drop the sign — distance is always positive.</span></div>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"distance-1d; subtraction-as-length",ground:"g0",buildsOn:["Card 40"]}),
+
+  C("V","Card 44","The exact middle, found by averaging",[
+    "<p>The midpoint between 2 and 9 is 5.5 — found by adding them and halving the result. Averaging two numbers always lands you exactly between them on the line.</p><div class='formula'>midpoint = (a + b) / 2<span class='gloss'>Add the two points, then halve it.</span></div>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"midpoint-1d",ground:"g0",buildsOn:["Card 43"]}),
+
+  C("V","Card 45","One line can't hold everything",[
+    "<p>A number line tells you how far along, but that's not always enough. Picture a movie theatre: \"seat 12\" alone doesn't pin down one place, every row has its own seat 12. You need two independent numbers at once, row and seat, to find the exact one.</p><p>To fix that, we don't add more numbers to the same line. We add a second line, crossing the first.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"limits-of-1d; need-for-2d",ground:"g0",buildsOn:["Card 38"]}),
+
+  C("V","Card 46","Two number lines, crossed at a right angle",[
+    "<p>Lay one number line flat. Stand a second one upright, crossing it at a right angle. The flat one is the x-axis, the upright one is the y-axis. x is conventionally the input, chosen first; y is the output, produced after — exactly what \"y = f(x)\" means later on: pick x, get y.</p><p>Together they don't just measure two separate things. They measure one thing: position, in a way one line alone never could.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"x-axis; y-axis; cartesian-plane",ground:"g0",buildsOn:["Card 45"]}),
+
+  C("V","Card 47","Where the two lines meet",[
+    "<p>The origin is the single point where the x-axis and y-axis cross. It's zero on both lines at once, and it's where every measurement on the grid starts from.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"origin-2d",ground:"g0",buildsOn:["Card 46"]}),
+
+  C("V","Card 48","Every place on the grid has an address",[
+    "<p>A point on the grid is written (x, y): how far along the x-axis, then how far up the y-axis. To plot (3, 4), go to 3 on the x-axis first, then move 4 straight up from there. That's the point.</p><p>It's an address — an <strong>ordered pair</strong>. Two numbers, one exact place, and the order is non-negotiable: (3, 4) and (4, 3) are different points entirely.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"plotting-points; ordered-pair",ground:"g0",buildsOn:["Card 46","Card 47"]}),
+
+  C("V","Card 49","Going backwards: point to address",[
+    "<p>Plotting goes from numbers to a point. Reading a graph goes the other way: drop a perpendicular from the point to each axis. Where it lands on the x-axis gives you x; where it lands on the y-axis gives you y.</p><p>That trips people up at first, since distance from the y-axis gives the x-coordinate, not the y. It's the reverse of what you'd guess, and it's exactly the previous card run backwards.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"reading-coordinates",ground:"g0",buildsOn:["Card 48"]}),
+
+  C("V","Card 50","The grid splits into four rooms",[
+    "<p>The two axes cut the plane into four regions, called quadrants, numbered I to IV going anticlockwise from the top right.</p><p>Every point on the grid lives in exactly one of them, unless it sits right on an axis.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"quadrants",ground:"g0",buildsOn:["Card 48"]}),
+
+  C("V","Card 51","The signs of x and y give it away",[
+    "<p>You don't need to look at a picture to know which quadrant a point is in. Just check the signs.</p><p>Both positive: quadrant I. Negative x, positive y: quadrant II. Both negative: quadrant III. Positive x, negative y: quadrant IV.</p><p>Notice the pattern: moving between neighbouring quadrants always flips exactly one sign, never both at once.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"quadrant-signs",ground:"g0",buildsOn:["Card 50"]}),
+
+  C("V","Card 52","Borrowing a triangle to measure a diagonal",[
+    "<p>Two points on a number line: just subtract. Two points on a grid: the straight-line gap between them is diagonal, and subtraction alone won't measure a diagonal.</p><p>So build a right-angled triangle: the horizontal gap is one side, the vertical gap is the other, and the diagonal distance is the hypotenuse.</p>",
+    "<p>Pythagoras hands back the hypotenuse from the other two sides.</p><div class='formula'>d = √((x₂−x₁)² + (y₂−y₁)²)<span class='gloss'>The horizontal gap squared, plus the vertical gap squared, then square-rooted.</span></div><p>It's the number-line distance formula, just run twice and stitched together with Pythagoras.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"distance-formula-2d; pythagoras",ground:"g0",buildsOn:["Card 43","Card 48"]}),
+
+  C("V","Card 53","Averaging both coordinates at once",[
+    "<p>The midpoint between two points on a grid is found the same way as on a line, just done twice: average the x-coordinates, then average the y-coordinates.</p><div class='formula'>midpoint = ((x₁+x₂)/2, (y₁+y₂)/2)<span class='gloss'>Average the x's. Average the y's. That's the point exactly between them.</span></div>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"midpoint-2d",ground:"g0",buildsOn:["Card 44","Card 48"]}),
+
+  C("V","Card 54","A shape is just a few points, joined up",[
+    "<p>Plot three points and join them and you have a triangle. Plot four and you might have a rectangle, a kite, or nothing recognisable at all, depending where they sit.</p><p>Don't just eyeball the shape, prove it. Take (0,0), (4,0), (4,3), (0,3): run the distance formula on each side and you get 4, 3, 4, 3. Opposite sides equal, confirmed by calculation rather than by looking, which is exactly how you prove it's a rectangle.</p><p>Every shape on a grid, however complicated, is built the same way: a list of points, connected in order, provable with the tools already in this tier.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"shapes-from-points",ground:"g0",buildsOn:["Card 48"]}),
+
+  C("V","Card 55","Did you know? The footnote that ate the book",[
+    "<p>René Descartes published this idea in 1637 — not as its own book, but as an appendix called La Géométrie, tucked onto the back of a philosophy book, Discourse on the Method.</p><p>Legend says it came to him while lying in bed, watching a fly walk across the ceiling. He realised he could pin down the fly's exact position at any instant using just its distance from two walls.</p><p>The twist: the footnote outlived the book. Almost nobody reads Discourse on the Method for its philosophy anymore. The entire system is named after the appendix that was barely the point.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"history-descartes",kind:"snippet",ground:"g0",buildsOn:["Card 46"]}),
+
+  C("V","Card 56","Quick things to remember — Tier 0",[
+    "<ul><li>A number line orders every real number — equal spacing means equal difference.</li><li>Zero is the reference point, not the start. Right = positive, left = negative, by convention.</li><li>Between any two numbers there are infinitely many more.</li><li>Distance on a line = |a − b|. Midpoint = (a + b) / 2.</li><li>Two number lines crossed at a right angle make the x-axis (horizontal) and y-axis (vertical).</li><li>A point's address is the ordered pair (x, y) — x first, always.</li><li>The origin (0, 0) is where both axes' zeros meet.</li><li>Distance on the grid: d = √((x₂−x₁)² + (y₂−y₁)²). Midpoint: ((x₁+x₂)/2, (y₁+y₂)/2).</li><li>Four quadrants, I–IV, anticlockwise from top-right: (+,+), (−,+), (−,−), (+,−).</li></ul>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"tier-0-recap",kind:"recap",ground:"g0",buildsOn:["Card 54"]}),
+
+  C("V","Card 57","How much a line leans",[
+    "<p>Draw a line that passes through quadrant I, cuts into quadrant II, and eventually reaches quadrant III — never dipping into quadrant IV. Slide your finger along it: as x increases, y increases too, at the same rate the entire way. x and y aren't moving independently, they're locked into a relationship.</p><p>That constant rate — the same the whole way along — is what makes it a line rather than a curve. A curve's rate keeps changing as you move; a line's never does.</p>",
+    "<p>That constant rate of change has a name: <strong>steepness</strong>. A line climbing left to right (like the one above) has positive steepness. One falling left to right has negative steepness. Either way, it's exactly measurable, not just eyeballed.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"steepness-intro; constant-rate",ground:"g0",buildsOn:["Card 48"]}),
+
+  C("V","Card 58","How far up, how far along",[
+    "<p>Pick two points on a line. There are exactly two distances worth measuring between them: how far up (or down) you went, and how far along you went. Mathematicians write these as Δy (vertical change) and Δx (horizontal change) — Δ just means \"change in.\"</p><p>A steep line has a big Δy for a small Δx. A gentle line has the opposite.</p>",
+    "<p>Take the points (1, 2) and (4, 8) on a line. Δy = 8 − 2 = 6. Δx = 4 − 1 = 3. That's the whole measurement: 6 up, 3 along.</p><p>Some textbooks give these two distances nicknames: \"rise\" for Δy, \"run\" for Δx — common in American classrooms, less so elsewhere. NCERT and most other curricula skip the nicknames and go straight to Δy and Δx, which is what actually carries forward into the formula.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"delta-y; delta-x; rise-run",ground:"g0",buildsOn:["Card 57"]}),
+
+  C("V","Card 59","Turning the lean into one number",[
+    "<p>Divide Δy by Δx and steepness stops being a vague impression and becomes one exact number: the <strong>gradient</strong> — also called the <strong>slope</strong>. Same number, two names for it.</p><div class='formula'>m = Δy / Δx = (y₂−y₁) / (x₂−x₁)<span class='gloss'>The vertical change between two points on the line, divided by the horizontal change.</span></div>",
+    "<p>Same two points as before, (1, 2) and (4, 8): m = (8 − 2) / (4 − 1) = 6 / 3 = 2. That line climbs 2 units for every 1 unit it moves right.</p><p>Pick any other two points on that same line, say (2, 4) and (4, 8): m = (8 − 4) / (4 − 2) = 4 / 2 = 2. Same answer. That's what makes a line straight — the gradient never changes, wherever you measure it.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"gradient; slope",ground:"g0",buildsOn:["Card 58","Card 52"]}),
+
+  C("V","Card 60","Uphill or downhill, left to right",[
+    "<p>Read a graph left to right. If the line climbs, the gradient is positive. If it falls, the gradient is negative.</p><p>The sign isn't decoration, it's the direction the line is heading, exactly like the sign on a number line.</p>",
+    "<p>The line through (1, 2) and (4, 8) has m = 2 — positive, and it climbs left to right. Compare a line through (1, 8) and (4, 2): m = (2 − 8) / (4 − 1) = −6 / 3 = −2. Negative, and it falls left to right. Same two points, reversed heights, opposite sign.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"gradient-sign",ground:"g0",buildsOn:["Card 59"]}),
+
+  C("V","Card 61","No rise at all",[
+    "<p>A perfectly horizontal line never climbs or falls. Its Δy is always zero, whatever Δx is, so its gradient is zero.</p><p>A gradient of zero doesn't mean \"no line.\" It means a line that goes nowhere up or down.</p>",
+    "<p>Take (1, 4) and (6, 4) — same y, different x. m = (4 − 4) / (6 − 1) = 0 / 5 = 0. Zero on top of the fraction, whatever sits on the bottom, always gives zero.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"zero-gradient",ground:"g0",buildsOn:["Card 59"]}),
+
+  C("V","Card 62","When the formula breaks",[
+    "<p>A perfectly vertical line has zero Δx — it never moves along at all. The gradient formula needs to divide by that Δx, and dividing by zero is undefined.</p><p>So a vertical line doesn't have a small gradient or a huge one. It has no gradient. The formula simply doesn't apply.</p>",
+    "<p>Take (3, 1) and (3, 9) — same x, different y. m = (9 − 1) / (3 − 3) = 8 / 0. Not zero, not a huge number — undefined. The calculation itself breaks down.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"undefined-gradient; vertical-line",ground:"g0",buildsOn:["Card 59"]}),
+
+  C("V","Card 63","One equation, every point on the line",[
+    "<p>Every point on a straight line obeys the same rule: y = mx + c. Feed in any x, and the equation hands back the matching y, for every single point on that line and no others.</p><div class='formula'>y = mx + c<span class='gloss'>m is the gradient. c is where the line crosses the y-axis.</span></div>",
+    "<p>Take y = 2x + 3. Feed in x = 1: y = 2(1) + 3 = 5. Feed in x = 4: y = 2(4) + 3 = 11. Every (x, y) pair this equation produces — (1, 5), (4, 11), any other — sits on that one line, and nothing else does.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"line-equation; y-mx-c",ground:"g0",buildsOn:["Card 59"]}),
+
+  C("V","Card 64","Two knobs, two jobs",[
+    "<p>In y = mx + c, the two letters do two completely separate jobs. m controls the lean of the line — how steep, and which way. c controls where the line sits — specifically, where it crosses the y-axis.</p><p>Change m and the line tilts. Change c and the line slides up or down without tilting at all.</p>",
+    "<p>y = 2x + 3 and y = 2x + 7 share m = 2, so they're tilted identically — just shifted, since c changed from 3 to 7. y = 2x + 3 and y = 5x + 3 share c = 3, so they cross the y-axis at the same spot — but m changed from 2 to 5, so one is far steeper.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"m-and-c-roles",ground:"g0",buildsOn:["Card 63"]}),
+
+  C("V","Card 65","Reverse-engineering the line",[
+    "<p>Given just two points, you can rebuild the whole equation. First find the gradient using Δy/Δx. Then plug one point and that gradient into y = mx + c and solve for c.</p><p>Two points are all a straight line ever needs.</p>",
+    "<p>Take (2, 7) and (5, 16). m = (16 − 7) / (5 − 2) = 9 / 3 = 3. Plug (2, 7) into y = 3x + c: 7 = 3(2) + c, so c = 1. The line is y = 3x + 1. Check it against the other point: 3(5) + 1 = 16. ✓</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"equation-from-two-points",ground:"g0",buildsOn:["Card 59","Card 63"]}),
+
+  C("V","Card 66","Same lean, different position",[
+    "<p>Two lines are parallel exactly when they share the same gradient. They lean at the same angle, so however far you follow them, they never meet.</p><p>Different c, same m: parallel but never touching.</p>",
+    "<p>y = 2x + 3 and y = 2x − 4 both have m = 2. Same lean, shifted apart — at every x, the second line sits exactly 7 below the first, so they run side by side forever.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"parallel-lines",ground:"g0",buildsOn:["Card 63"]}),
+
+  C("V","Card 67","Meeting at a perfect right angle",[
+    "<p>Two lines cross at exactly 90° when their gradients are negative reciprocals of each other: flip one gradient upside down and switch its sign, and you get the other.</p><div class='formula'>m₁ × m₂ = −1<span class='gloss'>Multiply the two gradients of perpendicular lines and you always get −1.</span></div>",
+    "<p>A gradient of 2 pairs with a perpendicular gradient of −1/2. Check it: 2 × (−1/2) = −1. ✓ Steep meets shallow, opposite sign, at a perfect corner.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"perpendicular-lines; negative-reciprocal",ground:"g0",buildsOn:["Card 63"]}),
+
+  C("V","Card 68","Setting y to zero",[
+    "<p>A line crosses the x-axis exactly where its height, y, is zero. Set y = 0 in the line's equation and solve for x, and that x is where the crossing happens.</p><p>This crossing point has a name: the root.</p>",
+    "<p>Take y = 2x − 6. Set y = 0: 0 = 2x − 6, so x = 3. The line crosses the x-axis at (3, 0) — its root is 3.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"x-intercept; root",ground:"g0",buildsOn:["Card 63"]}),
+
+  C("V","Card 69","Setting x to zero",[
+    "<p>A line crosses the y-axis exactly where x = 0. Plug x = 0 into y = mx + c and everything with m vanishes, leaving y = c.</p><p>That's why c is called the intercept: it's the height the line sits at the instant it crosses the y-axis.</p>",
+    "<p>Same line as before, y = 2x − 6. At x = 0: y = 2(0) − 6 = −6. It crosses the y-axis at (0, −6) — and sure enough, c = −6, exactly as the equation already said.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"y-intercept",ground:"g0",buildsOn:["Card 63"]}),
+
+  C("V","Card 70","One point, shared by two equations",[
+    "<p>Two different lines cross at exactly one point, unless they're parallel. At that point, both equations are true at once: the same x and y satisfy both.</p><p>Set the two equations equal to each other, solve for x, then plug it back in for y. That's the meeting point, found without ever drawing the graph.</p>",
+    "<p>Take y = 2x − 6 and y = −x + 9. Set them equal: 2x − 6 = −x + 9, so 3x = 15, x = 5. Plug back in: y = 2(5) − 6 = 4. They meet at (5, 4). Check the other equation: −5 + 9 = 4. ✓</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"simultaneous-equations-graphical",ground:"g0",buildsOn:["Card 63"]}),
 ];
 
 // ── SUPABASE LOADER ───────────────────────────────────────────
