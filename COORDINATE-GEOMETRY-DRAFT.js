@@ -145,11 +145,17 @@ const TIER_00_THE_PLANE = [
 
 const BRIDGE_FUNCTIONS = [
 
-  // BRIDGE — A line is a machine, in disguise
-  C("V","BRIDGE-FN1","Every curve from here is the same machine",[
-    "<p>The vending machine: press a button, get back a snack, every time. One input, one output, no surprises. A line works exactly the same way: feed it an x, it hands back a y. f(x) = mx + c is just a \"multiply, then add\" machine.</p>",
-    "<p>From here, every shape in this path is the same idea wearing a different formula. y = x² is a \"square it\" machine. A wave is a \"feed it time, get back height\" machine. Even s = ut + ½at², from physics, is just a machine that takes a time and hands back a displacement — nothing physics-specific about the shape of that idea.</p><p>One exception is coming soon: a circle. Feed it an x, and sometimes you get two y's back, not one. That breaks the one-input-one-output rule — which is exactly why a circle isn't a function, and why that distinction is worth keeping rather than glossing over.</p>"
-  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"function-bridge",kind:"bridge",ground:"g0",buildsOn:["card14","CG17"]}),
+  // BRIDGE — Card 14 ("Functions"), exact, plus a forward-link into this path
+  // NOTE: Card 14 currently has img:null in production. IMAGE-PROMPTS.md
+  // (BB 14, option a) specs a vending-machine image that was never generated -
+  // images/ only goes up to card-11 (+card-21). Flagging, not fabricating a path.
+  C("III","BRIDGE-FN1","Functions",[
+    "<p>Imagine a machine that does only one thing. You press a button, it drops out a bag of chips. That's it.</p><p>One button, one result, every time.</p>",
+    "<p>You've seen these in malls, railway stations, airports. It's called a vending machine. Press B4, get B4's crisps, every time. Press a microwave's popcorn button, get the popcorn setting, every time.</p><p>Each button is a function: one reliable input, one reliable output. Everything a microwave or a phone can do, all its buttons together, is what we casually call its functionality. The everyday word and the maths word are the same word.</p>",
+    "<p>Now we write it down. Mathematicians call the machine f, the input x, and the output f(x).</p><p>So a \"double it\" machine is f(x) = 2x. Feed it 3, it gives 6. Feed it 10, it gives 20. The notation just names the machine and what you feed it.</p><p>Almost everything in physics and maths from here is built on this.</p>",
+    "<p>So how is this different from a plain equation?</p><p>An equation is a question with an answer. \"x + 4 = 10\" is solved by one value: 6. It sits still. A function doesn't have a single answer. It's a machine that keeps running.</p><p>Feed f(x) = 2x a 3 and it gives 6; feed it 10 and it gives 20. An equation pins down a value. A function describes how one thing turns into another, for every input you could give it.</p>",
+    "<p>Everything in this path from here is the same machine, wearing a different formula. A line is f(x) = mx + c, a \"multiply, then add\" machine. A parabola is f(x) = x², a \"square it\" machine. Even s = ut + ½at², from physics, is the same idea: feed it a time, get back a displacement.</p><p>One exception is coming soon: a circle. Feed it an x and sometimes you get two y's back, not one — which is exactly why a circle isn't a function. Worth keeping that exception, not smoothing it over.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"function-bridge; function; f-of-x",kind:"bridge",ground:"g0",buildsOn:["card14","CG17"]}),
 
 ];
 

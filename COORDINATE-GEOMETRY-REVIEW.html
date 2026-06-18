@@ -246,7 +246,8 @@ TIERS.forEach((tier,ti)=>{
     let floorsHTML='';
     bb.layers.forEach((layer,d)=>{
       if(layer===null) return;
-      const label = floorLabel || (FLOOR_NAMES[d]||('Floor '+d));
+      let label = floorLabel || (FLOOR_NAMES[d]||('Floor '+d));
+      if(isBridge && d === bb.layers.filter(l=>l!==null).length - 1) label = 'Bridge — into this path';
       floorsHTML+=`<div class="floor"><div class="floor-label">${label}</div>${layer}</div>`;
     });
 
