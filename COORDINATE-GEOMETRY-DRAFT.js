@@ -179,7 +179,7 @@ const TIER_01_LINES = [
 
   // CG20 — The gradient (slope) of a line
   C("V","CG20","Turning the lean into one number",[
-    "<p>Divide the rise by the run and steepness stops being a vague impression and becomes one exact number: the gradient.</p><div class='formula'>m = rise / run = (y₂−y₁) / (x₂−x₁)<span class='gloss'>The vertical gap between two points on the line, divided by the horizontal gap.</span></div><p>Pick any two points on the same straight line and you get the same number. That's what makes a line straight.</p>"
+    "<p>Divide the rise by the run and steepness stops being a vague impression and becomes one exact number: the <strong>gradient</strong> — also called the <strong>slope</strong>. Same number, two names for it.</p><div class='formula'>m = rise / run = (y₂−y₁) / (x₂−x₁)<span class='gloss'>The vertical gap between two points on the line, divided by the horizontal gap.</span></div><p>Pick any two points on the same straight line and you get the same number. That's what makes a line straight.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"gradient; slope",ground:"g0",buildsOn:["CG19","CG15"]}),
 
   // CG21 — Positive vs negative gradient
@@ -339,6 +339,16 @@ const TIER_02_CURVES = [
   C("V","CG50","The one circle worth memorising",[
     "<p>A circle of radius exactly 1, centred at the origin, is called the unit circle. Every point on it is exactly 1 unit from the centre, which makes it the cleanest possible stage for measuring angles.</p><p>It's the foundation the next stretch of this path is built on: trigonometry starts here.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"unit-circle",ground:"g0",buildsOn:["CG48"]}),
+
+  // CG50B — Tangent to a circle
+  C("V","CG50B","The line that touches once, and means it",[
+    "<p>A tangent line touches a circle at exactly one point and no more, no matter how far you extend it in either direction. At that single point, the tangent is perpendicular to the radius drawn to it.</p><p>That's the whole trick to finding one: get the radius's gradient, flip it to the negative reciprocal (CG28), and you have the tangent's gradient. Pin it to the touch point and you have the line.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"tangent-to-circle",ground:"g0",buildsOn:["CG48","CG28"]}),
+
+  // CG50C — Normal to a circle
+  C("V","CG50C","The line perpendicular to the tangent — which turns out to be the radius",[
+    "<p>The normal at a point on a circle is the line perpendicular to the tangent at that same point. Work out what that actually is, and it's just the radius, extended through the point and out the other side.</p><p>That's a surprisingly clean result, and it's special to circles. Try the same question on a parabola later (CG83) and the normal won't pass through anything as tidy as a single fixed centre.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"normal-to-circle",ground:"g0",buildsOn:["CG50B"]}),
 
 ];
 /* ============================================================

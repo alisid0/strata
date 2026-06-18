@@ -61,6 +61,8 @@ const DIAGRAM_SPECS = {
   CG48: {type:"circle", r:3},
   CG49: {type:"circle", r:2, cx:2, cy:1},
   CG50: {type:"circle", r:1},
+  CG50B: {type:"circle-touch", r:3, touchDeg:40, mode:"tangent"},
+  CG50C: {type:"circle-touch", r:3, touchDeg:40, mode:"normal"},
 
   // ---- Tier 3: Functions ----
   CG51: {type:"curve", fn:"x*x", domain:[-3,3]},

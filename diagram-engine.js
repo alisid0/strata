@@ -146,6 +146,28 @@ const DG = (function(){
         break;
       }
 
+      case "circle-touch": {
+        const r = spec.r||3, cx=spec.cx||0, cy=spec.cy||0;
+        const th = (spec.touchDeg||40)*Math.PI/180;
+        const px = cx + r*Math.cos(th), py = cy + r*Math.sin(th);
+        svg.appendChild(el("circle",{cx:toX(cx),cy:toY(cy),r:r*SCALE,fill:"none",stroke:c("chalk"),"stroke-width":1.8}));
+        if(spec.mode === "normal"){
+          const dx = px-cx, dy = py-cy, len = Math.hypot(dx,dy), ext = r*1.7;
+          const x1 = cx - dx/len*ext, y1 = cy - dy/len*ext;
+          const x2 = cx + dx/len*ext, y2 = cy + dy/len*ext;
+          svg.appendChild(el("line",{x1:toX(x1),y1:toY(y1),x2:toX(x2),y2:toY(y2),stroke:c("green"),"stroke-width":2.2}));
+        } else {
+          svg.appendChild(el("line",{x1:toX(cx),y1:toY(cy),x2:toX(px),y2:toY(py),stroke:c("faint"),"stroke-width":1.4,"stroke-dasharray":"4 3"}));
+          const tangAng = Math.atan2(py-cy, px-cx) + Math.PI/2;
+          const ext = r*1.1;
+          const tx1 = px - ext*Math.cos(tangAng), ty1 = py - ext*Math.sin(tangAng);
+          const tx2 = px + ext*Math.cos(tangAng), ty2 = py + ext*Math.sin(tangAng);
+          svg.appendChild(el("line",{x1:toX(tx1),y1:toY(ty1),x2:toX(tx2),y2:toY(ty2),stroke:c("yellow"),"stroke-width":2.2}));
+        }
+        svg.appendChild(el("circle",{cx:toX(px),cy:toY(py),r:4,fill:c("yellow")}));
+        break;
+      }
+
       case "vectors": {
         (spec.vecs||[]).forEach(v=>{
           const from=v.from||[0,0], to=v.to;

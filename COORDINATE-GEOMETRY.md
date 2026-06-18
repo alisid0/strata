@@ -68,6 +68,8 @@ Existing BBs are marked inline — they already exist in some form and may need 
 48. The circle equation x² + y² = r²
 49. Circles not centred at the origin
 50. The unit circle *(prototyped already — see `unit-circle-prototype.html`)*
+50B. Tangent to a circle — touches at exactly one point, perpendicular to the radius there *(added later — closes a gap, "tangent" otherwise only appeared as a Tier 6 calculus topic)*
+50C. Normal to a circle — perpendicular to the tangent, turns out to just be the radius extended *(added later, companion to 50B)*
 
 ## Tier 3 — Functions as machines on the grid (51–59)
 
