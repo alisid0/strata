@@ -27,7 +27,7 @@
 <script>
 const QUESTION_DEFS = [
 
-  {cg:"BB18", type:"mcq", generate: () => {
+  {cg:"CG18", type:"mcq", generate: () => {
     const variants = [
       {
         q:"A line passes through Quadrant I, cuts into II, and reaches III — never touching IV. Its steepness is:",
@@ -45,7 +45,7 @@ const QUESTION_DEFS = [
     return { q:v.q, opts, answer:opts.indexOf(v.correct), explain:v.explain };
   }},
 
-  {cg:"BB19", type:"numeric", generate: () => {
+  {cg:"CG19", type:"numeric", generate: () => {
     const x1=QuizEngine.randInt(0,5), y1=QuizEngine.randInt(0,5);
     const x2=x1+QuizEngine.randInt(1,6), y2=y1+QuizEngine.randInt(1,8);
     return {
@@ -55,7 +55,7 @@ const QUESTION_DEFS = [
     };
   }},
 
-  {cg:"BB20", type:"numeric", generate: () => {
+  {cg:"CG20", type:"numeric", generate: () => {
     const dx = QuizEngine.randInt(1,5);
     let m = QuizEngine.randInt(-4,4); if(m===0) m=2;
     const dy = m*dx;
