@@ -869,14 +869,23 @@ function loadCards(fallback){
     const raw=localStorage.getItem(KEY);
     if(raw) cards=JSON.parse(raw).map(r=>C(r.act,r.kicker,r.title,r.layers,r.img_url,r.tags));
   }catch(e){}
+  const active=cards||fallback;
+  const fingerprint=arr=>JSON.stringify(arr.map(c=>[c.kicker,c.title,JSON.stringify(c.layers)]));
   if(SUPABASE_URL&&SUPABASE_ANON_KEY){
     fetch(`${SUPABASE_URL}/rest/v1/cards?select=*&order=sort_order`,
       {headers:{apikey:SUPABASE_ANON_KEY,Authorization:`Bearer ${SUPABASE_ANON_KEY}`}})
       .then(r=>r.ok?r.json():null)
-      .then(data=>{if(data)try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}})
+      .then(data=>{
+        if(!data) return;
+        try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
+        if(fingerprint(data)!==fingerprint(active) && sessionStorage.getItem('strata-synced')!=='1'){
+          sessionStorage.setItem('strata-synced','1');
+          location.reload();
+        }
+      })
       .catch(()=>{});
   }
-  return cards||fallback;
+  return active;
 }
 
 /* ============================================================
