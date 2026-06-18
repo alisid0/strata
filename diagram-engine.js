@@ -11,6 +11,9 @@ const DG = (function(){
   const PX = W/2, PY = H/2;      // pixel origin (centre by default)
   const SCALE = 16;               // px per unit, axes-based diagrams
 
+  const COLORS = {chalk:"#f4f1e9", yellow:"#f2d585", green:"#a9d6a0", blue:"#9ec6d8", faint:"#8fa093"};
+  const colorOf = (name)=>COLORS[name]||COLORS.chalk;
+
   function el(tag, attrs){
     const e = document.createElementNS(NS, tag);
     for(const k in attrs) e.setAttribute(k, attrs[k]);
@@ -21,6 +24,7 @@ const DG = (function(){
   }
   function toX(x){ return PX + x*SCALE; }
   function toY(y){ return PY - y*SCALE; }
+  function round(v, step){ step = step||0.5; return Math.round(v/step)*step; }
 
   function evalFn(expr, varName){
     // authored content only, not user input
@@ -67,8 +71,7 @@ const DG = (function(){
     container.appendChild(svg);
     if(!spec){ container.style.display="none"; return; }
     const type = spec.type;
-    const colors = {chalk:"#f4f1e9", yellow:"#f2d585", green:"#a9d6a0", blue:"#9ec6d8", faint:"#8fa093"};
-    const c = (name)=>colors[name]||colors.chalk;
+    const c = colorOf;
 
     if(type!=="numberline" && type!=="matrix") axes(svg, spec);
 
@@ -329,5 +332,139 @@ const DG = (function(){
     }
   }
 
-  return { render };
+  /* ----------------------------------------------------------
+     INTERACTIVE — draggable points (number line or grid).
+     opts: {
+       mode: 'numberline' | 'grid',
+       points: [{id, x, y, label, color, lockY}],   // lockY for numberline-style drag-on-a-line-only in grid mode
+       step: 0.5,
+       compute(pts) -> { elements:[svgEl,...], readout: "html string" }
+     }
+     ---------------------------------------------------------- */
+  function mountInteractive(container, opts){
+    const svg = svgRoot();
+    container.innerHTML = "";
+    container.appendChild(svg);
+    const readoutEl = document.createElement('div');
+    readoutEl.className = 'dg-readout';
+    container.appendChild(readoutEl);
+
+    const step = opts.step || 0.5;
+    const pts = opts.points.map(p=>Object.assign({}, p));
+    const lo=-6, hi=6, nlSpan=W-40;
+    const nlPx = (v)=> 20 + (v-lo)/(hi-lo)*nlSpan;
+    const nlVal = (px)=> lo + (px-20)/nlSpan*(hi-lo);
+
+    function ptPx(p){ return opts.mode==='numberline' ? nlPx(p.x) : toX(p.x); }
+    function ptPy(p){ return opts.mode==='numberline' ? H/2 : toY(p.y); }
+
+    function redraw(){
+      svg.innerHTML = '';
+      if(opts.mode==='grid'){
+        axes(svg,{});
+      } else {
+        const y = H/2;
+        svg.appendChild(el("line",{x1:20,y1:y,x2:W-20,y2:y,stroke:"#8fa093","stroke-width":1.6}));
+        for(let i=lo;i<=hi;i++){
+          svg.appendChild(el("line",{x1:nlPx(i),y1:y-5,x2:nlPx(i),y2:y+5,stroke:"#8fa093","stroke-width":1}));
+        }
+      }
+      const derived = opts.compute(pts) || {};
+      (derived.elements||[]).forEach(e=>svg.appendChild(e));
+      pts.forEach(p=>{
+        const cx = ptPx(p), cy = ptPy(p);
+        if(p.label!=null){
+          const t = el("text",{x:cx, y:cy-12, fill:colorOf("chalk"),"font-size":11,"text-anchor":"middle"});
+          t.textContent = typeof p.label==='function' ? p.label(p) : p.label;
+          svg.appendChild(t);
+        }
+        const handle = el("circle",{cx,cy,r:7,fill:colorOf(p.color||"yellow"),stroke:"#16291f","stroke-width":2});
+        handle.style.cursor = "grab";
+        handle.style.touchAction = "none";
+        handle.addEventListener('pointerdown', (ev)=>{
+          ev.preventDefault();
+          handle.style.cursor = "grabbing";
+          const move = (mv)=>{
+            const rect = svg.getBoundingClientRect();
+            const sx = (mv.clientX-rect.left)/rect.width*W;
+            const sy = (mv.clientY-rect.top)/rect.height*H;
+            if(opts.mode==='numberline'){
+              p.x = round(nlVal(sx), step);
+              p.x = Math.max(lo, Math.min(hi, p.x));
+            } else {
+              p.x = round((sx-PX)/SCALE, step);
+              if(!p.lockY) p.y = round((PY-sy)/SCALE, step);
+              p.x = Math.max(-7, Math.min(7, p.x));
+              p.y = Math.max(-6, Math.min(6, p.y));
+            }
+            redraw();
+          };
+          const up = ()=>{
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', up);
+          };
+          window.addEventListener('pointermove', move);
+          window.addEventListener('pointerup', up);
+        });
+        svg.appendChild(handle);
+      });
+      readoutEl.innerHTML = derived.readout || '';
+    }
+    redraw();
+  }
+
+  /* ----------------------------------------------------------
+     INTERACTIVE — sliders (for y = mx + c style controls).
+     opts: {
+       sliders: [{id, label, min, max, step, default}],
+       compute(vals) -> { elements:[svgEl,...], readout: "html string" }
+     }
+     ---------------------------------------------------------- */
+  function mountSliders(container, opts){
+    const svg = svgRoot();
+    container.innerHTML = "";
+    container.appendChild(svg);
+    const readoutEl = document.createElement('div');
+    readoutEl.className = 'dg-readout';
+    container.appendChild(readoutEl);
+    const slidersEl = document.createElement('div');
+    slidersEl.className = 'dg-sliders';
+    container.appendChild(slidersEl);
+
+    const vals = {};
+    opts.sliders.forEach(s=>{ vals[s.id] = s.default; });
+
+    function redraw(){
+      svg.innerHTML = '';
+      axes(svg,{});
+      const derived = opts.compute(vals) || {};
+      (derived.elements||[]).forEach(e=>svg.appendChild(e));
+      readoutEl.innerHTML = derived.readout || '';
+    }
+
+    opts.sliders.forEach(s=>{
+      const row = document.createElement('div');
+      row.className = 'dg-slider-row';
+      const lbl = document.createElement('span');
+      lbl.className = 'dg-slider-label';
+      lbl.textContent = s.label + ': ';
+      const valSpan = document.createElement('span');
+      valSpan.className = 'dg-slider-val';
+      valSpan.textContent = s.default;
+      const input = document.createElement('input');
+      input.type = 'range'; input.min = s.min; input.max = s.max;
+      input.step = s.step || 1; input.value = s.default;
+      input.addEventListener('input', ()=>{
+        vals[s.id] = parseFloat(input.value);
+        valSpan.textContent = vals[s.id];
+        redraw();
+      });
+      row.appendChild(lbl); row.appendChild(input); row.appendChild(valSpan);
+      slidersEl.appendChild(row);
+    });
+
+    redraw();
+  }
+
+  return { render, mountInteractive, mountSliders, el, toX, toY, colorOf };
 })();

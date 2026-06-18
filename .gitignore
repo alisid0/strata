@@ -3,3 +3,5 @@ node_modules
 .DS_Store
 Thumbs.db
 content-database.csv
+manim_anims/media
+manim_anims/__pycache__
