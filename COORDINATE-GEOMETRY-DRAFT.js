@@ -172,14 +172,15 @@ const TIER_01_LINES = [
     "<p>That constant rate of change has a name: <strong>steepness</strong>. A line climbing left to right (like the one above) has positive steepness. One falling left to right has negative steepness. Either way, it's exactly measurable, not just eyeballed.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"steepness-intro; constant-rate",ground:"g0",buildsOn:["CG11"]}),
 
-  // CG19 — Rise and run
-  C("V","CG19","Up over along",[
-    "<p>Pick two points on a line. \"Rise\" is how far you go up between them. \"Run\" is how far you go along. A steep line has a big rise for a small run. A gentle line has the opposite.</p>"
-  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"rise-run",ground:"g0",buildsOn:["CG18"]}),
+  // CG19 — Vertical change and horizontal change between two points
+  C("V","CG19","How far up, how far along",[
+    "<p>Pick two points on a line. There are exactly two distances worth measuring between them: how far up (or down) you went, and how far along you went. Mathematicians write these as Δy (vertical change) and Δx (horizontal change) — Δ just means \"change in.\"</p><p>A steep line has a big Δy for a small Δx. A gentle line has the opposite.</p>",
+    "<p>Some textbooks give these two distances nicknames: \"rise\" for Δy, \"run\" for Δx — common in American classrooms, less so elsewhere. NCERT and most other curricula skip the nicknames and go straight to Δy and Δx, which is what actually carries forward into the formula.</p>"
+  ],null,{subject:"maths",topic:"coordinate-geometry",concept:"delta-y; delta-x; rise-run",ground:"g0",buildsOn:["CG18"]}),
 
   // CG20 — The gradient (slope) of a line
   C("V","CG20","Turning the lean into one number",[
-    "<p>Divide the rise by the run and steepness stops being a vague impression and becomes one exact number: the <strong>gradient</strong> — also called the <strong>slope</strong>. Same number, two names for it.</p><div class='formula'>m = rise / run = (y₂−y₁) / (x₂−x₁)<span class='gloss'>The vertical gap between two points on the line, divided by the horizontal gap.</span></div><p>Pick any two points on the same straight line and you get the same number. That's what makes a line straight.</p>"
+    "<p>Divide Δy by Δx and steepness stops being a vague impression and becomes one exact number: the <strong>gradient</strong> — also called the <strong>slope</strong>. Same number, two names for it.</p><div class='formula'>m = Δy / Δx = (y₂−y₁) / (x₂−x₁)<span class='gloss'>The vertical change between two points on the line, divided by the horizontal change.</span></div><p>Pick any two points on the same straight line and you get the same number. That's what makes a line straight.</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"gradient; slope",ground:"g0",buildsOn:["CG19","CG15"]}),
 
   // CG21 — Positive vs negative gradient
