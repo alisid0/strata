@@ -7,3 +7,4 @@ manim_anims/media
 manim_anims/__pycache__
 _deepseek_output.txt
 deepseek-drafts-*.md
+__pycache__/
