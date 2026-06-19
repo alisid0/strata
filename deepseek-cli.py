@@ -1,6 +1,7 @@
 """
 Quick CLI for chatting with DeepSeek using the Strata briefing context.
 Usage: python3 deepseek-cli.py "your prompt here"
+       python3 deepseek-cli.py --model=pro "your prompt here"   (pro = reasoning model)
 """
 import sys
 import io
@@ -12,10 +13,16 @@ spec = importlib.util.spec_from_file_location("deepseek_helper", __file__.replac
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
-if len(sys.argv) < 2:
-    print("Usage: python3 deepseek-cli.py \"your prompt here\"")
+args = sys.argv[1:]
+model = "flash"
+if args and args[0].startswith("--model="):
+    model = args[0].split("=", 1)[1]
+    args = args[1:]
+
+if not args:
+    print("Usage: python3 deepseek-cli.py [--model=flash|pro] \"your prompt here\"")
     sys.exit(1)
 
-prompt = " ".join(sys.argv[1:])
-result = mod.call_deepseek(prompt)
+prompt = " ".join(args)
+result = mod.call_deepseek(prompt, model=model, verbose=True)
 print(result)
