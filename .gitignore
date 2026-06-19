@@ -9,3 +9,6 @@ _deepseek_output.txt
 deepseek-drafts-*.md
 __pycache__/
 elevenlabs-session.json
+dist/
+_deepseek_*
+node_modules/

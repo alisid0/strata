@@ -7,6 +7,7 @@
   import PathView from './views/PathView.svelte';
   import Reader from './views/Reader.svelte';
   import Quiz from './views/Quiz.svelte';
+  import Author from './views/Author.svelte';
 
   let currentView = 'loading'; // loading | auth | subjects | subject | path | reader | quiz
   let currentSubject = '';
@@ -30,6 +31,7 @@
     else if (view === 'path') { currentPathId = arg; currentView = 'path'; }
     else if (view === 'reader') { currentCard = arg || 0; currentView = 'reader'; }
     else if (view === 'quiz') { currentPathId = arg; currentView = 'quiz'; }
+    else if (view === 'author') { currentView = 'author'; }
     else { currentView = view; }
   }
 </script>
@@ -62,6 +64,7 @@
       <button on:click={() => navigate('subjects')} class="nav-btn">Subjects</button>
       <button on:click={() => navigate('subjects')} class="nav-btn">Map</button>
       <button on:click={() => navigate('reader', currentCard)} class="nav-btn">Reader</button>
+      <button on:click={() => navigate('author')} class="nav-btn">Author</button>
     </nav>
 
   {:else if currentView === 'quiz'}
@@ -70,6 +73,9 @@
       onComplete={() => {}}
       onBack={() => navigate('path', currentPathId)}
     />
+
+  {:else if currentView === 'author'}
+    <Author onNavigate={navigate} />
   {/if}
 </div>
 
