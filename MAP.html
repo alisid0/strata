@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="map-style.css">
+<link rel="stylesheet" href="graph-style.css">
 </head>
 <body>
 <canvas id="field"></canvas>
@@ -34,7 +35,14 @@
       <div class="sub" id="mapCounter" style="margin:0">0/0</div>
     </div>
     <div class="meter" style="margin-top:10px"><div class="meter-fill" id="mapFill" style="width:0%"></div></div>
-    <div class="trail" id="trail" style="margin-top:18px"></div>
+    <div class="graph-viewport" id="graphViewport" style="margin-top:14px">
+      <div class="graph-popover" id="graphPopover"></div>
+    </div>
+    <div class="graph-controls">
+      <button id="zoomOut" type="button">−</button>
+      <button id="zoomReset" type="button">⟲</button>
+      <button id="zoomIn" type="button">+</button>
+    </div>
   </section>
 
   <!-- ============ LEADERBOARD ============ -->
@@ -60,6 +68,9 @@
 <script src="progress-store.js"></script>
 <script src="subject-mark.js"></script>
 <script src="ambient-field.js"></script>
+<script src="graph-data.js"></script>
+<script src="graph-layout.js"></script>
+<script src="graph-render.js"></script>
 <script>
 (function(){
   initAmbientField('field');
@@ -141,37 +152,49 @@
     });
   }
 
-  // ---- Map / trail screen ----
+  // ---- Map screen: full-curriculum hub/bridge graph ----
+  let graphScale = 1;
+  function applyGraphScale(){
+    const viewport = document.getElementById('graphViewport');
+    const svg = viewport.querySelector('.graph-svg');
+    const box = viewport._graphBox;
+    if(!svg || !box) return;
+    svg.style.width = (box.vbW * graphScale) + 'px';
+    svg.style.height = (box.vbH * graphScale) + 'px';
+  }
   function renderMap(){
     const overall = ProgressStore.getOverallProgress();
     document.getElementById('mapCounter').textContent = overall.read + '/' + TOTAL_BOARDS;
     document.getElementById('mapFill').style.width = Math.round((overall.read / TOTAL_BOARDS) * 100) + '%';
 
-    const trail = document.getElementById('trail');
-    trail.innerHTML = '';
-    Object.keys(PATHS_MANIFEST).forEach(function(pathId){
-      const manifest = PATHS_MANIFEST[pathId];
-      const st = ProgressStore.getPathState(pathId);
-      const stop = document.createElement('div');
-      stop.className = 'trail-stop';
-      const isCurrent = st.state !== 'unwandered' && st.state !== 'mastered_2';
-      stop.innerHTML =
-        '<div class="trail-node ' + st.state + '">' +
-          (isCurrent ? '<span class="you-are-here">HERE</span>' : '') +
-          '<span class="mark"></span>' +
-        '</div>' +
-        '<a class="trail-label" href="index.html?card=' + firstUnreadCard(pathId) + '" style="text-decoration:none;color:inherit;display:block">' +
-          '<div class="name">' + manifest.name + '</div>' +
-          '<div class="count">' + st.boardsRead + ' / ' + st.boardsTotal + ' boards · ' + manifest.subject + '</div>' +
-          '<div class="state">' + STATE_LABELS[st.state] + '</div>' +
-        '</a>';
-      trail.appendChild(stop);
-      renderSubjectMark(stop.querySelector('.mark'), {
-        subject: manifest.subject === 'maths' ? 'maths' : (manifest.subject === 'chemistry' ? 'chem' : 'physics'),
-        accent: '#1f3b30', size: 30
+    const viewport = document.getElementById('graphViewport');
+    const popover = document.getElementById('graphPopover');
+    GraphRender.renderGraph(viewport, popover);
+    // popover gets wiped by renderGraph's innerHTML reset - re-attach it
+    if(!document.getElementById('graphPopover')){
+      viewport.appendChild(popover);
+    }
+    const box = viewport._graphBox;
+    if(box){
+      const fitScale = (viewport.clientWidth - 20) / box.vbW;
+      graphScale = Math.max(0.45, Math.min(1, fitScale));
+      applyGraphScale();
+      // center the scroll on the hub cluster (graph origin) rather than top-left
+      requestAnimationFrame(function(){
+        viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
+        viewport.scrollTop = (viewport.scrollHeight - viewport.clientHeight) / 2;
       });
-    });
+    }
   }
+  document.getElementById('zoomIn').onclick = function(){ graphScale = Math.min(2.5, graphScale * 1.25); applyGraphScale(); };
+  document.getElementById('zoomOut').onclick = function(){ graphScale = Math.max(0.15, graphScale / 1.25); applyGraphScale(); };
+  document.getElementById('zoomReset').onclick = function(){ renderMap(); };
+  document.addEventListener('click', function(e){
+    const popover = document.getElementById('graphPopover');
+    if(!popover || !popover.classList.contains('active')) return;
+    if(e.target.closest('.graph-node') || e.target.closest('.graph-popover')) return;
+    popover.classList.remove('active');
+  });
 
   // ---- Leaderboard (mock, no backend/auth yet) ----
   const MOCK_LB = {
