@@ -70,15 +70,17 @@ Matrices path (new, standalone topic, broader than the old Coordinate Geometry T
 For now: just absorb this context. Reply with a brief (under 150 words) summary of your understanding, so the author can confirm you've got it before any real drafting begins."""
 
 
-# "flash" = fast default chat model, "pro" = slower reasoning model with
-# visible chain-of-thought (costs extra tokens on thinking before it answers).
+# "flash" = fast default chat model, "pro" = higher-capacity model.
+# Each also has a separate thinking on/off toggle - empirically confirmed
+# pro WITH thinking off can flub plain arithmetic (got 7x8 wrong as 72),
+# so thinking defaults to True here regardless of model.
 MODEL_ALIASES = {
     "flash": "deepseek-v4-flash",
     "pro": "deepseek-v4-pro",
 }
 
 
-def call_deepseek(user_message, extra_system="", model="flash", verbose=False):
+def call_deepseek(user_message, extra_system="", model="flash", thinking=True, verbose=False):
     if not API_KEY:
         print("ERROR: set DEEPSEEK_API_KEY environment variable first.", file=sys.stderr)
         sys.exit(1)
@@ -86,12 +88,13 @@ def call_deepseek(user_message, extra_system="", model="flash", verbose=False):
     system = SYSTEM_CONTEXT + ("\n\n" + extra_system if extra_system else "")
     body = json.dumps({
         "model": model_id,
+        "thinking": {"type": "enabled" if thinking else "disabled"},
         "messages": [
             {"role": "system", "content": system},
             {"role": "user", "content": user_message},
         ],
         "temperature": 0.6,
-        "max_tokens": 4000 if model_id == "deepseek-v4-pro" else 2000,
+        "max_tokens": 4000 if model_id == "deepseek-v4-pro" or thinking else 2000,
     }).encode("utf-8")
     req = urllib.request.Request(
         API_URL, data=body,
@@ -103,7 +106,8 @@ def call_deepseek(user_message, extra_system="", model="flash", verbose=False):
     message = data["choices"][0]["message"]
     actual_model = data.get("model", model_id)
     if verbose:
-        print(f"[responded as: {actual_model}]", file=sys.stderr)
+        mode = "thinking" if thinking else "non-thinking"
+        print(f"[responded as: {actual_model}, {mode}]", file=sys.stderr)
     return message["content"]
 
 
