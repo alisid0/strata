@@ -47,7 +47,7 @@ Electricity & Circuits path (new, standalone, parallel to existing Forces/Energy
     EL1 [LOCKED] - electricity named: energy can turn into a fast, strong pulse moving through metals; occurs naturally as lightning. Bridges from the already-published Card 11 (conservation of energy).
     EL2 [LOCKED] - the electron-drift speed paradox: a centimetre of copper holds more free electrons than grains of sand on every beach on Earth, yet each drifts slower than a snail - so why does a light switch work instantly?
     EL3 [LOCKED] - electric potential, via a boulder-on-a-hill / tyre-pressure analogy: charge flows from high potential to low potential, the everyday word for potential difference is "voltage," plus a third floor on conventional current (Franklin's arbitrary 1750s labeling, which points opposite to the real electron flow). Dropped the original "two kinds of charge" framing entirely - replaced, not appended.
-    EL4 - like charges repel, opposite charges attract. Revised (not yet formally locked) to open by resolving electron-flow-vs-conventional-current directly before stating the general rule.
+    EL4 [LOCKED] - like charges repel, opposite charges attract. Opens by resolving electron-flow-vs-conventional-current directly before stating the general rule.
     EL5 - conductors vs insulators (DRAFT)
     EL6 - what electric current is, charge in motion (DRAFT)
     EL7 - current measured in amperes (DRAFT)

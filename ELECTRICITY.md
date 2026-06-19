@@ -10,7 +10,7 @@ same convention as Coordinate Geometry's CG# — the real term is BB once locked
 1. **LOCKED.** Electricity named — bridges from Card 11 (conservation of energy): energy can turn into a fast, strong pulse that moves through metals; occurs naturally as lightning.
 2. **LOCKED.** The electron-drift speed paradox — a centimetre of copper holds more free electrons than grains of sand on every beach on Earth, yet each drifts slower than a snail. So why does a light switch work instantly?
 3. **LOCKED.** Electric potential, via the boulder-on-a-hill / tyre-pressure analogy (bridges from Card 11 and EL2) — charge flows from high potential to low potential, the everyday word for potential difference is "voltage," and a third floor covers conventional current (Franklin's arbitrary 1750s labeling, which we now know points opposite to the real electron flow).
-4. Like charges repel, opposite charges attract — now opens by resolving conventional-current-vs-electron-flow directly: electrons move away from crowded/negative regions toward scarce/relatively-positive ones, which is the real direction of current, before stating the general repel/attract rule.
+4. **LOCKED.** Like charges repel, opposite charges attract — opens by resolving conventional-current-vs-electron-flow directly: electrons move away from crowded/negative regions toward scarce/relatively-positive ones, which is the real direction of current, before stating the general repel/attract rule.
 5. Conductors vs insulators — why charge moves through some materials and not others
 6. What electric current is — charge in motion
 7. Current is measured in amperes
@@ -29,9 +29,8 @@ same convention as Coordinate Geometry's CG# — the real term is BB once locked
 15. Resistors in series — resistances simply add
 16. Resistors in parallel — combined resistance is less than the smallest one
 
-Status: EL1-EL3 locked via the real Loop with the author (Draft 1 in the author's own
-words, Draft 2 lightly polished for typos/grammar only). EL4 also revised this pass
-(opens with the electron-flow-vs-conventional-current resolution) but not yet formally
-locked. EL5-EL16 still Editor Mode batch drafts, not yet run through the real Loop.
-EL8 needs rework given the overlap with EL3 (see Tier 0 note above). Diagrams (circuit
-schematics — battery, resistor, wires) need a new diagram-engine.js type; not yet built.
+Status: EL1-EL4 locked via the real Loop with the author. EL5-EL16 still Editor Mode
+batch drafts, not yet run through the real Loop. EL8 needs rework given the overlap
+with EL3 (see Tier 0 note above). EL9's water-pipe analogy needs a different approach
+(see Tier 1 note above). Diagrams (circuit schematics — battery, resistor, wires) need
+a new diagram-engine.js type; not yet built.
