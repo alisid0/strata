@@ -97,7 +97,12 @@ const ProgressStore = (function () {
     const p = data.paths[pathId];
 
     if (!p || !p.firstOpenedAt) {
-      return { state: "unwandered", label: "Not started" };
+      return {
+        state: "unwandered", label: "Not started",
+        boardsRead: 0, boardsTotal: manifest.cards.length,
+        allRead: false, recalled: false, wellRead: false, masteredOnce: false, masteredTwice: false,
+        bestScore: null, bestTotal: null
+      };
     }
 
     const allRead = manifest.cards.every((n) => data.boards[n] && data.boards[n].firstOpenedAt);

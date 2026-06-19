@@ -94,7 +94,7 @@ def call_deepseek(user_message, extra_system="", model="flash", thinking=True, v
             {"role": "user", "content": user_message},
         ],
         "temperature": 0.6,
-        "max_tokens": 4000 if model_id == "deepseek-v4-pro" or thinking else 2000,
+        "max_tokens": 8000 if model_id == "deepseek-v4-pro" or thinking else 2000,
     }).encode("utf-8")
     req = urllib.request.Request(
         API_URL, data=body,

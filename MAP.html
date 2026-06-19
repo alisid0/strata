@@ -116,10 +116,16 @@
         readCards += st.boardsRead;
         if(st.state !== 'unwandered') bestPathLabel = PATHS_MANIFEST[pid].name + ' — ' + STATE_LABELS[st.state];
       });
+      const ringPct = totalCards > 0 ? readCards / totalCards : 0;
+      const dashoffset = 126 * (1 - ringPct);
       const card = document.createElement('div');
       card.className = 'subject-card';
       card.innerHTML =
-        '<div class="ring"></div>' +
+        '<div class="ring">' +
+          '<svg viewBox="0 0 44 44"><circle class="progress-bg" cx="22" cy="22" r="20"/>' +
+          '<circle class="progress-arc" cx="22" cy="22" r="20" style="stroke-dashoffset:' + dashoffset + '"/></svg>' +
+          '<div class="mark"></div>' +
+        '</div>' +
         '<div class="info">' +
           '<div class="name">' + SUBJECT_LABELS[subject] + '</div>' +
           '<div class="count">' + readCards + ' / ' + totalCards + ' boards</div>' +
@@ -128,7 +134,7 @@
         '<div class="chev">›</div>';
       card.onclick = function(){ showView('map'); };
       container.appendChild(card);
-      renderSubjectMark(card.querySelector('.ring'), { subject: subject === 'maths' ? 'maths' : (subject === 'chemistry' ? 'chem' : 'physics'), accent: '#f2d585', size: 30 });
+      renderSubjectMark(card.querySelector('.mark'), { subject: subject === 'maths' ? 'maths' : (subject === 'chemistry' ? 'chem' : 'physics'), accent: '#f2d585', size: 30 });
     });
   }
 
