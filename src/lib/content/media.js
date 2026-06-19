@@ -6,11 +6,11 @@
 // ── Manim video mapping ─────────────────────────────────────
 // Card number → video URL
 export const CARD_VIDEOS = {
-  45: '/videos/cg08_theatre_seats.mp4',     // One line can't hold everything (theatre seats)
-  52: '/videos/cg15_distance_pythagoras.mp4', // Distance formula (Pythagoras)
-  54: '/videos/cg17_rectangle_proof.mp4',   // Shapes from points (rectangle proof)
-  57: '/videos/cg18_steepness_sweep.mp4',   // Steepness (slope visualization)
-  60: '/videos/cg21_gradient_sign.mp4',     // Positive vs negative gradient
+  45: '/videos/cg08_theatre_seats.gif',     // One line can't hold everything (theatre seats)
+  52: '/videos/cg15_distance_pythagoras.gif', // Distance formula (Pythagoras)
+  54: '/videos/cg17_rectangle_proof.gif',   // Shapes from points (rectangle proof)
+  57: '/videos/cg18_steepness_sweep.gif',   // Steepness (slope visualization)
+  60: '/videos/cg21_gradient_sign.gif',     // Positive vs negative gradient
 };
 
 // ── Interactive diagram specs ───────────────────────────────
