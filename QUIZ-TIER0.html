@@ -23,6 +23,8 @@
   </div>
 </main>
 
+<script src="paths-manifest.js"></script>
+<script src="progress-store.js"></script>
 <script src="quiz-engine.js"></script>
 <script>
 const QUESTION_DEFS = [
@@ -176,7 +178,8 @@ QuizEngine.mount({
   resultId: "resultCard",
   completeMessage: "Clean sweep. Tier 0's foundations are solid — ready for Tier 1 (Lines).",
   partialMessage: "Solid. Worth a quick second pass on the ones you missed.",
-  weakMessage: "A few gaps worth revisiting before moving to Tier 1."
+  weakMessage: "A few gaps worth revisiting before moving to Tier 1.",
+  onComplete: function(score, total){ ProgressStore.recordQuizResult('M3', score, total); }
 });
 </script>
 </body>

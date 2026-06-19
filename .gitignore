@@ -8,3 +8,4 @@ manim_anims/__pycache__
 _deepseek_output.txt
 deepseek-drafts-*.md
 __pycache__/
+elevenlabs-session.json

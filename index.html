@@ -398,6 +398,7 @@
   <div id="brand"><b>STRATA</b> · physics</div>
   <div id="progress-wrap"><div id="progress"></div></div>
   <div id="counter">01 / 37</div>
+  <a id="mapLink" href="MAP.html" aria-label="Your progress map" style="margin-left:10px;color:var(--chalk-dim);text-decoration:none;font-size:15px;pointer-events:auto;">🗺</a>
 </div>
 
 <div id="rail"></div>
@@ -418,6 +419,8 @@
   </div>
 </div>
 
+<script src="paths-manifest.js"></script>
+<script src="progress-store.js"></script>
 <script>
 // ── SUPABASE CONFIG ───────────────────────────────────────────
 const SUPABASE_URL      = 'https://xzesbcrlnbesmvxmgotp.supabase.co';
@@ -1030,14 +1033,13 @@ function move(to){
   counter.textContent=String(idx+1).padStart(2,'0')+' / '+DECK.length;
   document.getElementById('prev').disabled=idx===0;
   document.getElementById('next').disabled=idx===DECK.length-1;
+  if(typeof ProgressStore!=='undefined') ProgressStore.recordBoardOpen(idx+1);
 }
 
 // initial render of all columns
 DECK.forEach((_,i)=>renderColumn(i));
-move(0);
-
-// counter shows total properly
-counter.textContent='01 / '+DECK.length;
+const _deepLinkCard=parseInt(new URLSearchParams(location.search).get('card'),10);
+move(Number.isInteger(_deepLinkCard) && _deepLinkCard>=1 && _deepLinkCard<=DECK.length ? _deepLinkCard-1 : 0);
 
 /* ---- controls ---- */
 document.getElementById('next').onclick=()=>move(idx+1);

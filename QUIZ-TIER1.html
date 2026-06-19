@@ -23,6 +23,8 @@
   </div>
 </main>
 
+<script src="paths-manifest.js"></script>
+<script src="progress-store.js"></script>
 <script src="quiz-engine.js"></script>
 <script>
 const QUESTION_DEFS = [
@@ -77,7 +79,8 @@ QuizEngine.mount({
   resultId: "resultCard",
   completeMessage: "Clean sweep so far. On to BB21 (positive vs negative gradient).",
   partialMessage: "Solid. Worth a quick second look at the one you missed.",
-  weakMessage: "A couple of gaps worth revisiting before pushing on."
+  weakMessage: "A couple of gaps worth revisiting before pushing on.",
+  onComplete: function(score, total){ ProgressStore.recordQuizResult('M3', score, total); }
 });
 </script>
 </body>

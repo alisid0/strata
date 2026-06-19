@@ -179,6 +179,7 @@ const QuizEngine = (function(){
       else if(score >= live.length*0.7) msg = partialMessage;
       else msg = weakMessage;
       document.getElementById(resultId+'Sub').textContent = msg;
+      if(typeof config.onComplete === 'function') config.onComplete(score, live.length);
     }
 
     document.getElementById(resultId+'Restart').onclick = freshRun;
