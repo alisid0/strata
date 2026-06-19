@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="map-style.css">
 </head>
 <body>
+<canvas id="field"></canvas>
 <main>
   <a class="back-link" href="index.html">‹ back to the reader</a>
 
@@ -58,8 +59,10 @@
 <script src="paths-manifest.js"></script>
 <script src="progress-store.js"></script>
 <script src="subject-mark.js"></script>
+<script src="ambient-field.js"></script>
 <script>
 (function(){
+  initAmbientField('field');
   // ---- view switching ----
   function showView(name){
     document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });

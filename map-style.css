@@ -33,7 +33,30 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
+
+/* chalk grain texture - SVG fractalNoise tiled at low opacity (same technique as index.html) */
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* soft chalk-dust light bloom - same technique as index.html */
+body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 31; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.03), transparent 50%),
+    radial-gradient(ellipse at 75% 75%, rgba(255, 255, 255, 0.025), transparent 45%);
+  mix-blend-mode: screen;
+}
+
+#field { position: fixed; inset: 0; z-index: 0; opacity: 0.5; }
 
 /* The chalkboard slab - main container wrapped in wood frame */
 main {
@@ -42,13 +65,16 @@ main {
   width: 100%;
   margin: 16px auto 100px;
   background: var(--board-1);
+  border-radius: 4px;
   border: 12px solid var(--frame);
   box-shadow:
-    inset 0 0 0 2px var(--frame-dark),
-    inset 0 4px 12px rgba(0, 0, 0, 0.5),
-    0 4px 20px rgba(0, 0, 0, 0.4);
+    0 0 0 2px var(--frame-dark),
+    0 2px 0 4px rgba(0, 0, 0, 0.25) inset,
+    0 30px 70px -28px rgba(0, 0, 0, 0.85),
+    inset 0 0 80px rgba(0, 0, 0, 0.35);
   padding: 24px 18px 100px;
-  z-index: 1;
+  z-index: 2;
+  overflow: hidden;
 }
 
 @media (min-width: 700px) {
