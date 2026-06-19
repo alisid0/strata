@@ -48,6 +48,16 @@ are real candidates for the next round of BBs).
 - **Electricity → Atoms/Elements** — *Already built* (EL2). "The current in a metal
   wire is a slow drift of free electrons — the very same particles that surround
   atomic nuclei in every element."
+- **Atoms/Elements → Electricity** — *New, deferred — topic only, no BB written yet.*
+  "Metals conduct because their valence electrons aren't held in a bond to any one
+  atom — they detach and roam the whole piece of metal, a 'sea' of electrons around
+  a fixed lattice of positive ions. That's metallic bonding, and it's the actual
+  reason EL5's conductors have free electrons to push at all." Surfaced while
+  building EL5 (conductors vs insulators) — the author flagged that *why* metals
+  have free electrons is chemistry's question (bonding), not electricity's, and
+  asked to log it rather than write the full BB now. EL5 itself stays at "some
+  electrons aren't locked to any one atom," without the valence/metallic-bonding
+  depth, until this gets its own board.
 - **Atoms/Elements → Forces** — *New.* "The attraction between protons and electrons
   inside an atom is an electric force — the same push/pull Newton described, just
   operating on charged particles." (EL4 already names the charges inside the atom;

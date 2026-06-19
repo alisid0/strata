@@ -48,7 +48,7 @@ Electricity & Circuits path (new, standalone, parallel to existing Forces/Energy
     EL2 [LOCKED] - the electron-drift speed paradox: a centimetre of copper holds more free electrons than grains of sand on every beach on Earth, yet each drifts slower than a snail - so why does a light switch work instantly?
     EL3 [LOCKED] - electric potential, via a boulder-on-a-hill / tyre-pressure analogy: charge flows from high potential to low potential, the everyday word for potential difference is "voltage," plus a third floor on conventional current (Franklin's arbitrary 1750s labeling, which points opposite to the real electron flow). Dropped the original "two kinds of charge" framing entirely - replaced, not appended.
     EL4 [LOCKED] - like charges repel, opposite charges attract. Opens by resolving electron-flow-vs-conventional-current directly before stating the general rule.
-    EL5 - conductors vs insulators (DRAFT)
+    EL5 [LOCKED] - conductors vs insulators, via an electrical-cord scenario (plastic sheath vs bare metal pins), naming free-roaming vs locked electrons. Deliberately does NOT explain why metals have free electrons (valence electrons/metallic bonding) - that's logged as a deferred Atoms/Elements->Electricity bridge in BRIDGES.md for chemistry to cover separately, not folded in here.
     EL6 - what electric current is, charge in motion (DRAFT)
     EL7 - current measured in amperes (DRAFT)
     EL8 - what voltage is, the push behind the flow (DRAFT, NEEDS REWORK - now overlaps EL3, should become a quantitative follow-up not a duplicate introduction)
