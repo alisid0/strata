@@ -1,9 +1,10 @@
 /* ============================================================
    ELECTRICITY & CIRCUITS — new standalone physics path
-   DRAFT BATCH — Editor Mode (see AUTHORING.md), except EL1-EL2
-   which are LOCKED — run through the real Loop with the author.
-   Internal index: EL# (temporary, same convention as CG# in
-   Coordinate Geometry — the real term is BB once locked).
+   DRAFT BATCH — Editor Mode (see AUTHORING.md), except EL1-EL5
+   and EL9, which are LOCKED — run through the real Loop with
+   the author. Internal index: EL# (temporary, same convention
+   as CG# in Coordinate Geometry — the real term is BB once
+   locked).
    ============================================================ */
 
 const TIER_00_CHARGE_AND_CURRENT = [
@@ -57,6 +58,12 @@ const TIER_00_CHARGE_AND_CURRENT = [
     "<p>Charge doesn't drift through a wire on its own — something has to push it. That push is <strong>voltage</strong> (also called potential difference), measured in volts.</p><p>A 9V battery pushes harder than a 1.5V battery. Connect either to the same wire and the higher voltage drives more current through it — voltage is the cause, current is the effect.</p>"
   ],null,{subject:"physics",topic:"electricity",concept:"voltage; potential-difference",ground:"g0",buildsOn:["EL7"]}),
 
+  // EL9 — LOCKED. The lineman's bare-hand technique, reinforcing that current needs a potential difference, not just contact.
+  C("V","EL9","Touching a live wire on purpose",[
+    "<p>Linemen regularly climb into an insulated bucket, ride a boom right up next to a live high-voltage transmission line carrying tens of thousands of volts, and then reach out and touch the wire with a bare hand — on purpose, as routine maintenance — and walk away unharmed.</p><p>The voltage hasn't changed. So what's actually protecting them?</p>",
+    "<p>Before touching the line, the worker bonds themselves to that same wire, bringing their body to the wire's exact potential. That potential sits thousands of volts above the ground, but the difference between hand and wire itself is zero. The boom that lifts the bucket is made of fiberglass, with no metal path connecting the bucket to the grounded truck below, so that elevated potential has nowhere to drain to earth.</p><p>With zero potential difference across the body and no route to ground either, there's nothing to push current anywhere — the same reason a crow can sit on a single power line unharmed. Linemen train on exactly this rule: never bridge two points sitting at different potentials at the same time, whether that's a wire and the ground or two separate wires, since a potential difference is what current actually needs to move.</p>"
+  ],null,{subject:"physics",topic:"electricity",concept:"potential-difference-vs-contact; grounding",ground:"g0",buildsOn:["EL3","EL6"]}),
+
 ];
 
 /* ============================================================
@@ -66,45 +73,45 @@ const TIER_00_CHARGE_AND_CURRENT = [
 
 const TIER_01_RESISTANCE_AND_CIRCUITS = [
 
-  // EL9 — Water-pipe analogy (was EL8) — flagged by author as not working well, revisit
-  C("V","EL9","A circuit is a loop of pipes",[
+  // EL10 — Water-pipe analogy (was EL8) — flagged by author as not working well, revisit
+  C("V","EL10","A circuit is a loop of pipes",[
     "<p>Picture a pump pushing water through a loop of pipe. The pump's strength is like <strong>voltage</strong>. How much water flows per second is like <strong>current</strong>. And a narrow, kinked section of pipe that fights the flow is like <strong>resistance</strong>.</p><p>Squeeze the pipe narrower (more resistance) and less water gets through for the same pump strength. That single picture carries almost the whole of circuit behaviour.</p>"
   ],null,{subject:"physics",topic:"electricity",concept:"water-pipe-analogy",ground:"g0",buildsOn:["EL8"]}),
 
-  // EL10 — What resistance is (was EL9) — LOCKED, Instance 1+2 from the real Loop
-  C("V","EL10","Why every material fights the flow a little",[
+  // EL11 — What resistance is (was EL10) — LOCKED, Instance 1+2 from the real Loop
+  C("V","EL11","Why every material fights the flow a little",[
     "<p>Take a plain copper wire and connect it to a small battery, the kind you'd find in a TV remote or a child's toy. Current starts flowing through it, exactly as before. Now compare two ways of making heat: a metal heating coil glowing on a stove, and a piece of wood burning in a fire. Both give off heat. Both use up energy. But a burnt piece of wood can never be wood again, while that same metal coil can be switched on and off, glowing again and again, indefinitely.</p><p>Burning wood is a chemical change: the wood reacts with oxygen in the air and turns into entirely different substances, ash and smoke and gas. The wood you started with is simply gone. A heated metal coil is only a physical change. Switch the current off and it cools right back down to the exact same metal, ready to repeat.</p>",
     "<p>So why does the metal heat up at all, if nothing about it is changing? As electrons drift through it, they keep colliding with the atoms in their way, and each collision hands over a little energy as heat. That opposition to the flow, the metal fighting back a little, is called <strong>resistance</strong>, measured in ohms (Ω). Nothing is consumed. The energy just converts from electrical to heat, one collision at a time.</p><p>Every wire in the world carries some resistance built in, even a plain copper wire with no separate \"resistor\" anywhere in sight — you don't need a special component to have resistance, the same way you don't need an oxygen mask to breathe under ordinary conditions on Earth. A thin, long wire has more resistance than a thick, short one, simply because there are more atoms in the way to collide with. A heating element is just a material deliberately chosen to have a lot more of it than an ordinary wire.</p>"
-  ],null,{subject:"physics",topic:"electricity",concept:"resistance; ohms; chemical-vs-physical-change",ground:"g0",buildsOn:["EL9","EL2"]}),
+  ],null,{subject:"physics",topic:"electricity",concept:"resistance; ohms; chemical-vs-physical-change",ground:"g0",buildsOn:["EL10","EL2"]}),
 
-  // EL11 — Ohm's Law (was EL10)
-  C("V","EL11","Voltage, current, and resistance, tied together",[
+  // EL12 — Ohm's Law (was EL11)
+  C("V","EL12","Voltage, current, and resistance, tied together",[
     "<p>For most conductors, voltage, current, and resistance are locked together by one exact relationship, <strong>Ohm's Law</strong>.</p><div class='formula'>V = I × R<span class='gloss'>Voltage equals current multiplied by resistance.</span></div><p>Push harder (more V) and more current flows, for the same resistance. Add more resistance and the same push drives less current through.</p>"
-  ],null,{subject:"physics",topic:"electricity",concept:"ohms-law",ground:"g0",buildsOn:["EL10"]}),
+  ],null,{subject:"physics",topic:"electricity",concept:"ohms-law",ground:"g0",buildsOn:["EL11"]}),
 
-  // EL12 — Worked example (was EL11)
-  C("V","EL12","Putting numbers through the formula",[
+  // EL13 — Worked example (was EL12)
+  C("V","EL13","Putting numbers through the formula",[
     "<p>A 12V battery is connected across a 4Ω resistor. How much current flows?</p><div class='formula'>I = V / R = 12 / 4 = 3A<span class='gloss'>Rearranging V = IR to solve for current.</span></div><p>Double the resistance to 8Ω with the same battery: I = 12 / 8 = 1.5A — half the current, for double the resistance, exactly as the formula predicts.</p>"
-  ],null,{subject:"physics",topic:"electricity",concept:"ohms-law-worked-example",ground:"g0",buildsOn:["EL11"]}),
+  ],null,{subject:"physics",topic:"electricity",concept:"ohms-law-worked-example",ground:"g0",buildsOn:["EL12"]}),
 
-  // EL13 — Series circuits (was EL12)
-  C("V","EL13","One loop, no branches",[
+  // EL14 — Series circuits (was EL13)
+  C("V","EL14","One loop, no branches",[
     "<p>In a <strong>series circuit</strong>, every component sits along a single loop with no other path available. Whatever current leaves the battery has nowhere else to go, so the exact same current flows through every component in that loop, one after another.</p><p>Unscrew one old-style Christmas light from a series string and the whole string goes dark — there's no other path for the current to take.</p>"
-  ],null,{subject:"physics",topic:"electricity",concept:"series-circuits",ground:"g0",buildsOn:["EL11"]}),
+  ],null,{subject:"physics",topic:"electricity",concept:"series-circuits",ground:"g0",buildsOn:["EL12"]}),
 
-  // EL14 — Parallel circuits (was EL13)
-  C("V","EL14","Several paths, one starting push",[
+  // EL15 — Parallel circuits (was EL14)
+  C("V","EL15","Several paths, one starting push",[
     "<p>In a <strong>parallel circuit</strong>, components sit on separate branches that reconnect at both ends. Each branch is wired straight across the same two points, so every branch feels the exact same voltage, even though the current can split unevenly between them depending on each branch's resistance.</p><p>Unscrew one bulb in a household parallel wiring setup and the others stay lit — each branch still has its own complete path back to the supply.</p>"
-  ],null,{subject:"physics",topic:"electricity",concept:"parallel-circuits",ground:"g0",buildsOn:["EL11"]}),
+  ],null,{subject:"physics",topic:"electricity",concept:"parallel-circuits",ground:"g0",buildsOn:["EL12"]}),
 
-  // EL15 — Resistors in series (was EL14)
-  C("V","EL15","Series resistances simply add",[
+  // EL16 — Resistors in series (was EL15)
+  C("V","EL16","Series resistances simply add",[
     "<p>Put resistors one after another in a series loop and their resistances just add up, since the current has to fight through all of them, one after another, with nowhere to skip ahead.</p><div class='formula'>R_total = R1 + R2 + ...<span class='gloss'>Series resistances add directly.</span></div><p>A 3Ω and a 5Ω resistor in series behave exactly like one 8Ω resistor. Connected to a 16V battery, the current is I = 16 / 8 = 2A through the whole loop.</p>"
-  ],null,{subject:"physics",topic:"electricity",concept:"series-resistance-formula",ground:"g0",buildsOn:["EL13","EL12"]}),
+  ],null,{subject:"physics",topic:"electricity",concept:"series-resistance-formula",ground:"g0",buildsOn:["EL14","EL13"]}),
 
-  // EL16 — Resistors in parallel (was EL15)
-  C("V","EL16","Parallel paths make the total resistance drop",[
+  // EL17 — Resistors in parallel (was EL16)
+  C("V","EL17","Parallel paths make the total resistance drop",[
     "<p>Add a second branch next to an existing one and you've handed the current a second route through — the combined resistance can only go down, never up, however big the new branch's own resistance is.</p><div class='formula'>1/R_total = 1/R1 + 1/R2 + ...<span class='gloss'>Take the reciprocal of each resistance, add them, then take the reciprocal of the result.</span></div><p>Two 4Ω resistors in parallel: 1/R = 1/4 + 1/4 = 1/2, so R_total = 2Ω — lower than either resistor on its own, since the current now has two equally easy ways through.</p>"
-  ],null,{subject:"physics",topic:"electricity",concept:"parallel-resistance-formula",ground:"g0",buildsOn:["EL14","EL12"]}),
+  ],null,{subject:"physics",topic:"electricity",concept:"parallel-resistance-formula",ground:"g0",buildsOn:["EL15","EL13"]}),
 
 ];

@@ -43,24 +43,25 @@ CURRENT PROJECT STATE
 Coordinate Geometry path: 219 topics planned, Tier 0 (the plane, 17 BBs) and Tier 1 (lines, 14 BBs) fully locked through the real Loop with worked examples; Tiers 2-16 are still Editor Mode batch drafts.
 
 Electricity & Circuits path (new, standalone, parallel to existing Forces/Energy/Gravity physics paths - NOT nested in Coordinate Geometry):
-  Tier 0 - Charge and current (EL1-8):
+  Tier 0 - Charge and current (EL1-9):
     EL1 [LOCKED] - electricity named: energy can turn into a fast, strong pulse moving through metals; occurs naturally as lightning. Bridges from the already-published Card 11 (conservation of energy).
     EL2 [LOCKED] - the electron-drift speed paradox: a centimetre of copper holds more free electrons than grains of sand on every beach on Earth, yet each drifts slower than a snail - so why does a light switch work instantly?
     EL3 [LOCKED] - electric potential, via a boulder-on-a-hill / tyre-pressure analogy: charge flows from high potential to low potential, the everyday word for potential difference is "voltage," plus a third floor on conventional current (Franklin's arbitrary 1750s labeling, which points opposite to the real electron flow). Dropped the original "two kinds of charge" framing entirely - replaced, not appended.
     EL4 [LOCKED] - like charges repel, opposite charges attract. Opens by resolving electron-flow-vs-conventional-current directly before stating the general rule.
     EL5 [LOCKED] - conductors vs insulators, via an electrical-cord scenario (plastic sheath vs bare metal pins), naming free-roaming vs locked electrons. Deliberately does NOT explain why metals have free electrons (valence electrons/metallic bonding) - that's logged as a deferred Atoms/Elements->Electricity bridge in BRIDGES.md for chemistry to cover separately, not folded in here.
-    EL6 - what electric current is, charge in motion (DRAFT)
+    EL6 - what electric current is, charge in motion (IN PROGRESS - Instance 1 drafted: a battery in a drawer vs the same battery lit in a flashlight, same charge throughout, what changed? Floor 2 naming "current" and final author approval not yet done. The file currently still has an older "charged balloon" placeholder - do not treat that as final.)
     EL7 - current measured in amperes (DRAFT)
     EL8 - what voltage is, the push behind the flow (DRAFT, NEEDS REWORK - now overlaps EL3, should become a quantitative follow-up not a duplicate introduction)
-  Tier 1 - Resistance, Ohm's Law, circuits (EL9-16):
-    EL9 - water-pipe analogy (DRAFT, AUTHOR FLAGGED THIS AS NOT WORKING WELL, needs a different approach)
-    EL10 [LOCKED] - resistance: contrasts a burning piece of wood (chemical change, consumed forever) against a metal heating coil (physical change only, same metal, reusable indefinitely) to explain why resistance heating doesn't consume the metal. Also establishes every wire has resistance built in already, no separate "resistor" component needed - same way no oxygen mask is needed to breathe under ordinary conditions on Earth.
-    EL11 - Ohm's Law, V = IR (DRAFT)
-    EL12 - worked example for Ohm's Law (DRAFT)
-    EL13 - series circuits (DRAFT)
-    EL14 - parallel circuits (DRAFT)
-    EL15 - resistors in series add (DRAFT)
-    EL16 - resistors in parallel (DRAFT)
+    EL9 [LOCKED] - touching a live wire on purpose: the lineman bare-hand technique (bonding to a high-voltage line's potential, riding an insulated fibreglass boom so that potential can't drain to the grounded truck below) and the crow-on-a-power-line callback, both reinforcing that current needs a potential DIFFERENCE, not just contact. Inserted after EL8.
+  Tier 1 - Resistance, Ohm's Law, circuits (EL10-17):
+    EL10 - water-pipe analogy (DRAFT, AUTHOR FLAGGED THIS AS NOT WORKING WELL, needs a different approach)
+    EL11 [LOCKED] - resistance: contrasts a burning piece of wood (chemical change, consumed forever) against a metal heating coil (physical change only, same metal, reusable indefinitely) to explain why resistance heating doesn't consume the metal. Also establishes every wire has resistance built in already, no separate "resistor" component needed - same way no oxygen mask is needed to breathe under ordinary conditions on Earth.
+    EL12 - Ohm's Law, V = IR (DRAFT)
+    EL13 - worked example for Ohm's Law (DRAFT)
+    EL14 - series circuits (DRAFT)
+    EL15 - parallel circuits (DRAFT)
+    EL16 - resistors in series add (DRAFT)
+    EL17 - resistors in parallel (DRAFT)
 
 Matrices path (new, standalone topic, broader than the old Coordinate Geometry Tier 15 which only covered transformations):
   Tier 0 - Matrix algebra fundamentals (MX1-7): grid of numbers, rows/columns, addition, scalar multiplication, matrix multiplication with worked example, identity matrix.
