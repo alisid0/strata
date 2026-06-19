@@ -46,12 +46,12 @@ Electricity & Circuits path (new, standalone, parallel to existing Forces/Energy
   Tier 0 - Charge and current (EL1-8):
     EL1 [LOCKED] - electricity named: energy can turn into a fast, strong pulse moving through metals; occurs naturally as lightning. Bridges from the already-published Card 11 (conservation of energy).
     EL2 [LOCKED] - the electron-drift speed paradox: a centimetre of copper holds more free electrons than grains of sand on every beach on Earth, yet each drifts slower than a snail - so why does a light switch work instantly?
-    EL3 - two kinds of charge exist, positive and negative (DRAFT, not yet locked)
-    EL4 - like charges repel, opposite charges attract (DRAFT)
+    EL3 [LOCKED] - electric potential, via a boulder-on-a-hill / tyre-pressure analogy: charge flows from high potential to low potential, the everyday word for potential difference is "voltage," plus a third floor on conventional current (Franklin's arbitrary 1750s labeling, which points opposite to the real electron flow). Dropped the original "two kinds of charge" framing entirely - replaced, not appended.
+    EL4 - like charges repel, opposite charges attract. Revised (not yet formally locked) to open by resolving electron-flow-vs-conventional-current directly before stating the general rule.
     EL5 - conductors vs insulators (DRAFT)
     EL6 - what electric current is, charge in motion (DRAFT)
     EL7 - current measured in amperes (DRAFT)
-    EL8 - what voltage is, the push behind the flow (DRAFT)
+    EL8 - what voltage is, the push behind the flow (DRAFT, NEEDS REWORK - now overlaps EL3, should become a quantitative follow-up not a duplicate introduction)
   Tier 1 - Resistance, Ohm's Law, circuits (EL9-16):
     EL9 - water-pipe analogy (DRAFT, AUTHOR FLAGGED THIS AS NOT WORKING WELL, needs a different approach)
     EL10 [LOCKED] - resistance: contrasts a burning piece of wood (chemical change, consumed forever) against a metal heating coil (physical change only, same metal, reusable indefinitely) to explain why resistance heating doesn't consume the metal. Also establishes every wire has resistance built in already, no separate "resistor" component needed - same way no oxygen mask is needed to breathe under ordinary conditions on Earth.

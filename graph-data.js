@@ -14,7 +14,7 @@
    - Topics 17 (Matrices), 28 (Electricity & circuits), and 29
      (Electric fields & potential): CURRICULUM.md says "not
      started" for all three, but MATRICES.md (15 drafted BBs)
-     and ELECTRICITY.md (EL1/EL2/EL4 locked via the real Loop,
+     and ELECTRICITY.md (EL1/EL2/EL3 locked via the real Loop,
      EL3 specifically covers electric potential - topic 29's
      exact territory - EL5-16 drafted) now exist. Marked
      "partial" here.

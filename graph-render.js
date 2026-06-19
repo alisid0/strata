@@ -33,8 +33,19 @@ const GraphRender = (function () {
     return { nodes: nodes, edges: edges };
   }
 
+  function hashString(str) {
+    // djb2 - simple, deterministic, good enough to detect structural changes
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) {
+      h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+    }
+    return (h >>> 0).toString(36);
+  }
+
   function getCacheKey(nodes, edges) {
-    return "strata-graph-layout-v1:" + nodes.length + ":" + edges.length;
+    const nodeIds = nodes.map(function (n) { return n.id; }).sort().join(",");
+    const edgePairs = edges.map(function (e) { return e.source + ">" + e.target; }).sort().join(",");
+    return "strata-graph-layout-v1:" + hashString(nodeIds + "|" + edgePairs);
   }
 
   function getPositions(nodes, edges) {
