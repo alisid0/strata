@@ -1,128 +1,126 @@
 <script>
-  import { DECK } from '../lib/content/deck.js';
+  import { onMount } from 'svelte';
   import { PATHS } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
+  import { getBoard, fetchBoardsByNumbers } from '../lib/content/dynamicBoards.js';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
-  import ChalkButton from '../lib/components/ChalkButton.svelte';
+  import QxButton from '../lib/components/qubix/QxButton.svelte';
 
   export let pathId = '';
   export let onNavigate; // (view, args?) => void
 
   $: manifest = PATHS[pathId];
   $: state = manifest ? progress.getPathState(pathId, manifest) : null;
-  $: cards = manifest ? manifest.cards.map(n => DECK[n - 1]).filter(Boolean) : [];
+  $: pct = state && state.boardsTotal ? Math.round((state.boardsRead / state.boardsTotal) * 100) : 0;
 
-  const STATE_COLORS = {
-    unwandered: '', wandered: '', checked: 'var(--chalk-yellow)',
-    well_read: 'var(--chalk-green)', recalled: 'var(--chalk-blue)',
-    mastered_1: 'var(--chalk-yellow)', mastered_2: 'var(--chalk-yellow)'
+  let loading = true;
+  let cards = [];
+
+  // This is the "user selects a topic" pull point: any card numbers beyond
+  // the static deck get fetched from Supabase here, once, before the board
+  // list (and later Reader.svelte) need them.
+  $: if (manifest) loadCards(manifest.cards);
+
+  async function loadCards(numbers) {
+    loading = true;
+    try {
+      const resolved = await fetchBoardsByNumbers(numbers);
+      cards = numbers.map(n => ({ number: n, board: resolved[n] })).filter(c => c.board);
+    } finally {
+      loading = false;
+    }
+  }
+
+  function openReader(startNumber) {
+    onNavigate?.('reader', { numbers: manifest.cards, start: startNumber });
+  }
+
+  const STATE_COLOR = {
+    unwandered: 'var(--qx-text-faintest)', wandered: 'var(--qx-text-faint)',
+    checked: 'var(--qx-yellow)', well_read: 'var(--qx-green)',
+    recalled: 'var(--qx-accent)', mastered_1: 'var(--qx-pink)', mastered_2: 'var(--qx-pink)'
   };
 </script>
 
 {#if manifest && state}
-  <div class="path-view">
-    <button class="back-link" on:click={() => onNavigate?.('subjects')}>‹ all subjects</button>
+  <div class="qx-shell topic-detail-view">
+    <div class="topbar">
+      <button class="back-chev" on:click={() => onNavigate?.('topics')}>‹</button>
+      <span class="topbar-title">Topic Detail</span>
+    </div>
 
-    <div class="path-header">
-      <SubjectMark subject={manifest.subject} accent="#f2d585" size={36} />
+    <div class="header-row">
+      <span class="mark-wrap"><SubjectMark subject={manifest.subject} accent={STATE_COLOR[state.state]} size={36} /></span>
       <div>
         <h1>{manifest.name}</h1>
-        <div class="path-sub">{state.boardsRead} of {state.boardsTotal} boards · {state.label}</div>
+        <div class="sub">{state.boardsRead} of {state.boardsTotal} boards · {state.label}</div>
       </div>
     </div>
 
-    <div class="state-chip" style="border-color:{STATE_COLORS[state.state] || 'var(--chalk-faint)'};color:{STATE_COLORS[state.state] || 'var(--chalk-faint)'}">
-      {state.label}
-    </div>
+    <div class="meter"><div class="meter-fill" style="width:{pct}%; background:{STATE_COLOR[state.state]}"></div></div>
 
     {#if state.bestScore != null}
-      <div class="best-score">
-        Best quiz: {state.bestScore}/{state.bestTotal}
-      </div>
+      <div class="best-score">Best quiz: {state.bestScore}/{state.bestTotal}</div>
     {/if}
 
-    <div class="card-list">
-      {#each cards as card, i}
-        <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
-        <div class="path-card" on:click={() => onNavigate?.('reader', manifest.cards[i] - 1)} role="button" tabindex="0">
-          <div class="card-num">{manifest.cards[i]}</div>
-          <div class="card-info">
-            <div class="card-title">{card?.title || 'Untitled'}</div>
-            <div class="card-kicker">{card?.kicker || ''}</div>
-          </div>
-          <div class="card-chev">›</div>
-        </div>
-      {/each}
-    </div>
+    {#if loading}
+      <div class="loading-row">Loading boards…</div>
+    {:else}
+      <div class="board-list">
+        {#each cards as c}
+          <button class="board-row" on:click={() => openReader(c.number)}>
+            <div class="board-num">{c.number}</div>
+            <div class="board-info">
+              <div class="board-title">{c.board.title || 'Untitled'}</div>
+              <div class="board-kicker">{c.board.kicker || ''}</div>
+            </div>
+            <div class="board-chev">›</div>
+          </button>
+        {/each}
+      </div>
 
-    <div class="quiz-section">
-      <h2>Test yourself</h2>
-      <ChalkButton fullWidth on:click={() => onNavigate?.('quiz', pathId)}>
-        Start quiz ({manifest.quizUrls?.length || '12'} questions)
-      </ChalkButton>
-    </div>
+      <div class="footer">
+        <QxButton variant="secondary" on:click={() => openReader(cards[0]?.number)}>Continue</QxButton>
+        <QxButton variant="primary" on:click={() => onNavigate?.('quiz', pathId)}>Take quiz</QxButton>
+      </div>
+    {/if}
   </div>
 {/if}
 
 <style>
-  .path-view {
-    height: 100%;
-    overflow-y: auto;
-    padding: 24px 18px 100px;
-    background: var(--board-1);
-    border: 12px solid var(--frame);
-    border-radius: 6px;
-    box-shadow: 0 0 0 2px var(--frame-dark), 0 30px 70px -28px rgba(0,0,0,0.85), inset 0 0 80px rgba(0,0,0,0.35);
+  .topic-detail-view { height: 100%; overflow-y: auto; padding: 16px 18px 24px; box-sizing: border-box; }
+
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .back-chev {
+    width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
+    color: var(--qx-text-dim); font-size: 19px; cursor: pointer; display: flex; align-items: center; justify-content: center;
   }
-  .back-link {
-    font-family: var(--print); font-size: 13px; color: var(--chalk-faint);
-    text-decoration: none; margin-bottom: 16px; display: inline-block;
-    cursor: pointer; background: none; border: none;
+  .topbar-title { font-size: 13px; font-weight: 700; color: var(--qx-text-faint); }
+
+  .header-row { display: flex; align-items: center; gap: 13px; margin-bottom: 12px; }
+  .mark-wrap { color: var(--qx-text-2); flex-shrink: 0; }
+  h1 { font-size: 20px; font-weight: 800; color: var(--qx-text); margin: 0 0 2px; }
+  .sub { font-size: 13px; color: var(--qx-text-dim); }
+
+  .meter { height: 6px; border-radius: 3px; background: var(--qx-border-2); overflow: hidden; margin-bottom: 10px; }
+  .meter-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .best-score { font-size: 13px; font-weight: 700; color: var(--qx-green-text); margin-bottom: 14px; }
+  .loading-row { font-size: 13px; font-weight: 600; color: var(--qx-text-faint); padding: 20px 0; text-align: center; }
+
+  .board-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .board-row {
+    display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+    background: var(--qx-surface); border: 1.5px solid var(--qx-border); border-radius: var(--qx-radius-md);
+    padding: 10px 12px; cursor: pointer; font-family: var(--qx-font);
   }
-  .path-header {
-    display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+  .board-num {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--qx-surface-2); border: 1.5px solid var(--qx-border-2);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--qx-text-dim); flex-shrink: 0;
   }
-  .path-header h1 {
-    font-family: var(--hand-display); font-weight: 400;
-    font-size: 24px; margin-bottom: 2px;
-  }
-  .path-sub { font-family: var(--print); font-size: 13px; color: var(--chalk-faint); }
-  .state-chip {
-    display: inline-block;
-    font-family: var(--print); font-size: 12px;
-    border: 1.5px dashed; border-radius: 14px;
-    padding: 3px 12px; margin-bottom: 16px;
-  }
-  .best-score {
-    font-family: var(--print); font-size: 13px; color: var(--chalk-green);
-    margin-bottom: 14px;
-  }
-  .card-list {
-    display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;
-  }
-  .path-card {
-    display: flex; align-items: center; gap: 12px;
-    background: rgba(0,0,0,0.14);
-    border: 1.5px dashed rgba(244,241,233,0.12);
-    border-radius: 10px; padding: 10px 12px; cursor: pointer;
-  }
-  .path-card:active { background: rgba(0,0,0,0.25); }
-  .card-num {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--board-2); border: 1.5px dashed var(--chalk-faint);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--print); font-size: 13px; color: var(--chalk-dim); flex-shrink: 0;
-  }
-  .card-info { flex: 1; min-width: 0; }
-  .card-title { font-family: var(--hand); font-size: 15px; color: var(--chalk); }
-  .card-kicker { font-family: var(--print); font-size: 12px; color: var(--chalk-faint); }
-  .card-chev { color: var(--chalk-faint); font-size: 16px; }
-  .quiz-section {
-    border-top: 1.5px dashed var(--line);
-    padding-top: 20px;
-  }
-  .quiz-section h2 {
-    font-family: var(--hand-display); font-weight: 400;
-    font-size: 20px; margin-bottom: 12px;
-  }
+  .board-info { flex: 1; min-width: 0; }
+  .board-title { font-size: 14px; font-weight: 700; color: var(--qx-text); }
+  .board-kicker { font-size: 11px; font-weight: 600; color: var(--qx-text-faint); }
+  .board-chev { color: var(--qx-text-faint); font-size: 16px; }
+
+  .footer { display: flex; gap: 10px; padding-top: 4px; }
 </style>

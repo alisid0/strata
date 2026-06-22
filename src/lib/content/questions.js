@@ -221,6 +221,307 @@ export const PATH_QUESTIONS = {
     })),
   ],
 
+  // ── P0 : Mechanics — foundations (BB 01-07, Tier 0) ──
+  P0: [
+    mcq(() => ({
+      cg: 'P0-1',
+      q: 'Which of the following best describes what physics studies?',
+      opts: [
+        'Only the motion of planets',
+        'Matter, motion, force, and energy, and how they interact over time',
+        'Only forces, not energy',
+        'Only energy, not matter'
+      ],
+      answer: 1,
+      explain: 'Physics covers matter, motion, force, and energy together, and how they interact over time, not just one of these in isolation.'
+    })),
+
+    mcq(() => ({
+      cg: 'P0-2',
+      q: 'Which statement correctly distinguishes matter from mass?',
+      opts: [
+        'They are the same thing, just different words',
+        'Matter is anything that occupies space and has mass; mass measures how much that object resists a change in motion',
+        'Mass is the substance itself; matter is just its weight',
+        'Matter only refers to solids'
+      ],
+      answer: 1,
+      explain: 'Matter is the substance itself, anything occupying space and having mass. Mass is the specific property measuring an object\'s resistance to a change in motion.'
+    })),
+
+    truefalse(() => ({
+      cg: 'P0-3',
+      q: 'An object\'s weight changes depending on its location, but its mass does not.',
+      answer: true,
+      explain: 'Weight depends on the strength of the local gravitational pull. Mass measures resistance to a change in motion, which does not depend on location.'
+    })),
+
+    mcq(() => ({
+      cg: 'P0-4',
+      q: 'An object sliding on a frictionless surface, with no other forces acting on it, will:',
+      opts: [
+        'Gradually slow down',
+        'Speed up over time',
+        'Continue at constant velocity indefinitely',
+        'Stop immediately'
+      ],
+      answer: 2,
+      explain: 'Newton\'s first law: without a net force, an object in motion continues in a straight line at constant speed indefinitely.'
+    })),
+
+    mcq(() => ({
+      cg: 'P0-5',
+      q: 'Why does a hockey puck travel farther on ice than on concrete, given the same push?',
+      opts: [
+        'Ice is colder, which changes the puck\'s mass',
+        'Concrete has more microscopic irregularities that catch against the puck, producing more friction',
+        'The puck is heavier on concrete',
+        'Friction does not exist on ice'
+      ],
+      answer: 1,
+      explain: 'Friction arises from microscopic irregularities in two surfaces catching against each other. Concrete has far more of these than smooth ice, so it produces more friction and stops the puck sooner.'
+    })),
+
+    typeanswer(() => {
+      const f = randInt(10, 60), m = randInt(2, 12);
+      return {
+        cg: 'P0-6',
+        q: `A force of ${f}N acts on an object of mass ${m}kg. What is its acceleration, in m/s²? (F = ma)`,
+        answer: Number((f / m).toFixed(2)),
+        tolerance: 0.01,
+        explain: `a = F/m = ${f}/${m} = ${(f / m).toFixed(2)} m/s².`
+      };
+    }),
+
+    truefalse(() => ({
+      cg: 'P0-7',
+      q: 'Two cars travelling at 50 mph in opposite directions have the same velocity.',
+      answer: false,
+      explain: 'They have the same speed, but opposite velocities, since velocity includes direction and the two cars are heading different ways.'
+    })),
+
+    mcq(() => ({
+      cg: 'P0-8',
+      q: 'A car\'s speed is decreasing while it travels in a straight line. What does this say about its acceleration?',
+      opts: [
+        'Its acceleration is zero',
+        'Its acceleration is positive, in the direction of travel',
+        'Its acceleration is negative, opposite the direction of travel',
+        'Acceleration only applies when speed increases'
+      ],
+      answer: 2,
+      explain: 'A decrease in speed is still a change in velocity, so the object is still accelerating, just with a negative acceleration, opposite to its direction of travel.'
+    })),
+
+    fillblank(() => ({
+      cg: 'P0-9',
+      q: 'When a swimmer pushes backward against the water, the water pushes the swimmer ___ with equal force.',
+      answer: 'forward',
+      accept: ['forward', 'forwards'],
+      explain: 'This is Newton\'s third law: every force has an equal and opposite reaction. The swimmer pushes the water backward; the water pushes the swimmer forward.'
+    })),
+
+    matchQuestion(() => ({
+      cg: 'P0-10',
+      q: 'Match each concept to its core idea.',
+      pairs: [
+        ['Inertia', 'An object resists a change in its motion'],
+        ['Friction', 'Resistance between two sliding surfaces'],
+        ['Newton\'s third law', 'Every force has an equal and opposite reaction'],
+        ['Mass', 'Resistance to a change in an object\'s motion, independent of location']
+      ],
+      explain: 'Inertia, friction, mass, and Newton\'s third law are the core mechanisms behind BB 01-07.'
+    })),
+  ],
+
+  // ── P0T1 : Mechanics — mathematical formulation (BB 71-77, Tier 1) ──
+  P0T1: [
+    mcq(() => ({
+      cg: 'P0T1-1',
+      q: 'A physical law expressed as an equation, such as F = ma, specifies:',
+      opts: [
+        'A rough description of a trend',
+        'An exact relationship between measurable quantities, for any values substituted in',
+        'A relationship that only holds for the specific numbers used to derive it',
+        'A statement that cannot be tested'
+      ],
+      answer: 1,
+      explain: 'An equation like F = ma holds for any valid values of force, mass, and acceleration, not just the example used to introduce it.'
+    })),
+
+    typeanswer(() => {
+      const m = randInt(2, 20);
+      const w = Number((m * 9.8).toFixed(1));
+      return {
+        cg: 'P0T1-2',
+        q: `Using W = mg (g = 9.8 m/s²), what is the weight, in newtons, of a ${m} kg object?`,
+        answer: w,
+        tolerance: 0.5,
+        explain: `W = mg = ${m} × 9.8 = ${w} N.`
+      };
+    }),
+
+    truefalse(() => ({
+      cg: 'P0T1-3',
+      q: 'An object\'s weight is the same on Earth and on the Moon, because weight only depends on mass.',
+      answer: false,
+      explain: 'Weight is W = mg, so it depends on the local gravitational acceleration g as well as mass. g is smaller on the Moon, so the same object weighs less there.'
+    })),
+
+    mcq(() => ({
+      cg: 'P0T1-4',
+      q: 'A box on a table remains at rest. What does this imply about the net force acting on it?',
+      opts: [
+        'It must be zero',
+        'It must equal the box\'s weight, ignoring the normal force',
+        'There is no force at all acting on it',
+        'The normal force must be greater than the weight'
+      ],
+      answer: 0,
+      explain: '"At rest" means constant velocity (zero), which per ΣF = 0 ⇒ v = constant requires the net force to be zero, even though individual forces like gravity and the normal force are both nonzero.'
+    })),
+
+    typeanswer(() => {
+      const m = randInt(5, 30);
+      const mu = pick([0.2, 0.3, 0.4, 0.5]);
+      const N = m * 9.8;
+      const f = Number((mu * N).toFixed(1));
+      return {
+        cg: 'P0T1-5',
+        q: `An object of mass ${m} kg rests on a surface with coefficient of friction μ = ${mu} (g = 9.8 m/s²). Using F = μN, what is the friction force, in newtons?`,
+        answer: f,
+        tolerance: 1,
+        explain: `N = mg = ${m} × 9.8 = ${(m * 9.8).toFixed(1)} N. F = μN = ${mu} × ${(m * 9.8).toFixed(1)} = ${f} N.`
+      };
+    }),
+
+    fillblank(() => ({
+      cg: 'P0T1-6',
+      q: 'In F = m·a, rearranged to solve for mass, the equation becomes m = ___.',
+      answer: 'F/a',
+      accept: ['F/a', 'F / a'],
+      explain: 'Dividing both sides of F = ma by a isolates mass: m = F/a.'
+    })),
+
+    typeanswer(() => {
+      const x1 = randInt(0, 20), dx = randInt(20, 100), t = randInt(2, 10);
+      const v = Number((dx / t).toFixed(2));
+      return {
+        cg: 'P0T1-7',
+        q: `An object moves from position ${x1} m to position ${x1 + dx} m in ${t} seconds. What is its average velocity, in m/s? (v = Δx/Δt)`,
+        answer: v,
+        tolerance: 0.05,
+        explain: `v = Δx/Δt = ${dx} / ${t} = ${v} m/s.`
+      };
+    }),
+
+    mcq(() => ({
+      cg: 'P0T1-8',
+      q: 'F₁₂ = −F₂₁ means:',
+      opts: [
+        'The two forces have different magnitudes',
+        'The two forces are equal in magnitude and opposite in direction',
+        'Only object 1 exerts a force',
+        'The forces cancel and nothing moves'
+      ],
+      answer: 1,
+      explain: 'The minus sign indicates opposite direction; the magnitudes on both sides of the equation are equal. Whether anything moves depends on the masses involved, not on the forces being unequal.'
+    })),
+  ],
+
+  // ── P0T2 : Mechanics — numericals (BB 78-84, Tier 2) ──
+  P0T2: [
+    typeanswer(() => {
+      const m = randInt(5, 40);
+      const w = Number((m * 9.8).toFixed(1));
+      return {
+        cg: 'P0T2-1',
+        q: `A ${m} kg object's weight near Earth's surface, in newtons (g = 9.8 m/s²), is:`,
+        answer: w,
+        tolerance: 0.5,
+        explain: `W = mg = ${m} × 9.8 = ${w} N.`
+      };
+    }),
+
+    typeanswer(() => {
+      const m = randInt(5, 30);
+      const mu = pick([0.2, 0.3, 0.4, 0.5]);
+      const N = m * 9.8;
+      const f = Number((mu * N).toFixed(1));
+      return {
+        cg: 'P0T2-2',
+        q: `A ${m} kg crate sits on a surface with coefficient of friction μ = ${mu}. What is the maximum friction force resisting sliding, in newtons? (F = μN, N = mg, g = 9.8 m/s²)`,
+        answer: f,
+        tolerance: 1,
+        explain: `N = mg = ${m} × 9.8 = ${N.toFixed(1)} N. F = μN = ${mu} × ${N.toFixed(1)} = ${f} N.`
+      };
+    }),
+
+    typeanswer(() => {
+      const f = randInt(100, 500), m = randInt(20, 100);
+      const a = Number((f / m).toFixed(2));
+      return {
+        cg: 'P0T2-3',
+        q: `An engine produces a force of ${f}N on a ${m}kg car. What is its acceleration, in m/s²? (F = ma)`,
+        answer: a,
+        tolerance: 0.02,
+        explain: `a = F/m = ${f}/${m} = ${a} m/s².`
+      };
+    }),
+
+    typeanswer(() => {
+      const x1 = randInt(0, 30), dx = randInt(30, 150), t = randInt(3, 15);
+      const v = Number((dx / t).toFixed(2));
+      return {
+        cg: 'P0T2-4',
+        q: `A cyclist travels from position ${x1} m to position ${x1 + dx} m in ${t} seconds. What is their average velocity, in m/s? (v = Δx/Δt)`,
+        answer: v,
+        tolerance: 0.05,
+        explain: `v = Δx/Δt = ${dx} / ${t} = ${v} m/s.`
+      };
+    }),
+
+    typeanswer(() => {
+      const v1 = randInt(1, 10), v2 = v1 + randInt(2, 10), t = randInt(2, 8);
+      const a = Number(((v2 - v1) / t).toFixed(2));
+      return {
+        cg: 'P0T2-5',
+        q: `A car's velocity increases from ${v1} m/s to ${v2} m/s over ${t} seconds. What is its acceleration, in m/s²? (a = Δv/Δt)`,
+        answer: a,
+        tolerance: 0.02,
+        explain: `a = Δv/Δt = (${v2} − ${v1}) / ${t} = ${a} m/s².`
+      };
+    }),
+
+    mcq(() => ({
+      cg: 'P0T2-6',
+      q: 'Two skaters push off each other with equal and opposite forces. The skater with the smaller mass will have:',
+      opts: [
+        'A smaller acceleration',
+        'The same acceleration as the other skater',
+        'A larger acceleration',
+        'No acceleration at all'
+      ],
+      answer: 2,
+      explain: 'Since a = F/m and the force is the same for both skaters, the smaller mass produces the larger acceleration.'
+    })),
+
+    typeanswer(() => {
+      const m = randInt(10, 50);
+      const mu = pick([0.1, 0.2, 0.3]);
+      const friction = Number((mu * m * 9.8).toFixed(1));
+      const applied = friction + randInt(40, 120);
+      const a = Number(((applied - friction) / m).toFixed(2));
+      return {
+        cg: 'P0T2-7',
+        q: `A ${m}kg crate has friction with μ = ${mu} (g = 9.8 m/s²) while a horizontal force of ${applied}N pushes it. What is the crate's acceleration, in m/s²? (net force = applied force − friction force; a = net force / mass)`,
+        answer: a,
+        tolerance: 0.05,
+        explain: `Friction = μmg = ${mu} × ${m} × 9.8 = ${friction} N. Net force = ${applied} − ${friction} = ${(applied - friction).toFixed(1)} N. a = net force / mass = ${(applied - friction).toFixed(1)} / ${m} = ${a} m/s².`
+      };
+    }),
+  ],
+
   // ── P1 : Forces & motion ──
   P1: [
     mcq(() => ({
@@ -447,6 +748,139 @@ export const PATH_QUESTIONS = {
       answer: 13,
       tolerance: 0,
       explain: 'f(5) = 2(5) + 3 = 10 + 3 = 13.'
+    }))
+  ],
+
+  // ── P4 : Measurement & dimensions ──
+  P4: [
+    mcq(() => ({
+      cg: 'P4-1',
+      q: 'Why does a measurement need a unit attached to its number?',
+      opts: [
+        'It doesn\'t — the number alone is enough',
+        'Because the number is only meaningful as a ratio to an agreed reference quantity',
+        'Units are just a tradition with no real purpose',
+        'Only large quantities need units'
+      ],
+      answer: 1,
+      explain: 'A measurement is a numerical value times a unit. The number is the ratio of the measured quantity to a fixed, agreed reference — without that reference, the number means nothing.'
+    })),
+
+    truefalse(() => ({
+      cg: 'P4-2',
+      q: 'There are exactly seven fundamental (base) quantities, and every other quantity is derived from them.',
+      answer: true,
+      explain: 'Length, mass, time, electric current, temperature, amount of substance, and luminous intensity are the seven base quantities. Everything else — area, speed, force, energy — is built from these by multiplication and division.'
+    })),
+
+    fillblank(() => ({
+      cg: 'P4-3',
+      q: 'The SI base unit for mass is the ___.',
+      answer: 'kilogram',
+      accept: ['kilogram', 'Kilogram', 'kg'],
+      explain: 'The kilogram (kg) is the SI base unit for mass, one of the seven fundamental units.'
+    })),
+
+    mcq(() => ({
+      cg: 'P4-4',
+      q: 'What is the dimensional formula of force?',
+      opts: ['MLT⁻¹', 'MLT⁻²', 'ML²T⁻²', 'MLT'],
+      answer: 1,
+      explain: 'Force = mass × acceleration = mass × length/time² → MLT⁻². The exponent on mass is 1, on length is 1, and on time is −2.'
+    })),
+
+    mcq(() => ({
+      cg: 'P4-5',
+      q: 'A student writes F = mv (force equals mass times velocity). What does dimensional analysis reveal?',
+      opts: [
+        'The equation is correct',
+        'The equation is dimensionally inconsistent — [F] = MLT⁻² but [mv] = MLT⁻¹',
+        'It cannot be checked without doing the arithmetic',
+        'The equation is correct only for large masses'
+      ],
+      answer: 1,
+      explain: 'Force has dimensions MLT⁻², but mass × velocity has dimensions MLT⁻¹. They don\'t match, so the equation is dimensionally impossible — the homogeneity principle catches this without any calculation.'
+    })),
+
+    typeanswer(() => {
+      const a = pick([1, 2, 3, 7, 8]), b = pick([4, 5, 6]);
+      const order = a >= 5 ? b + 1 : b;
+      return {
+        cg: 'P4-6',
+        q: `A quantity has the value ${a} × 10^${b}. What is its order of magnitude, as the exponent of ten? (round up if the leading digit is 5 or more)`,
+        answer: order,
+        tolerance: 0,
+        explain: a >= 5
+          ? `Since the leading digit (${a}) is 5 or more, it rounds up: the order of magnitude is 10^${order}.`
+          : `Since the leading digit (${a}) is below 5, it stays as is: the order of magnitude is 10^${order}.`
+      };
+    }),
+
+    matchQuestion(() => ({
+      cg: 'P4-7',
+      q: 'Match each object to its approximate scale.',
+      pairs: [
+        ['Atom', '10⁻¹⁰ m'],
+        ['Proton', '10⁻¹⁵ m'],
+        ['Human', '1 m'],
+        ['Milky Way', '10²¹ m']
+      ],
+      explain: 'Reality is arranged in roughly logarithmic steps — atoms at 10⁻¹⁰ m, protons at 10⁻¹⁵ m, humans at about 1 m, and the Milky Way at roughly 10²¹ m.'
+    }))
+  ],
+
+  // ── P5 : Vector products ──
+  P5: [
+    mcq(() => ({
+      cg: 'P5-1',
+      q: 'How do you add two vectors using the triangle rule?',
+      opts: [
+        'Add their magnitudes directly, regardless of direction',
+        'Place the tail of the second vector at the head of the first; the sum runs from the start of the first to the tip of the second',
+        'Multiply their magnitudes and add the angles',
+        'Subtract the smaller magnitude from the larger one'
+      ],
+      answer: 1,
+      explain: 'The triangle rule: draw the first vector, then draw the second starting from the tip of the first. The vector from the very start to the very end is the sum.'
+    })),
+
+    truefalse(() => ({
+      cg: 'P5-2',
+      q: 'The dot product of two perpendicular vectors is always zero.',
+      answer: true,
+      explain: 'a⃗ · b⃗ = |a||b| cos θ. At 90°, cos 90° = 0, so the dot product vanishes — none of one vector lies along the direction of the other.'
+    })),
+
+    fillblank(() => ({
+      cg: 'P5-3',
+      q: 'Unlike the dot product, the cross product of two vectors produces a ___, not a scalar.',
+      answer: 'vector',
+      accept: ['vector', 'Vector'],
+      explain: 'The cross product a⃗ × b⃗ is itself a vector, perpendicular to both inputs, with magnitude |a||b| sin θ.'
+    })),
+
+    typeanswer(() => {
+      const a = pick([4, 6, 8]), b = pick([5, 10]);
+      return {
+        cg: 'P5-4',
+        q: `Two vectors have magnitudes ${a} and ${b}, with a 60° angle between them. What is their dot product? (cos 60° = 0.5)`,
+        answer: a * b * 0.5,
+        tolerance: 0.01,
+        explain: `a⃗ · b⃗ = |a||b| cos θ = ${a} × ${b} × 0.5 = ${a * b * 0.5}.`
+      };
+    }),
+
+    mcq(() => ({
+      cg: 'P5-5',
+      q: 'What does it mean that the cross product is "anti-commutative"?',
+      opts: [
+        'a⃗ × b⃗ always equals zero',
+        'a⃗ × b⃗ = b⃗ × a⃗',
+        'a⃗ × b⃗ = −(b⃗ × a⃗) — swapping the order flips the resulting vector\'s direction',
+        'The cross product only works in one direction'
+      ],
+      answer: 2,
+      explain: 'Swapping the order of a cross product reverses the sign of the result: a⃗ × b⃗ = −(b⃗ × a⃗). This is why torque and angular momentum are sensitive to the order you cross their vectors in.'
     }))
   ],
 };

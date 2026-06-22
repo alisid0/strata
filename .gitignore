@@ -9,6 +9,13 @@ _deepseek_output.txt
 deepseek-drafts-*.md
 __pycache__/
 elevenlabs-session.json
+.env
+.env.local
+.env.*.local
+verma_vol1.pdf
+.tmp_strata_menu_design.html
+bb-preview.html
+bb-sample.json
 dist/
 _deepseek_*
 node_modules/

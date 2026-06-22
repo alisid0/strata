@@ -66,7 +66,7 @@
 </script>
 
 <div class="author-view">
-  <button class="back-link" on:click={() => onNavigate?.('subjects')}>‹ back</button>
+  <button class="back-link" on:click={() => onNavigate?.('stats')}>‹ back</button>
 
   <h1>Author a new BB</h1>
   <p class="sub">Fill the template. Submit. We'll review, number, and slot it into the deck.</p>

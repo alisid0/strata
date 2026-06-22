@@ -1,35 +1,51 @@
 <script>
   import { onMount } from 'svelte';
   import { initAuth, isAuthenticated } from './lib/stores/auth.js';
+  import { theme } from './lib/stores/theme.js'; // side-effect: sets document.documentElement.dataset.qxTheme
   import Auth from './views/Auth.svelte';
-  import Subjects from './views/Subjects.svelte';
-  import SubjectView from './views/SubjectView.svelte';
+  import Onboarding from './views/Onboarding.svelte';
+  import Home from './views/Home.svelte';
+  import Topics from './views/Topics.svelte';
   import PathView from './views/PathView.svelte';
+  import Stats from './views/Stats.svelte';
+  import Leaderboard from './views/Leaderboard.svelte';
+  import OtherUserStats from './views/OtherUserStats.svelte';
+  import Snippets from './views/Snippets.svelte';
   import Reader from './views/Reader.svelte';
   import Quiz from './views/Quiz.svelte';
   import Author from './views/Author.svelte';
+  import BottomNav from './lib/components/qubix/BottomNav.svelte';
 
-  let currentView = 'loading'; // loading | auth | subjects | subject | path | reader | quiz
-  let currentSubject = '';
+  // loading | auth | onboarding | home | topics | topicDetail | stats | leaderboard | otherUserStats | snippets | reader | quiz | author
+  let currentView = 'loading';
   let currentPathId = '';
-  let currentCard = 0;
+  let currentUserId = '';
+  let readerNumbers = [];
+  let readerStart = 1;
+
+  const TAB_VIEWS = ['home', 'topics', 'stats', 'snippets'];
 
   onMount(async () => {
-    // Try to restore session, but allow guest access
-    try {
-      await initAuth();
-    } catch (_) {}
-    currentView = $isAuthenticated ? 'subjects' : 'auth';
+    try { await initAuth(); } catch (_) {}
+    currentView = $isAuthenticated ? 'home' : 'auth';
   });
 
   function skipAuth() {
-    currentView = 'subjects';
+    currentView = 'home';
+  }
+
+  function handleAuthed(isNewUser) {
+    currentView = isNewUser ? 'onboarding' : 'home';
   }
 
   function navigate(view, arg) {
-    if (view === 'subject') { currentSubject = arg; currentView = 'subject'; }
-    else if (view === 'path') { currentPathId = arg; currentView = 'path'; }
-    else if (view === 'reader') { currentCard = arg || 0; currentView = 'reader'; }
+    if (view === 'topicDetail') { currentPathId = arg; currentView = 'topicDetail'; }
+    else if (view === 'otherUserStats') { currentUserId = arg || ''; currentView = 'otherUserStats'; }
+    else if (view === 'reader') {
+      readerNumbers = arg?.numbers || Array.from({ length: 84 }, (_, i) => i + 1);
+      readerStart = arg?.start || readerNumbers[0] || 1;
+      currentView = 'reader';
+    }
     else if (view === 'quiz') { currentPathId = arg; currentView = 'quiz'; }
     else if (view === 'author') { currentView = 'author'; }
     else { currentView = view; }
@@ -38,32 +54,47 @@
 
 <div class="app-shell">
   {#if currentView === 'loading'}
-    <div class="loading-screen">
-      <div class="loading-brand">STRATA</div>
-      <div class="loading-dots">
-        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-      </div>
+    <div class="qx-shell loading-screen">
+      <div class="loading-brand">QUBIX</div>
+      <div class="loading-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
     </div>
 
   {:else if currentView === 'auth'}
-    <Auth onSkip={skipAuth} />
+    <Auth onSkip={skipAuth} onAuthed={handleAuthed} />
 
-  {:else if currentView === 'subjects'}
-    <Subjects onNavigate={navigate} />
+  {:else if currentView === 'onboarding'}
+    <Onboarding onComplete={() => currentView = 'home'} />
 
-  {:else if currentView === 'subject'}
-    <SubjectView subject={currentSubject} onNavigate={navigate} />
+  {:else if TAB_VIEWS.includes(currentView)}
+    <div class="qx-shell tabbed-view">
+      <div class="tab-content">
+        {#if currentView === 'home'}
+          <Home onNavigate={navigate} />
+        {:else if currentView === 'topics'}
+          <Topics onNavigate={navigate} />
+        {:else if currentView === 'stats'}
+          <Stats onNavigate={navigate} />
+        {:else if currentView === 'snippets'}
+          <Snippets onNavigate={navigate} />
+        {/if}
+      </div>
+      <BottomNav active={currentView} onNavigate={navigate} />
+    </div>
 
-  {:else if currentView === 'path'}
+  {:else if currentView === 'topicDetail'}
     <PathView pathId={currentPathId} onNavigate={navigate} />
 
+  {:else if currentView === 'leaderboard'}
+    <Leaderboard onNavigate={navigate} />
+
+  {:else if currentView === 'otherUserStats'}
+    <OtherUserStats userId={currentUserId} onNavigate={navigate} />
+
   {:else if currentView === 'reader'}
-    <Reader startCard={currentCard} />
-    <!-- Bottom bar when in reader -->
+    <Reader numbers={readerNumbers} startNumber={readerStart} />
     <nav class="reader-nav">
-      <button on:click={() => navigate('subjects')} class="nav-btn">Subjects</button>
-      <button on:click={() => navigate('subjects')} class="nav-btn">Map</button>
-      <button on:click={() => navigate('reader', currentCard)} class="nav-btn">Reader</button>
+      <button on:click={() => navigate('home')} class="nav-btn">Home</button>
+      <button on:click={() => navigate('topics')} class="nav-btn">Topics</button>
       <button on:click={() => navigate('author')} class="nav-btn">Author</button>
     </nav>
 
@@ -71,7 +102,7 @@
     <Quiz
       pathId={currentPathId}
       onComplete={() => {}}
-      onBack={() => navigate('path', currentPathId)}
+      onBack={() => navigate('topicDetail', currentPathId)}
     />
 
   {:else if currentView === 'author'}
@@ -80,67 +111,29 @@
 </div>
 
 <style>
-  .app-shell {
-    height: 100%;
-    width: 100%;
-    position: relative;
-  }
+  .app-shell { height: 100%; width: 100%; position: relative; }
 
   .loading-screen {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--board-1);
-    gap: 20px;
+    height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
   }
-  .loading-brand {
-    font-family: var(--print);
-    font-size: 24px;
-    letter-spacing: 0.16em;
-    color: var(--chalk-yellow);
-  }
-  .loading-dots {
-    display: flex;
-    gap: 8px;
-  }
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--chalk-dim);
-    animation: bounce 1.4s infinite ease-in-out both;
-  }
+  .loading-brand { font-size: 24px; font-weight: 900; letter-spacing: 0.16em; color: var(--qx-accent); }
+  .loading-dots { display: flex; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--qx-text-faint); animation: bounce 1.4s infinite ease-in-out both; }
   .dot:nth-child(1) { animation-delay: -0.32s; }
   .dot:nth-child(2) { animation-delay: -0.16s; }
-  @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0); }
-    40% { transform: scale(1); }
-  }
+  @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+  .tabbed-view { height: 100%; display: flex; flex-direction: column; }
+  .tab-content { flex: 1; min-height: 0; overflow-y: auto; }
 
   .reader-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 20;
-    display: flex;
-    background: var(--board-1);
-    border-top: 2px dashed var(--line);
-    padding: 10px 0;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.4);
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+    display: flex; background: var(--board-1); border-top: 2px dashed var(--line);
+    padding: 10px 0; box-shadow: 0 -2px 8px rgba(0,0,0,0.4);
   }
   .nav-btn {
-    flex: 1;
-    background: none;
-    border: none;
-    color: var(--chalk-faint);
-    font-family: var(--print);
-    font-size: 13px;
-    cursor: pointer;
-    padding: 6px 0;
-    transition: color 0.2s;
+    flex: 1; background: none; border: none; color: var(--chalk-faint);
+    font-family: var(--print); font-size: 13px; cursor: pointer; padding: 6px 0; transition: color 0.2s;
   }
   .nav-btn:active { color: var(--chalk-yellow); }
 </style>

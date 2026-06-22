@@ -1,103 +1,136 @@
 <script>
   import { onMount } from 'svelte';
-  import { DECK, ACTS, DEPTH_NAMES } from '../lib/content/deck.js';
+  import { DEPTH_NAMES } from '../lib/content/deck.js';
+  import { getBoard } from '../lib/content/dynamicBoards.js';
   import { pathsForCard } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { getVideoForCard, getDiagramForCard } from '../lib/content/media.js';
   import VideoPlayer from '../lib/components/VideoPlayer.svelte';
   import ChalkDiagram from '../lib/components/ChalkDiagram.svelte';
+  import SubjectMark from '../lib/components/SubjectMark.svelte';
+  import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
-  export let startCard = 0;
+  // The card numbers this rail spans (static + any dynamic ones the caller
+  // already fetched via dynamicBoards.fetchBoardsByNumbers before navigating
+  // here), and which number to open on. Position in `numbers`, not the card
+  // number itself, is what `idx`/`depthOf`/etc. index by from here on.
+  export let numbers = [];
+  export let startNumber = 1;
 
-  let rail;
   let idx = 0;
-  let depthOf = DECK.map(() => 0);
-  let totalCards = DECK.length;
+  let depthOf = numbers.map(() => 0);
+  let nextDepths = [];
+  let totalCards = numbers.length;
+  let audioEl;
+  let playingKey = null;
 
-  $: if (startCard !== idx) { idx = startCard; }
+  function availableFloors(i) {
+    const card = getBoard(numbers[i]);
+    return card ? card.layers.map((l, k) => l !== null ? k : -1).filter(k => k >= 0) : [];
+  }
+
+  function rebuildDerived() {
+    nextDepths = numbers.map((_, j) => availableFloors(j).find(k => k > depthOf[j]));
+  }
+  rebuildDerived(); // initialize
 
   onMount(() => {
-    move(startCard);
+    move(Math.max(0, numbers.indexOf(startNumber)));
   });
 
   function goDeeper(i) {
-    const col = DECK[i];
-    const available = col.layers.map((l, k) => l !== null ? k : -1).filter(k => k >= 0);
-    const next = available.find(k => k > depthOf[i]);
+    const next = availableFloors(i).find(k => k > depthOf[i]);
     if (next === undefined) return;
     depthOf[i] = next;
     depthOf = [...depthOf];
+    rebuildDerived();
   }
 
   function goShallower(i) {
-    const col = DECK[i];
-    const available = col.layers.map((l, k) => l !== null ? k : -1).filter(k => k >= 0);
-    const below = [...available].reverse().find(k => k < depthOf[i]);
+    const below = [...availableFloors(i)].reverse().find(k => k < depthOf[i]);
     if (below === undefined) return;
     depthOf[i] = below;
     depthOf = [...depthOf];
+    rebuildDerived();
   }
 
   function move(to) {
     idx = Math.max(0, Math.min(totalCards - 1, to));
-    // Record board open
-    progress.recordBoardOpen(idx + 1, pathsForCard(idx + 1));
+    const cardNumber = numbers[idx];
+    progress.recordBoardOpen(cardNumber, pathsForCard(cardNumber));
   }
 
-  function renderFloorHTML(i, d) {
-    const col = DECK[i];
-    const content = col.layers[d];
+  // Floor 0 is the swipe card only when there's a top-level image and the
+  // floor-0 layer itself isn't a text-bearing object override.
+  function floor0Img(i) {
+    const col = getBoard(numbers[i]);
+    if (!col) return null;
+    const content = col.layers[0];
+    if (content && typeof content === 'object' && content.img && !content.text) return content.img;
+    return col.img || null;
+  }
+  function isSwipeCard(i, d) {
+    return d === 0 && !!floor0Img(i);
+  }
+
+  // DEPTH_NAMES indexes the five reading floors. When floor 0 is the image-only
+  // swipe card, reading starts at floor 1, so the name/number shift by one.
+  function depthName(i, d) {
+    const idx = floor0Img(i) ? d - 1 : d;
+    return DEPTH_NAMES[idx] || '';
+  }
+  function floorNumber(i, d) {
+    return floor0Img(i) ? d : d + 1;
+  }
+  function floorTotal(i) {
+    const len = getBoard(numbers[i])?.layers.length || 0;
+    return floor0Img(i) ? len - 1 : len;
+  }
+
+  function floorBodyHTML(i, d) {
+    const content = getBoard(numbers[i])?.layers[d];
     if (!content) return '';
+    return typeof content === 'object' ? (content.text || '') : content;
+  }
 
-    const isObj = typeof content === 'object';
-    const floor0Img = (d === 0 && isObj && content.img && !content.text) ? content.img : (d === 0 ? col.img : null);
+  // Media priority for a reading floor: the layer's own image, else a Manim
+  // video (floor 0 only), else an interactive diagram (floors 0-1 only).
+  function floorMedia(i, d) {
+    const content = getBoard(numbers[i])?.layers[d];
+    const cardNumber = numbers[i];
+    const isObj = content && typeof content === 'object';
+    if (isObj && content.img) return { type: 'img', src: content.img };
+    if (d === 0 && getVideoForCard(cardNumber)) return { type: 'video', src: getVideoForCard(cardNumber) };
+    if (d <= 1 && getDiagramForCard(cardNumber)) return { type: 'diagram', spec: getDiagramForCard(cardNumber) };
+    return null;
+  }
 
-    if (d === 0 && floor0Img) {
-      return `<div class="card-image" style="background-image:url('${floor0Img}')" role="img" aria-label="${col.title}"></div>`;
-    }
+  // A floor's narration clip, if its layer is the {text,img,audio} object form.
+  function floorAudio(i, d) {
+    const content = getBoard(numbers[i])?.layers[d];
+    return (content && typeof content === 'object' && content.audio) || null;
+  }
 
-    let bodyHTML;
-    if (isObj) {
-      const text = content.text || '';
-      const imgPos = content.imgPos || 'above';
-      const imgBlock = content.img
-        ? `<div class="textbook-img pos-${imgPos}" style="background-image:url('${content.img}')" role="img"></div>`
-        : '';
-      const textBlock = text ? `<div class="text-block">${text}</div>` : '';
-      const sideClass = imgPos === 'side' ? ' has-side-img' : '';
-      bodyHTML = `<div class="body${sideClass}">${imgPos === 'below' ? textBlock + imgBlock : imgBlock + textBlock}</div>`;
+  function toggleAudio(i, d) {
+    const url = floorAudio(i, d);
+    if (!url || !audioEl) return;
+    const key = `${numbers[i]}-${d}`;
+    if (playingKey === key) {
+      audioEl.pause();
+      playingKey = null;
     } else {
-      bodyHTML = `<div class="body">${content}</div>`;
+      audioEl.src = url;
+      audioEl.play();
+      playingKey = key;
     }
-
-    return `
-      <div class="eyebrow">
-        <span class="num">${col.kicker}</span>
-        <span class="act">${ACTS[col.act]}</span>
-        <span class="depthtag">${DEPTH_NAMES[d]}</span>
-      </div>
-      <h1 class="title">${col.title}</h1>
-      ${bodyHTML}
-    `;
   }
 
-  function getNextDepth(i) {
-    const col = DECK[i];
-    const d = depthOf[i];
-    const available = col.layers.map((l, k) => l !== null ? k : -1).filter(k => k >= 0);
-    return available.find(k => k > d);
+  function railFloors(i) {
+    return availableFloors(i).filter(k => !(floor0Img(i) && k === 0));
   }
 
-  function getDescendLabel(i) {
-    const next = getNextDepth(i);
-    if (next === undefined) return null;
-    const labels = [
-      ["Dig in", "make it concrete"],
-      ["Dig deeper", "define the idea"],
-      ["Go deeper", "watch it act"],
-      ["The law", "see it written"]
-    ];
-    return labels[Math.min(next - 1, labels.length - 1)];
+  function humanize(s) {
+    return s ? s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : '';
   }
 
   // Touch handling
@@ -131,89 +164,125 @@
     else if (e.key === 'ArrowDown') { goDeeper(idx); e.preventDefault(); }
     else if (e.key === 'ArrowUp') { goShallower(idx); e.preventDefault(); }
   }
-
-  // Event delegation for descend buttons (rendered via @html)
-  function handleRailClick(e) {
-    const btn = e.target.closest('.descend');
-    if (!btn || btn.classList.contains('atfloor')) return;
-    const card = e.target.closest('.card');
-    if (!card) return;
-    const i = parseInt(card.dataset.i);
-    if (!isNaN(i)) goDeeper(i);
-  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="reader">
-  <!-- Top bar -->
+<div class="qx-shell reader">
   <div id="topbar">
-    <div id="brand"><b>STRATA</b> <span class="brand-sub">· physics</span></div>
+    <div id="brand">QUBIX</div>
     <div id="progress-wrap"><div id="progress" style="width:{(idx + 1) / totalCards * 100}%"></div></div>
     <div id="counter">{String(idx + 1).padStart(2, '0')} / {totalCards}</div>
   </div>
 
-  <!-- Prev / Next nav -->
-  <button class="nav prev" disabled={idx === 0} on:click={() => move(idx - 1)}>‹</button>
-  <button class="nav next" disabled={idx === totalCards - 1} on:click={() => move(idx + 1)}>›</button>
+  <button class="side-nav prev" disabled={idx === 0} on:click={() => move(idx - 1)}><QxIcon name="chevronLeft" size={18} /></button>
+  <button class="side-nav next" disabled={idx === totalCards - 1} on:click={() => move(idx + 1)}><QxIcon name="chevronRight" size={18} /></button>
 
-  <!-- Rail -->
   <div
     id="rail"
-    bind:this={rail}
     style="transform:translateX(-{idx * 100}%)"
     on:touchstart={handleTouchStart}
     on:touchmove={handleTouchMove}
     on:touchend={handleTouchEnd}
-    on:click={handleRailClick}
   >
-    {#each DECK as col, i}
-      <div class="card" data-i={i}>
-        <div class="slab" data-depth={depthOf[i]}>
-          <button class="ascend" style="display:{depthOf[i] > 0 ? 'flex' : 'none'}" on:click={() => goShallower(i)}>↑</button>
-          <div class="ladder">
-            {#each col.layers.filter(l => l !== null) as _, k}
-              <div class="rung {k === depthOf[i] ? 'filled' : k < depthOf[i] ? 'passed' : ''}"></div>
-            {/each}
-          </div>
-          <div class="slab-inner">
-            <div class="floor-content">
-              {@html renderFloorHTML(i, depthOf[i])}
+    {#each numbers as n, i}
+      {@const col = getBoard(n)}
+      <div class="card">
+        {#if col}
+        <div class="slab">
+          {#if isSwipeCard(i, depthOf[i])}
+            {@const audioUrl = floorAudio(i, 0)}
+            <div class="swipe-card" style="background-image:url('{floor0Img(i)}')">
+              <div class="swipe-gradient"></div>
+              <div class="swipe-top">
+                <span class="chip">
+                  <span class="chip-mark"><SubjectMark subject={col.tags?.subject} accent="#ffffff" size={16} /></span>
+                  <span>{humanize(col.tags?.subject)} · {humanize(col.tags?.topic)}</span>
+                </span>
+                <span class="tier-badge">{col.tags?.ground || ''}</span>
+              </div>
+              <button
+                class="audio-btn"
+                class:playing={playingKey === `${n}-0`}
+                disabled={!audioUrl}
+                title={audioUrl ? (playingKey === `${n}-0` ? 'Pause audio' : 'Play audio') : 'Audio coming soon'}
+                on:click|stopPropagation={() => toggleAudio(i, 0)}
+              ><QxIcon name="volume" size={16} /></button>
+              <button class="swipe-bottom" on:click={() => goDeeper(i)}>
+                <div class="swipe-kicker">{col.kicker}</div>
+                <div class="swipe-title">{col.title}</div>
+                <div class="dig-hint">
+                  <span class="dig-circle"><QxIcon name="chevronDown" size={16} /></span>
+                  <span>Swipe down to dig in</span>
+                </div>
+              </button>
+            </div>
+          {:else}
+            {@const d = depthOf[i]}
+            {@const media = floorMedia(i, d)}
+            {@const audioUrl = floorAudio(i, d)}
+            <div class="card-header">
+              <span class="header-mark"><SubjectMark subject={col.tags?.subject} accent="#454ADE" size={18} /></span>
+              <div class="header-text">
+                <div class="header-title">{col.title}</div>
+                <div class="header-sub">{col.kicker} · {humanize(col.tags?.subject)}</div>
+              </div>
+              <button
+                class="audio-btn small"
+                class:playing={playingKey === `${n}-${d}`}
+                disabled={!audioUrl}
+                title={audioUrl ? (playingKey === `${n}-${d}` ? 'Pause audio' : 'Play audio') : 'Audio coming soon'}
+                on:click={() => toggleAudio(i, d)}
+              ><QxIcon name="volume" size={14} /></button>
             </div>
 
-            {#if getNextDepth(i) !== undefined}
-              {@const lab = getDescendLabel(i)}
-              <button class="descend" on:click={() => goDeeper(i)}>
-                <span class="chev">↓</span>
-                <span>
-                  <span class="label-top">{lab[0]}</span>
-                  <span class="label-sub">{lab[1]}</span>
-                </span>
-              </button>
-            {:else}
-              <button class="descend atfloor" disabled>
-                <span class="chev">●</span>
-                <span>
-                  <span class="label-top">Bedrock reached</span>
-                  <span class="label-sub">nothing deeper here</span>
-                </span>
-              </button>
-            {/if}
-
-            {#if depthOf[i] === 0 && getVideoForCard(i + 1)}
-              <VideoPlayer src={getVideoForCard(i + 1)} />
-            {/if}
-
-            {#if depthOf[i] >= 0 && depthOf[i] <= 1 && getDiagramForCard(i + 1)}
-              <div class="diagram-wrap">
-                <ChalkDiagram spec={getDiagramForCard(i + 1)} />
+            <div class="reading-body">
+              <div class="depth-rail">
+                {#each railFloors(i) as floorIdx}
+                  <div class="rail-dot" class:current={floorIdx === d} class:passed={floorIdx < d}></div>
+                {/each}
               </div>
-            {/if}
-          </div>
+
+              <div class="reading-content">
+                <div class="floor-meta">
+                  <span class="floor-pill" class:law={depthName(i, d) === 'The law'}>{depthName(i, d).toUpperCase()}</span>
+                  <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
+                </div>
+                <div class="floor-text">{@html floorBodyHTML(i, d)}</div>
+                {#if media}
+                  <div class="floor-media">
+                    {#if media.type === 'img'}
+                      <div class="media-img" style="background-image:url('{media.src}')" role="img"></div>
+                    {:else if media.type === 'video'}
+                      <VideoPlayer src={media.src} />
+                    {:else if media.type === 'diagram'}
+                      <div class="media-diagram"><ChalkDiagram spec={media.spec} /></div>
+                    {/if}
+                  </div>
+                {/if}
+              </div>
+            </div>
+
+            <div class="nav-arrows">
+              {#if d > 0}
+                <button class="arrow-btn" on:click={() => goShallower(i)} title="Back to surface"><QxIcon name="chevronUp" size={18} /></button>
+              {/if}
+              {#if nextDepths[i] !== undefined}
+                <button class="arrow-btn primary" on:click={() => goDeeper(i)} title="Dig deeper"><QxIcon name="chevronDown" size={18} /></button>
+              {:else}
+                <button class="arrow-btn" disabled title="Bedrock reached"><QxIcon name="chevronDown" size={18} /></button>
+              {/if}
+            </div>
+          {/if}
         </div>
+        {:else}
+        <div class="slab loading-slab">Loading…</div>
+        {/if}
       </div>
     {/each}
   </div>
+
+  <audio bind:this={audioEl} on:ended={() => playingKey = null} hidden></audio>
 </div>
 
 <style>
@@ -222,32 +291,31 @@
     width: 100%;
     position: relative;
     overflow: hidden;
+    background: var(--qx-bg);
   }
   #topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 10;
-    display: flex; align-items: center; gap: 16px;
-    padding: 16px clamp(18px, 4vw, 34px);
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px clamp(18px, 4vw, 34px);
     pointer-events: none;
   }
-  #brand {
-    font-family: var(--print); font-size: 17px; letter-spacing: 0.04em;
-    color: var(--chalk);
+  #brand { font-size: 13px; font-weight: 900; letter-spacing: 0.14em; color: var(--qx-accent); }
+  #progress-wrap { flex: 1; height: 2px; background: var(--qx-border-2); border-radius: 2px; position: relative; }
+  #progress { position: absolute; top: 0; left: 0; height: 2px; background: var(--qx-accent); border-radius: 2px; width: 0; transition: width 0.5s ease; }
+  #counter { font-size: 12px; font-weight: 700; color: var(--qx-text-faint); min-width: 50px; text-align: right; }
+
+  .side-nav {
+    position: fixed; top: 50%; transform: translateY(-50%); z-index: 8;
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface);
+    color: var(--qx-text-dim); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
   }
-  #brand b { color: var(--chalk-yellow); font-weight: 400; }
-  .brand-sub { color: var(--chalk-faint); font-size: 14px; }
-  #progress-wrap {
-    flex: 1; height: 0; border-top: 2px dashed rgba(244, 241, 233, 0.25);
-    position: relative;
-  }
-  #progress {
-    position: absolute; top: -2px; left: 0; height: 0;
-    border-top: 2px solid var(--chalk-yellow); width: 0;
-    transition: width 0.5s ease;
-  }
-  #counter {
-    font-family: var(--print); font-size: 15px; color: var(--chalk-dim);
-    letter-spacing: 0.02em; min-width: 54px; text-align: right;
-  }
+  .side-nav:disabled { opacity: 0.25; cursor: default; }
+  .side-nav.prev { left: 14px; }
+  .side-nav.next { right: 14px; }
+  @media (max-width: 720px) { .side-nav { display: none; } }
 
   #rail {
     position: fixed; top: 0; left: 0; z-index: 1;
@@ -260,145 +328,147 @@
     position: relative; flex: 0 0 100%;
     width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
-    padding: clamp(64px, 8vh, 96px) clamp(22px, 5vw, 80px) clamp(56px, 7vh, 84px);
+    padding: clamp(56px, 7vh, 80px) clamp(14px, 4vw, 60px) clamp(18px, 3vh, 32px);
+    box-sizing: border-box;
   }
   .slab {
     position: relative;
-    width: min(680px, 100%);
-    max-height: 100%;
-    border-radius: 4px;
-    background: var(--board-1);
-    border: 12px solid var(--frame);
-    box-shadow: 0 0 0 2px var(--frame-dark), 0 2px 0 4px rgba(0,0,0,0.25) inset,
-      0 30px 70px -28px rgba(0,0,0,0.85), inset 0 0 80px rgba(0,0,0,0.35);
-    transition: background 0.7s ease, box-shadow 0.7s ease, border-color 0.7s ease;
+    width: min(420px, 100%);
+    height: 100%;
+    border-radius: var(--qx-radius-lg);
+    background: var(--qx-surface);
+    border: 1px solid var(--qx-border);
+    box-shadow: var(--qx-shadow-card);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---- Floor 0: swipe card ---- */
+  .swipe-card {
+    flex: 1; width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    background-color: #0B132B;
     display: flex; flex-direction: column;
-  }
-  .slab[data-depth="0"] { background: var(--board-1); }
-  .slab[data-depth="1"] { background: var(--board-2); }
-  .slab[data-depth="2"] { background: var(--board-3); }
-  .slab[data-depth="3"] { background: var(--board-4); }
-  .slab[data-depth="4"] { background: var(--board-4); }
-
-  .slab-inner {
-    padding: clamp(28px, 4.5vw, 54px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--chalk-faint) transparent;
-  }
-
-  .eyebrow {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: clamp(16px, 2.6vw, 26px);
-    font-family: var(--print); font-size: 14px; letter-spacing: 0.04em;
-    color: var(--chalk-dim);
-  }
-  .eyebrow .num { color: var(--chalk-yellow); font-weight: 400; }
-  .eyebrow .act { flex: 1; color: var(--chalk-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .eyebrow .depthtag {
-    color: var(--chalk-green);
-    border: 1.5px dashed var(--chalk-faint);
-    border-radius: 14px; padding: 2px 11px;
-    font-size: 12px; letter-spacing: 0.02em;
-    transform: rotate(-1.2deg);
-  }
-  h1.title {
-    font-family: var(--hand-display); font-weight: 400;
-    font-size: clamp(30px, 6.4vw, 50px);
-    line-height: 1.06; letter-spacing: 0.005em;
-    margin-bottom: clamp(16px, 3vw, 26px);
-    color: var(--chalk);
-    text-shadow: 0 1px 0 rgba(0,0,0,0.25);
-  }
-  .body {
-    font-family: var(--hand);
-    font-size: clamp(18px, 2.5vw, 22px);
-    line-height: 1.62;
-    color: var(--chalk);
-  }
-  .body :global(p) { margin-bottom: 0.85em; }
-  .body :global(strong) { color: var(--chalk-yellow); font-weight: 700; }
-  .body :global(em) { color: var(--chalk-green); font-style: normal; border-bottom: 1.5px dotted var(--chalk-faint); }
-
-  .nav {
-    position: fixed; top: 50%; transform: translateY(-50%); z-index: 8;
-    width: 48px; height: 48px; border-radius: 50%;
-    border: 1.5px dashed var(--chalk-faint);
-    background: rgba(21, 42, 34, 0.6);
-    backdrop-filter: blur(6px);
-    color: var(--chalk-dim); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-  }
-  .nav:disabled { opacity: 0.18; cursor: default; }
-  .nav.prev { left: 18px; }
-  .nav.next { right: 18px; }
-  @media (max-width: 720px) { .nav { display: none; } }
-
-  .ascend {
-    position: absolute; top: 12px; right: 12px; z-index: 5;
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 1.5px dashed var(--chalk-faint); background: rgba(0,0,0,0.2);
-    color: var(--chalk-dim); cursor: pointer;
-    display: none; align-items: center; justify-content: center;
-    font-size: 17px;
-  }
-  .ladder {
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-    z-index: 5; display: flex; flex-direction: column; gap: 9px;
-  }
-  .rung {
-    width: 9px; height: 9px; border-radius: 50%;
-    border: 1.5px solid var(--chalk-faint);
-    background: transparent; transition: all 0.4s;
-  }
-  .rung.filled { background: var(--chalk-yellow); border-color: var(--chalk-yellow); }
-  .rung.passed { background: var(--chalk-faint); border-color: var(--chalk-faint); }
-
-  :global(.descend) {
-    margin-top: clamp(20px, 3.5vw, 30px);
-    display: flex; align-items: center; gap: 13px;
+    position: relative;
     cursor: pointer;
-    border: none; background: none; color: inherit;
-    font-family: var(--print); font-size: 15px; letter-spacing: 0.02em;
-    padding: 6px 0;
+    border: none; padding: 0; text-align: left; font-family: var(--qx-font);
   }
-  :global(.descend .chev) {
-    width: 34px; height: 34px; border-radius: 50%;
-    border: 1.5px dashed var(--chalk-green);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--chalk-green); flex-shrink: 0; font-size: 17px;
+  .swipe-gradient {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(11,19,43,0.5) 0%, rgba(11,19,43,0) 28%, rgba(11,19,43,0) 48%, rgba(11,19,43,0.86) 100%);
+    pointer-events: none;
   }
-  :global(.descend .label-top) { color: var(--chalk); }
-  :global(.descend .label-sub) { color: var(--chalk-faint); display: block; font-size: 12.5px; }
-  :global(.descend.atfloor) { opacity: 0.45; cursor: default; }
-  :global(.descend.atfloor .chev) { border-style: dotted; color: var(--chalk-faint); }
+  .swipe-top {
+    position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 16px 0;
+  }
+  .chip {
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,0.16); backdrop-filter: blur(8px);
+    border-radius: var(--qx-radius-pill); padding: 4px 11px 4px 4px;
+    font-size: 11px; font-weight: 800; color: #fff;
+  }
+  .chip-mark { width: 22px; height: 22px; border-radius: 50%; background: var(--qx-accent); color: #fff; display: flex; align-items: center; justify-content: center; }
+  .tier-badge { font-size: 10px; font-weight: 800; color: #0B132B; background: #fff; border-radius: 7px; padding: 3px 8px; }
 
-  .card-image {
-    flex: 1; width: 100%;
-    background-size: contain; background-position: center; background-repeat: no-repeat;
-    background-color: #1e3b2e;
-    min-height: 0;
+  .audio-btn {
+    position: absolute; top: 16px; right: 16px; z-index: 3;
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.12);
+    color: #fff; display: flex; align-items: center; justify-content: center; cursor: not-allowed; opacity: 0.55;
   }
-  .textbook-img {
-    width: 100%; max-height: 38vh;
-    background-size: contain; background-position: center; background-repeat: no-repeat;
-    border-radius: 6px; margin-bottom: 16px;
-    aspect-ratio: 1/1;
+  .audio-btn.small {
+    position: static; border-color: var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text-faint);
+    width: 30px; height: 30px; flex-shrink: 0;
   }
-  .textbook-img.pos-below { margin-bottom: 0; margin-top: 16px; }
-  .text-block { font-family: var(--hand); font-size: clamp(18px, 2.5vw, 22px); line-height: 1.62; color: var(--chalk); }
-  .text-block :global(p) { margin-bottom: 0.85em; }
-  .diagram-wrap {
-    width: 100%;
-    max-height: 32vh;
-    margin: 12px 0;
-    border: 1.5px dashed rgba(244,241,233,0.12);
-    border-radius: 6px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.12);
+  .audio-btn:not(:disabled) { cursor: pointer; opacity: 1; }
+  .audio-btn.playing { background: var(--qx-accent); border-color: var(--qx-accent); color: #fff; }
+  .audio-btn.small.playing { background: var(--qx-accent); border-color: var(--qx-accent); color: #fff; }
+
+  .swipe-bottom {
+    position: relative; z-index: 2; margin-top: auto;
+    padding: 0 18px 18px; display: block; width: 100%;
+    background: none; border: none; cursor: pointer;
   }
-  .floor-content { width: 100%; }
+  .swipe-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: #9AA0FF; margin-bottom: 6px; }
+  .swipe-title { font-size: 25px; font-weight: 800; color: #fff; line-height: 1.1; letter-spacing: -0.015em; }
+  .dig-hint { display: flex; align-items: center; gap: 9px; margin-top: 14px; color: #fff; }
+  .dig-circle {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 50%; background: var(--qx-accent);
+    animation: digbob 1.8s ease-in-out infinite;
+  }
+  .dig-hint span:last-child { font-size: 12.5px; font-weight: 700; }
+  @keyframes digbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
+  /* ---- Reading floor ---- */
+  .card-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 14px 12px;
+    border-bottom: 1px solid var(--qx-border);
+    flex-shrink: 0;
+  }
+  .header-mark { width: 28px; height: 28px; border-radius: 50%; background: var(--qx-accent-soft); color: var(--qx-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .header-text { flex: 1; min-width: 0; }
+  .header-title { font-size: 13.5px; font-weight: 800; color: var(--qx-text); line-height: 1.15; }
+  .header-sub { font-size: 10.5px; font-weight: 600; color: var(--qx-text-faint); }
+
+  .reading-body { flex: 1; min-height: 0; display: flex; overflow: hidden; }
+
+  .depth-rail {
+    flex: 0 0 auto; width: 14px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 7px;
+    padding: 10px 0; border-right: 1px solid var(--qx-border);
+  }
+  .rail-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--qx-border-2); flex-shrink: 0; }
+  .rail-dot.passed { background: var(--qx-text-faint); }
+  .rail-dot.current { width: 8px; height: 8px; background: var(--qx-accent); }
+
+  .reading-content {
+    flex: 1; min-width: 0; display: flex; flex-direction: column;
+    padding: 14px 16px 0; overflow: hidden;
+  }
+  .floor-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
+  .floor-pill {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.07em;
+    color: var(--qx-accent-text); background: var(--qx-accent-soft);
+    border-radius: var(--qx-radius-pill); padding: 4px 10px;
+  }
+  .floor-pill.law { color: #fff; background: var(--qx-pink); }
+  .floor-count { font-size: 10.5px; font-weight: 700; color: var(--qx-text-faint); }
+
+  .floor-text {
+    flex: 50 1 0%; min-height: 0; overflow-y: auto;
+    font-size: 14.5px; line-height: 1.58; color: var(--qx-text-2);
+  }
+  .floor-text :global(p) { margin-bottom: 0.75em; }
+  .floor-text :global(strong) { color: var(--qx-text); font-weight: 800; }
+  .floor-text :global(.formula) {
+    display: block; margin: 14px 0; text-align: center; border-radius: var(--qx-radius-md);
+    background: linear-gradient(160deg, var(--qx-pink-soft), var(--qx-accent-soft));
+    border: 1px solid var(--qx-pink); padding: 16px 12px;
+    font-size: 24px; font-weight: 800; color: var(--qx-text);
+  }
+  .floor-text :global(.gloss) { display: block; font-size: 11px; font-weight: 600; color: var(--qx-text-dim); margin-top: 6px; }
+
+  .floor-media { flex: 45 1 0%; min-height: 0; margin: 10px 0 12px; border-radius: var(--qx-radius-md); overflow: hidden; background: var(--qx-surface-2); }
+  .media-img { width: 100%; height: 100%; background-size: cover; background-position: center; }
+  .media-diagram { width: 100%; height: 100%; }
+  .floor-media :global(.video-container) { width: 100%; height: 100%; margin: 0; border: none; }
+
+  .nav-arrows { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 14px 14px; flex-shrink: 0; }
+  .arrow-btn {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
+    color: var(--qx-text-dim); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .arrow-btn.primary { background: var(--qx-accent); border-color: var(--qx-accent); color: #fff; }
+  .arrow-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .loading-slab {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--qx-text-faint);
+  }
 </style>

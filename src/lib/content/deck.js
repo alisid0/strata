@@ -1,7 +1,7 @@
 /**
- * Strata — The full 70-card deck.
+ * Strata — The full BB deck.
  * Ported from the legacy index.html DECK array.
- * Card shape: { act, kicker, title, layers, img, tags }
+ * BB shape: { act, kicker, title, layers, img, tags }
  */
 function C(act, kicker, title, layers, img, tags) {
   return { act, kicker, title, layers, img: img || null, tags: tags || null };
@@ -18,46 +18,54 @@ export const ACTS = {
 export const DEPTH_NAMES = ['Idea', 'Concrete', 'Definition', 'In action', 'The law'];
 
 // ═══════════════════════════════════════════════════════════════════
-// 80-card deck: 1-32 (original) + 33-37 (chemistry) + 38-70 (CG T0+T1)
+// 84-BB deck: 1-32 (original) + 33-37 (chemistry) + 38-70 (CG T0+T1)
+//             + 71-84 (Mechanics foundations, Tier 1 + Tier 2)
 // ═══════════════════════════════════════════════════════════════════
 export const DECK = [
   /* ───────── ACT I ───────── */
-  C('I', 'Card 01', 'The whole game', [
-    '<p>Physics is the science of stillness, movement, force and energy, and how they play out over time.</p><p>Why do bridges stand? How long does coffee stay hot? Why do things fall <em>down</em>, and why do planets and asteroids collide?</p><p>Can time run backwards? Is teleportation possible? Could anything survive falling into a black hole? Those are physics too. We\'ll keep them aside for a while.</p>'
+  C('I', 'BB 01', 'What physics studies', [
+    '<p>Physics is the study of matter, motion, force, and energy.</p>',
+    '<p>Physics is the study of matter, motion, force, and energy, and of how these interact over time. It explains why a bridge can bear its own weight without collapsing, why a cup of coffee cools at a predictable rate, and why objects fall toward the ground rather than away from it.</p><p>It also explains larger-scale phenomena, including why planets and asteroids follow the orbits and collision courses they do. Some questions remain open, including whether time could run in reverse, whether teleportation is physically possible, and what happens to matter that falls into a black hole. This deck begins with what has already been established through observation and experiment.</p>'
   ], 'images/card-01.png', { subject: 'physics', topic: 'foundations', concept: 'what-physics-is', ground: 'g0', buildsOn: [] }),
 
-  C('I', 'Card 02', 'Stuff takes up space', [
-    '<p>Matter is anything that takes up space and weighs something. It doesn\'t matter how much of either.</p><p>From microorganisms to stars, it\'s all matter. Anything that exists in physical form.</p>',
+  C('I', 'BB 02', 'Matter and mass', [
+    '<p>Matter is anything that occupies space and has mass.</p>',
+    '<p>Matter is anything that occupies space and has mass: solids, liquids, gases, and everything between, from a single bacterium to a star. The quantity present does not change what counts as matter, only that it takes up space and has mass.</p>',
     null,
-    '<p><strong>What\'s the matter with mass?</strong></p><p>Mass is a measure of resistance. It takes an external action, a force, to change where it sits.</p><p>Weight is one way to measure mass. It isn\'t the mass itself.</p><p>A brick has the same mass underwater, in space, or on the surface of the sun, assuming it doesn\'t melt.</p>'
+    '<p>Mass measures an object\'s resistance to a change in its motion. Changing how an object moves, speeding it up, slowing it down, or redirecting it, requires a force; the more mass an object has, the more force that change requires.</p><p>Weight is one way to measure mass, using the pull of gravity on an object, but weight and mass are not the same quantity. A given object has the same mass underwater, in orbit, or anywhere else, because its resistance to a change in motion does not depend on its surroundings. Its weight depends on the strength of the local gravitational pull.</p>'
   ], 'images/card-02.png', { subject: 'physics', topic: 'matter', concept: 'mass; weight-vs-mass', ground: 'g0', buildsOn: [] }),
 
-  C('I', 'Card 03', 'Rocks do not move (on their own)', [
-    '<p>Leave a thing alone and its motion never changes. Something still stays still. Something moving keeps moving in a straight line, and keeps going.</p>',
-    '<p>Slide a hockey puck across rough ground and it stops fast, so stopping feels like the natural thing. It isn\'t. The ground is quietly pushing back, with friction.</p><p>On smooth ice the puck glides much further. On a frictionless surface in space, it would never stop. The moving was never the strange part. The stopping is.</p>'
+  C('I', 'BB 03', 'Inertia and Newton\'s first law', [
+    '<p>An object retains its current state of motion unless acted on by an outside force.</p>',
+    '<p>An object retains its current state of motion unless acted on by an outside force. An object at rest remains at rest; an object already moving continues in a straight line at constant speed, unless something interferes. This is Newton\'s first law of motion, often called the law of <strong>inertia</strong>.</p>',
+    '<p>A hockey puck sliding across rough pavement stops quickly, which can make stopping look like the natural outcome. It is not: the ground exerts a continuous backward force on the puck through friction. On smooth ice, where that backward force is much weaker, the same puck travels far longer before it stops. On a frictionless surface, it would never stop at all. The puck\'s continued motion is not what needs explaining. Its eventual stop does.</p>'
   ], 'images/card-03.png', { subject: 'physics', topic: 'mechanics', concept: 'inertia; newtons-first-law', ground: 'g0', buildsOn: [] }),
 
-  C('I', 'Card 04', 'The thing your eyes can\'t see', [
-    '<p>How rough or smooth two surfaces are decides how easily one slides over the other. The rougher they are, the more they resist. The smoother they are, the easier the glide.</p>',
-    '<p>Why does a hockey puck stop dead on a concrete street but keep gliding on ice?</p><p>Same puck, same push. The only thing that changed is the surface under it. Something is happening down there, too small for the eye to catch. To see why, we have to look closer.</p>'
+  C('I', 'BB 04', 'Friction', [
+    '<p>Friction is the resistance two surfaces exert against sliding over each other.</p>',
+    '<p>The roughness of two surfaces in contact determines how easily one slides over the other. Rougher surfaces resist sliding more; smoother surfaces resist it less. This resistance to sliding is called <strong>friction</strong>.</p>',
+    '<p>A hockey puck sliding across concrete stops almost immediately, while the same puck sliding across ice continues for a much greater distance, despite an identical push. The only difference is the surface beneath it. At a scale too small to see directly, microscopic irregularities in each surface catch against each other; smoother surfaces have fewer and shallower irregularities to catch on.</p>'
   ], 'images/card-04.png', { subject: 'physics', topic: 'mechanics', concept: 'friction', ground: 'g0', buildsOn: [] }),
 
-  C('I', 'Card 05', 'The second big rule', [
-    '<p>Force, mass, and how fast something speeds up (its acceleration) are locked together in one exact relationship.</p><p>More force, more speed-up. More mass, less speed-up.</p>',
-    '<p>Give a child on a skateboard one firm push and they roll off at a modest pace. Push harder, they roll faster.</p><p>Now tie a bag of bricks to the skateboard, at least ten times as heavy as the child, and push. It barely moves.</p><p>Force and mass aren\'t acting in a straight line. They\'re acting proportionally.</p>',
+  C('I', 'BB 05', 'Newton\'s second law: F = ma', [
+    '<p>Force, mass, and acceleration are related by one exact relationship.</p>',
+    '<p>Force, mass, and acceleration are related by one exact relationship: a greater force produces a greater acceleration; a greater mass reduces the acceleration produced by the same force.</p>',
+    '<p>A single firm push sends a child on a skateboard rolling at a modest pace; a harder push sends them rolling faster. Attach a load of bricks to the same skateboard, at least ten times the child\'s mass, and the identical push barely moves it. Force and mass do not act independently, they trade off against each other in producing acceleration.</p>',
     null, null,
-    '<p>Put the two together. Push harder on the same object and it speeds up more, so force tracks acceleration. Add more mass but push just as hard, and it speeds up less, so for a fixed force, mass and acceleration trade off against each other inversely.</p><p>Written down as one equation:</p><div class=\'formula\'>F = m &middot; a<span class=\'gloss\'>Force equals mass times acceleration.</span></div><p>Newton was the first to prove this formally, as a theorem. We\'ve been designing machines and mechanical parts on it ever since, and it hasn\'t been disproved. There\'s a nuance to it, but we\'re not going there yet. We\'re still in observable physics.</p>'
+    '<p>Combining the two relationships: for a fixed mass, acceleration increases in direct proportion to the applied force; for a fixed force, acceleration decreases in direct proportion to the mass. Written as a single equation:</p><div class=\'formula\'>F = m &middot; a<span class=\'gloss\'>Force equals mass times acceleration.</span></div><p>Newton first proved this relationship formally. It has been used to design mechanical systems ever since and has not been disproved within the range of speeds and scales this deck covers. A more complete treatment, accounting for relativistic effects at extreme speeds, comes later.</p>'
   ], 'images/card-05.png', { subject: 'physics', topic: 'mechanics', concept: 'newtons-second-law; force', ground: 'g0', buildsOn: [] }),
 
-  C('I', 'Card 06', 'A bus between stops', [
-    '<p>A bus waits at the stop. It isn\'t moving at all. Then the driver pulls away, rolls down the road, and brakes at a red light half a mile on.</p><p>Three different things are changing during that short trip. Dig down to see each one.</p>',
-    '<p>Speed is simply how fast the bus is going. Nothing more. Standing at the stop, its speed is zero. Pulling away, the speed climbs. At the light, it falls back to zero.</p><p>Speed is a single number: twenty miles an hour, thirty, zero. It says how fast, and nothing about which way.</p>',
-    '<p>Velocity is speed with a direction attached. "Twenty miles an hour" is a speed. "Twenty miles an hour down the high street" is a velocity.</p><p>It matters more than it sounds. A bus going twenty north and one going twenty south have the same speed but opposite velocities. The moment direction is part of the answer, you\'re talking about velocity.</p>',
-    '<p>Acceleration is how quickly the velocity is changing. As the bus pulls away, its speed is climbing, so it\'s accelerating. As it brakes for the light, its speed is dropping, so it\'s accelerating the other way.</p><p>Sitting still at the stop, nothing changes, so acceleration is zero. Cruising at a steady speed in a straight line, also zero. Acceleration only exists when the motion itself is changing.</p>'
+  C('I', 'BB 06', 'Speed, velocity, and acceleration', [
+    '<p>A bus between stops shows speed, velocity, and acceleration changing in turn.</p>',
+    '<p>A bus at a stop is motionless. As the driver pulls away, accelerates down the road, and brakes at a traffic light, three distinct quantities change during that short trip: speed, velocity, and acceleration.</p>',
+    '<p><strong>Speed</strong> is how fast an object is moving, with no reference to direction. At the stop, the bus\'s speed is zero. As it pulls away, its speed increases. At the light, it falls back to zero. Speed is a single number, such as twenty miles per hour; it states how fast, not which way.</p>',
+    '<p><strong>Velocity</strong> is speed combined with a direction. "Twenty miles per hour" is a speed; "twenty miles per hour northbound" is a velocity. Two buses travelling at the same speed but in opposite directions have identical speeds and opposite velocities.</p>',
+    '<p><strong>Acceleration</strong> is the rate at which velocity changes. As the bus pulls away, its speed increases, so it is accelerating. As it brakes at the light, its speed decreases, so it is decelerating, which means its acceleration is negative.</p><p>At rest at the stop, nothing is changing, so acceleration is zero. Cruising at a constant speed in a straight line, acceleration is also zero. Acceleration exists only when the motion itself is changing, whether in speed, in direction, or in both.</p>'
   ], 'images/card-06.png', { subject: 'physics', topic: 'mechanics', concept: 'speed; velocity; acceleration', ground: 'g0', buildsOn: [] }),
 
-  C('I', 'Card 07', 'It always pushes back', [
-    '<p>Push on a wall and the wall pushes back on you, exactly as hard. This holds for everything. There is no such thing as a one-sided force. This one is called Newton\'s third law.</p><p>Step off a small boat onto the dock and the boat shoots backward beneath you, sometimes dropping you in the water. You pushed the boat back; the boat pushed you forward. A rocket works the same way: it throws gas downward, and the gas throws the rocket up. Nothing is pushing against the ground. The two are pushing on each other.</p>'
+  C('I', 'BB 07', 'Newton\'s third law', [
+    '<p>Every force has an equal and opposite reaction force.</p>',
+    '<p>Every force has an equal and opposite reaction force. Pushing on a wall produces a force from the wall back on the hand, equal in magnitude. No force acts alone; this is Newton\'s third law.</p><p>Stepping off a small boat onto a dock pushes the boat backward, sometimes far enough to unbalance the person stepping off. The person exerted a backward force on the boat; the boat exerted an equal forward force on the person. A rocket operates on the same principle: it expels gas downward, and the gas exerts an equal upward force on the rocket. Neither the boat nor the rocket is pushing against the ground; each pair of objects is pushing on each other directly.</p>'
   ], 'images/card-07.png', { subject: 'physics', topic: 'mechanics', concept: 'newtons-third-law', ground: 'g0', buildsOn: [] }),
 
   C('I', 'Card 08', 'How hard the stop is', [
@@ -432,4 +440,62 @@ export const DECK = [
     "<p>Two different lines cross at exactly one point, unless they're parallel. At that point, both equations are true at once: the same x and y satisfy both.</p><p>Set the two equations equal to each other, solve for x, then plug it back in for y. That's the meeting point, found without ever drawing the graph.</p>",
     "<p>Take y = 2x − 6 and y = −x + 9. Set them equal: 2x − 6 = −x + 9, so 3x = 15, x = 5. Plug back in: y = 2(5) − 6 = 4. They meet at (5, 4). Check the other equation: −5 + 9 = 4. ✓</p>"
   ],null,{subject:"maths",topic:"coordinate-geometry",concept:"simultaneous-equations-graphical",ground:"g0",buildsOn:["Card 63"]}),
+
+  /* ---------- BB 71-77: Mechanics foundations, Tier 1 (mathematical formulation) ---------- */
+  C("I","BB 71","How physics expresses a law mathematically",[
+    "<p>A physical law is a precise relationship between measurable quantities, expressed as an equation rather than a description. Each quantity in that equation has a defined unit, and the equation holds regardless of which specific numbers are substituted into it.</p><p>Newton's second law, introduced in BB 05, is one example: F = ma relates force (measured in newtons), mass (in kilograms), and acceleration (in metres per second squared). The equation does not just describe the relationship in words, it specifies exactly how the three quantities trade off against each other, for any values at all. The BBs that follow formalize the qualitative ideas from BB 01-07 into equations of this kind.</p>"
+  ],null,{subject:"physics",topic:"foundations",concept:"law-as-equation; units",ground:"g1",buildsOn:["BB 01"]}),
+
+  C("I","BB 72","Mass, weight, and units",[
+    "<p>Mass is a scalar quantity, measured in <strong>kilograms (kg)</strong>. It has a magnitude only, no direction, and the same number applies wherever the object is located.</p><p>Weight is the force of gravity acting on that mass, and unlike mass, it is measured in <strong>newtons (N)</strong>, the unit of force. The two are related by:</p><div class='formula'>W = mg<span class='gloss'>Weight equals mass times the local gravitational acceleration, g.</span></div><p>Near Earth's surface, g is approximately 9.8 m/s², so a 1 kg mass weighs about 9.8 N. On the Moon, where g is about 1.6 m/s², the same 1 kg mass weighs only about 1.6 N. The mass, 1 kg, does not change; only the weight does.</p>"
+  ],null,{subject:"physics",topic:"matter",concept:"mass-unit; weight-equation",ground:"g1",buildsOn:["BB 02"]}),
+
+  C("I","BB 73","Newton's first law as a condition",[
+    "<p>Newton's first law can be stated as a single condition: an object moves at constant velocity, including remaining at rest, exactly when the net force acting on it is zero.</p><div class='formula'>&Sigma;F = 0 &rArr; v = constant<span class='gloss'>If the sum of all forces on an object is zero, its velocity does not change.</span></div><p>This condition, &Sigma;F = 0, is what \"left alone\" meant in BB 03: not the absence of any forces, but the absence of a net, unbalanced one. A book resting on a table has gravity pulling it down and the table pushing it up; these two forces sum to zero, which is why the book stays at constant velocity, meaning at rest.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"net-force; equilibrium-condition",ground:"g1",buildsOn:["BB 03"]}),
+
+  C("I","BB 74","The friction equation",[
+    "<p>The amount of friction between two surfaces can be calculated, not just described qualitatively. It depends on two things: how strongly the two surfaces are pressed together, and a number describing how rough that particular pair of surfaces is.</p><div class='formula'>F = &mu;N<span class='gloss'>Friction force equals the coefficient of friction (&mu;) times the normal force (N).</span></div><p>N is the <strong>normal force</strong>, the force pressing the two surfaces together (for an object resting on a flat surface, this equals its weight). &mu;, the <strong>coefficient of friction</strong>, is a number specific to the pair of materials in contact: rubber on dry concrete has a high &mu;; steel on ice has a low one. A larger &mu; or a larger N both produce more friction.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"coefficient-of-friction; normal-force",ground:"g1",buildsOn:["BB 04"]}),
+
+  C("I","BB 75","Rearranging F = ma",[
+    "<p>Newton's second law, F = ma, can be rearranged to solve for any one of its three quantities once the other two are known.</p><div class='formula'>a = F / m<br>m = F / a<span class='gloss'>The same relationship, solved for acceleration or for mass.</span></div><p>Each quantity carries its own SI unit: force in newtons (N), mass in kilograms (kg), acceleration in metres per second squared (m/s&sup2;). One newton is defined as exactly the force that gives a 1 kg mass an acceleration of 1 m/s&sup2;, which is what ties the three units together: 1 N = 1 kg&middot;m/s&sup2;.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"newtons-second-law-rearranged; SI-units",ground:"g1",buildsOn:["BB 05"]}),
+
+  C("I","BB 76","Velocity and acceleration as rates of change",[
+    "<p>Velocity and acceleration, introduced qualitatively in BB 06, are each defined as a rate of change.</p><div class='formula'>v = &Delta;x / &Delta;t<br>a = &Delta;v / &Delta;t<span class='gloss'>Velocity is the change in position over the change in time; acceleration is the change in velocity over the change in time.</span></div><p>&Delta;x (change in position) and &Delta;v (change in velocity) are measured over an interval of time, &Delta;t. Velocity is measured in metres per second (m/s); acceleration, being a change in velocity per second, is measured in metres per second squared (m/s&sup2;).</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"velocity-formula; acceleration-formula",ground:"g1",buildsOn:["BB 06"]}),
+
+  C("I","BB 77","Newton's third law as an equation",[
+    "<p>Newton's third law can be written as a single equation relating the two forces in any interacting pair.</p><div class='formula'>F&#8321;&#8322; = &minus;F&#8322;&#8321;<span class='gloss'>The force of object 1 on object 2 is equal in magnitude and opposite in direction to the force of object 2 on object 1.</span></div><p>The minus sign represents the opposite direction; the magnitudes on both sides are equal. This holds regardless of the masses of the two objects involved: a person pushing on a wall and a person pushing on another person experience the same kind of equal-and-opposite pair, even though the wall does not move and the other person might.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"newtons-third-law-equation",ground:"g1",buildsOn:["BB 07"]}),
+
+  /* ---------- BB 78-84: Mechanics foundations, Tier 2 (numericals) ---------- */
+  C("I","BB 78","Numerical: force, mass, and units",[
+    "<p>Newton's second law states F = ma. Consider a 4 kg mass given an acceleration of 3 m/s&sup2;. The force required is:</p><div class='formula'>F = m &times; a = 4 kg &times; 3 m/s&sup2; = 12 kg&middot;m/s&sup2; = 12 N<span class='gloss'>Multiplying mass by acceleration gives a result in kg&middot;m/s&sup2;, which is defined as the newton.</span></div><p>This confirms the unit relationship from BB 71: one newton is exactly one kilogram-metre-per-second-squared, not a separately defined unit.</p>"
+  ],null,{subject:"physics",topic:"foundations",concept:"law-as-equation; units; worked-example",ground:"g2",buildsOn:["BB 71"]}),
+
+  C("I","BB 79","Numerical: weight on Earth and the Moon",[
+    "<p>A 12 kg object sits on a table. Its weight is:</p><div class='formula'>W = mg = 12 kg &times; 9.8 m/s&sup2; = 117.6 N<span class='gloss'>Weight equals mass times gravitational acceleration.</span></div><p>On the Moon, where g &asymp; 1.6 m/s&sup2;, the same object's weight would be 12 &times; 1.6 = 19.2 N. Its mass, 12 kg, is unchanged in both cases; only the gravitational acceleration differs.</p>"
+  ],null,{subject:"physics",topic:"matter",concept:"mass-unit; weight-equation; worked-example",ground:"g2",buildsOn:["BB 72"]}),
+
+  C("I","BB 80","Numerical: the normal force on a resting box",[
+    "<p>A 5 kg box rests on a table. Gravity pulls down on it with a force of W = mg = 5 &times; 9.8 = 49 N. For the box to remain at rest, per BB 73, the net force on it must be zero.</p><div class='formula'>&Sigma;F = 0 &rArr; N = 49 N<span class='gloss'>The table must push up on the box with a normal force exactly equal to its weight.</span></div><p>If the table instead pushed up with only 40 N, the forces would not balance, and the box would accelerate downward. The 49 N normal force is not a coincidence: it is the exact value required by &Sigma;F = 0.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"net-force; equilibrium-condition; worked-example",ground:"g2",buildsOn:["BB 73"]}),
+
+  C("I","BB 81","Numerical: maximum friction on a crate",[
+    "<p>A 10 kg crate rests on a concrete floor, where the coefficient of friction between crate and floor is &mu; = 0.5. The normal force is N = mg = 10 &times; 9.8 = 98 N.</p><div class='formula'>F = &mu;N = 0.5 &times; 98 = 49 N<span class='gloss'>The maximum friction force resisting the crate's sliding.</span></div><p>A horizontal push smaller than 49 N will not be enough to start the crate sliding; a push exceeding 49 N will overcome friction and set it in motion.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"coefficient-of-friction; normal-force; worked-example",ground:"g2",buildsOn:["BB 74"]}),
+
+  C("I","BB 82","Numerical: force and acceleration of a car",[
+    "<p>A car of mass 1200 kg needs to accelerate at 2 m/s&sup2;. Using F = ma, the force its engine must produce is:</p><div class='formula'>F = m &times; a = 1200 kg &times; 2 m/s&sup2; = 2400 N<span class='gloss'>Force required for the given mass and acceleration.</span></div><p>If the same car's engine instead produces a constant 1800 N, the resulting acceleration is a = F/m = 1800 / 1200 = 1.5 m/s&sup2;, lower than before, because the same mass now receives less force.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"newtons-second-law-rearranged; SI-units; worked-example",ground:"g2",buildsOn:["BB 75"]}),
+
+  C("I","BB 83","Numerical: a cyclist's velocity and acceleration",[
+    "<p>A cyclist travels from a position 20 m to a position 170 m along a straight road, taking 30 seconds to do so. Their average velocity is:</p><div class='formula'>v = &Delta;x / &Delta;t = (170 &minus; 20) / 30 = 150 / 30 = 5 m/s<span class='gloss'>Average velocity over the 30-second interval.</span></div><p>If the cyclist's velocity increases from 5 m/s to 9 m/s over the next 4 seconds, their acceleration over that interval is a = &Delta;v / &Delta;t = (9 &minus; 5) / 4 = 1 m/s&sup2;.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"velocity-formula; acceleration-formula; worked-example",ground:"g2",buildsOn:["BB 76"]}),
+
+  C("I","BB 84","Numerical: two skaters pushing off",[
+    "<p>A 70 kg skater pushes off a 50 kg skater on frictionless ice. The push exerts 140 N on the lighter skater. By Newton's third law, the lighter skater exerts exactly 140 N back on the heavier one, in the opposite direction.</p><div class='formula'>a&#8321; = F / m&#8321; = 140 / 70 = 2 m/s&sup2;<br>a&#8322; = F / m&#8322; = 140 / 50 = 2.8 m/s&sup2;<span class='gloss'>Equal and opposite forces, applied to different masses, produce different accelerations.</span></div><p>The forces are identical in magnitude, exactly as Newton's third law requires, but the resulting accelerations differ because the two skaters have different masses. Equal force does not mean equal acceleration.</p>"
+  ],null,{subject:"physics",topic:"mechanics",concept:"newtons-third-law-equation; worked-example",ground:"g2",buildsOn:["BB 77"]}),
 ];

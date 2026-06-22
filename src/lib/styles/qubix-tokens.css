@@ -1,0 +1,94 @@
+/* ============================================================
+   Qubix — design tokens for the app shell (Auth, Home, Topics,
+   Topic Detail, Stats, Leaderboard, Snippets).
+   Independent of tokens.css (the --chalk- and --board- vars), which
+   Reader.svelte and Quiz.svelte still use. Distinct --qx- prefix means
+   the two systems can coexist on the same root with zero collision.
+   ============================================================ */
+
+:root {
+  --qx-font: 'Mulish', sans-serif;
+  --qx-radius-sm: 10px;
+  --qx-radius-md: 14px;
+  --qx-radius-lg: 18px;
+  --qx-radius-pill: 999px;
+
+  /* Theme-independent accents */
+  --qx-accent: #454ADE;
+  --qx-yellow: #FFF05A;
+  --qx-green: #69E037;
+  --qx-pink: #FF79AC;
+}
+
+:root[data-qx-theme="light"] {
+  --qx-bg: #EEEEEE;
+  --qx-bg-radial: #ffffff;
+  --qx-surface: #ffffff;
+  --qx-surface-2: #F1F2F0;
+  --qx-surface-3: #ECEDEA;
+  --qx-surface-elevated: #1b1b22;
+  --qx-border: #E2E0DC;
+  --qx-border-2: #DEDCD8;
+
+  --qx-text: #121118;
+  --qx-text-2: #54505A;
+  --qx-text-dim: #6B6770;
+  --qx-text-faint: #9A95A0;
+  --qx-text-faintest: #A8A4AE;
+
+  --qx-accent-soft: #E7E9FB;
+  --qx-accent-soft-2: #EEF0FC;
+  --qx-accent-text: #454ADE;
+
+  --qx-yellow-soft: #FFFBCB;
+  --qx-yellow-text: #7A6A12;
+
+  --qx-green-soft: #EAF7E0;
+  --qx-green-text: #3E8C12;
+
+  --qx-pink-soft: #FCE7F0;
+  --qx-pink-soft-2: #FFEFF6;
+  --qx-pink-text: #FF79AC;
+
+  --qx-shadow-card: 0 10px 22px -10px rgba(18,17,24,0.18);
+}
+
+:root[data-qx-theme="dark"] {
+  --qx-bg: #0B132B;
+  --qx-bg-radial: #16223f;
+  --qx-surface: rgba(255,255,255,0.05);
+  --qx-surface-2: rgba(255,255,255,0.06);
+  --qx-surface-3: rgba(255,255,255,0.06);
+  --qx-surface-elevated: #15141a;
+  --qx-border: rgba(255,255,255,0.09);
+  --qx-border-2: rgba(255,255,255,0.13);
+
+  --qx-text: #f4f1e9;
+  --qx-text-2: #C9C6CD;
+  --qx-text-dim: #97949E;
+  --qx-text-faint: #8E97AB;
+  --qx-text-faintest: #6E7689;
+
+  --qx-accent-soft: rgba(69,74,222,0.16);
+  --qx-accent-soft-2: rgba(69,74,222,0.12);
+  --qx-accent-text: #9AA0FF;
+
+  --qx-yellow-soft: rgba(255,240,90,0.14);
+  --qx-yellow-text: #FFF05A;
+
+  --qx-green-soft: rgba(105,224,55,0.16);
+  --qx-green-text: #69E037;
+
+  --qx-pink-soft: rgba(255,121,172,0.14);
+  --qx-pink-soft-2: rgba(255,121,172,0.12);
+  --qx-pink-text: #FF79AC;
+
+  --qx-shadow-card: 0 14px 30px -14px rgba(0,0,0,0.5);
+}
+
+.qx-shell {
+  font-family: var(--qx-font);
+  background: radial-gradient(ellipse at 50% 6%, var(--qx-bg-radial), var(--qx-bg) 80%), var(--qx-bg);
+  color: var(--qx-text);
+  -webkit-font-smoothing: antialiased;
+}
