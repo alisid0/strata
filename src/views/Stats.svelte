@@ -29,10 +29,10 @@
 <div class="qx-shell stats-view">
   <div class="top-row">
     <h1>Your stats</h1>
-    <button class="theme-toggle" on:click={() => theme.toggle()}>
+    <div class="theme-toggle">
       <QxToggle checked={$theme === 'dark'} onChange={() => theme.toggle()} />
       <span>{$theme === 'dark' ? 'Dark' : 'Light'}</span>
-    </button>
+    </div>
   </div>
 
   <div class="hero">

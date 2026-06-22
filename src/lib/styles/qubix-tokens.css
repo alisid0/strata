@@ -91,4 +91,6 @@
   background: radial-gradient(ellipse at 50% 6%, var(--qx-bg-radial), var(--qx-bg) 80%), var(--qx-bg);
   color: var(--qx-text);
   -webkit-font-smoothing: antialiased;
+  max-width: 480px;
+  margin: 0 auto;
 }

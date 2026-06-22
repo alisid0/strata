@@ -128,6 +128,7 @@
 
   .reader-nav {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+    max-width: 480px; margin: 0 auto;
     display: flex; background: var(--board-1); border-top: 2px dashed var(--line);
     padding: 10px 0; box-shadow: 0 -2px 8px rgba(0,0,0,0.4);
   }

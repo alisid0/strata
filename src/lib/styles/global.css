@@ -51,6 +51,7 @@ body::after {
   z-index: 2;
   height: 100%;
   width: 100%;
+  background: var(--qx-bg);
 }
 
 /* Scrollbar styling */

@@ -295,6 +295,7 @@
   }
   #topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    max-width: 480px; margin: 0 auto;
     display: flex; align-items: center; gap: 14px;
     padding: 14px clamp(18px, 4vw, 34px);
     pointer-events: none;
@@ -313,13 +314,14 @@
     display: flex; align-items: center; justify-content: center;
   }
   .side-nav:disabled { opacity: 0.25; cursor: default; }
-  .side-nav.prev { left: 14px; }
-  .side-nav.next { right: 14px; }
+  .side-nav.prev { left: calc(50% - 294px); }
+  .side-nav.next { right: calc(50% - 294px); }
   @media (max-width: 720px) { .side-nav { display: none; } }
 
   #rail {
-    position: fixed; top: 0; left: 0; z-index: 1;
-    width: 100%; height: 100%;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1;
+    max-width: 480px; margin: 0 auto;
+    height: 100%;
     display: flex;
     transition: transform 0.62s cubic-bezier(0.16, 0.84, 0.24, 1);
     will-change: transform;
