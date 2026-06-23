@@ -52,5 +52,5 @@ export function pathsForCard(cardNumber) {
 
 /** Get total board count (all BBs, including unpathed) */
 export function totalBoards() {
-  return 104;
+  return 234;
 }
