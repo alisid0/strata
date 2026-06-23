@@ -2759,6 +2759,351 @@ export const PATH_QUESTIONS = {
       explain: 'The same physical phenomenon — circulating currents induced by changing flux in a bulk conductor — is useful for induction heating but a source of energy loss (heat) in transformer cores, where lamination interrupts the current paths to reduce that loss.'
     }))
   ],
+
+  // ── M15 : Calculus — differentiation ──
+  M15: [
+    mcq(() => ({
+      cg: 'M15-1',
+      q: 'The derivative f\'(x) is defined as the limit of which quantity as h → 0?',
+      opts: ['f(x+h) + f(x)', '[f(x+h) − f(x)]/h', 'f(x+h) × f(x)', 'f(x)/h'],
+      answer: 1,
+      explain: "f'(x) = lim(h→0) [f(x+h)−f(x)]/h — the limit of the slope of secant lines as the interval shrinks to zero, giving the slope of the tangent at that point."
+    })),
+    typeanswer(() => {
+      const n = pick([3, 4, 5, 6]);
+      return {
+        cg: 'M15-2',
+        q: `Using the power rule d/dx[xⁿ] = nxⁿ⁻¹, what is the coefficient n in the derivative of x^${n}?`,
+        answer: n,
+        tolerance: 0,
+        explain: `d(x^${n})/dx = ${n}x^${n-1} — the power rule brings the exponent down as the multiplying coefficient.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'M15-3',
+      q: 'The product rule for (uv)\' states:',
+      opts: ["(uv)' = u'v'", "(uv)' = u'v + uv'", "(uv)' = u'v − uv'", "(uv)' = uv' only"],
+      answer: 1,
+      explain: "(uv)' = u'v + uv' — \"first d-second plus second d-first.\" Derived from the increment method: the cross term containing du·dv is negligible and dropped."
+    })),
+    truefalse(() => ({
+      cg: 'M15-4',
+      q: 'The quotient rule and the chain rule are independent — the quotient rule cannot be derived from the product rule and chain rule together.',
+      answer: false,
+      explain: "The quotient rule CAN be derived from the product rule plus chain rule: writing u/v = u·v⁻¹ and differentiating gives u'v⁻¹ + u(−1)v⁻²v' = (u'v−uv')/v² — exactly the quotient rule."
+    })),
+    mcq(() => ({
+      cg: 'M15-5',
+      q: 'The chain rule dy/dx = (dy/du)(du/dx) is used when:',
+      opts: [
+        'Differentiating a simple polynomial term',
+        'You have a composite function, y = f(g(x))',
+        'Adding two derivatives together',
+        'Only when integrating'
+      ],
+      answer: 1,
+      explain: 'The chain rule handles nested ("function of a function") expressions — differentiate the outer function with respect to the inner, then multiply by the derivative of the inner function.'
+    })),
+    fillblank(() => ({
+      cg: 'M15-6',
+      q: 'd/dx[eˣ] = ___ — this function is famous for being its own derivative.',
+      answer: 'eˣ',
+      accept: ['eˣ', 'e^x', 'ex'],
+      explain: 'eˣ is the unique function (up to scaling) that equals its own derivative — the defining property of the exponential constant e.'
+    })),
+    mcq(() => ({
+      cg: 'M15-7',
+      q: 'At a local maximum of a smooth function, what do we know about f\'(x) and f\'\'(x)?',
+      opts: [
+        "f'(x) = 0 and f''(x) < 0",
+        "f'(x) ≠ 0 and f''(x) > 0",
+        "f'(x) = 0 and f''(x) > 0",
+        "Neither derivative gives any information"
+      ],
+      answer: 0,
+      explain: "At a local max, the tangent is horizontal (f'(x)=0, a stationary point) and the curve bends downward there (f''(x)<0) — the second derivative test."
+    })),
+    truefalse(() => ({
+      cg: 'M15-8',
+      q: 'Trigonometric derivatives like d/dx[sin x] = cos x are only valid when x is measured in radians.',
+      answer: true,
+      explain: 'In degrees, every trig derivative would carry an extra factor of π/180 — radians are the natural unit for calculus precisely because they make these derivatives clean.'
+    })),
+    mcq(() => ({
+      cg: 'M15-9',
+      q: "L'Hôpital's rule is used to evaluate limits that have which indeterminate form(s)?",
+      opts: ['Only 0/0', 'Only ∞/∞', '0/0 and ∞/∞ (directly; others after algebraic manipulation)', 'Any limit whatsoever, with no restrictions'],
+      answer: 2,
+      explain: "L'Hôpital's rule applies directly to 0/0 and ∞/∞. Other indeterminate forms (0·∞, ∞−∞, 0⁰, 1^∞) must first be algebraically rearranged into one of those two forms."
+    })),
+    mcq(() => ({
+      cg: 'M15-10',
+      q: 'Implicit differentiation is used when:',
+      opts: [
+        'y is given explicitly as y = f(x)',
+        'y is defined by an equation F(x,y) = 0 that can\'t easily be solved for y',
+        'There is no y in the equation at all',
+        'Only constants are involved'
+      ],
+      answer: 1,
+      explain: 'Implicit differentiation differentiates both sides of F(x,y)=0 with respect to x, applying the chain rule to any term containing y, then solves algebraically for dy/dx.'
+    }))
+  ],
+
+  // ── M16 : Calculus — integration ──
+  M16: [
+    mcq(() => ({
+      cg: 'M16-1',
+      q: 'The indefinite integral ∫ f(x) dx = F(x) + C represents:',
+      opts: [
+        'A single unique function',
+        'An entire family of antiderivatives, differing by a constant',
+        'The area under the curve only',
+        'The derivative of f(x)'
+      ],
+      answer: 1,
+      explain: 'Since the derivative of any constant is zero, infinitely many functions share the same derivative f(x) — the +C captures that entire family.'
+    })),
+    typeanswer(() => {
+      const n = pick([2, 3, 4]);
+      return {
+        cg: 'M16-2',
+        q: `Using ∫xⁿ dx = xⁿ⁺¹/(n+1) + C, what is the denominator (n+1) when integrating x^${n}?`,
+        answer: n + 1,
+        tolerance: 0,
+        explain: `∫x^${n} dx = x^${n+1}/${n+1} + C.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'M16-3',
+      q: 'The Fundamental Theorem of Calculus (part 2) states that ∫[a,b] f(x) dx equals:',
+      opts: ['F(a) − F(b)', 'F(b) − F(a), where F is any antiderivative of f', 'f(b) − f(a)', 'F(b) + F(a)'],
+      answer: 1,
+      explain: 'FTC 2: the definite integral equals the net change in any antiderivative, F(b)−F(a) — this is what makes definite integrals computable without summing infinitely many rectangles directly.'
+    })),
+    truefalse(() => ({
+      cg: 'M16-4',
+      q: 'Integration by substitution (u-substitution) is essentially the chain rule used in reverse.',
+      answer: true,
+      explain: '∫f(g(x))g\'(x)dx = ∫f(u)du with u=g(x) — exactly undoing what the chain rule does when differentiating a composite function.'
+    })),
+    mcq(() => ({
+      cg: 'M16-5',
+      q: 'The LIATE rule helps decide which factor to call "u" in integration by parts. What does it prioritize?',
+      opts: [
+        'Always pick the simplest-looking factor',
+        'Logarithmic, then Inverse trig, then Algebraic, then Trigonometric, then Exponential — pick u from the highest-priority category present',
+        'Always pick whichever factor comes first in the integral',
+        'Pick u and dv at random and try both'
+      ],
+      answer: 1,
+      explain: 'LIATE works because logs and inverse trig simplify dramatically when differentiated, while exponentials and trig functions barely change — making the "new" integral after one application of parts simpler, not harder.'
+    })),
+    fillblank(() => ({
+      cg: 'M16-6',
+      q: 'For the disk method computing a volume of revolution, the formula is V = π∫[R(x)² − r(x)²] dx, where each slice is treated as a thin ___.',
+      answer: 'disk',
+      accept: ['disk', 'disc', 'washer'],
+      explain: 'The disk (or washer, if hollow) method sums up the volumes of infinitesimally thin disks perpendicular to the axis of rotation.'
+    })),
+    mcq(() => ({
+      cg: 'M16-7',
+      q: 'An improper integral ∫[a,∞] f(x) dx is said to "converge" when:',
+      opts: [
+        'The function f(x) is always positive',
+        'The limit of the partial integral as the upper bound → ∞ exists and is finite',
+        'f(x) reaches zero at some finite point',
+        'The integral can be computed using the power rule'
+      ],
+      answer: 1,
+      explain: 'Convergence means lim(t→∞) ∫[a,t] f(x)dx exists and is a finite number — if that limit is infinite or doesn\'t exist, the integral diverges.'
+    })),
+    mcq(() => ({
+      cg: 'M16-8',
+      q: 'Why does computing arc length using ds = √(dx² + dy²) typically lead to integrals that are very hard to evaluate?',
+      opts: [
+        'Arc length integrals are always trivial to solve',
+        'The square root in the integrand rarely simplifies into an elementary antiderivative, except for special cases like lines and circles',
+        'Arc length cannot be computed with calculus at all',
+        'The formula is wrong'
+      ],
+      answer: 1,
+      explain: 'The square root of a sum of squared derivatives resists elementary integration techniques in most cases — arc length problems are a classic source of integrals requiring numerical methods.'
+    })),
+    truefalse(() => ({
+      cg: 'M16-9',
+      q: 'When finding the area between two curves f(x) and g(x), you should always integrate f(x) − g(x) without checking which curve is on top.',
+      answer: false,
+      explain: 'You must determine which function is larger on each subinterval (test a point) and integrate (top − bottom); if the curves cross, you must split the interval at each crossing point and recheck.'
+    }))
+  ],
+
+  // ── P18 : Calculus in physics — differentiation applications ──
+  P18: [
+    mcq(() => ({
+      cg: 'P18-1',
+      q: 'Velocity is the derivative of position with respect to time. What is acceleration?',
+      opts: ['The derivative of position', 'The derivative of velocity (the second derivative of position)', 'The integral of velocity', 'The same thing as velocity'],
+      answer: 1,
+      explain: 'a = dv/dt = d²s/dt² — acceleration is the rate of change of velocity, i.e. the second derivative of position with respect to time.'
+    })),
+    truefalse(() => ({
+      cg: 'P18-2',
+      q: 'The SUVAT equations are exact for any acceleration, constant or variable.',
+      answer: false,
+      explain: 'The SUVAT equations are derived by integrating a = dv/dt assuming a is CONSTANT. For variable acceleration, you must integrate the actual a(t) function directly.'
+    })),
+    mcq(() => ({
+      cg: 'P18-3',
+      q: 'Maximum range for a projectile launched on level ground occurs at a launch angle of:',
+      opts: ['30°', '45°', '60°', '90°'],
+      answer: 1,
+      explain: 'R(θ) = u²sin(2θ)/g is maximised when sin(2θ)=1, i.e. 2θ=90°, so θ=45° — found by setting dR/dθ=0.'
+    })),
+    mcq(() => ({
+      cg: 'P18-4',
+      q: "Newton's second law, m(d²x/dt²) = F, is described as a differential equation because:",
+      opts: [
+        'It contains no derivatives at all',
+        'It relates a function (position) to its own derivatives, and solving it means finding that function',
+        'It can only be solved by guessing',
+        'F must always be zero'
+      ],
+      answer: 1,
+      explain: "F=ma is a second-order ODE relating x(t) to its derivatives. \"Solving Newton's equations\" means integrating this ODE — given the force law and initial position/velocity — to find x(t)."
+    })),
+    fillblank(() => ({
+      cg: 'P18-5',
+      q: "Fermat's principle states that light follows the path that minimises ___, which leads directly to Snell's law.",
+      answer: 'time',
+      accept: ['time', 'travel time'],
+      explain: "Fermat's principle of least time, when treated as a calculus optimisation problem, yields Snell's law n₁sinθ₁ = n₂sinθ₂ as the condition for minimum travel time."
+    })),
+    mcq(() => ({
+      cg: 'P18-6',
+      q: 'In a "related rates" problem (e.g., a ladder sliding down a wall), the key technique is:',
+      opts: [
+        'Solving the constraint equation for each variable separately',
+        'Differentiating the constraint equation that links the variables, with respect to time, using the chain rule',
+        'Ignoring the constraint entirely',
+        'Only algebra, no calculus'
+      ],
+      answer: 1,
+      explain: 'Related rates problems differentiate a geometric or physical constraint equation implicitly with respect to time, then substitute known values to solve for the unknown rate.'
+    })),
+    truefalse(() => ({
+      cg: 'P18-7',
+      q: 'In a capacitor, the current I = C dV/dt means current flows only while the voltage across the capacitor is changing.',
+      answer: true,
+      explain: 'I = C dV/dt — if V is constant (steady state DC), dV/dt = 0 and no current flows through an ideal capacitor; current only flows during charging/discharging when voltage is changing.'
+    })),
+    mcq(() => ({
+      cg: 'P18-8',
+      q: "Differentiating sin(ωt) with respect to time produces ωcos(ωt). In AC circuit terms, this represents:",
+      opts: [
+        'No change at all',
+        'A 90° phase advance',
+        'A 180° phase reversal',
+        'A doubling of frequency'
+      ],
+      answer: 1,
+      explain: 'cos(ωt) = sin(ωt + 90°) — differentiation introduces a 90° phase ADVANCE, which is the calculus origin of capacitive/inductive reactance phase shifts in AC circuits.'
+    }))
+  ],
+
+  // ── P19 : Calculus in physics — integration applications ──
+  P19: [
+    mcq(() => ({
+      cg: 'P19-1',
+      q: 'Velocity is recovered from acceleration via v(t) = v₀ + ∫a(τ)dτ. What does this integral represent graphically?',
+      opts: [
+        'The slope of the acceleration-time graph',
+        'The area under the acceleration-time graph',
+        'The y-intercept of the velocity graph',
+        'Nothing physical'
+      ],
+      answer: 1,
+      explain: 'The change in velocity equals the signed area under the a(t) curve — each thin rectangle a(τ)Δτ contributes a small change in velocity, and integration sums them all.'
+    })),
+    mcq(() => ({
+      cg: 'P19-2',
+      q: 'The work done by a variable force is W = ∫F(x)dx. The work-energy theorem then says this work equals:',
+      opts: ['The total momentum', 'The change in kinetic energy, ΔKE', 'The change in mass', 'Zero, always'],
+      answer: 1,
+      explain: 'W_net = ΔKE = ½mv_f² − ½mv_i² — the work-energy theorem links the force integral directly to the change in kinetic energy.'
+    })),
+    truefalse(() => ({
+      cg: 'P19-3',
+      q: 'Impulse J = ∫F(t)dt is useful in collision analysis because you only need the total area under the F-t curve, not the exact shape of the force profile.',
+      answer: true,
+      explain: 'Impulse-momentum theorem: J = Δp. Since J is just the area under F(t), you can find the momentum change without knowing the precise (often complicated) shape of the collision force over time.'
+    })),
+    mcq(() => ({
+      cg: 'P19-4',
+      q: 'The centre of mass of a continuous body is found using x_cm = (1/M)∫x dm. What does this formula represent?',
+      opts: [
+        'The geometric centre regardless of mass distribution',
+        'A mass-weighted average position',
+        'The point of maximum density',
+        'An arbitrary reference point'
+      ],
+      answer: 1,
+      explain: 'x_cm is the mass-weighted average of position — integrating x×dm over the whole body and dividing by total mass M, generalising the discrete weighted-average formula to continuous distributions.'
+    })),
+    typeanswer(() => {
+      const M = pick([2, 4, 6]), R = pick([0.5, 1]);
+      const I = 0.5 * M * R * R;
+      return {
+        cg: 'P19-5',
+        q: `Using I = ½MR² for a solid disk of mass ${M} kg and radius ${R} m, what is the moment of inertia (kg·m²)?`,
+        answer: Math.round(I * 1000) / 1000,
+        tolerance: 0.01,
+        explain: `I = ½ × ${M} × ${R}² = ${Math.round(I*1000)/1000} kg·m² — this formula itself comes from integrating I=∫r²dm over the disk.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'P19-6',
+      q: 'The centre of pressure on a submerged vertical surface lies below the centroid because:',
+      opts: [
+        'Pressure is uniform with depth',
+        'The centre of pressure formula weights by h² (second moment), while the centroid is weighted by h (first moment) — deeper regions, with higher pressure, pull the effective centre downward',
+        'Water pressure decreases with depth',
+        'There is no relationship between the two points'
+      ],
+      answer: 1,
+      explain: 'h_cp = (∫h²dA)/(∫h dA) — the h² weighting in the numerator means deeper (higher-pressure) regions contribute disproportionately, pulling the centre of pressure below the simple area centroid.'
+    })),
+    truefalse(() => ({
+      cg: 'P19-7',
+      q: 'Computing the electric potential V from a charge distribution via integration is generally easier than computing the electric field E directly, because V is a scalar while E is a vector.',
+      answer: true,
+      explain: 'V = k∫dq/r involves only scalar addition (superposition of potentials), whereas E⃗ = ∫k dq r̂/r² requires vector addition — V is then differentiated (E⃗=−∇V) to recover the field, often simpler overall.'
+    })),
+    mcq(() => ({
+      cg: 'P19-8',
+      q: 'Energy from a time-varying power signal is found via E = ∫P(t)dt. What does this represent?',
+      opts: [
+        'The instantaneous power at one moment',
+        'The accumulated total energy, i.e. the area under the power-time curve',
+        'The average power only',
+        'The rate of change of energy'
+      ],
+      answer: 1,
+      explain: 'Energy is the time-integral of power — the area under the P-t curve — converting an instantaneous rate (power, J/s) into an accumulated quantity (energy, J).'
+    })),
+    mcq(() => ({
+      cg: 'P19-9',
+      q: "Maxwell's equations and Newton's second law can each be written in both differential and integral form. What is the relationship between these two forms?",
+      opts: [
+        'They describe completely different physical laws',
+        'They are equivalent — the differential form describes behavior at a point, the integral form describes behavior over a region, linked by the Fundamental Theorem of Calculus (or its generalisations)',
+        'Only the differential form is physically correct',
+        'The integral form is just an approximation'
+      ],
+      answer: 1,
+      explain: 'F=dp/dt (differential) and J=∫Fdt=Δp (integral) are the same physical law in two equivalent forms — the same duality appears throughout physics via the Fundamental Theorem of Calculus and its multivariable generalisations (Stokes\', divergence theorem).'
+    }))
+  ],
 };
 
 /** Get questions for a specific path, shuffled */

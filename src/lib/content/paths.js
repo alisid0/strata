@@ -51,13 +51,18 @@ export const PATHS = {
 
   P15: { subject: 'physics', name: 'Gravitation & orbits', icon: 'physics', cards: [377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392], quizUrls: ['tier0'] },
   P16: { subject: 'physics', name: 'Heat transfer: conduction, convection & radiation', icon: 'physics', cards: [393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408], quizUrls: ['tier0'] },
-  P17: { subject: 'physics', name: 'Magnetism & electromagnetic induction', icon: 'physics', cards: [409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433], quizUrls: ['tier0'] }
+  P17: { subject: 'physics', name: 'Magnetism & electromagnetic induction', icon: 'physics', cards: [409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433], quizUrls: ['tier0'] },
+
+  M15: { subject: 'maths', name: 'Calculus: differentiation', icon: 'maths', cards: [434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449], quizUrls: ['tier0'] },
+  M16: { subject: 'maths', name: 'Calculus: integration', icon: 'maths', cards: [450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465], quizUrls: ['tier0'] },
+  P18: { subject: 'physics', name: 'Calculus in physics: differentiation applications', icon: 'physics', cards: [466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480], quizUrls: ['tier0'] },
+  P19: { subject: 'physics', name: 'Calculus in physics: integration applications', icon: 'physics', cards: [481, 482, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495], quizUrls: ['tier0'] }
 };
 
 /** Grouped by subject for the subjects overview */
 export const SUBJECT_PATHS = {
-  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17'],
-  maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14'],
+  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19'],
+  maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'M15', 'M16'],
   chemistry: ['C1', 'C2', 'C3', 'C4', 'C5']
 };
 
