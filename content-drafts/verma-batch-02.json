@@ -100,7 +100,7 @@
       "kicker": "BB 103",
       "title": "dy/dx: calculus as the rate measurer of physics",
       "imagePrompt": "A chalk graph of a curved function y = f(x). At point P, a tangent line is drawn. The slope triangle shows Δy/Δx shrinking to dy/dx. Below: \"speed = ds/dt\", \"acceleration = dv/dt\". Chalk on dark green board.",
-      "tags": { "subject": "maths", "topic": "calculus", "concept": "derivative-as-rate; dy-dx-physics; instantaneous-rate", "ground": "g0", "buildsOn": ["Card 14", "Card 96"] },
+      "tags": { "subject": "maths", "topic": "calculus", "concept": "derivative-as-rate; dy-dx-physics; instantaneous-rate", "ground": "g0", "buildsOn": ["Card 14", "Card 97"] },
       "floors": [
         { "content": "<p>A car's speedometer doesn't calculate average speed over the whole trip. It shows the speed right now. The mathematics that makes that possible — capturing an instantaneous rate from a changing quantity — is the derivative.</p>" },
         { "content": "<p>If the distance s a particle travels is known as a function of time, s(t), then the speed at an instant is ds/dt — the derivative of distance with respect to time. If s = 2.5t², then ds/dt = 5.0t. At t = 5, the speed is exactly 25. This is not an average over any interval; it is the rate at a single instant, captured by letting the time interval shrink to zero and seeing what ratio the shrinking distance and shrinking time settle on.</p>" },

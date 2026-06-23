@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 /**
- * Ingest a batch of BBs (JSON) into the existing Supabase `cards` table.
- * The JSON-batch sibling of strata-sheets-script.js's "Publish to Supabase" —
+ * Ingest a batch of BBs into the existing Supabase `cards` table.
+ * The batch-file sibling of strata-sheets-script.js's "Publish to Supabase" —
  * same table, same service-role-key model, file-based instead of Forms-based.
+ * Accepts either a JSON batch or a Markdown batch (the BB-NEW-NN drafting
+ * format used so far) — picked by file extension.
  *
  * Usage:
  *   node --env-file=.env.local scripts/ingest-bbs.mjs path/to/batch.json
+ *   node --env-file=.env.local scripts/ingest-bbs.mjs path/to/batch.md
  *
  * Requires in the environment (never the anon key):
  *   SUPABASE_URL
  *   SUPABASE_SERVICE_ROLE_KEY
  *
- * Batch shape:
+ * JSON batch shape:
  * {
  *   "boards": [
  *     {
@@ -28,18 +31,39 @@
  *   ]
  * }
  *
- * Numbering: if a board's kicker already contains a number (e.g. "BB 85"),
- * that number is used as sort_order directly — so re-running the same batch
- * later with image/audio fields filled in updates those same rows instead
- * of creating duplicates. Only boards with no number in their kicker get a
- * fresh auto-assigned number (printed at the end — copy it into the kicker
- * before any later re-run of that board).
+ * Markdown batch shape (one BB per `## ` section, skips "Summary"/"What's
+ * left" sections automatically):
+ *
+ *   ## BB-NEW-21 — Title
+ *   **Subject:** physics | **Topic:** ... | **Concept:** ... | **Ground:** g0 | **Builds on:** [Card 21, BB-NEW-11]
+ *   **Floor 0 (Idea):**
+ *   <p>...</p>
+ *   **Floor 1 (Concrete):**
+ *   <p>...</p>
+ *   **Image prompt:** ...   (optional, kept as metadata, not ingested)
+ *
+ * `BB-NEW-NN` is a placeholder — a number gets auto-assigned the first time
+ * it's seen (in heading position) and recorded in scripts/.bb-placeholder-ledger.json
+ * so later batches can reference earlier ones by the same placeholder (in a
+ * "Builds on" list) and have it resolve to the real card number, even across
+ * separate ingestion runs. "BB NN" / "Card NN" in headings or "Builds on"
+ * are already-real numbers and pass through unchanged.
+ *
+ * Numbering (JSON path): if a board's kicker already contains a number (e.g.
+ * "BB 85"), that number is used as sort_order directly — so re-running the
+ * same batch later with image/audio fields filled in updates those same rows
+ * instead of creating duplicates. Only boards with no number in their kicker
+ * get a fresh auto-assigned number (printed at the end — copy it into the
+ * kicker before any later re-run of that board).
  */
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { basename, extname } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import { createClient } from '@supabase/supabase-js';
 
 const STATIC_DECK_LENGTH = 84;
+const LEDGER_PATH = join(dirname(fileURLToPath(import.meta.url)), '.bb-placeholder-ledger.json');
 
 function fail(msg) {
   console.error('ERROR:', msg);
@@ -47,7 +71,7 @@ function fail(msg) {
 }
 
 const batchPath = process.argv[2];
-if (!batchPath) fail('usage: node scripts/ingest-bbs.mjs path/to/batch.json');
+if (!batchPath) fail('usage: node scripts/ingest-bbs.mjs path/to/batch.json|.md');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -57,9 +81,113 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
-const batch = JSON.parse(readFileSync(batchPath, 'utf-8'));
+function loadLedger() {
+  if (!existsSync(LEDGER_PATH)) return {};
+  try { return JSON.parse(readFileSync(LEDGER_PATH, 'utf-8')); } catch { return {}; }
+}
+
+function saveLedger(ledger) {
+  writeFileSync(LEDGER_PATH, JSON.stringify(ledger, null, 2) + '\n');
+}
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+/** Resolve a "Builds on" reference ("BB 01" / "Card 21" / "BB-NEW-08") to a "Card NN" string. */
+function resolveRef(ref, ledger) {
+  const placeholder = ref.match(/^BB-NEW-\d+$/i);
+  if (placeholder) {
+    const key = ref.toUpperCase();
+    const num = ledger[key];
+    if (!num) throw new Error(`unresolved placeholder reference "${ref}" — not yet assigned a real number (ingest the batch that defines it first)`);
+    return `Card ${pad2(num)}`;
+  }
+  const bb = ref.match(/^BB\s*(\d+)$/i);
+  if (bb) return `Card ${pad2(parseInt(bb[1], 10))}`;
+  return ref; // already "Card NN" or some other free-text reference
+}
+
+/** Parse the BB-NEW-NN Markdown drafting format into the same shape a JSON batch uses. */
+function parseMarkdownBatch(content, ledger, startNextOrder) {
+  let nextOrder = startNextOrder;
+  const headingRe = /^##\s+(.+?)\s*$/gm;
+  const headings = [...content.matchAll(headingRe)];
+  const boards = [];
+
+  for (let i = 0; i < headings.length; i++) {
+    const heading = headings[i][1].trim();
+    const start = headings[i].index + headings[i][0].length;
+    const end = i + 1 < headings.length ? headings[i + 1].index : content.length;
+    const body = content.slice(start, end);
+
+    const headingMatch = heading.match(/^(BB[-\s]?(?:NEW-)?\d+)\s*[—-]\s*(.+)$/i);
+    if (!headingMatch) continue; // not a BB section (Summary, What's left for next batch, etc.)
+
+    const placeholder = headingMatch[1].toUpperCase().replace(/\s+/, ' ');
+    const title = headingMatch[2].trim();
+
+    const metaMatch = body.match(/\*\*Subject:\*\*\s*(.+?)\s*\|\s*\*\*Topic:\*\*\s*(.+?)\s*\|\s*\*\*Concept:\*\*\s*(.+?)\s*\|\s*\*\*Ground:\*\*\s*(.+?)\s*\|\s*\*\*Builds on:\*\*\s*\[(.*?)\]/);
+    if (!metaMatch) throw new Error(`section "${heading}" has no Subject/Topic/Concept/Ground/Builds-on line in the expected format`);
+    const [, subject, topic, concept, ground, buildsOnRaw] = metaMatch;
+    const buildsOn = buildsOnRaw.split(',').map(s => s.trim()).filter(Boolean).map(ref => resolveRef(ref, ledger));
+
+    const floorRe = /\*\*Floor\s+(\d+)\s*\([^)]*\)\s*:\*\*\s*\n([\s\S]*?)(?=\n\*\*Floor\s+\d+|\n\*\*Image prompt:\*\*|\n---|\n##|$)/g;
+    const floorMatches = [...body.matchAll(floorRe)];
+    if (floorMatches.length === 0) throw new Error(`section "${heading}" has no "**Floor N (...):**" blocks`);
+    const maxFloorIdx = Math.max(...floorMatches.map(m => parseInt(m[1], 10)));
+    const floors = new Array(maxFloorIdx + 1).fill(null);
+    // Multiple HTML block lines (e.g. a <p> followed by a <div class='formula'> on its
+    // own line) should join directly with no separator, matching how they're authored.
+    for (const fm of floorMatches) floors[parseInt(fm[1], 10)] = fm[2].trim().replace(/\r\n|\r|\n/g, '');
+
+    const imagePromptMatch = body.match(/\*\*Image prompt:\*\*\s*(.+)/);
+    const imagePrompt = imagePromptMatch ? imagePromptMatch[1].trim() : undefined;
+
+    let kicker;
+    if (/^BB-NEW-/i.test(placeholder)) {
+      if (!ledger[placeholder]) ledger[placeholder] = nextOrder++;
+      kicker = `BB ${ledger[placeholder]}`;
+    } else {
+      const num = placeholder.match(/\d+/)[0];
+      kicker = `BB ${parseInt(num, 10)}`;
+    }
+
+    boards.push({ kicker, title, imagePrompt, tags: { subject: subject.trim(), topic: topic.trim(), concept: concept.trim(), ground: ground.trim(), buildsOn }, floors: floors.map(f => ({ content: f })) });
+  }
+
+  if (boards.length === 0) fail('no BB sections found in the markdown file (expected "## BB-NEW-NN — Title" headings)');
+  return boards;
+}
+
+async function nextAvailableOrder() {
+  const { data, error } = await supabase.from('cards').select('sort_order').order('sort_order', { ascending: false }).limit(1);
+  if (error) fail(error.message);
+  return Math.max(data?.[0]?.sort_order || 0, STATIC_DECK_LENGTH) + 1;
+}
+
+const ext = extname(batchPath).toLowerCase();
+// NFC-normalize so combining-character sequences (e.g. a decomposed "i" + combining
+// circumflex some editors produce) match the precomposed form used elsewhere, and
+// collapse exotic Unicode space characters (em space, non-breaking space, etc. —
+// common copy-paste artifacts) down to a plain space.
+const EXOTIC_SPACES = /[  -   　]/g;
+const raw = readFileSync(batchPath, 'utf-8')
+  .normalize('NFC')
+  .replace(EXOTIC_SPACES, ' ');
+let batch;
+const startNextOrder = await nextAvailableOrder();
+
+if (ext === '.json') {
+  batch = JSON.parse(raw);
+} else if (ext === '.md' || ext === '.markdown') {
+  const ledger = loadLedger();
+  batch = { boards: parseMarkdownBatch(raw, ledger, startNextOrder) };
+  saveLedger(ledger);
+} else {
+  fail(`unsupported file type "${ext}" — use .json or .md`);
+}
+
 if (!Array.isArray(batch.boards) || batch.boards.length === 0) {
-  fail('batch JSON must have a non-empty "boards" array');
+  fail('batch must have a non-empty "boards" array');
 }
 
 function contentTypeFor(path) {
@@ -94,14 +222,7 @@ async function buildLayer(floor) {
 }
 
 async function main() {
-  const { data: maxRow, error: maxErr } = await supabase
-    .from('cards')
-    .select('sort_order')
-    .order('sort_order', { ascending: false })
-    .limit(1);
-  if (maxErr) fail(maxErr.message);
-
-  let nextOrder = Math.max(maxRow?.[0]?.sort_order || 0, STATIC_DECK_LENGTH) + 1;
+  let nextOrder = startNextOrder;
 
   const rows = [];
   const failures = [];
