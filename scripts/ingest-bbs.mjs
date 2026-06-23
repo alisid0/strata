@@ -125,10 +125,16 @@ function parseMarkdownBatch(content, ledger, startNextOrder) {
     const placeholder = headingMatch[1].toUpperCase().replace(/\s+/, ' ');
     const title = headingMatch[2].trim();
 
-    const metaMatch = body.match(/\*\*Subject:\*\*\s*(.+?)\s*\|\s*\*\*Topic:\*\*\s*(.+?)\s*\|\s*\*\*Concept:\*\*\s*(.+?)\s*\|\s*\*\*Ground:\*\*\s*(.+?)\s*\|\s*\*\*Builds on:\*\*\s*\[(.*?)\]/);
+    const metaMatch = body.match(/\*\*Subject:\*\*\s*(.+?)\s*\|\s*\*\*Topic:\*\*\s*(.+?)\s*\|\s*\*\*Concept:\*\*\s*(.+?)\s*\|\s*\*\*Ground:\*\*\s*(.+?)\s*\|\s*\*\*Builds on:\*\*\s*(.*)/);
     if (!metaMatch) throw new Error(`section "${heading}" has no Subject/Topic/Concept/Ground/Builds-on line in the expected format`);
     const [, subject, topic, concept, ground, buildsOnRaw] = metaMatch;
-    const buildsOn = buildsOnRaw.split(',').map(s => s.trim()).filter(Boolean).map(ref => resolveRef(ref, ledger));
+    // Builds-on is usually a bracketed list ("[Card 01, BB-NEW-02]") but some
+    // batches write it as free prose ("Fraction arithmetic (BB 110-122)") —
+    // accept both by falling back to scanning for any recognizable reference token.
+    const bracketed = buildsOnRaw.match(/^\[(.*?)\]/);
+    const buildsOn = bracketed
+      ? bracketed[1].split(',').map(s => s.trim()).filter(Boolean).map(ref => resolveRef(ref, ledger))
+      : [...buildsOnRaw.matchAll(/BB-NEW-\d+|BB\s*\d+|Card\s*\d+/gi)].map(m => resolveRef(m[0], ledger));
 
     const floorRe = /\*\*Floor\s+(\d+)\s*\([^)]*\)\s*:\*\*\s*\n([\s\S]*?)(?=\n\*\*Floor\s+\d+|\n\*\*Image prompt:\*\*|\n---|\n##|$)/g;
     const floorMatches = [...body.matchAll(floorRe)];

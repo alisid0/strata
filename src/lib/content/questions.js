@@ -1722,6 +1722,749 @@ export const PATH_QUESTIONS = {
       explain: 'Double bonds share two pairs of electrons (versus one in a single bond), making them shorter and stronger — triple bonds (sharing three pairs) are even more so.'
     }))
   ],
+
+  // ── C4 : Reactions & molecular architecture ──
+  C4: [
+    typeanswer(() => {
+      const m = pick([40, 60, 80, 120]);
+      return {
+        cg: 'C4-1',
+        q: `NaOH has molar mass 40 g/mol. How many moles are in ${m} g? Use n = m/M.`,
+        answer: m / 40,
+        tolerance: 0.05,
+        explain: `n = m/M = ${m}/40 = ${m/40} moles.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'C4-2',
+      q: 'Why is chlorine\'s relative atomic mass listed as 35.5, not a whole number?',
+      opts: [
+        'Chlorine atoms have half a neutron',
+        'It is a weighted average of naturally occurring isotopes (mostly Cl-35 and Cl-37)',
+        'It is a rounding error on the periodic table',
+        'Chlorine does not really have a fixed mass'
+      ],
+      answer: 1,
+      explain: 'No single atom weighs 35.5 u. The periodic table value is the weighted average across chlorine\'s naturally occurring isotopes (~75% Cl-35, ~25% Cl-37).'
+    })),
+    truefalse(() => ({
+      cg: 'C4-3',
+      q: 'In an ionic compound like NaCl, there exists a single discrete "molecule" of NaCl, just as there is a discrete molecule of H₂O.',
+      answer: false,
+      explain: 'Ionic compounds form a giant repeating lattice of alternating ions, not discrete molecules — there is no single NaCl unit, unlike covalent H₂O.'
+    })),
+    mcq(() => ({
+      cg: 'C4-4',
+      q: 'Diamond and graphite are both pure carbon but have opposite properties (hardest substance vs. soft enough to write with). Why?',
+      opts: [
+        'They are actually different elements',
+        'Graphite contains impurities that diamond does not',
+        'The same atoms are bonded in different patterns — diamond is a rigid 3D network, graphite is layered sheets with delocalised electrons',
+        'Diamond is just compressed graphite with no structural difference'
+      ],
+      answer: 2,
+      explain: 'Same element, different bonding pattern: diamond\'s rigid tetrahedral network makes it the hardest natural substance; graphite\'s weakly-bonded sliding sheets make it soft and conductive.'
+    })),
+    fillblank(() => ({
+      cg: 'C4-5',
+      q: 'According to VSEPR theory, molecular shape is determined by electron pairs arranging themselves to minimise ___.',
+      answer: 'repulsion',
+      accept: ['repulsion', 'Repulsion'],
+      explain: 'Electron pairs (bonding and lone) repel each other and spread out as far apart as possible — this single rule predicts linear, tetrahedral, bent, and pyramidal shapes.'
+    })),
+    mcq(() => ({
+      cg: 'C4-6',
+      q: 'CO₂ has polar C=O bonds, yet the molecule as a whole is non-polar. Why?',
+      opts: [
+        'Carbon dioxide does not actually have polar bonds',
+        'The linear shape makes the two bond dipoles point in opposite directions and cancel exactly',
+        'Oxygen is not electronegative enough to create a dipole',
+        'Non-polar molecules cannot have polar bonds, by definition'
+      ],
+      answer: 1,
+      explain: 'CO₂\'s linear geometry means the two C=O bond dipoles point in exactly opposite directions and cancel — shape determines whether bond polarities add up or cancel.'
+    })),
+    truefalse(() => ({
+      cg: 'C4-7',
+      q: 'Methane (CH₄) and water (H₂O) have similar molecular masses, yet water boils at a vastly higher temperature because of hydrogen bonding.',
+      answer: true,
+      explain: 'Water has strong hydrogen bonds (plus dipole-dipole and dispersion forces); methane, being non-polar, only has weak London dispersion forces — explaining the 261°C difference in boiling points.'
+    })),
+    mcq(() => ({
+      cg: 'C4-8',
+      q: 'In a balanced chemical equation, what are you allowed to change to balance atom counts?',
+      opts: [
+        'The subscripts within formulas',
+        'The coefficients in front of formulas',
+        'Either subscripts or coefficients, whichever is easier',
+        'Nothing — equations are already balanced when written'
+      ],
+      answer: 1,
+      explain: 'Only coefficients (numbers placed before formulas) may be adjusted. Changing a subscript changes which compound you\'re talking about entirely.'
+    })),
+    mcq(() => ({
+      cg: 'C4-9',
+      q: 'By the Brønsted-Lowry definition, what is an acid?',
+      opts: ['A substance that tastes sour', 'A proton (H⁺) donor', 'A proton (H⁺) acceptor', 'Any substance with pH below 10'],
+      answer: 1,
+      explain: 'Brønsted-Lowry: an acid donates a proton (H⁺); a base accepts one. This works even without water as a solvent, unlike the older Arrhenius definition.'
+    })),
+    typeanswer(() => {
+      const ph = pick([3, 5, 9, 11]);
+      return {
+        cg: 'C4-10',
+        q: `A solution has pH ${ph}. Is it acidic, neutral, or alkaline? (type "acidic", "neutral", or "alkaline")`,
+        answer: ph < 7 ? 'acidic' : ph === 7 ? 'neutral' : 'alkaline',
+        accept: [ph < 7 ? 'acidic' : ph === 7 ? 'neutral' : 'alkaline'],
+        explain: `pH < 7 is acidic, pH = 7 is neutral, pH > 7 is alkaline. pH ${ph} is ${ph < 7 ? 'acidic' : ph === 7 ? 'neutral' : 'alkaline'}.`
+      };
+    })
+  ],
+
+  // ── C5 : Redox, electrochemistry & kinetics ──
+  C5: [
+    mcq(() => ({
+      cg: 'C5-1',
+      q: 'Using the OIL RIG mnemonic, what is oxidation?',
+      opts: ['Oxidation Is Loss of electrons', 'Oxidation Includes Lone electrons', 'Oxidation Is Largest', 'Oxidation Involves Lithium'],
+      answer: 0,
+      explain: 'OIL RIG: Oxidation Is Loss (of electrons), Reduction Is Gain (of electrons).'
+    })),
+    truefalse(() => ({
+      cg: 'C5-2',
+      q: 'In a redox reaction, the substance that loses electrons is called the reducing agent.',
+      answer: true,
+      explain: 'The species that loses electrons (is oxidised) is called the reducing agent, because it causes the other species to be reduced by supplying electrons.'
+    })),
+    fillblank(() => ({
+      cg: 'C5-3',
+      q: 'Oxidation is an ___ in oxidation number; reduction is a decrease.',
+      answer: 'increase',
+      accept: ['increase', 'Increase'],
+      explain: 'Oxidation number rises when a species is oxidised (loses electrons, becomes more positive) and falls when reduced.'
+    })),
+    mcq(() => ({
+      cg: 'C5-4',
+      q: 'An exothermic reaction (ΔH < 0) means:',
+      opts: [
+        'The reaction absorbs energy from the surroundings',
+        'The reaction releases energy to the surroundings, and the surroundings get warmer',
+        'The reaction has no energy change at all',
+        'The products always have more enthalpy than the reactants'
+      ],
+      answer: 1,
+      explain: 'Exothermic = energy released to the surroundings (ΔH < 0); the products end up at lower enthalpy than the reactants.'
+    })),
+    mcq(() => ({
+      cg: 'C5-5',
+      q: "What does Hess's Law say about the enthalpy change of a reaction?",
+      opts: [
+        'It depends on how fast the reaction occurs',
+        'It depends only on the initial and final states, not the route taken',
+        'It can only be measured directly, never calculated indirectly',
+        'It is always positive'
+      ],
+      answer: 1,
+      explain: 'Hess\'s Law: total enthalpy change is independent of the pathway — a direct consequence of enthalpy being a state function. This lets you calculate ΔH for reactions you can\'t measure directly.'
+    })),
+    truefalse(() => ({
+      cg: 'C5-6',
+      q: 'Activation energy is always positive, even for a reaction that releases energy overall (exothermic).',
+      answer: true,
+      explain: 'Every reaction — exothermic or endothermic — must climb over an energy barrier (the transition state) before it can proceed. E_a is always positive.'
+    })),
+    mcq(() => ({
+      cg: 'C5-7',
+      q: 'According to collision theory, why does increasing temperature speed up a reaction?',
+      opts: [
+        'It increases the mass of the reacting particles',
+        'It increases the fraction of particles with energy ≥ activation energy, and increases collision frequency',
+        'It removes the need for activation energy entirely',
+        'Temperature has no real effect on reaction rate'
+      ],
+      answer: 1,
+      explain: 'Higher temperature raises the average kinetic energy of particles, increasing both the collision frequency and the fraction of collisions with enough energy to react.'
+    })),
+    truefalse(() => ({
+      cg: 'C5-8',
+      q: 'A catalyst speeds up a reaction by increasing the activation energy needed.',
+      answer: false,
+      explain: 'A catalyst LOWERS the activation energy by providing an alternative reaction pathway — it speeds up the reaction without being consumed, and without changing ΔH or the equilibrium position.'
+    })),
+    fillblank(() => ({
+      cg: 'C5-9',
+      q: 'In electrolysis and electrochemical cells, the electrode where oxidation occurs is called the ___.',
+      answer: 'anode',
+      accept: ['anode', 'Anode'],
+      explain: 'Mnemonic "AN OX, RED CAT": ANode = OXidation, REDuction = CAThode.'
+    }))
+  ],
+
+  // ── P12 : Force & torque — rotational dynamics ──
+  P12: [
+    mcq(() => ({
+      cg: 'P12-1',
+      q: 'Torque is the rotational analogue of force. What is the formula for its magnitude?',
+      opts: ['τ = m a', 'τ = r F sin θ', 'τ = F / r', 'τ = m r²'],
+      answer: 1,
+      explain: 'τ = rF sin θ, where θ is the angle between the position vector (pivot to point of application) and the force. Equivalently, τ = F × d, force times the perpendicular lever arm.'
+    })),
+    truefalse(() => ({
+      cg: 'P12-2',
+      q: 'A couple (two equal, opposite, parallel forces) produces translation of the centre of mass, just like a single force.',
+      answer: false,
+      explain: 'A couple has zero net force, so it produces NO translation — only pure rotation. Its torque is also independent of which point you measure it about.'
+    })),
+    fillblank(() => ({
+      cg: 'P12-3',
+      q: 'A rigid body is in complete static equilibrium when ΣF = 0 AND Σ___ = 0.',
+      answer: 'τ',
+      accept: ['τ', 'torque', 'Torque'],
+      explain: 'Equilibrium requires BOTH zero net force (no translational acceleration) and zero net torque (no angular acceleration) about any point.'
+    })),
+    typeanswer(() => {
+      const m = pick([2, 4, 6]), r = pick([0.2, 0.3, 0.5]);
+      const I = 0.5 * m * r * r;
+      return {
+        cg: 'P12-4',
+        q: `A solid disc of mass ${m} kg and radius ${r} m rotates about its central axis. Using I = ½MR², what is its moment of inertia (kg·m²)?`,
+        answer: Math.round(I * 1000) / 1000,
+        tolerance: 0.01,
+        explain: `I = ½MR² = ½ × ${m} × ${r}² = ½ × ${m} × ${(r*r).toFixed(2)} = ${Math.round(I*1000)/1000} kg·m².`
+      };
+    }),
+    mcq(() => ({
+      cg: 'P12-5',
+      q: "Newton's second law for rotation is Στ = Iα. What plays the role of mass in this rotational analogue?",
+      opts: ['Angular velocity ω', 'Angular momentum L', 'Moment of inertia I', 'Radius r'],
+      answer: 2,
+      explain: 'In the rotational analogue, τ↔F, I↔m, α↔a. Moment of inertia is the rotational equivalent of mass — resistance to a change in rotational motion.'
+    })),
+    truefalse(() => ({
+      cg: 'P12-6',
+      q: 'If a spinning skater pulls their arms in (decreasing their moment of inertia) with no external torque, their angular velocity must increase to conserve angular momentum.',
+      answer: true,
+      explain: 'L = Iω is conserved when no external torque acts. If I decreases, ω must increase proportionally to keep L constant — exactly why skaters spin faster with arms tucked in.'
+    })),
+    mcq(() => ({
+      cg: 'P12-7',
+      q: 'For an object rolling without slipping, what provides the friction at the contact point, and does it do work?',
+      opts: [
+        'Kinetic friction acts there and does negative work',
+        'Static friction acts there (the contact point is instantaneously at rest) and does no work',
+        'No friction is needed for rolling',
+        'Friction does positive work, speeding up the object'
+      ],
+      answer: 1,
+      explain: 'In rolling without slipping, the contact point is momentarily at rest, so static friction acts there. Since the contact point doesn\'t move, that friction force does zero work.'
+    }))
+  ],
+
+  // ── P13 : Reflection & refraction ──
+  P13: [
+    mcq(() => ({
+      cg: 'P13-1',
+      q: 'The law of reflection states that:',
+      opts: [
+        'The angle of incidence is always 90°',
+        'The angle of incidence equals the angle of reflection, both measured from the normal',
+        'Light always reflects straight back the way it came',
+        'Reflection only happens off smooth surfaces'
+      ],
+      answer: 1,
+      explain: 'θ_incidence = θ_reflection, both measured from the normal to the surface — true for both specular (smooth) and diffuse (rough) reflection at the microscopic level.'
+    })),
+    truefalse(() => ({
+      cg: 'P13-2',
+      q: 'The image formed by a plane mirror is virtual, the same size as the object, and laterally inverted (left-right swapped).',
+      answer: true,
+      explain: 'A plane mirror image is virtual (can\'t be projected on a screen), erect, same size (m=+1), and laterally inverted — all standard properties.'
+    })),
+    typeanswer(() => {
+      const v = pick([20, 30, 60]), u = pick([10, 15, 20]);
+      const f = (u*v)/(u+v);
+      return {
+        cg: 'P13-3',
+        q: `Using 1/f = 1/v + 1/u, if v = ${v} cm and u = ${u} cm, what is f (cm)? (round to 1 decimal)`,
+        answer: Math.round(f * 10) / 10,
+        tolerance: 0.2,
+        explain: `1/f = 1/${v} + 1/${u} = ${(1/v).toFixed(4)} + ${(1/u).toFixed(4)} = ${(1/v+1/u).toFixed(4)}, so f = ${Math.round(f*10)/10} cm.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'P13-4',
+      q: 'Light bends toward the normal when it enters a medium that is:',
+      opts: ['Optically less dense (lower refractive index)', 'Optically denser (higher refractive index)', 'Exactly the same density', 'A vacuum'],
+      answer: 1,
+      explain: 'Entering a denser medium slows the light down, which bends the ray toward the normal. Entering a rarer medium bends it away from the normal.'
+    })),
+    fillblank(() => ({
+      cg: 'P13-5',
+      q: "Snell's Law is written n₁ sin θ₁ = n₂ sin ___.",
+      answer: 'θ₂',
+      accept: ['θ2', 'θ₂', 'theta2', 'theta_2'],
+      explain: 'n₁ sin θ₁ = n₂ sin θ₂ — the products of refractive index and the sine of the angle are equal on both sides of the boundary.'
+    })),
+    mcq(() => ({
+      cg: 'P13-6',
+      q: 'Total internal reflection can only occur when light travels:',
+      opts: [
+        'From a rarer medium into a denser medium',
+        'From a denser medium into a rarer medium, at an angle beyond the critical angle',
+        'Through a vacuum',
+        'At exactly normal incidence'
+      ],
+      answer: 1,
+      explain: 'TIR requires going from higher to lower refractive index (denser to rarer) AND exceeding the critical angle θ_c, where sin θ_c = n₂/n₁.'
+    })),
+    truefalse(() => ({
+      cg: 'P13-7',
+      q: 'Dispersion occurs because different wavelengths of light have slightly different refractive indices in a given material.',
+      answer: true,
+      explain: 'Since n varies with wavelength (violet bends more than red, generally), white light splits into its component colours when refracted through a prism — this is dispersion.'
+    })),
+    mcq(() => ({
+      cg: 'P13-8',
+      q: 'A convex (converging) lens has a positive focal length. What does a concave (diverging) lens have?',
+      opts: ['Also a positive focal length', 'A negative focal length', 'No focal length at all', 'An infinite focal length always'],
+      answer: 1,
+      explain: 'By convention, convex/converging lenses have f > 0 (real focus); concave/diverging lenses have f < 0 (virtual focus, where diverging rays appear to come from).'
+    }))
+  ],
+
+  // ── P14 : Thermodynamics ──
+  P14: [
+    mcq(() => ({
+      cg: 'P14-1',
+      q: 'What is the key difference between temperature and heat?',
+      opts: [
+        'They are exactly the same thing',
+        'Temperature measures average particle kinetic energy (intensive); heat is energy transferred due to a temperature difference (extensive)',
+        'Heat is measured in kelvin; temperature is measured in joules',
+        'Temperature only applies to gases'
+      ],
+      answer: 1,
+      explain: 'Temperature is an intensive property (independent of amount) describing average kinetic energy. Heat is energy in transit, extensive (depends on amount), measured in joules.'
+    })),
+    fillblank(() => ({
+      cg: 'P14-2',
+      q: 'Absolute zero, 0 K, is equal to ___ °C.',
+      answer: '-273.15',
+      accept: ['-273.15', '-273', '−273.15', '−273'],
+      explain: 'T(K) = T(°C) + 273.15, so 0 K corresponds to −273.15°C — the theoretical lower limit of temperature.'
+    })),
+    typeanswer(() => {
+      const m = pick([0.5, 1, 2]), c = 4200, dT = pick([10, 20, 30]);
+      const Q = m * c * dT;
+      return {
+        cg: 'P14-3',
+        q: `Using Q = mcΔT with m = ${m} kg, c = 4200 J/(kg·K) (water), ΔT = ${dT} K, how much heat (J) is needed?`,
+        answer: Q,
+        tolerance: 1,
+        explain: `Q = mcΔT = ${m} × 4200 × ${dT} = ${Q} J.`
+      };
+    }),
+    truefalse(() => ({
+      cg: 'P14-4',
+      q: 'During a phase change (like ice melting), temperature stays constant while heat is still being absorbed.',
+      answer: true,
+      explain: 'During a phase change, all the added energy goes into breaking/rearranging intermolecular bonds (latent heat, Q=mL), not into raising temperature — temperature stays flat on a heating curve during melting/boiling.'
+    })),
+    mcq(() => ({
+      cg: 'P14-5',
+      q: "Boyle's Law (constant temperature) states that pressure and volume of a gas are related how?",
+      opts: ['Directly proportional (P ∝ V)', 'Inversely proportional (P ∝ 1/V), so P₁V₁ = P₂V₂', 'Unrelated', 'Proportional to the square of volume'],
+      answer: 1,
+      explain: "Boyle's Law: at constant temperature, P ∝ 1/V — compress a gas and its pressure rises proportionally, giving P₁V₁ = P₂V₂."
+    })),
+    mcq(() => ({
+      cg: 'P14-6',
+      q: 'The first law of thermodynamics, ΔU = Q − W, is a statement of:',
+      opts: ['Conservation of momentum', 'Conservation of energy', 'The second law of motion', 'Conservation of entropy'],
+      answer: 1,
+      explain: 'ΔU = Q − W says the change in internal energy equals heat added minus work done by the system — energy is conserved, just redistributed between heat, work, and internal energy.'
+    })),
+    truefalse(() => ({
+      cg: 'P14-7',
+      q: 'In an adiabatic process, no heat is exchanged with the surroundings (Q = 0).',
+      answer: true,
+      explain: 'Adiabatic means Q = 0 by definition — any change in internal energy comes entirely from work: ΔU = −W.'
+    })),
+    mcq(() => ({
+      cg: 'P14-8',
+      q: 'The Carnot efficiency η = 1 − T_c/T_h represents:',
+      opts: [
+        'The efficiency of a specific real engine',
+        'The maximum possible efficiency of ANY heat engine operating between two temperatures',
+        'The minimum efficiency required by law',
+        'An efficiency that can reach 100% if T_h is large enough'
+      ],
+      answer: 1,
+      explain: 'The Carnot efficiency is the theoretical upper bound — no real heat engine operating between T_h and T_c can exceed it, and η = 1 only if T_c = 0 K, which is unreachable.'
+    }))
+  ],
+
+  // ── M10 : Problem-solving heuristics I (Polya) ──
+  M10: [
+    mcq(() => ({
+      cg: 'M10-1',
+      q: "Polya's first step in problem-solving is to understand the problem. What three things should you identify?",
+      opts: [
+        'The title, the author, and the page number',
+        'The unknown, the data, and the condition linking them',
+        'The difficulty level, the topic, and the time limit',
+        'The formula, the units, and the final answer'
+      ],
+      answer: 1,
+      explain: 'Polya\'s Step 1: identify the unknown (what you want), the data (what you\'re given), and the condition (the relationship connecting them) — "a problem well understood is half solved."'
+    })),
+    truefalse(() => ({
+      cg: 'M10-2',
+      q: "According to Polya, 'looking back' after solving a problem (checking the result, the reasoning, and whether the method transfers) is an optional final step that can usually be skipped.",
+      answer: false,
+      explain: 'Polya treats "looking back" as essential, not optional — it\'s where you verify correctness AND extract a reusable method for future problems.'
+    })),
+    fillblank(() => ({
+      cg: 'M10-3',
+      q: "In Thompson's 'dodge' for differentiation, after expanding f(x+dx), you discard terms containing (dx) raised to the power of ___ or higher.",
+      answer: '2',
+      accept: ['2', 'two'],
+      explain: 'Terms with (dx)² or higher are treated as negligibly small compared to terms with just dx — this is the core simplification in Thompson\'s method of increments.'
+    })),
+    mcq(() => ({
+      cg: 'M10-4',
+      q: 'What is the "working backwards" heuristic?',
+      opts: [
+        'Redoing a problem you already solved',
+        'Starting from the unknown and asking what earlier quantity would determine it, repeating until you reach something known',
+        'Solving the problem upside down on paper',
+        'Giving up and looking up the answer'
+      ],
+      answer: 1,
+      explain: 'Working backwards starts at the goal and chains backward ("what would give me this?") until it connects to known data — then you reverse direction and solve forward.'
+    })),
+    mcq(() => ({
+      cg: 'M10-5',
+      q: 'Why is "draw a figure" considered such a powerful heuristic across physics, optics, and algebra?',
+      opts: [
+        'It makes the answer automatically correct',
+        'It forces you to make knowns, unknowns, and relationships explicit and visible, which often reveals the missing connection',
+        'Diagrams are required by exam rules',
+        'It replaces the need for any equations'
+      ],
+      answer: 1,
+      explain: 'A figure externalises the structure of the problem — labelling knowns, unknowns, forces, or rays — often revealing relationships that are hard to see in words alone.'
+    })),
+    truefalse(() => ({
+      cg: 'M10-6',
+      q: 'The "inventor\'s paradox" observes that a more general/ambitious version of a problem can sometimes be easier to solve than the narrow special case.',
+      answer: true,
+      explain: 'Polya\'s inventor\'s paradox: the general problem may have more symmetry or invite a standard method, while the special case is messier because it has broken that symmetry.'
+    })),
+    mcq(() => ({
+      cg: 'M10-7',
+      q: 'If you are stuck on a problem, one of Polya\'s diagnostic questions is "did you use all the data?" Why is this useful?',
+      opts: [
+        'It is not useful — extra data is usually irrelevant',
+        'An unused number or condition is often exactly the missing equation you need',
+        'It tells you the answer directly',
+        'It only applies to geometry problems'
+      ],
+      answer: 1,
+      explain: 'If the system seems underdetermined, checking for unused data (explicit numbers or implicit conditions like "starts from rest") often reveals the missing equation.'
+    }))
+  ],
+
+  // ── M11 : Problem-solving heuristics II ──
+  M11: [
+    mcq(() => ({
+      cg: 'M11-1',
+      q: 'Dimensional analysis (testing by dimension) checks an equation by:',
+      opts: [
+        'Plugging in random numbers',
+        'Verifying both sides have identical fundamental dimensions (mass, length, time, etc.)',
+        'Counting the number of terms',
+        'Checking if the answer is positive'
+      ],
+      answer: 1,
+      explain: 'Both sides of any valid physical equation must have identical dimensions — you cannot add a speed to a force. Mismatched dimensions mean the equation is definitely wrong.'
+    })),
+    truefalse(() => ({
+      cg: 'M11-2',
+      q: 'If two physical quantities have matching dimensions, the equation relating them is therefore guaranteed to be correct.',
+      answer: false,
+      explain: 'Matching dimensions is necessary but not sufficient — a dimensionally consistent equation can still have the wrong numerical constant or structure. It only rules out certain errors.'
+    })),
+    fillblank(() => ({
+      cg: 'M11-3',
+      q: 'Proof by contradiction (reductio ad absurdum) works by assuming the ___ of what you want to prove, then deriving a contradiction.',
+      answer: 'negation',
+      accept: ['negation', 'Negation', 'opposite'],
+      explain: 'You assume the negation, reason validly from it, and if you reach a contradiction, the negation must be false — so the original statement must be true.'
+    })),
+    mcq(() => ({
+      cg: 'M11-4',
+      q: 'The power rule for differentiation states d(xⁿ)/dx equals:',
+      opts: ['xⁿ⁺¹/(n+1)', 'nxⁿ⁻¹', 'n·x', 'xⁿ/n'],
+      answer: 1,
+      explain: 'The power rule: d(xⁿ)/dx = nxⁿ⁻¹, valid for any real exponent n — the atomic building block of differentiation.'
+    })),
+    typeanswer(() => {
+      const n = pick([3, 4, 5]);
+      return {
+        cg: 'M11-5',
+        q: `Using the power rule, what is the derivative of x^${n} with respect to x, evaluated as the coefficient (i.e., what is n in nx^(n-1))?`,
+        answer: n,
+        tolerance: 0,
+        explain: `d(x^${n})/dx = ${n}x^${n-1} — the power rule simply brings the exponent down as a multiplying coefficient.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'M11-6',
+      q: 'The chain rule, dy/dx = (dy/du)(du/dx), is used when:',
+      opts: [
+        'Differentiating a simple polynomial term',
+        'You have a function of a function, y = f(g(x))',
+        'Adding two functions together',
+        'Only when integrating, never when differentiating'
+      ],
+      answer: 1,
+      explain: 'The chain rule handles "nested" functions: differentiate the outer function with respect to the inner, then multiply by the derivative of the inner function.'
+    })),
+    truefalse(() => ({
+      cg: 'M11-7',
+      q: 'According to Polya, "problems to find" and "problems to prove" require the same solving strategy.',
+      answer: false,
+      explain: 'Problems to find work from data toward an unknown quantity; problems to prove work from a hypothesis toward a logical conclusion — different structures, different strategies.'
+    })),
+    mcq(() => ({
+      cg: 'M11-8',
+      q: 'A Fermi estimation problem is solved by:',
+      opts: [
+        'Looking up the exact answer in a table',
+        'Breaking the unknown into estimable pieces, rounding aggressively, and combining the estimates',
+        'Refusing to answer without exact data',
+        'Using only exact, never approximate, arithmetic'
+      ],
+      answer: 1,
+      explain: 'Fermi estimation breaks a hard-to-know quantity into pieces you CAN roughly estimate (each to about one significant figure or order of magnitude), then combines them.'
+    }))
+  ],
+
+  // ── M12 : Problem-solving — vectors & matrices ──
+  M12: [
+    mcq(() => ({
+      cg: 'M12-1',
+      q: 'When you need to find the angle between two vectors, which operation should you reach for?',
+      opts: ['Cross product', 'Dot product, via cos θ = (a⃗·b⃗)/(|a||b|)', 'Scalar multiplication', 'Matrix inversion'],
+      answer: 1,
+      explain: 'The dot product directly relates to the cosine of the angle between vectors — it is the standard tool for finding angles or checking perpendicularity (dot product = 0).'
+    })),
+    mcq(() => ({
+      cg: 'M12-2',
+      q: 'A memory anchor for choosing between dot and cross product: "DOT rhymes with hot" (gives a scalar). What does "CROSS" suggest?',
+      opts: [
+        'It always gives zero',
+        'An "X" marking a direction in space — it gives a vector, perpendicular to both inputs',
+        'It only works in 2D',
+        'It is the same as the dot product'
+      ],
+      answer: 1,
+      explain: 'Cross product gives a VECTOR result (like torque or angular momentum), perpendicular to both input vectors — useful whenever the answer needs to be a direction in space, not just a magnitude.'
+    })),
+    truefalse(() => ({
+      cg: 'M12-3',
+      q: 'When choosing coordinate axes for a vector problem, the choice of axes affects the physics, not just the bookkeeping.',
+      answer: false,
+      explain: 'The axes are purely your choice for convenience (e.g., aligning with the slope) — the physics and the final answer don\'t change, only the components do.'
+    })),
+    fillblank(() => ({
+      cg: 'M12-4',
+      q: 'Before attempting to invert a matrix or solve a system uniquely, the heuristic is to first check the ___ — if it is zero, the matrix is singular.',
+      answer: 'determinant',
+      accept: ['determinant', 'Determinant'],
+      explain: 'det(A) = 0 means A is singular: no unique inverse exists, and Ax=b either has no solution or infinitely many.'
+    })),
+    mcq(() => ({
+      cg: 'M12-5',
+      q: 'To verify a computed matrix inverse A⁻¹ is correct, what check should you perform?',
+      opts: [
+        'Check that A⁻¹ has the same entries as A',
+        'Multiply A⁻¹A (and AA⁻¹) and confirm both equal the identity matrix I',
+        'Check that A⁻¹ is bigger than A',
+        'No check is needed if the formula was applied correctly'
+      ],
+      answer: 1,
+      explain: 'The definitive check: A⁻¹A = AA⁻¹ = I. If this doesn\'t hold, the inverse was computed incorrectly somewhere.'
+    })),
+    truefalse(() => ({
+      cg: 'M12-6',
+      q: 'Matrix multiplication AB and BA always give the same result, just like ordinary number multiplication.',
+      answer: false,
+      explain: 'Matrix multiplication is generally NOT commutative — AB ≠ BA. This is a constant source of errors if not checked explicitly, especially when composing transformations.'
+    })),
+    mcq(() => ({
+      cg: 'M12-7',
+      q: 'Viewing a 2×2 matrix as a transformation, what do its two columns represent?',
+      opts: [
+        'Random numbers with no geometric meaning',
+        'The images of the standard basis vectors î and ĵ after the transformation',
+        'The eigenvalues of the matrix',
+        'The rows of the inverse matrix'
+      ],
+      answer: 1,
+      explain: 'For A = [a b; c d], the first column (a,c) is where î = (1,0) ends up, and the second column (b,d) is where ĵ = (0,1) ends up — this is the geometric heart of matrix-as-transformation.'
+    }))
+  ],
+
+  // ── M13 : Lockhart's algebra — foundations ──
+  M13: [
+    mcq(() => ({
+      cg: 'M13-1',
+      q: "Lockhart's 'al-jabr' metaphor describes solving an equation as:",
+      opts: [
+        'Randomly guessing values until one works',
+        'Untangling a knot — undoing operations in reverse order while preserving equality',
+        'Memorising a list of unrelated tricks',
+        'A purely mechanical process with no creative element'
+      ],
+      answer: 1,
+      explain: '"Al-jabr" (the origin of "algebra") means "the mending of broken bones" — Lockhart frames equation-solving as systematically untangling a knot, the same operation undone in reverse on both sides.'
+    })),
+    truefalse(() => ({
+      cg: 'M13-2',
+      q: "In Lockhart's framework, a 'field' is defined by what the elements ARE (e.g., that they must be numbers) rather than how they behave.",
+      answer: false,
+      explain: 'The opposite is true: a field is defined entirely by STRUCTURE — two operations satisfying nine axioms. What the elements "are" metaphysically is irrelevant; only how they combine matters.'
+    })),
+    fillblank(() => ({
+      cg: 'M13-3',
+      q: 'An additive inverse exists for every element in any field by the field axioms, but being "negative" (less than zero) requires the field to also be ___.',
+      answer: 'ordered',
+      accept: ['ordered', 'Ordered', 'an ordered field'],
+      explain: 'Lockhart distinguishes "having an additive inverse" (universal to all fields) from "being negative" (specific to ordered fields like the reals — complex numbers have additive inverses but no order).'
+    })),
+    mcq(() => ({
+      cg: 'M13-4',
+      q: 'Why can the complex numbers ℂ not be ordered the way the real numbers ℝ can?',
+      opts: [
+        'Because ℂ has too many elements',
+        'Because there is no way to define a consistent < relation on ℂ that respects the field axioms',
+        'Because complex numbers are not really numbers',
+        'Because ℂ is a subset of ℝ'
+      ],
+      answer: 1,
+      explain: 'ℂ is algebraically closed but cannot be given an order consistent with its field structure — this is one of the trade-offs in extending from ℝ to ℂ.'
+    })),
+    mcq(() => ({
+      cg: 'M13-5',
+      q: 'According to Lockhart\'s "layered" view of the real numbers, which property is logically independent of the algebraic (field) structure?',
+      opts: [
+        'Order — you can have algebra (like ℂ) without an order relation',
+        'Addition',
+        'Multiplication',
+        'The number 1'
+      ],
+      answer: 0,
+      explain: 'Order is a separate layer from the algebraic structure — ℂ is a field (algebra) with no order; ℚ has order without being complete/continuous. The layers are independent.'
+    })),
+    truefalse(() => ({
+      cg: 'M13-6',
+      q: "Lockhart's distinction between 'pedantry' and 'mastery' is that pedantry means applying rules mechanically, while mastery means understanding principles well enough to adapt to novel situations.",
+      answer: true,
+      explain: 'Pedantry works only for routine, template-matching problems. Mastery comes from understanding WHY a method works, which lets you adapt it when the problem deviates from the template.'
+    })),
+    mcq(() => ({
+      cg: 'M13-7',
+      q: "What is Lockhart's central claim about why mathematicians use metaphors and analogies (knots, shadows, ladders)?",
+      opts: [
+        'Metaphors are purely decorative and could be removed without loss',
+        'Humans need imaginative connections to invent and understand proofs — the metaphor is the vehicle that gets you to the formal proof',
+        'Mathematical proofs themselves require metaphorical language to be valid',
+        'Only beginners need metaphors; experts work in pure symbols'
+      ],
+      answer: 1,
+      explain: '"We make analogies in order to connect two trees with a tightrope" — Lockhart argues metaphor is how humans generate the insight needed to discover and understand proofs, not how proofs are formally validated.'
+    }))
+  ],
+
+  // ── M14 : Lockhart's algebra — symmetry & roots ──
+  M14: [
+    mcq(() => ({
+      cg: 'M14-1',
+      q: "Lockhart's 'finger dance' and 'copy-machine' are kinesthetic/visual metaphors for which two fraction operations?",
+      opts: ['Addition and subtraction', 'Addition and multiplication', 'Squaring and rooting', 'Rounding and estimating'],
+      answer: 1,
+      explain: 'The "finger dance" (criss-cross snapping) is for fraction addition a/b + c/d; the "copy-machine" (enlarge/shrink) is for fraction multiplication a/b × c/d.'
+    })),
+    truefalse(() => ({
+      cg: 'M14-2',
+      q: 'The Greek discovery that √2 cannot be written as a fraction (the commensurability crisis) showed that the rational numbers ℚ are too small to fully describe geometry.',
+      answer: true,
+      explain: 'The diagonal of a unit square is incommensurable with its side — no fraction equals √2 — revealing that ℚ has "gaps" that geometry needs the real numbers ℝ to fill.'
+    })),
+    fillblank(() => ({
+      cg: 'M14-3',
+      q: "The Euclidean algorithm finds the GCD of two numbers by repeated division with ___.",
+      answer: 'remainder',
+      accept: ['remainder', 'Remainder'],
+      explain: 'Each step divides the larger number by the smaller and keeps the remainder, replacing the pair with a smaller pair that has the same GCD — repeating until the remainder is zero.'
+    })),
+    mcq(() => ({
+      cg: 'M14-4',
+      q: "What is the key distinction Lockhart draws between 'irreducible' and 'prime' elements?",
+      opts: [
+        'They are exactly the same thing in every number system',
+        'Irreducible means it cannot be factored further; prime means it divides a product only if it divides one of the factors — these coincide in ℤ but not in every domain',
+        'Prime numbers are always larger than irreducible numbers',
+        'Irreducibility only applies to even numbers'
+      ],
+      answer: 1,
+      explain: 'In ℤ, irreducible and prime coincide, but in other domains (like ℤ[√−5]) they diverge — 6 = 2×3 = (1+√−5)(1−√−5), where all four factors are irreducible but none is prime, breaking unique factorisation.'
+    })),
+    mcq(() => ({
+      cg: 'M14-5',
+      q: "In Lockhart's 'shadows on the wall' metaphor for modular arithmetic, what does ℤₙ represent?",
+      opts: [
+        'A completely unrelated number system',
+        'A "shadow" of ℤ that preserves arithmetic structure (addition/multiplication relationships) while blurring distinctions between elements',
+        'The set of all negative integers',
+        'A system with no connection to divisibility'
+      ],
+      answer: 1,
+      explain: '"Turning on the n light" casts ℤ\'s shadow onto ℤₙ — true arithmetic statements in ℤ remain true mod n, even though individual numbers become indistinguishable within their residue class.'
+    })),
+    truefalse(() => ({
+      cg: 'M14-6',
+      q: "Lockhart constructs the complex numbers ℂ by taking real polynomials ℝ[X] and treating X² + 1 as zero — no mysterious external 'imaginary number' is needed.",
+      answer: true,
+      explain: 'ℝ[X]/(X²+1) ≅ ℂ: every polynomial collapses to a+bX where X plays the role of i, built entirely from real polynomials with no external magic ingredient required.'
+    })),
+    mcq(() => ({
+      cg: 'M14-7',
+      q: "Lockhart's 'selling the cow for magic beans' metaphor describes the move of factoring x² − Px + Q = (x−a)(x−b) and matching coefficients. Why is this a good trade despite introducing more unknowns?",
+      opts: [
+        'It isn\'t a good trade — it just makes things more complicated',
+        'The new system (a+b=P, ab=Q) is symmetric in a and b, and that symmetry can be exploited to solve for the roots',
+        'It eliminates the need for a quadratic formula entirely',
+        'It only works for equations with no real roots'
+      ],
+      answer: 1,
+      explain: 'Trading one "lifeless" equation for a symmetric system in a and b gives you something to act on: the swap symmetry a↔b is what lets you extract a−b = ±√(P²−4Q), deriving the quadratic formula from symmetry alone.'
+    })),
+    mcq(() => ({
+      cg: 'M14-8',
+      q: 'Why does squaring the antisymmetric part ½(a−b) produce something symmetric?',
+      opts: [
+        'It is a coincidence with no deeper reason',
+        'Because a number and its negative have the same square — swapping a and b negates (a−b), but (a−b)² is unaffected by that sign flip',
+        'Because squaring always produces a smaller number',
+        'Because a and b must be equal'
+      ],
+      answer: 1,
+      explain: '(a−b) flips sign under the swap a↔b (antisymmetric), but (a−b)² does not, since (−x)² = x² — this is exactly the structural fact that lets the discriminant be expressed in terms of the symmetric P and Q.'
+    }))
+  ],
 };
 
 /** Get questions for a specific path, shuffled */

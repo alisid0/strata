@@ -36,14 +36,25 @@ export const PATHS = {
   P11: { subject: 'physics', name: 'Electricity & circuits', icon: 'physics', cards: [218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234], quizUrls: ['tier0'] },
 
   C2: { subject: 'chemistry', name: 'Atomic structure', icon: 'chemistry', cards: [151, 152, 153, 154, 155, 156], quizUrls: ['tier0'] },
-  C3: { subject: 'chemistry', name: 'Chemical bonding', icon: 'chemistry', cards: [157, 158, 159, 160], quizUrls: ['tier0'] }
+  C3: { subject: 'chemistry', name: 'Chemical bonding', icon: 'chemistry', cards: [157, 158, 159, 160], quizUrls: ['tier0'] },
+
+  C4: { subject: 'chemistry', name: 'Reactions & molecular architecture', icon: 'chemistry', cards: [235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249], quizUrls: ['tier0'] },
+  C5: { subject: 'chemistry', name: 'Redox, electrochemistry & kinetics', icon: 'chemistry', cards: [281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295], quizUrls: ['tier0'] },
+  P12: { subject: 'physics', name: 'Force & torque: rotational dynamics', icon: 'physics', cards: [250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265], quizUrls: ['tier0'] },
+  P13: { subject: 'physics', name: 'Reflection & refraction', icon: 'physics', cards: [266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280], quizUrls: ['tier0'] },
+  P14: { subject: 'physics', name: 'Thermodynamics', icon: 'physics', cards: [296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310], quizUrls: ['tier0'] },
+  M10: { subject: 'maths', name: 'Problem-solving heuristics I', icon: 'maths', cards: [311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327], quizUrls: ['tier0'] },
+  M11: { subject: 'maths', name: 'Problem-solving heuristics II', icon: 'maths', cards: [328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343], quizUrls: ['tier0'] },
+  M12: { subject: 'maths', name: 'Problem-solving: vectors & matrices', icon: 'maths', cards: [344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355], quizUrls: ['tier0'] },
+  M13: { subject: 'maths', name: "Lockhart's algebra: foundations", icon: 'maths', cards: [356, 357, 358, 359, 360, 361, 362, 363, 364, 365], quizUrls: ['tier0'] },
+  M14: { subject: 'maths', name: "Lockhart's algebra: symmetry & roots", icon: 'maths', cards: [366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376], quizUrls: ['tier0'] }
 };
 
 /** Grouped by subject for the subjects overview */
 export const SUBJECT_PATHS = {
-  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11'],
-  maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9'],
-  chemistry: ['C1', 'C2', 'C3']
+  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14'],
+  maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14'],
+  chemistry: ['C1', 'C2', 'C3', 'C4', 'C5']
 };
 
 export const SUBJECT_LABELS = {
