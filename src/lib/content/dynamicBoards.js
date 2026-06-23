@@ -66,6 +66,29 @@ export async function fetchBoardsByNumbers(numbers) {
   return result;
 }
 
+/**
+ * Fetch all dynamic Snippets (cards tagged kind:"snippet", above the static
+ * deck range so the deck's own Card-55 snippet isn't double-counted). Returns
+ * them in the same {kicker, title, layers, tags} shape DECK entries use, so the
+ * Snippets view can treat static + dynamic identically.
+ */
+export async function fetchSnippets() {
+  const { data, error } = await supabase
+    .from('cards')
+    .select('kicker, title, layers, tags')
+    .eq('tags->>kind', 'snippet')
+    .gt('sort_order', DECK.length)
+    .order('sort_order');
+
+  if (error) throw error;
+  return (data || []).map(r => ({
+    kicker: r.kicker,
+    title: r.title,
+    layers: r.layers,
+    tags: r.tags
+  }));
+}
+
 /** Resolve a single board by number: static DECK first, then the dynamic cache. */
 export function getBoard(number) {
   if (number <= DECK.length) return DECK[number - 1];

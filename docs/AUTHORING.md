@@ -94,17 +94,21 @@ These come from `CONTENT.md` and apply without exception:
 
 ## Snippets
 
-Snippets are short historical or contextual notes, conceptually tied to whichever BB introduces the named law or idea — but they render as their **own standalone card**, not as a box nested inside that BB. They are not a Floor of the BB they reference, and not the BB's swipe card either.
+Snippets are short contextual notes, conceptually tied to whichever BB introduces the named law or idea — but they render as their **own standalone card**, not as a box nested inside that BB. They are not a Floor of the BB they reference, and not the BB's swipe card either. Every Snippet is tagged `kind:"snippet"`, with `buildsOn` pointing at the BB it's actually about (so the connection is still traceable, just not visually nested), and positioned as its own card at the end of the tier, immediately before that tier's Recap board.
 
-**Format:** 3–5 sentences. Who, when, the twist. End on something that reframes the whole thing — an irony, a rivalry, a gap between discovery and recognition.
+There are two flavors. A tier can have one of either, both, or neither — never force one just to fill the slot.
+
+### Discovery Snippets
+
+The person, the moment, the twist. Who found it, when, and the irony, rivalry, or gap between discovery and recognition that makes it stick.
+
+**Format:** 3–8 sentences. Who, when, the twist. End on something that reframes the whole thing.
 
 **Tone:** Same editorial voice as the BBs — no hype, no over-dramatising. Let the facts carry it. The author will always polish the raw Snippet before it goes live.
 
-**Placement:** as its own card, positioned at the end of the tier, immediately before that tier's Recap board. Tagged `kind:"snippet"`, with `buildsOn` pointing at the BB it's actually about (so the connection is still traceable, just not visually nested).
+**When to write one:** Every tier that introduces a named law or concept worth a story should have at least one. Anonymous or purely descriptive BBs (e.g. "what a vector is") don't need one.
 
-**When to write one:** Every tier that introduces a named law or concept worth a story should have at least one Snippet. Anonymous or purely descriptive BBs (e.g. "what a vector is") don't need one, and not every tier will have a good one — don't force it.
-
-### Snell's Law — Snippet (raw draft for author to polish)
+#### Snell's Law — Discovery Snippet (raw draft for author to polish)
 
 Willebrord Snellius, a Dutch astronomer, worked out the exact relationship between the angles in 1621. He never published it. After his death, Christiaan Huygens found the manuscript and gave him the credit.
 
@@ -113,6 +117,22 @@ The twist: an Arab mathematician named Ibn Sahl had described the exact same law
 In France they still call it Descartes' Law, after René Descartes who published it in 1637, unaware Snell had it first — and unaware Ibn Sahl had it long before either of them.
 
 Three independent discoveries. One law. The universe kept the same secret until each of them found it on their own.
+
+### Era & Technology Snippets
+
+Where Discovery Snippets zoom in on a person, these zoom out: what the world looked like technologically before this idea existed, and the chain of devices and systems that exist *because* of it — usually landing on something the reader is holding or standing near right now. This is the Vsauce / Sagan / deGrasse Tyson / Veritasium register: scale, surprising causal chains, the "wait, that connects to *this*?" turn.
+
+**The "no hype" rule still applies, it just earns its awe differently.** Hype is a vague adjective standing in for a fact ("incredible," "revolutionary," "game-changing"). The infotainment voice gets its charge from a *concrete, checkable thing* — a number, a comparison, a chain of cause and effect the reader didn't expect — never from an adjective asserting that the thing is impressive. If you can delete a word and lose no information, it was hype; cut it.
+
+**Format:** 4–8 sentences. Open on the *before* (what didn't exist, what people did instead, how primitive the workaround was). Land on the *after* — name the specific modern technology, system, or everyday object downstream of the idea. A good closing move is a twist on the connection itself (the thing that "won" was later overtaken by the thing it replaced, for a different reason; the old method is still secretly in use somewhere surprising; the timeline is far shorter or longer than intuition suggests).
+
+**Tone:** Same precision as Discovery Snippets — every claim must be a fact a curious reader could go verify, not a vibe. Concrete numbers (years, counts, distances, speeds) do the work that adjectives would otherwise be doing.
+
+**When to write one:** Best suited to BBs whose idea has an obvious, traceable technological lineage (an equation that became a device, a law that became an industry) — electromagnetism, thermodynamics, optics, and orbital mechanics are rich in these. A purely abstract or notational BB (e.g. summation notation) usually won't have a good one — don't force it.
+
+#### AC vs DC — Era & Technology Snippet (raw draft for author to polish, ties to the AC generator BB)
+
+In 1880, electric light meant DC run from a generator a few blocks away — current that couldn't survive a journey of more than about a mile before it bled away as heat in the wires. Entire cities would have needed a power station every few streets. Then Faraday's law, run through a rotating coil instead of a sliding magnet, gave the world alternating current — and a transformer that could step its voltage up for transmission and back down for safety, something DC could not do. Edison, who'd built his empire on DC, fought it for the rest of his career, staging public electrocutions of animals with AC current to brand it as lethal. He lost: by 1900, Westinghouse's AC had wired most of a continent, because one power station could now reach customers a hundred miles away instead of one. The twist: AC didn't actually settle the argument forever. Past a few hundred miles, the conversion losses flip back in DC's favor, so the longest power links on Earth today — under the North Sea, across the Amazon, into Beijing — run on high-voltage DC. The war Edison lost in 1900 quietly reopened a century later, at a distance nobody in 1900 was building wires across.
 
 ---
 
@@ -165,7 +185,7 @@ A Recap board is a single BB that closes out a tier: a plain bullet list of the 
 | 2 | The definition — the clean textbook version, formula introduced here if applicable. |
 | 3 | In action — where it's applied, what it predicts, what it explains. |
 | 4 | The law / bedrock — the full formal statement, edge cases, what breaks it. |
-| — | **Snippet** — historical/contextual note. Not a Floor. Author-polished before publishing. |
+| — | **Snippet** — Discovery (the person/the twist) or Era & Technology (before/after, the device it led to). Not a Floor. Author-polished before publishing. |
 
 Not every BB needs all 5 Floors. Shallow ideas are complete at Floor 1 or 2.
 

@@ -1,20 +1,43 @@
 <script>
+  import { onMount } from 'svelte';
   import { DECK } from '../lib/content/deck.js';
+  import { fetchSnippets } from '../lib/content/dynamicBoards.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
   export let onNavigate;
 
-  // Only one snippet BB exists today (Card 55). Showing exactly what's authored,
-  // not fabricating filler ones — this view will feel thin until more are written.
-  const SNIPPETS = DECK.filter(c => c.tags?.kind === 'snippet');
+  function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
 
+  // Start with whatever's bundled in the static deck; pull the (much larger) set
+  // of dynamic snippets from Supabase on mount and merge them in, shuffled.
+  const staticSnippets = DECK.filter(c => c.tags?.kind === 'snippet');
+  let snippets = staticSnippets;
   let index = 0;
-  $: current = SNIPPETS[index];
+  $: current = snippets[index];
+
+  onMount(async () => {
+    try {
+      const dynamic = await fetchSnippets();
+      if (dynamic.length) {
+        snippets = shuffleArray([...staticSnippets, ...dynamic]);
+        index = 0;
+      }
+    } catch (_) {
+      // offline / fetch failure: keep the static snippets, no error surfaced.
+    }
+  });
 
   function shuffle() {
-    if (SNIPPETS.length < 2) return;
+    if (snippets.length < 2) return;
     let next = index;
-    while (next === index) next = Math.floor(Math.random() * SNIPPETS.length);
+    while (next === index) next = Math.floor(Math.random() * snippets.length);
     index = next;
   }
 </script>
@@ -22,7 +45,7 @@
 <div class="qx-shell snippets-view">
   <div class="top-row">
     <h1>Snippets</h1>
-    <button class="icon-btn" on:click={shuffle} disabled={SNIPPETS.length < 2}>
+    <button class="icon-btn" on:click={shuffle} disabled={snippets.length < 2}>
       <QxIcon name="shuffle" size={18} />
     </button>
   </div>
@@ -34,8 +57,8 @@
       <div class="snippet-title">{current.title}</div>
       <div class="snippet-body">{@html current.layers?.[0] || ''}</div>
     </div>
-    {#if SNIPPETS.length > 1}
-      <div class="pager">{index + 1} / {SNIPPETS.length}</div>
+    {#if snippets.length > 1}
+      <div class="pager">{index + 1} / {snippets.length}</div>
     {:else}
       <div class="pager">More snippets coming soon</div>
     {/if}
