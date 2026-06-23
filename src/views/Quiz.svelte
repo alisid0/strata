@@ -1,5 +1,5 @@
 <script>
-  import { getPathQuestions } from '../lib/content/questions.js';
+  import { getPathQuestions, DIFFICULTY_LABELS } from '../lib/content/questions.js';
   import { PATHS } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import ChalkButton from '../lib/components/ChalkButton.svelte';
@@ -185,7 +185,12 @@
     </div>
 
     <div class="question-card">
-      <div class="q-tag">{questions[current]?.cg || ''} · Question {current + 1} of {questions.length}</div>
+      <div class="q-meta">
+        <span class="q-tag">{questions[current]?.cg || ''} · Question {current + 1} of {questions.length}</span>
+        {#if questions[current]?.difficulty && DIFFICULTY_LABELS[questions[current].difficulty]}
+          <span class="q-band band-{questions[current].difficulty}">{DIFFICULTY_LABELS[questions[current].difficulty]}</span>
+        {/if}
+      </div>
       <div class="q-text">{questions[current]?.q || ''}</div>
 
       <!-- MCQ -->
@@ -318,7 +323,17 @@
     background: var(--board-2); border: 2px solid var(--frame); border-radius: 8px;
     padding: 24px 22px;
   }
-  .q-tag { font-family: var(--print); font-size: 12px; color: var(--chalk-yellow); margin-bottom: 10px; }
+  .q-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .q-tag { font-family: var(--print); font-size: 12px; color: var(--chalk-yellow); }
+  .q-band {
+    font-family: var(--print); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px; border: 1.2px dashed var(--chalk-faint); color: var(--chalk-dim);
+    white-space: nowrap;
+  }
+  .q-band.band-super-easy { border-color: var(--chalk-green); color: var(--chalk-green); }
+  .q-band.band-easy { border-color: var(--chalk-green); color: var(--chalk-green); }
+  .q-band.band-medium { border-color: var(--chalk-yellow); color: var(--chalk-yellow); }
+  .q-band.band-hard { border-color: #e07a5f; color: #e07a5f; }
   .q-text { font-family: var(--hand-display); font-size: 19px; margin-bottom: 18px; line-height: 1.4; }
 
   .options { display: flex; flex-direction: column; gap: 8px; }

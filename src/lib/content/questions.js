@@ -8,41 +8,55 @@ function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 /**
+ * Difficulty bands — the "assessment pyramid" made learner-facing (see PYRAMIDS.md).
+ * A quiz climbs these in order: confidence-building recall first, exam-level last.
+ * Every question helper takes an optional difficulty (defaults to 'medium' so the
+ * older, un-banded path banks keep working unchanged).
+ */
+export const DIFFICULTY_ORDER = { 'super-easy': 0, 'easy': 1, 'medium': 2, 'hard': 3 };
+export const DIFFICULTY_LABELS = {
+  'super-easy': 'Warm-up',
+  'easy': 'Recall',
+  'medium': 'Apply',
+  'hard': 'Exam level'
+};
+
+/**
  * Question type: Multiple Choice
  */
-export function mcq(generator) {
-  return { type: 'mcq', generate: generator };
+export function mcq(generator, difficulty = 'medium') {
+  return { type: 'mcq', generate: generator, difficulty };
 }
 
 /**
  * Question type: True / False
  */
-export function truefalse(generator) {
-  return { type: 'truefalse', generate: generator };
+export function truefalse(generator, difficulty = 'medium') {
+  return { type: 'truefalse', generate: generator, difficulty };
 }
 
 /**
  * Question type: Fill in the blank
  * The question text should use ___ for the blank.
  */
-export function fillblank(generator) {
-  return { type: 'fillblank', generate: generator };
+export function fillblank(generator, difficulty = 'medium') {
+  return { type: 'fillblank', generate: generator, difficulty };
 }
 
 /**
  * Question type: Match the following
  * Returns pairs of items to match.
  */
-export function matchQuestion(generator) {
-  return { type: 'match', generate: generator };
+export function matchQuestion(generator, difficulty = 'medium') {
+  return { type: 'match', generate: generator, difficulty };
 }
 
 /**
  * Question type: Type the answer
  * Numeric or short text answer.
  */
-export function typeanswer(generator) {
-  return { type: 'typeanswer', generate: generator };
+export function typeanswer(generator, difficulty = 'medium') {
+  return { type: 'typeanswer', generate: generator, difficulty };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2466,94 +2480,186 @@ export const PATH_QUESTIONS = {
     }))
   ],
 
-  // ── P15 : Gravitation & orbits ──
+  // ── P15 : Gravitation & orbits ── (exemplar 4-band quiz: super-easy → hard)
   P15: [
+    // ───────── SUPER-EASY (Warm-up — memorisation & confidence) ─────────
+    matchQuestion(() => ({
+      cg: 'P15-SE1',
+      q: 'Match each gravitation symbol or term to what it means.',
+      pairs: [
+        ['G', 'the universal gravitational constant'],
+        ['g', 'gravitational field strength (N/kg)'],
+        ['weight', 'the force of gravity on a mass (mg)'],
+        ['escape velocity', 'speed needed to leave a planet forever']
+      ],
+      explain: 'G is the same everywhere in the universe; g is the local field strength (≈9.8 N/kg at Earth\'s surface); weight = mg; escape velocity is the launch speed needed to never fall back.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P15-SE2',
+      q: "Newton's law of gravitation says that every mass ___ every other mass in the universe.",
+      answer: 'attracts',
+      accept: ['attracts', 'pulls', 'attract', 'pulls on'],
+      explain: 'Gravity is universal and always attractive — every mass pulls on every other mass, with a force given by F = Gm₁m₂/r².'
+    }), 'super-easy'),
     mcq(() => ({
-      cg: 'P15-1',
-      q: "Newton's law of universal gravitation states the force between two point masses is:",
-      opts: ['Proportional to r²', 'Proportional to 1/r (inverse, not squared)', 'Proportional to 1/r² (inverse-square)', 'Independent of distance'],
-      answer: 2,
-      explain: 'F = Gm₁m₂/r² — doubling the distance quarters the force, tripling reduces it to one-ninth. This inverse-square law is the same mathematical form as Coulomb\'s law.'
-    })),
+      cg: 'P15-SE3',
+      q: "In the equation F = Gm₁m₂/r², what does the letter G stand for?",
+      opts: ['Gravity on Earth (9.8)', 'The universal gravitational constant', 'The mass of the Earth', 'The distance between the masses'],
+      answer: 1,
+      explain: 'G is the universal gravitational constant, 6.67×10⁻¹¹ N·m²/kg² — the same value everywhere. It is not the same as little g, the local field strength.'
+    }), 'super-easy'),
     truefalse(() => ({
-      cg: 'P15-2',
+      cg: 'P15-SE4',
+      q: 'Gravity is always an attractive (pulling) force — it never pushes two masses apart.',
+      answer: true,
+      explain: 'Unlike electric charges, mass comes in only one "sign," so gravity is always attractive — it only ever pulls masses together.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P15-SE5',
+      q: 'The further apart two objects are, the weaker the gravitational pull between them.',
+      answer: true,
+      explain: 'Gravity follows an inverse-square law (F ∝ 1/r²): as distance grows, the force drops off rapidly.'
+    }), 'super-easy'),
+
+    // ───────── EASY (Recall — confidence continues, one short step up) ─────────
+    mcq(() => ({
+      cg: 'P15-E1',
+      q: 'Gravity follows an inverse-square law. If you double the distance between two masses, the force becomes:',
+      opts: ['Twice as strong', 'Half as strong', 'One quarter as strong', 'Unchanged'],
+      answer: 2,
+      explain: 'F ∝ 1/r². Doubling r multiplies the force by 1/2² = 1/4 — it becomes one quarter as strong.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P15-E2',
       q: 'Mass and weight are the same thing, just measured in different units.',
       answer: false,
-      explain: 'Mass (kg) is intrinsic and invariant. Weight (N) = mg is the gravitational force on that mass, and depends on location — an object\'s weight changes on the Moon, but its mass doesn\'t.'
-    })),
-    typeanswer(() => {
-      const h = pick([1, 2, 5]);
-      const R = 6371;
-      const factor = 1 - 2 * h / R;
-      return {
-        cg: 'P15-3',
-        q: `Using the approximation g(h) ≈ g₀(1 − 2h/R), with R = 6371 km and h = ${h} km, what fraction of g₀ is g(h)? (give to 4 decimal places, e.g. 0.9990)`,
-        answer: Math.round(factor * 10000) / 10000,
-        tolerance: 0.0005,
-        explain: `g(h)/g₀ ≈ 1 − 2(${h})/6371 = 1 − ${(2*h/R).toFixed(4)} = ${Math.round(factor*10000)/10000}.`
-      };
-    }),
-    mcq(() => ({
-      cg: 'P15-4',
-      q: 'Why does the gravitational force inside a uniform spherical shell equal zero (the shell theorem)?',
-      opts: [
-        'Because gravity does not exist inside shells',
-        'Because contributions from all parts of the shell cancel out by symmetry',
-        'Because the shell has no mass',
-        'This is false — the force is actually maximum at the centre'
-      ],
-      answer: 1,
-      explain: 'Newton\'s shell theorem: inside a uniform spherical shell, the gravitational pulls from all directions cancel exactly, giving zero net force — only mass at smaller radius than your position contributes to g inside a solid sphere.'
-    })),
-    mcq(() => ({
-      cg: 'P15-5',
-      q: 'Escape velocity from a planet depends on:',
-      opts: [
-        'The mass of the escaping object and the planet\'s mass',
-        'Only the planet\'s mass and radius (not the escaping object\'s mass)',
-        'Only the escaping object\'s mass',
-        'The direction of launch only'
-      ],
-      answer: 1,
-      explain: 'v_e = √(2GM/R) involves only the planet\'s mass M and radius R — the escaping object\'s own mass cancels out of the energy balance ½mv_e² = GMm/R.'
-    })),
+      explain: 'Mass (kg) is intrinsic and never changes. Weight (N) = mg is the gravitational force on that mass and depends on where you are — your weight changes on the Moon, your mass does not.'
+    }), 'easy'),
     fillblank(() => ({
-      cg: 'P15-6',
-      q: "Kepler's Second Law (equal areas in equal times) is a direct consequence of conservation of ___.",
-      answer: 'angular momentum',
-      accept: ['angular momentum', 'Angular momentum', 'angular momentum.'],
-      explain: 'Since gravity is a central force (always directed at the Sun), it produces zero torque about the Sun, so angular momentum L = mr²ω is conserved — which directly gives constant areal velocity.'
-    })),
-    mcq(() => ({
-      cg: 'P15-7',
-      q: "Kepler's Third Law states T² ∝ a³. What determines the proportionality constant?",
-      opts: [
-        'The mass of the orbiting planet only',
-        'The mass of the central body (e.g., the Sun) and G',
-        'The eccentricity of the orbit',
-        'Nothing — the constant is universal for all systems'
+      cg: 'P15-E3',
+      q: 'Weight is calculated as mass multiplied by ___ (the gravitational field strength).',
+      answer: 'g',
+      accept: ['g', 'gravity', 'gravitational field strength', 'gravitational acceleration'],
+      explain: 'Weight = mg. Near Earth\'s surface g ≈ 9.8 N/kg, so a 1 kg mass weighs about 9.8 N.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P15-E4',
+      q: "Match each of Kepler's three laws to what it states.",
+      pairs: [
+        ["Kepler's 1st law", 'orbits are ellipses, Sun at one focus'],
+        ["Kepler's 2nd law", 'equal areas swept in equal times'],
+        ["Kepler's 3rd law", 'T² is proportional to a³']
       ],
-      answer: 1,
-      explain: 'T² = (4π²/GM)a³ — the constant depends on G and the central mass M, which is why every planet in the Solar System shares the same T²/a³ ratio (same central Sun).'
-    })),
-    truefalse(() => ({
-      cg: 'P15-8',
-      q: 'A satellite orbiting closer to a planet moves faster than one orbiting farther away.',
-      answer: true,
-      explain: 'v_orb = √(GM/r) — orbital speed decreases as orbital radius increases. Counterintuitively, to move to a higher (slower) orbit, you must first speed up to climb there.'
-    })),
+      explain: 'First: the shape (ellipse). Second: the speed rule (faster when closer). Third: the period–size relation, T² ∝ a³.'
+    }), 'easy'),
     mcq(() => ({
-      cg: 'P15-9',
-      q: 'An astronaut in orbit feels weightless. What is the real reason for this?',
+      cg: 'P15-E5',
+      q: 'An astronaut floating in the International Space Station feels weightless. The main reason is:',
       opts: [
-        'There is no gravity in orbit',
-        'The astronaut and spacecraft are both in continuous free fall around Earth, so there is no normal force to feel',
-        'The spacecraft blocks gravity',
+        'There is no gravity that far from Earth',
+        'The station and astronaut are in continuous free fall around Earth together',
+        'The station blocks the Earth\'s gravity',
         'The astronaut\'s mass becomes zero in space'
       ],
       answer: 1,
-      explain: 'Gravity at orbital altitude is still nearly as strong as at the surface. Weightlessness occurs because the spacecraft and everything inside it accelerate at the same rate g, so there\'s no contact force pressing them together — true free fall, not absence of gravity.'
-    }))
+      explain: 'Gravity in orbit is still ~90% of its surface value. Weightlessness is free fall: the station and everything in it accelerate together, so there is no contact force to feel.'
+    }), 'easy'),
+
+    // ───────── MEDIUM (Apply — use the idea, not just recall it) ─────────
+    mcq(() => ({
+      cg: 'P15-M1',
+      q: "By Kepler's Second Law, where in its elliptical orbit does a planet move fastest?",
+      opts: ['At its farthest point from the Sun (aphelion)', 'At its closest point to the Sun (perihelion)', 'It moves at constant speed throughout', 'Exactly halfway along the orbit'],
+      answer: 1,
+      explain: 'Equal areas in equal times means the planet must sweep faster when the radius is short — so it moves fastest at perihelion (closest) and slowest at aphelion (farthest).'
+    }), 'medium'),
+    truefalse(() => ({
+      cg: 'P15-M2',
+      q: 'A heavier spacecraft needs a higher escape velocity than a light one to leave the same planet.',
+      answer: false,
+      explain: 'v_e = √(2GM/R) depends only on the planet\'s mass and radius — the escaping object\'s own mass cancels out. A pebble and a rocket have the same escape velocity from a given planet.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P15-M3',
+      q: "Kepler's Second Law (equal areas in equal times) is a direct consequence of the conservation of ___.",
+      answer: 'angular momentum',
+      accept: ['angular momentum', 'angular momentum.'],
+      explain: 'Gravity is a central force (always aimed at the Sun), so it exerts zero torque about the Sun — making angular momentum L = mr²ω constant, which is exactly the equal-areas rule.'
+    }), 'medium'),
+    typeanswer(() => ({
+      cg: 'P15-M4',
+      q: "Earth's surface gravity is g₀ at radius R from its centre. Using g ∝ 1/r², at a distance of 2R from the centre gravity is what fraction of g₀? (decimal, e.g. 0.50)",
+      answer: 0.25,
+      tolerance: 0.01,
+      explain: 'g ∝ 1/r². At 2R, g = g₀ / 2² = g₀/4 = 0.25 g₀.'
+    }), 'medium'),
+    mcq(() => ({
+      cg: 'P15-M5',
+      q: 'To move a satellite from a low orbit to a higher one, then settle into the higher orbit, its orbital speed must end up:',
+      opts: ['Faster than before', 'Slower than before', 'Exactly the same', 'Zero'],
+      answer: 1,
+      explain: 'v_orb = √(GM/r): a larger orbital radius means a slower orbital speed. (You must briefly fire engines to climb, but the final higher orbit is slower than the original lower one.)'
+    }), 'medium'),
+
+    // ───────── HARD (Exam level — SAT / competition style) ─────────
+    typeanswer(() => {
+      const a = pick([4, 9, 16, 25]);
+      const T = Math.round(Math.pow(a, 1.5));
+      return {
+        cg: 'P15-H1',
+        q: `A planet orbits the Sun with a semi-major axis of a = ${a} AU. Using Kepler's Third Law T² = a³ (T in years), what is its orbital period in years?`,
+        answer: T,
+        tolerance: 0.5,
+        explain: `T = √(a³) = a^1.5 = ${a}^1.5 = ${T} years.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const k = pick([4, 8, 9]);
+      const ratio = Math.round(Math.pow(k, 1.5));
+      return {
+        cg: 'P15-H2',
+        q: `Satellite B orbits at ${k} times the orbital radius of satellite A around the same planet. By Kepler's Third Law (T ∝ r^1.5), B's period is how many times A's period?`,
+        answer: ratio,
+        tolerance: 0.5,
+        explain: `T ∝ r^1.5, so the ratio is ${k}^1.5 = ${ratio}.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P15-H3',
+      q: 'At a given orbital radius, how does the escape velocity compare to the circular orbital speed?',
+      opts: ['They are equal', 'Escape velocity is √2 times the orbital speed', 'Escape velocity is twice the orbital speed', 'Orbital speed is larger than escape velocity'],
+      answer: 1,
+      explain: 'v_esc = √(2GM/r) and v_orb = √(GM/r), so v_esc = √2 · v_orb ≈ 1.41 × the orbital speed at the same radius.'
+    }), 'hard'),
+    mcq(() => ({
+      cg: 'P15-H4',
+      q: 'The total mechanical energy of a satellite in a bound circular orbit is E = −GMm/2r. The negative sign tells us that:',
+      opts: [
+        'The satellite has negative mass',
+        'The satellite is gravitationally bound — energy must be added to free it',
+        'The orbit is decaying',
+        'The kinetic energy is negative'
+      ],
+      answer: 1,
+      explain: 'Negative total energy means the orbit is bound: you would have to supply energy (to reach E = 0) for the satellite to just barely escape to infinity. KE is positive (+GMm/2r); the larger negative PE dominates.'
+    }), 'hard'),
+    typeanswer(() => {
+      const vorb = pick([5, 6, 8, 10]);
+      const vesc = Math.round(vorb * Math.SQRT2 * 100) / 100;
+      return {
+        cg: 'P15-H5',
+        q: `A satellite's circular orbital speed at some radius is ${vorb} km/s. Escape velocity at that radius is √2 times larger. What is the escape velocity, in km/s (2 d.p.)?`,
+        answer: vesc,
+        tolerance: 0.1,
+        explain: `v_esc = √2 · v_orb = 1.414 × ${vorb} = ${vesc} km/s.`
+      };
+    }, 'hard'),
+    truefalse(() => ({
+      cg: 'P15-H6',
+      q: 'Tidal forces fall off with distance more steeply than gravity itself — as 1/r³ rather than 1/r².',
+      answer: true,
+      explain: 'Tidal force comes from the difference in gravity across a body. Differentiating the 1/r² force with respect to r introduces an extra factor of 1/r, giving a 1/r³ dependence — which is why the Moon raises tides but the far more massive Sun raises smaller ones.'
+    }), 'hard')
   ],
 
   // ── P16 : Heat transfer — conduction, convection, radiation ──
@@ -3106,23 +3212,57 @@ export const PATH_QUESTIONS = {
   ],
 };
 
-/** Get questions for a specific path, shuffled */
+function shuffleInPlace(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/**
+ * Get questions for a specific path.
+ *
+ * Banded paths (questions tagged with >1 difficulty) return a quiz that climbs
+ * super-easy → easy → medium → hard: `count` is distributed across the bands so
+ * every band is represented every run, shuffled within each band, then ordered by
+ * difficulty. Un-banded paths (everything still on the default 'medium') keep the
+ * original behaviour: a single shuffled slice.
+ */
 export function getPathQuestions(pathId, count = 10) {
   const pool = PATH_QUESTIONS[pathId];
   if (!pool) return [];
 
-  const generated = pool.map(def => {
-    const inst = def.generate();
-    return { type: def.type, ...inst };
-  });
+  const generated = pool.map(def => ({
+    type: def.type,
+    difficulty: def.difficulty || 'medium',
+    ...def.generate()
+  }));
 
-  // Shuffle
-  for (let i = generated.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [generated[i], generated[j]] = [generated[j], generated[i]];
+  // Group by band, shuffle within each.
+  const bands = { 'super-easy': [], 'easy': [], 'medium': [], 'hard': [] };
+  for (const q of generated) (bands[q.difficulty] || bands['medium']).push(q);
+  for (const k in bands) shuffleInPlace(bands[k]);
+
+  const usedBands = Object.keys(DIFFICULTY_ORDER).filter(k => bands[k].length > 0);
+
+  // Legacy / single-band path: original shuffle-and-slice.
+  if (usedBands.length <= 1) {
+    return shuffleInPlace(generated).slice(0, Math.min(count, generated.length));
   }
 
-  return generated.slice(0, Math.min(count, generated.length));
+  // Banded path: spread `count` across the bands as evenly as possible, giving the
+  // earlier (easier) bands the remainder so the quiz opens gently.
+  const base = Math.floor(count / usedBands.length);
+  let remainder = count % usedBands.length;
+  const selected = [];
+  for (const k of usedBands) {
+    const take = base + (remainder > 0 ? 1 : 0);
+    if (remainder > 0) remainder--;
+    selected.push(...bands[k].slice(0, take));
+  }
+  selected.sort((a, b) => DIFFICULTY_ORDER[a.difficulty] - DIFFICULTY_ORDER[b.difficulty]);
+  return selected;
 }
 
 export { randInt, pick };
