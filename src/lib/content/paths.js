@@ -47,12 +47,16 @@ export const PATHS = {
   M11: { subject: 'maths', name: 'Problem-solving heuristics II', icon: 'maths', cards: [328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343], quizUrls: ['tier0'] },
   M12: { subject: 'maths', name: 'Problem-solving: vectors & matrices', icon: 'maths', cards: [344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355], quizUrls: ['tier0'] },
   M13: { subject: 'maths', name: "Lockhart's algebra: foundations", icon: 'maths', cards: [356, 357, 358, 359, 360, 361, 362, 363, 364, 365], quizUrls: ['tier0'] },
-  M14: { subject: 'maths', name: "Lockhart's algebra: symmetry & roots", icon: 'maths', cards: [366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376], quizUrls: ['tier0'] }
+  M14: { subject: 'maths', name: "Lockhart's algebra: symmetry & roots", icon: 'maths', cards: [366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376], quizUrls: ['tier0'] },
+
+  P15: { subject: 'physics', name: 'Gravitation & orbits', icon: 'physics', cards: [377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392], quizUrls: ['tier0'] },
+  P16: { subject: 'physics', name: 'Heat transfer: conduction, convection & radiation', icon: 'physics', cards: [393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408], quizUrls: ['tier0'] },
+  P17: { subject: 'physics', name: 'Magnetism & electromagnetic induction', icon: 'physics', cards: [409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433], quizUrls: ['tier0'] }
 };
 
 /** Grouped by subject for the subjects overview */
 export const SUBJECT_PATHS = {
-  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14'],
+  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17'],
   maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14'],
   chemistry: ['C1', 'C2', 'C3', 'C4', 'C5']
 };

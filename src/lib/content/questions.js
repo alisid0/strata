@@ -2465,6 +2465,300 @@ export const PATH_QUESTIONS = {
       explain: '(a−b) flips sign under the swap a↔b (antisymmetric), but (a−b)² does not, since (−x)² = x² — this is exactly the structural fact that lets the discriminant be expressed in terms of the symmetric P and Q.'
     }))
   ],
+
+  // ── P15 : Gravitation & orbits ──
+  P15: [
+    mcq(() => ({
+      cg: 'P15-1',
+      q: "Newton's law of universal gravitation states the force between two point masses is:",
+      opts: ['Proportional to r²', 'Proportional to 1/r (inverse, not squared)', 'Proportional to 1/r² (inverse-square)', 'Independent of distance'],
+      answer: 2,
+      explain: 'F = Gm₁m₂/r² — doubling the distance quarters the force, tripling reduces it to one-ninth. This inverse-square law is the same mathematical form as Coulomb\'s law.'
+    })),
+    truefalse(() => ({
+      cg: 'P15-2',
+      q: 'Mass and weight are the same thing, just measured in different units.',
+      answer: false,
+      explain: 'Mass (kg) is intrinsic and invariant. Weight (N) = mg is the gravitational force on that mass, and depends on location — an object\'s weight changes on the Moon, but its mass doesn\'t.'
+    })),
+    typeanswer(() => {
+      const h = pick([1, 2, 5]);
+      const R = 6371;
+      const factor = 1 - 2 * h / R;
+      return {
+        cg: 'P15-3',
+        q: `Using the approximation g(h) ≈ g₀(1 − 2h/R), with R = 6371 km and h = ${h} km, what fraction of g₀ is g(h)? (give to 4 decimal places, e.g. 0.9990)`,
+        answer: Math.round(factor * 10000) / 10000,
+        tolerance: 0.0005,
+        explain: `g(h)/g₀ ≈ 1 − 2(${h})/6371 = 1 − ${(2*h/R).toFixed(4)} = ${Math.round(factor*10000)/10000}.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'P15-4',
+      q: 'Why does the gravitational force inside a uniform spherical shell equal zero (the shell theorem)?',
+      opts: [
+        'Because gravity does not exist inside shells',
+        'Because contributions from all parts of the shell cancel out by symmetry',
+        'Because the shell has no mass',
+        'This is false — the force is actually maximum at the centre'
+      ],
+      answer: 1,
+      explain: 'Newton\'s shell theorem: inside a uniform spherical shell, the gravitational pulls from all directions cancel exactly, giving zero net force — only mass at smaller radius than your position contributes to g inside a solid sphere.'
+    })),
+    mcq(() => ({
+      cg: 'P15-5',
+      q: 'Escape velocity from a planet depends on:',
+      opts: [
+        'The mass of the escaping object and the planet\'s mass',
+        'Only the planet\'s mass and radius (not the escaping object\'s mass)',
+        'Only the escaping object\'s mass',
+        'The direction of launch only'
+      ],
+      answer: 1,
+      explain: 'v_e = √(2GM/R) involves only the planet\'s mass M and radius R — the escaping object\'s own mass cancels out of the energy balance ½mv_e² = GMm/R.'
+    })),
+    fillblank(() => ({
+      cg: 'P15-6',
+      q: "Kepler's Second Law (equal areas in equal times) is a direct consequence of conservation of ___.",
+      answer: 'angular momentum',
+      accept: ['angular momentum', 'Angular momentum', 'angular momentum.'],
+      explain: 'Since gravity is a central force (always directed at the Sun), it produces zero torque about the Sun, so angular momentum L = mr²ω is conserved — which directly gives constant areal velocity.'
+    })),
+    mcq(() => ({
+      cg: 'P15-7',
+      q: "Kepler's Third Law states T² ∝ a³. What determines the proportionality constant?",
+      opts: [
+        'The mass of the orbiting planet only',
+        'The mass of the central body (e.g., the Sun) and G',
+        'The eccentricity of the orbit',
+        'Nothing — the constant is universal for all systems'
+      ],
+      answer: 1,
+      explain: 'T² = (4π²/GM)a³ — the constant depends on G and the central mass M, which is why every planet in the Solar System shares the same T²/a³ ratio (same central Sun).'
+    })),
+    truefalse(() => ({
+      cg: 'P15-8',
+      q: 'A satellite orbiting closer to a planet moves faster than one orbiting farther away.',
+      answer: true,
+      explain: 'v_orb = √(GM/r) — orbital speed decreases as orbital radius increases. Counterintuitively, to move to a higher (slower) orbit, you must first speed up to climb there.'
+    })),
+    mcq(() => ({
+      cg: 'P15-9',
+      q: 'An astronaut in orbit feels weightless. What is the real reason for this?',
+      opts: [
+        'There is no gravity in orbit',
+        'The astronaut and spacecraft are both in continuous free fall around Earth, so there is no normal force to feel',
+        'The spacecraft blocks gravity',
+        'The astronaut\'s mass becomes zero in space'
+      ],
+      answer: 1,
+      explain: 'Gravity at orbital altitude is still nearly as strong as at the surface. Weightlessness occurs because the spacecraft and everything inside it accelerate at the same rate g, so there\'s no contact force pressing them together — true free fall, not absence of gravity.'
+    }))
+  ],
+
+  // ── P16 : Heat transfer — conduction, convection, radiation ──
+  P16: [
+    mcq(() => ({
+      cg: 'P16-1',
+      q: "Fourier's law of conduction says the rate of heat flow through a slab is proportional to:",
+      opts: [
+        'The volume of the slab',
+        'The cross-sectional area and the temperature gradient',
+        'The colour of the slab only',
+        'The time elapsed only'
+      ],
+      answer: 1,
+      explain: 'H = kA(T₁−T₂)/L — heat current is proportional to area A and the temperature difference, and inversely proportional to thickness L, scaled by the material\'s thermal conductivity k.'
+    })),
+    truefalse(() => ({
+      cg: 'P16-2',
+      q: 'Metals generally have high thermal conductivity because heat is carried efficiently by free electrons.',
+      answer: true,
+      explain: 'In metals, the same free electrons responsible for electrical conductivity also transport thermal energy efficiently — about 95% of heat conduction in metals is electronic, not lattice vibration.'
+    })),
+    typeanswer(() => {
+      const k = pick([0.5, 1, 2]), A = 2, dT = pick([20, 30, 50]), L = pick([0.1, 0.2]);
+      const H = k * A * dT / L;
+      return {
+        cg: 'P16-3',
+        q: `Using H = kA(ΔT)/L with k = ${k} W/(m·K), A = ${A} m², ΔT = ${dT} K, L = ${L} m, what is the heat current H (W)?`,
+        answer: H,
+        tolerance: 0.5,
+        explain: `H = ${k} × ${A} × ${dT} / ${L} = ${H} W.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'P16-4',
+      q: 'For thermal resistances arranged in series (like layers of a wall), the equivalent resistance is found by:',
+      opts: [
+        'Adding the resistances: R_eq = R₁ + R₂ + ...',
+        'Adding the reciprocals: 1/R_eq = 1/R₁ + 1/R₂ + ...',
+        'Multiplying the resistances',
+        'Taking the average'
+      ],
+      answer: 0,
+      explain: 'Series thermal resistances add directly (same heat current flows through each layer) — exactly analogous to series electrical resistors. Parallel paths use the reciprocal-sum rule instead.'
+    })),
+    truefalse(() => ({
+      cg: 'P16-5',
+      q: 'Convection requires the bulk movement of a fluid, unlike conduction which can occur in a stationary solid.',
+      answer: true,
+      explain: 'Convection transports heat via moving fluid (natural, driven by buoyancy, or forced, driven by a fan/pump) — it fundamentally requires fluid motion, unlike conduction which works through a stationary medium.'
+    })),
+    mcq(() => ({
+      cg: 'P16-6',
+      q: "Newton's law of cooling predicts that an object's temperature approaches ambient temperature:",
+      opts: ['Linearly with time', 'Exponentially with time', 'Not at all — temperature stays constant', 'Instantaneously'],
+      answer: 1,
+      explain: 'T(t) = T_s + (T₀−T_s)e^(−kt) — an exponential decay toward the ambient temperature T_s, valid when the rate of heat loss is proportional to the temperature difference.'
+    })),
+    fillblank(() => ({
+      cg: 'P16-7',
+      q: 'The Stefan-Boltzmann law states that the power radiated per unit area by a black body is proportional to T raised to the power of ___.',
+      answer: '4',
+      accept: ['4', 'four', 'fourth'],
+      explain: 'P/A = σT⁴ — radiated power depends on the FOURTH power of absolute temperature, which is why even modest temperature increases dramatically increase radiated power.'
+    })),
+    mcq(() => ({
+      cg: 'P16-8',
+      q: "Kirchhoff's law of radiation states that, at thermal equilibrium, a material's absorptivity and emissivity are:",
+      opts: ['Always different', 'Equal at every wavelength', 'Unrelated to each other', 'Both equal to zero'],
+      answer: 1,
+      explain: 'α(λ) = ε(λ) — a good absorber at a given wavelength is necessarily a good emitter at that same wavelength, a consequence of the second law of thermodynamics.'
+    })),
+    truefalse(() => ({
+      cg: 'P16-9',
+      q: "The natural greenhouse effect (without any human influence) keeps Earth's surface about 33°C warmer than it would otherwise be.",
+      answer: true,
+      explain: "Without greenhouse gases, Earth's effective radiating temperature would be about 255 K (−18°C); the actual average surface temperature is ~288 K (+15°C) — a 33°C difference from selective absorption/re-emission of infrared by atmospheric gases."
+    })),
+    mcq(() => ({
+      cg: 'P16-10',
+      q: 'A vacuum (thermos) flask minimises heat loss by all three mechanisms. How does it block radiation specifically?',
+      opts: [
+        'It cannot block radiation at all',
+        'Low-emissivity reflective coatings on the vacuum-facing surfaces',
+        'By using a thick layer of metal',
+        'By keeping the contents under high pressure'
+      ],
+      answer: 1,
+      explain: 'The vacuum eliminates conduction and convection (no medium between the walls); reflective, low-emissivity coatings minimise radiative transfer across that vacuum gap.'
+    }))
+  ],
+
+  // ── P17 : Magnetism & electromagnetic induction ──
+  P17: [
+    mcq(() => ({
+      cg: 'P17-1',
+      q: 'The magnetic force on a moving charge, F = qv × B, has what key property regarding work done?',
+      opts: [
+        'It always does positive work, speeding the charge up',
+        'It does zero work, since it is always perpendicular to the velocity',
+        'It does negative work, always slowing the charge down',
+        'It does work proportional to the charge\'s mass'
+      ],
+      answer: 1,
+      explain: 'F_B = qv×B is always perpendicular to v, so F⃗·v⃗ = 0 — the magnetic force can change a particle\'s direction but never its speed or kinetic energy.'
+    })),
+    typeanswer(() => {
+      const m = pick([2,4,8]), B = pick([0.5,1,2]);
+      const q = 1;
+      const period = (2 * Math.PI * m) / (q * B);
+      return {
+        cg: 'P17-2',
+        q: `For a charged particle (q=1, arbitrary units) of mass ${m} kg in a uniform field B = ${B} T, using T = 2πm/(qB), what is the cyclotron period (in seconds, to 2 decimals)? Note this is independent of speed.`,
+        answer: Math.round(period * 100) / 100,
+        tolerance: 0.05,
+        explain: `T = 2π(${m})/(1×${B}) = ${Math.round(period*100)/100} s — independent of the particle's speed or orbit radius.`
+      };
+    }),
+    mcq(() => ({
+      cg: 'P17-3',
+      q: 'In a velocity selector (crossed E and B fields), only particles with a specific velocity pass straight through. That velocity is:',
+      opts: ['v = E × B', 'v = E/B', 'v = B/E', 'v = E + B'],
+      answer: 1,
+      explain: 'The electric and magnetic forces balance exactly when qE = qvB, giving v = E/B — independent of the particle\'s charge or mass, so it selects purely by speed.'
+    })),
+    truefalse(() => ({
+      cg: 'P17-4',
+      q: 'The force on a current-carrying wire in a magnetic field depends on the current, the field strength, and the angle between the wire and the field.',
+      answer: true,
+      explain: 'F = BIL sin θ — the force depends on B, current I, length L, and sin θ where θ is the angle between the wire and B; the force is zero when the wire is parallel to B.'
+    })),
+    mcq(() => ({
+      cg: 'P17-5',
+      q: 'The torque on a current loop in a magnetic field, τ = m × B, is maximised when:',
+      opts: [
+        'The magnetic moment m is parallel to B',
+        'The magnetic moment m is perpendicular to B',
+        'The current is zero',
+        'The loop has no area'
+      ],
+      answer: 1,
+      explain: 'τ = mB sin θ is maximum at θ = 90° (m perpendicular to B) and zero when m is aligned with B (θ=0, stable equilibrium) or anti-aligned (θ=180°, unstable equilibrium).'
+    })),
+    fillblank(() => ({
+      cg: 'P17-6',
+      q: 'The magnetic field from a long straight wire falls off as 1/r, while the field from a magnetic dipole (bar magnet) falls off as 1/r raised to the power ___.',
+      answer: '3',
+      accept: ['3', 'three', 'cubed'],
+      explain: 'A long wire is essentially an infinite line source, giving B ∝ 1/r. A dipole\'s two opposite poles partially cancel at a distance, giving a steeper 1/r³ falloff.'
+    })),
+    mcq(() => ({
+      cg: 'P17-7',
+      q: "Inside an ideal long solenoid carrying current I with n turns per unit length, the magnetic field B is:",
+      opts: ['Zero everywhere inside', 'Uniform: B = μ₀nI', 'Strongest at the ends, weakest in the middle', 'Equal to the field outside the solenoid'],
+      answer: 1,
+      explain: 'B = μ₀nI is uniform throughout the interior of an ideal (long, tightly-wound) solenoid — contributions from all the turns combine to cancel radial variation, while the field outside is essentially zero.'
+    })),
+    truefalse(() => ({
+      cg: 'P17-8',
+      q: 'Diamagnetism is present in all materials, including those with no unpaired electrons, while paramagnetism and ferromagnetism require unpaired electron spins.',
+      answer: true,
+      explain: 'Diamagnetism arises from Lenz\'s-law-like response of orbiting electrons and is universal. Paramagnetism and ferromagnetism additionally require unpaired electron spins that can align with an external field.'
+    })),
+    mcq(() => ({
+      cg: 'P17-9',
+      q: "Faraday's law states that the induced EMF in a loop equals:",
+      opts: [
+        'The magnetic flux through the loop',
+        'The negative rate of change of magnetic flux through the loop',
+        'The current in the loop',
+        'Zero, always'
+      ],
+      answer: 1,
+      explain: 'ε = −dΦ/dt (or −N dΦ/dt for N turns) — only a CHANGING flux induces an EMF; a steady flux, no matter how large, induces nothing.'
+    })),
+    mcq(() => ({
+      cg: 'P17-10',
+      q: "Lenz's law (the minus sign in Faraday's law) exists because:",
+      opts: [
+        'It is just a mathematical convention with no physical meaning',
+        'Without it, induced currents would reinforce the flux change, creating a runaway energy-from-nothing feedback loop',
+        'It only matters for AC circuits',
+        'It describes the direction of conventional current flow only'
+      ],
+      answer: 1,
+      explain: 'If the induced current reinforced (rather than opposed) the flux change, you\'d get unbounded positive feedback — a violation of energy conservation. The minus sign in Faraday\'s law enforces opposition, consistent with energy conservation.'
+    })),
+    typeanswer(() => {
+      const L = pick([2,4,5]), I = pick([3,6,10]);
+      const U = 0.5 * L * I * I;
+      return {
+        cg: 'P17-11',
+        q: `Using U = ½LI² with L = ${L} H and I = ${I} A, what is the energy stored in the inductor (J)?`,
+        answer: U,
+        tolerance: 0.5,
+        explain: `U = ½ × ${L} × ${I}² = ½ × ${L} × ${I*I} = ${U} J.`
+      };
+    }),
+    truefalse(() => ({
+      cg: 'P17-12',
+      q: 'Eddy currents are deliberately exploited in induction cooktops, but considered wasteful losses in transformer cores (which is why those cores are laminated).',
+      answer: true,
+      explain: 'The same physical phenomenon — circulating currents induced by changing flux in a bulk conductor — is useful for induction heating but a source of energy loss (heat) in transformer cores, where lamination interrupts the current paths to reduce that loss.'
+    }))
+  ],
 };
 
 /** Get questions for a specific path, shuffled */
