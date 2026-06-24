@@ -56,12 +56,21 @@ export const PATHS = {
   M15: { subject: 'maths', name: 'Calculus: differentiation', icon: 'maths', cards: [434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449], quizUrls: ['tier0'] },
   M16: { subject: 'maths', name: 'Calculus: integration', icon: 'maths', cards: [450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465], quizUrls: ['tier0'] },
   P18: { subject: 'physics', name: 'Calculus in physics: differentiation applications', icon: 'physics', cards: [466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480], quizUrls: ['tier0'] },
-  P19: { subject: 'physics', name: 'Calculus in physics: integration applications', icon: 'physics', cards: [481, 482, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495], quizUrls: ['tier0'] }
+  P19: { subject: 'physics', name: 'Calculus in physics: integration applications', icon: 'physics', cards: [481, 482, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495], quizUrls: ['tier0'] },
+
+  P20: { subject: 'physics', name: 'Applied mechanics: machines, fluids & materials', icon: 'physics', cards: [575, 576, 577, 578, 579, 580, 581, 582, 583, 584, 585, 586, 587, 588, 589, 590], quizUrls: ['tier0'] },
+  P21: { subject: 'physics', name: 'Oscillations & acoustics', icon: 'physics', cards: [591, 592, 593, 594, 595, 596, 597, 598, 599, 600, 601, 602, 603, 604, 605, 606], quizUrls: ['tier0'] },
+  P22: { subject: 'physics', name: 'Applied electricity: batteries, AC & radio', icon: 'physics', cards: [607, 608, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 620, 621], quizUrls: ['tier0'] },
+  P23: { subject: 'physics', name: 'Gyroscopes, magnetism & wave optics', icon: 'physics', cards: [622, 623, 624, 625, 626, 627, 628, 629, 630, 631, 632, 633, 634, 635, 636, 637], quizUrls: ['tier0'] },
+  P24: { subject: 'physics', name: 'Newtonian mechanics', icon: 'physics', cards: [638, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653], quizUrls: ['tier0'] },
+  P25: { subject: 'physics', name: 'Rotation, heat & thermodynamics', icon: 'physics', cards: [654, 655, 656, 657, 658, 659, 660, 661, 662, 663, 664, 665, 666, 667, 668, 669], quizUrls: ['tier0'] },
+  P26: { subject: 'physics', name: 'Optics: light, lenses & instruments', icon: 'physics', cards: [670, 671, 672, 673, 674, 675, 676, 677, 678, 679, 680, 681, 682, 683, 684, 685], quizUrls: ['tier0'] },
+  P27: { subject: 'physics', name: 'Engineering tools & electrical machines', icon: 'physics', cards: [686, 687, 688, 689, 690, 691, 692, 693, 694, 695, 696, 697], quizUrls: ['tier0'] }
 };
 
 /** Grouped by subject for the subjects overview */
 export const SUBJECT_PATHS = {
-  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19'],
+  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27'],
   maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'M15', 'M16'],
   chemistry: ['C1', 'C2', 'C3', 'C4', 'C5']
 };

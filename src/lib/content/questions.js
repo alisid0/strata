@@ -3210,6 +3210,1501 @@ export const PATH_QUESTIONS = {
       explain: 'F=dp/dt (differential) and J=∫Fdt=Δp (integral) are the same physical law in two equivalent forms — the same duality appears throughout physics via the Fundamental Theorem of Calculus and its multivariable generalisations (Stokes\', divergence theorem).'
     }))
   ],
+
+  // ── P20 : Applied mechanics — machines, fluids & materials (Frye) ──
+  P20: [
+    // ───────── SUPER-EASY (Warm-up — memorisation & confidence) ─────────
+    matchQuestion(() => ({
+      cg: 'P20-SE1',
+      q: 'Match each simple machine to what it does.',
+      pairs: [
+        ['Lever', 'a rigid bar that turns about a fulcrum'],
+        ['Pulley', 'a wheel that redirects or shares a rope load'],
+        ['Inclined plane', 'a ramp that trades distance for force'],
+        ['Hydraulic press', 'multiplies force using a confined fluid']
+      ],
+      explain: 'All four are force multipliers: a lever pivots on a fulcrum, a pulley shares the load across rope strands, a ramp lets you push further but easier, and a hydraulic press uses fluid pressure to multiply force.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P20-SE2',
+      q: 'A machine that lets you lift a big load with a small effort multiplies your force. The number measuring this is its mechanical ___.',
+      answer: 'advantage',
+      accept: ['advantage', 'advantage (MA)', 'mechanical advantage'],
+      explain: 'Mechanical advantage (MA) = output force ÷ input force. An MA of 4 means your effort is multiplied four times.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P20-SE3',
+      q: 'In a lever, the fixed point that the bar turns around is called the:',
+      opts: ['Effort', 'Load', 'Fulcrum', 'Pulley'],
+      answer: 2,
+      explain: 'The fulcrum is the pivot. The effort is the force you apply; the load is the weight you move; the bar rotates about the fulcrum.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P20-SE4',
+      q: 'An object floats when the upward buoyant force on it is at least as large as its weight.',
+      answer: true,
+      explain: 'Buoyancy pushes up with a force equal to the weight of fluid displaced. If that equals or exceeds the object\'s weight, it floats.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P20-SE5',
+      q: 'A real machine can be more than 100% efficient, giving out more work than you put in.',
+      answer: false,
+      explain: 'No machine exceeds 100% efficiency — some input work is always lost to friction as heat. Output work is always less than input work.'
+    }), 'super-easy'),
+
+    // ───────── EASY (Recall — confidence continues, one short step up) ─────────
+    mcq(() => ({
+      cg: 'P20-E1',
+      q: "Archimedes' principle says the buoyant force on a submerged object equals:",
+      opts: [
+        'The weight of the object',
+        'The weight of the fluid the object displaces',
+        'The volume of the object',
+        'The density of the object'
+      ],
+      answer: 1,
+      explain: 'Buoyant force = weight of displaced fluid = ρ_fluid × V_displaced × g. It does not depend on the object\'s own weight.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P20-E2',
+      q: 'Match each principle to what it describes.',
+      pairs: [
+        ["Pascal's principle", 'pressure in a confined fluid is transmitted equally'],
+        ["Archimedes' principle", 'buoyant force = weight of fluid displaced'],
+        ["Bernoulli's principle", 'faster-moving fluid has lower pressure'],
+        ["Hooke's law", 'spring force is proportional to extension']
+      ],
+      explain: 'These four cover fluids at rest (Pascal, Archimedes), fluids in motion (Bernoulli), and elastic solids (Hooke).'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P20-E3',
+      q: "Hooke's law states that the force in a spring is proportional to its ___ from the equilibrium position.",
+      answer: 'extension',
+      accept: ['extension', 'displacement', 'stretch', 'x'],
+      explain: 'F = kx — the restoring force grows in direct proportion to how far the spring is stretched or compressed.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P20-E4',
+      q: 'In a hydraulic press, pushing a small piston a long way lets a large piston exert a bigger force over a shorter distance.',
+      answer: true,
+      explain: 'The fluid conserves volume: A₁d₁ = A₂d₂. The large piston gains force in the same ratio it loses distance — work in equals work out.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P20-E5',
+      q: "By Bernoulli's principle, where a fluid speeds up (for example through a narrow pipe), its pressure:",
+      opts: ['Increases', 'Decreases', 'Stays the same', 'Becomes zero'],
+      answer: 1,
+      explain: 'P + ½ρv² + ρgh is constant along a streamline, so a rise in speed v must be paid for by a drop in pressure P.'
+    }), 'easy'),
+
+    // ───────── MEDIUM (Apply — use the idea, not just recall it) ─────────
+    typeanswer(() => {
+      const loadArm = pick([0.1, 0.2, 0.3]);
+      const ma = Math.round((1.2 / loadArm) * 10) / 10;
+      return {
+        cg: 'P20-M1',
+        q: `A lever has an effort arm of 1.2 m and a load arm of ${loadArm} m. What is its ideal mechanical advantage (effort arm ÷ load arm)?`,
+        answer: ma,
+        tolerance: 0.1,
+        explain: `MA = effort arm ÷ load arm = 1.2 ÷ ${loadArm} = ${ma}.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const slope = pick([2.4, 3.6, 4.8]);
+      const ma = Math.round((slope / 1.2) * 10) / 10;
+      return {
+        cg: 'P20-M2',
+        q: `A ramp is 1.2 m high and its sloping surface is ${slope} m long. What is the ideal mechanical advantage (slope length ÷ height)?`,
+        answer: ma,
+        tolerance: 0.1,
+        explain: `For an inclined plane, MA = slope ÷ height = ${slope} ÷ 1.2 = ${ma}.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P20-M3',
+      q: 'A pulley system has an ideal MA of 4, yet you must pull harder than the ideal 1/4 of the load. Why?',
+      opts: [
+        'The pulley changes the load\'s weight',
+        'Friction and rope stiffness waste some input work, so efficiency is below 100%',
+        'Mechanical advantage does not apply to pulleys',
+        'The rope stretches and stores all the energy'
+      ],
+      answer: 1,
+      explain: 'Real efficiency = ideal effort ÷ actual effort < 100%. The extra force overcomes friction in the bearings and the stiffness of the rope, lost as heat.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P20-M4',
+      q: 'Stress in a material is defined as force divided by the ___ over which it acts.',
+      answer: 'area',
+      accept: ['area', 'cross-sectional area', 'cross section area'],
+      explain: 'Stress σ = F/A, measured in pascals (N/m²). The same force on a smaller area produces greater stress.'
+    }), 'medium'),
+    typeanswer(() => {
+      const h = pick([2, 5, 10]);
+      const p = Math.round(1000 * 9.8 * h);
+      return {
+        cg: 'P20-M5',
+        q: `Find the gauge pressure at a depth of ${h} m in water (ρ = 1000 kg/m³, g = 9.8 m/s²). Use P = ρgh — give the answer in pascals.`,
+        answer: p,
+        tolerance: 100,
+        explain: `P = ρgh = 1000 × 9.8 × ${h} = ${p} Pa. Pressure depends only on depth, not on the container's shape.`
+      };
+    }, 'medium'),
+
+    // ───────── HARD (Exam level — SAT / competition style) ─────────
+    typeanswer(() => {
+      const F = pick([4000, 6000, 8000]);
+      const stress = F / 2e-4 / 1e6;
+      return {
+        cg: 'P20-H1',
+        q: `A cable of cross-sectional area 2.0×10⁻⁴ m² carries a tension of ${F} N. What is the tensile stress, in MPa? (1 MPa = 10⁶ Pa)`,
+        answer: stress,
+        tolerance: 0.5,
+        explain: `σ = F/A = ${F} / 2.0×10⁻⁴ = ${F / 2e-4} Pa = ${stress} MPa.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const V1 = pick([2, 4, 6]);
+      const P2 = 100 * V1;
+      return {
+        cg: 'P20-H2',
+        q: `${V1} L of gas at 100 kPa is compressed isothermally to 1.0 L. By Boyle's law (P₁V₁ = P₂V₂), what is the new pressure, in kPa?`,
+        answer: P2,
+        tolerance: 1,
+        explain: `P₂ = P₁V₁/V₂ = 100 × ${V1} / 1.0 = ${P2} kPa.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const Aout = pick([50, 100, 250]);
+      const Fout = 200 * Aout / 5;
+      return {
+        cg: 'P20-H3',
+        q: `In a hydraulic press the small piston (area 5 cm²) is pushed with 200 N. The large piston has area ${Aout} cm². Ignoring friction, what force (N) does the large piston exert?`,
+        answer: Fout,
+        tolerance: 1,
+        explain: `Pressure is equal throughout: F_out = F_in × (A_out/A_in) = 200 × (${Aout}/5) = ${Fout} N.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const k = pick([200, 400, 800]);
+      const U = Math.round(0.5 * k * 0.1 * 0.1 * 100) / 100;
+      return {
+        cg: 'P20-H4',
+        q: `A spring of stiffness ${k} N/m is stretched by 0.10 m. The elastic energy stored is U = ½kx². How many joules are stored?`,
+        answer: U,
+        tolerance: 0.05,
+        explain: `U = ½ × ${k} × (0.10)² = ½ × ${k} × 0.01 = ${U} J.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P20-H5',
+      q: 'An I-beam resists bending far better than a solid square bar of the same weight. The main reason is that:',
+      opts: [
+        'It is made from a stiffer alloy',
+        'Most of its material sits far from the neutral axis, where it does the most to resist bending',
+        'It is hollow, so it simply weighs less',
+        'Its density is lower than the bar\'s'
+      ],
+      answer: 1,
+      explain: 'Bending stiffness depends on the second moment of area I = ∫y²dA. The y² weighting means material far from the neutral axis contributes disproportionately — so an I-beam puts its flanges out at the top and bottom.'
+    }), 'hard')
+  ],
+
+  // ── P21 : Oscillations & acoustics (Frye) ──
+  P21: [
+    // ───────── SUPER-EASY (Warm-up — memorisation & confidence) ─────────
+    matchQuestion(() => ({
+      cg: 'P21-SE1',
+      q: 'Match each wave term to its meaning.',
+      pairs: [
+        ['Amplitude', 'the size of the maximum displacement'],
+        ['Frequency', 'the number of cycles per second (Hz)'],
+        ['Period', 'the time for one complete cycle'],
+        ['Wavelength', 'the distance between two adjacent crests']
+      ],
+      explain: 'Amplitude is how big, frequency is how often (Hz), period is the time per cycle (T = 1/f), and wavelength is the spatial length of one cycle.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P21-SE2',
+      q: 'A motion that repeats back and forth, like a swing or a pendulum, is called an ___.',
+      answer: 'oscillation',
+      accept: ['oscillation', 'oscillation.', 'vibration'],
+      explain: 'Any repeating to-and-fro motion is an oscillation. Simple harmonic motion is the purest kind.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P21-SE3',
+      q: 'The number of complete vibrations a wave makes each second is its:',
+      opts: ['Amplitude', 'Wavelength', 'Frequency', 'Speed'],
+      answer: 2,
+      explain: 'Frequency is cycles per second, measured in hertz (Hz). It sets the pitch of a sound.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P21-SE4',
+      q: 'Sound needs a medium such as air or water to travel — it cannot pass through a vacuum.',
+      answer: true,
+      explain: 'Sound is a vibration of matter, so it needs a medium. In a vacuum there is nothing to compress and rarefy, so sound cannot travel.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P21-SE5',
+      q: 'You see a lightning flash before you hear the thunder because light travels much faster than sound.',
+      answer: true,
+      explain: 'Light arrives almost instantly; sound plods along at ~340 m/s. The delay (about 3 s per km) lets you estimate the distance.'
+    }), 'super-easy'),
+
+    // ───────── EASY (Recall — confidence continues, one short step up) ─────────
+    mcq(() => ({
+      cg: 'P21-E1',
+      q: 'In simple harmonic motion, the restoring force always points:',
+      opts: [
+        'In the direction of motion',
+        'Back toward the equilibrium (centre) position',
+        'Away from the equilibrium position',
+        'Straight downward'
+      ],
+      answer: 1,
+      explain: 'SHM is defined by F = −kx: the force is opposite to the displacement, always pulling the object back toward the centre.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P21-E2',
+      q: 'Match each wave behaviour to its description.',
+      pairs: [
+        ['Reflection', 'bouncing back off a surface'],
+        ['Refraction', 'bending when the wave speed changes'],
+        ['Diffraction', 'spreading out through a gap or around an edge'],
+        ['Interference', 'two overlapping waves adding together']
+      ],
+      explain: 'All four are signatures of wave behaviour, and all follow from Huygens\' principle that every point on a wavefront is a source of new wavelets.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P21-E3',
+      q: 'The wave equation links speed, frequency and wavelength as v = f × ___.',
+      answer: 'wavelength',
+      accept: ['wavelength', 'λ', 'lambda', 'wavelength (λ)'],
+      explain: 'v = fλ. For a fixed wave speed, higher frequency means shorter wavelength.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P21-E4',
+      q: 'In a transverse wave, the medium moves perpendicular to the direction the wave travels.',
+      answer: true,
+      explain: 'A wave on a rope is transverse: the rope moves up and down while the wave moves sideways. In a longitudinal wave (like sound) the motion is parallel to travel.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P21-E5',
+      q: "An ambulance siren sounds higher-pitched as it approaches and lower as it leaves. This change is the:",
+      opts: ['Bernoulli effect', 'Doppler effect', 'Resonance effect', 'Diffraction effect'],
+      answer: 1,
+      explain: 'The Doppler effect: approaching motion compresses the wavefronts (higher frequency), receding motion stretches them (lower frequency).'
+    }), 'easy'),
+
+    // ───────── MEDIUM (Apply — use the idea, not just recall it) ─────────
+    typeanswer(() => {
+      const lam = pick([0.5, 1, 2]);
+      const f = Math.round(340 / lam);
+      return {
+        cg: 'P21-M1',
+        q: `Sound travels at 340 m/s. A note has a wavelength of ${lam} m. Using f = v/λ, what is its frequency, in Hz?`,
+        answer: f,
+        tolerance: 1,
+        explain: `f = v/λ = 340 / ${lam} = ${f} Hz.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const L = pick([0.25, 1.0, 2.0]);
+      const T = Math.round(2 * Math.PI * Math.sqrt(L / 9.8) * 100) / 100;
+      return {
+        cg: 'P21-M2',
+        q: `A simple pendulum has length ${L} m. Using T = 2π√(L/g) with g = 9.8 m/s², find its period in seconds (2 d.p.).`,
+        answer: T,
+        tolerance: 0.05,
+        explain: `T = 2π√(${L}/9.8) = ${T} s. The period depends only on length and gravity, not on the bob's mass.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P21-M3',
+      q: 'A simple pendulum has period T = 2π√(L/g). If you quadruple its length, the period becomes:',
+      opts: ['Unchanged', 'Twice as long', 'Four times as long', 'Half as long'],
+      answer: 1,
+      explain: 'T ∝ √L. Multiplying L by 4 multiplies T by √4 = 2 — the period doubles.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P21-M4',
+      q: 'On a stretched string vibrating in a standing wave, the points that never move are called ___.',
+      answer: 'nodes',
+      accept: ['nodes', 'node', 'a node'],
+      explain: 'Nodes are points of zero displacement; the points of maximum motion midway between them are antinodes.'
+    }), 'medium'),
+    truefalse(() => ({
+      cg: 'P21-M5',
+      q: 'The period of a simple pendulum depends on the mass of the bob you hang from it.',
+      answer: false,
+      explain: 'T = 2π√(L/g) contains no mass term. A light washer and a heavy cannonball on the same string swing with the same period — the extra restoring force on a heavier bob is exactly cancelled by its extra inertia.'
+    }), 'medium'),
+
+    // ───────── HARD (Exam level — SAT / competition style) ─────────
+    typeanswer(() => {
+      const vs = pick([20, 40, 60]);
+      const f = Math.round(800 * 340 / (340 - vs));
+      return {
+        cg: 'P21-H1',
+        q: `A siren emits 800 Hz and approaches you at ${vs} m/s (speed of sound 340 m/s). Using f' = f₀·c/(c − vₛ), what frequency do you hear, to the nearest Hz?`,
+        answer: f,
+        tolerance: 2,
+        explain: `f' = 800 × 340 / (340 − ${vs}) = ${f} Hz — higher than 800 Hz because the source is approaching.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const L = pick([0.5, 1.0, 1.5]);
+      const f1 = Math.round(300 / (2 * L));
+      return {
+        cg: 'P21-H2',
+        q: `A string fixed at both ends has a wave speed of 300 m/s and a length of ${L} m. The fundamental frequency is f₁ = v/(2L). What is f₁, in Hz?`,
+        answer: f1,
+        tolerance: 1,
+        explain: `f₁ = v/(2L) = 300 / (2 × ${L}) = ${f1} Hz. Higher harmonics are integer multiples of this.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P21-H3',
+      q: 'A pipe closed at one end (like a clarinet) resonates with which set of harmonics?',
+      opts: [
+        'All harmonics: 1, 2, 3, 4, ...',
+        'Only the odd harmonics: 1, 3, 5, ...',
+        'Only the even harmonics: 2, 4, 6, ...',
+        'Only the fundamental, with no overtones'
+      ],
+      answer: 1,
+      explain: 'A closed end forces a displacement node and the open end an antinode, which only odd harmonics satisfy (f_n = n·v/4L, n = 1, 3, 5…). This gives the clarinet its hollow timbre and a fundamental an octave below an open pipe of the same length.'
+    }), 'hard'),
+    typeanswer(() => {
+      const d = pick([2, 3, 5]);
+      const f2 = 440 + d;
+      return {
+        cg: 'P21-H4',
+        q: `Two tuning forks at 440 Hz and ${f2} Hz are sounded together. What beat frequency, in Hz, do you hear?`,
+        answer: d,
+        tolerance: 0.1,
+        explain: `Beat frequency = |f₁ − f₂| = |440 − ${f2}| = ${d} Hz — the loudness throbs ${d} times per second.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P21-H5',
+      q: 'An aircraft flies at Mach 2 (twice the speed of sound). The shock-wave cone behind it has a half-angle θ given by sin θ = c/v. What is θ?',
+      opts: ['0°', '30°', '45°', '60°'],
+      answer: 1,
+      explain: 'sin θ = c/v = 1/M = 1/2, so θ = arcsin(0.5) = 30°. The faster the aircraft, the narrower the Mach cone.'
+    }), 'hard')
+  ],
+
+  // ── P22 : Applied electricity — batteries, AC & radio (Frye) ──
+  P22: [
+    matchQuestion(() => ({
+      cg: 'P22-SE1',
+      q: 'Match each electrical term to its meaning.',
+      pairs: [
+        ['AC', 'current that periodically reverses direction'],
+        ['DC', 'current that flows one way only'],
+        ['Frequency', 'cycles per second, in hertz'],
+        ['Battery', 'converts chemical energy into electrical energy']
+      ],
+      explain: 'A battery is a chemical-to-electrical converter; AC reverses while DC does not; frequency counts cycles per second.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P22-SE2',
+      q: 'A battery converts ___ energy into electrical energy.',
+      answer: 'chemical',
+      accept: ['chemical', 'chemical energy'],
+      explain: 'A voltaic cell turns the energy of a spontaneous redox reaction directly into electrical energy.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P22-SE3',
+      q: 'A single standard dry cell (like a AA battery) has an EMF of about:',
+      opts: ['1.5 V', '12 V', '230 V', '0.5 V'],
+      answer: 0,
+      explain: 'The zinc–manganese-dioxide electrode pair fixes the EMF at about 1.5 V per cell, whatever the cell\'s size.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P22-SE4',
+      q: 'Alternating current (AC) periodically reverses its direction, unlike direct current (DC).',
+      answer: true,
+      explain: 'AC swings back and forth (a sine wave); DC flows steadily in one direction, as from a battery.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P22-SE5',
+      q: 'Mains electricity runs at 50 Hz in much of the world and 60 Hz in the Americas.',
+      answer: true,
+      explain: 'Europe, Asia and Africa standardised on 50 Hz; the Americas and Japan largely use 60 Hz.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P22-E1',
+      q: 'When mains AC is labelled "230 V", that figure is the:',
+      opts: ['Peak voltage', 'RMS (root-mean-square) voltage', 'Average voltage', 'Maximum possible voltage'],
+      answer: 1,
+      explain: 'The quoted value is the RMS voltage — the equivalent steady voltage that delivers the same power. The peak is √2 × 230 ≈ 325 V.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P22-E2',
+      q: 'Match each idea to what it does.',
+      pairs: [
+        ['AM', 'varies the carrier amplitude with the audio'],
+        ['FM', 'varies the carrier frequency with the audio'],
+        ['Radar', 'finds range from the echo of a radio pulse'],
+        ['Resonance', 'occurs when X_L equals X_C']
+      ],
+      explain: 'AM and FM are two ways to ride audio on a carrier; radar times echoes; series resonance is the X_L = X_C condition.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P22-E3',
+      q: 'For a sine wave, the RMS voltage equals the peak voltage divided by ___.',
+      answer: '√2',
+      accept: ['√2', 'root 2', 'sqrt(2)', '1.414', 'square root of 2', '2^0.5'],
+      explain: 'V_rms = V_peak/√2 ≈ 0.707 V_peak for a sinusoid.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P22-E4',
+      q: 'A capacitor blocks direct current (DC) but lets alternating current (AC) pass.',
+      answer: true,
+      explain: 'Capacitive reactance X_C = 1/(2πfC) is infinite at f = 0 (DC blocked) and falls as frequency rises (AC passes).'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P22-E5',
+      q: 'FM radio is clearer than AM during a thunderstorm mainly because:',
+      opts: [
+        'FM uses a higher transmitter power',
+        'Most noise adds amplitude variations, which FM ignores by encoding sound as frequency changes',
+        'FM signals travel further',
+        'AM cannot carry music'
+      ],
+      answer: 1,
+      explain: 'Lightning and electrical noise are amplitude spikes. FM reads frequency, not amplitude, so it rejects that noise (and shows the capture effect, locking to the stronger station).'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const Vp = pick([100, 170, 310]);
+      const v = Math.round(Vp / Math.SQRT2 * 10) / 10;
+      return {
+        cg: 'P22-M1',
+        q: `A sine wave has a peak voltage of ${Vp} V. What is its RMS voltage (V_peak/√2), to 1 d.p.?`,
+        answer: v,
+        tolerance: 0.2,
+        explain: `V_rms = ${Vp}/√2 = ${v} V.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const L = pick([0.1, 0.2, 0.5]);
+      const x = Math.round(2 * Math.PI * 50 * L * 10) / 10;
+      return {
+        cg: 'P22-M2',
+        q: `An inductor of ${L} H sits in a 50 Hz AC circuit. Inductive reactance X_L = 2πfL. Find X_L in ohms (1 d.p.).`,
+        answer: x,
+        tolerance: 0.3,
+        explain: `X_L = 2π × 50 × ${L} = ${x} Ω. Reactance rises with frequency for an inductor.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P22-M3',
+      q: 'A series RLC circuit is at resonance when:',
+      opts: [
+        'The resistance is zero',
+        'The inductive and capacitive reactances are equal (X_L = X_C)',
+        'The frequency is zero',
+        'The capacitor is fully charged'
+      ],
+      answer: 1,
+      explain: 'At resonance X_L = X_C, they cancel, impedance is just R (a minimum), and the current is a maximum.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P22-M4',
+      q: 'In an AC circuit, the power that does useful work, P = V_rms I_rms cos φ, is called the ___ power.',
+      answer: 'real',
+      accept: ['real', 'active', 'real (active)', 'true'],
+      explain: 'Real (active) power does work; reactive power is merely stored and returned each cycle by inductors and capacitors.'
+    }), 'medium'),
+    truefalse(() => ({
+      cg: 'P22-M5',
+      q: 'At resonance, a series RLC circuit has maximum impedance and minimum current.',
+      answer: false,
+      explain: 'It is the opposite: at series resonance impedance is a minimum (Z = R) and current is a maximum. (A parallel RLC circuit behaves the other way round.)'
+    }), 'medium'),
+
+    typeanswer(() => {
+      const C = pick([1, 4, 25]);
+      const f0 = Math.round(1 / (2 * Math.PI * Math.sqrt(1e-3 * C * 1e-6)));
+      return {
+        cg: 'P22-H1',
+        q: `A series circuit has L = 1.0 mH and C = ${C} µF. Resonant frequency f₀ = 1/(2π√(LC)). Find f₀ in Hz (nearest Hz).`,
+        answer: f0,
+        tolerance: 5,
+        explain: `f₀ = 1/(2π√(10⁻³ × ${C}×10⁻⁶)) ≈ ${f0} Hz.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const pf = pick([0.6, 0.8, 1.0]);
+      const P = Math.round(230 * 5 * pf);
+      return {
+        cg: 'P22-H2',
+        q: `An AC load runs at V_rms = 230 V and I_rms = 5 A with power factor cos φ = ${pf}. Real power P = V_rms·I_rms·cos φ. Find P in watts.`,
+        answer: P,
+        tolerance: 1,
+        explain: `P = 230 × 5 × ${pf} = ${P} W. Apparent power S = 230 × 5 = 1150 VA.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P22-H3',
+      q: 'Radar received power falls off as 1/R⁴. To detect a target at twice the range, the transmitter power must increase by a factor of:',
+      opts: ['2', '4', '8', '16'],
+      answer: 3,
+      explain: 'The pulse spreads as 1/R² on the way out and the echo as 1/R² on the way back, giving 1/R⁴. Doubling R needs 2⁴ = 16× the power.'
+    }), 'hard'),
+    typeanswer(() => {
+      const [R, X] = pick([[3, 4], [6, 8], [5, 12]]);
+      const Z = Math.round(Math.sqrt(R * R + X * X));
+      return {
+        cg: 'P22-H4',
+        q: `An AC circuit has R = ${R} Ω and a net reactance (X_L − X_C) of ${X} Ω. Impedance Z = √(R² + X²). Find Z in ohms.`,
+        answer: Z,
+        tolerance: 0.5,
+        explain: `Z = √(${R}² + ${X}²) = √${R * R + X * X} = ${Z} Ω.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P22-H5',
+      q: 'Using E = hf, which electromagnetic wave carries the most energy per photon?',
+      opts: ['Radio waves', 'Infrared', 'Visible light', 'Gamma rays'],
+      answer: 3,
+      explain: 'Photon energy rises with frequency. Gamma rays have the highest frequency (shortest wavelength) of the listed bands, so the most energy per photon.'
+    }), 'hard')
+  ],
+
+  // ── P23 : Gyroscopes, magnetism & wave optics (Frye "Refinements") ──
+  P23: [
+    matchQuestion(() => ({
+      cg: 'P23-SE1',
+      q: 'Match each phenomenon to the everyday sight it explains.',
+      pairs: [
+        ['Scattering', 'the blue colour of the sky'],
+        ['Thin-film interference', 'the shimmering colours of a soap bubble'],
+        ['Polarization', 'glare cut by polarising sunglasses'],
+        ['Gyroscope', 'a spinning top that stays upright']
+      ],
+      explain: 'Each is a wave or rotational effect with a familiar visible consequence.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P23-SE2',
+      q: 'The sky is blue because air molecules ___ blue light more strongly than red light.',
+      answer: 'scatter',
+      accept: ['scatter', 'scatters', 'scatter away'],
+      explain: 'Rayleigh scattering is much stronger for short (blue) wavelengths, so blue light is scattered all across the sky.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P23-SE3',
+      q: 'A spinning gyroscope resists changes to the direction of its axis. This property is called:',
+      opts: ['Friction', 'Rigidity in space', 'Buoyancy', 'Resonance'],
+      answer: 1,
+      explain: 'Conservation of angular momentum keeps the spin axis pointing the same way unless an external torque acts — "rigidity in space".'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P23-SE4',
+      q: 'Polarizing sunglasses work by blocking light that vibrates in a particular direction.',
+      answer: true,
+      explain: 'A polariser only transmits the component of the electric field along its axis, cutting glare (which is partly polarised).'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P23-SE5',
+      q: 'Iron can be a permanent magnet, but it loses its magnetism if heated above a certain temperature (the Curie point).',
+      answer: true,
+      explain: 'Above the Curie temperature, thermal agitation overcomes the exchange interaction that aligns the magnetic domains, and ferromagnetism vanishes.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P23-E1',
+      q: 'Why are sunsets red?',
+      opts: [
+        'The Sun emits red light only in the evening',
+        'Over the long, low path through the atmosphere, blue light is scattered out, leaving red',
+        'Dust turns the Sun red',
+        'The atmosphere absorbs all red light'
+      ],
+      answer: 1,
+      explain: 'At sunset, light travels a long slanted path; most of the blue has been scattered away by then, so the transmitted light looks red.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P23-E2',
+      q: 'Match each magnetic class to its behaviour.',
+      pairs: [
+        ['Ferromagnetic', 'strongly attracted; can stay magnetised (iron)'],
+        ['Paramagnetic', 'weakly attracted by a field'],
+        ['Diamagnetic', 'weakly repelled by a field'],
+        ['Curie temperature', 'where ferromagnetism is lost on heating']
+      ],
+      explain: 'Diamagnetism (weak repulsion) is universal; paramagnetism (weak attraction) needs unpaired spins; ferromagnetism (strong, retainable) needs aligned domains below T_C.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P23-E3',
+      q: 'When a torque acts on a spinning gyroscope, its axis slowly sweeps around instead of toppling. This motion is called ___.',
+      answer: 'precession',
+      accept: ['precession', 'precess', 'precessing'],
+      explain: 'The torque changes the direction of the angular momentum vector, so the axis precesses at rate Ω = τ/L.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P23-E4',
+      q: 'Diamagnetism is a property of all materials — every substance is at least weakly repelled by a magnetic field.',
+      answer: true,
+      explain: 'By Lenz\'s law, an applied field induces opposing electron currents in any material. In substances with unpaired spins, stronger para/ferromagnetism usually masks it.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P23-E5',
+      q: 'A diffraction grating spreads white light into a spectrum because:',
+      opts: [
+        'It absorbs some colours',
+        'Different wavelengths satisfy d sin θ = mλ at different angles',
+        'It heats the light',
+        'It reflects only one colour'
+      ],
+      answer: 1,
+      explain: 'The grating equation d sin θ = mλ sends each wavelength to its own angle, fanning white light into a spectrum.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const th = pick([0, 30, 45, 60]);
+      const I = Math.round(100 * Math.cos(th * Math.PI / 180) ** 2);
+      return {
+        cg: 'P23-M1',
+        q: `Polarised light of intensity 100 W/m² passes through an analyser at ${th}° to its polarisation. Malus's law: I = I₀cos²θ. Find I in W/m² (nearest whole number).`,
+        answer: I,
+        tolerance: 1,
+        explain: `I = 100 × cos²(${th}°) = ${I} W/m².`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const lam = pick([0.4, 0.5, 0.6]);
+      const s = Math.round(lam / 2 * 100) / 100;
+      return {
+        cg: 'P23-M2',
+        q: `A diffraction grating has line spacing d = 2.0 µm. For the first order (m = 1), d sin θ = λ. If λ = ${lam} µm, what is sin θ?`,
+        answer: s,
+        tolerance: 0.01,
+        explain: `sin θ = λ/d = ${lam}/2.0 = ${s}.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P23-M3',
+      q: 'Spinning a gyroscope faster (raising its angular momentum L) makes it precess:',
+      opts: ['Faster', 'More slowly', 'Not at all', 'In the opposite direction'],
+      answer: 1,
+      explain: 'Precession rate Ω = τ/L. A larger L for the same torque gives a slower precession — a fast top precesses lazily.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P23-M4',
+      q: 'The Hall effect produces a sideways voltage across a current-carrying conductor when it sits in a ___ field.',
+      answer: 'magnetic',
+      accept: ['magnetic', 'magnetic field', 'a magnetic'],
+      explain: 'The Lorentz force qv×B pushes carriers to one side, building a transverse Hall voltage V_H = IB/(net).'
+    }), 'medium'),
+    truefalse(() => ({
+      cg: 'P23-M5',
+      q: 'In a cyclotron, the frequency needed to keep accelerating the particles stays constant as they speed up (non-relativistic case).',
+      answer: true,
+      explain: 'Cyclotron frequency f = qB/(2πm) is independent of speed and radius — that is exactly why a fixed-frequency drive keeps working, until relativistic mass increase detunes it.'
+    }), 'medium'),
+
+    typeanswer(() => {
+      const n = pick([1.33, 1.5]);
+      const th = Math.round(Math.atan(n) * 180 / Math.PI * 10) / 10;
+      return {
+        cg: 'P23-H1',
+        q: `Light in air reflects off a surface of refractive index n = ${n}. Brewster's angle satisfies tan θ_B = n. Find θ_B in degrees (1 d.p.).`,
+        answer: th,
+        tolerance: 0.5,
+        explain: `θ_B = arctan(${n}) = ${th}°. Light reflected at this angle is fully polarised.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const B = pick([0.5, 1.0, 1.5]);
+      const f = Math.round(1.6e-19 * B / (2 * Math.PI * 1.67e-27) / 1e6 * 10) / 10;
+      return {
+        cg: 'P23-H2',
+        q: `A proton (q = 1.6×10⁻¹⁹ C, m = 1.67×10⁻²⁷ kg) circulates in a cyclotron with B = ${B} T. Cyclotron frequency f = qB/(2πm). Find f in MHz (1 d.p.).`,
+        answer: f,
+        tolerance: 0.3,
+        explain: `f = (1.6×10⁻¹⁹ × ${B})/(2π × 1.67×10⁻²⁷) ≈ ${f} MHz.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P23-H3',
+      q: "A grating's resolving power is R = mN (order × number of illuminated lines). To separate two very close spectral lines you should:",
+      opts: [
+        'Illuminate fewer lines',
+        'Illuminate more lines or work in a higher order',
+        'Use a dimmer source',
+        'Tilt the grating to zero order'
+      ],
+      answer: 1,
+      explain: 'R = mN rises with both the number of illuminated lines N and the order m, so more lines (or higher order) resolves finer wavelength differences.'
+    }), 'hard'),
+    typeanswer(() => {
+      const lam = pick([500, 600]);
+      const t = Math.round(lam / (4 * 1.25));
+      return {
+        cg: 'P23-H4',
+        q: `A quarter-wave anti-reflection coating (n = 1.25) gives minimum reflection when its thickness t = λ/(4n). For λ = ${lam} nm, find t in nm.`,
+        answer: t,
+        tolerance: 1,
+        explain: `t = ${lam}/(4 × 1.25) = ${t} nm.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P23-H5',
+      q: 'The polarity (sign) of the Hall voltage reveals:',
+      opts: [
+        'The temperature of the conductor',
+        'Whether the charge carriers are positive or negative',
+        'The length of the conductor',
+        'The frequency of the current'
+      ],
+      answer: 1,
+      explain: 'Which side the carriers pile up on — and thus the sign of V_H — tells you the sign of the charge carriers, a key clue that some semiconductors conduct via positive "holes".'
+    }), 'hard')
+  ],
+
+  // ── P24 : Newtonian mechanics (Frye) ──
+  P24: [
+    matchQuestion(() => ({
+      cg: 'P24-SE1',
+      q: "Match each of Newton's laws (and inertia) to its statement.",
+      pairs: [
+        ['First law', 'stays at rest or uniform motion unless a net force acts'],
+        ['Second law', 'F = ma'],
+        ['Third law', 'every action has an equal and opposite reaction'],
+        ['Inertia', 'resistance to a change in motion']
+      ],
+      explain: 'First law = inertia, second = F = ma, third = action–reaction. Inertia is the underlying tendency the first law describes.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P24-SE2',
+      q: "Newton's second law states that force equals mass times ___.",
+      answer: 'acceleration',
+      accept: ['acceleration', 'a'],
+      explain: 'F = ma. The acceleration points in the direction of the net force.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P24-SE3',
+      q: "A seatbelt protects you in a crash because, by Newton's first law, your body tends to:",
+      opts: ['Speed up', 'Keep moving forward at constant velocity', 'Stop instantly on its own', 'Move sideways'],
+      answer: 1,
+      explain: 'Your body has inertia: when the car suddenly stops, you continue forward until a force (the belt) acts on you.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P24-SE4',
+      q: 'For every action force there is an equal and opposite reaction force, and the two act on different objects.',
+      answer: true,
+      explain: "Newton's third law: F_AB = −F_BA. Because the pair acts on different bodies, they do not cancel out."
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P24-SE5',
+      q: 'Momentum is calculated as mass multiplied by velocity.',
+      answer: true,
+      explain: 'p = mv, measured in kg·m/s. It is a vector, pointing along the velocity.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P24-E1',
+      q: 'The kinetic energy of a moving object is given by:',
+      opts: ['mgh', '½mv²', 'mv', 'Fd'],
+      answer: 1,
+      explain: 'KE = ½mv². It scales with the square of speed, so doubling speed quadruples the kinetic energy.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P24-E2',
+      q: 'Match each quantity to its formula.',
+      pairs: [
+        ['Work', 'F·d·cos θ'],
+        ['Kinetic energy', '½mv²'],
+        ['Potential energy', 'mgh'],
+        ['Power', 'work ÷ time']
+      ],
+      explain: 'Work is force along the displacement; KE is energy of motion; PE is energy of height; power is the rate of doing work.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P24-E3',
+      q: 'The product of an object\'s mass and its velocity is called its ___.',
+      answer: 'momentum',
+      accept: ['momentum', 'linear momentum'],
+      explain: 'p = mv. In a collision with no external force, total momentum is conserved.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P24-E4',
+      q: 'With no air resistance, a heavy object and a light object dropped together hit the ground at the same time.',
+      answer: true,
+      explain: 'a = F/m = mg/m = g for both — the mass cancels, so all objects fall with the same acceleration g.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P24-E5',
+      q: 'Holding a heavy box still at arm\'s length, you do no physical work on it (in the physics sense) because:',
+      opts: ['The box is too heavy', 'There is no displacement (W = Fd, d = 0)', 'Gravity does the work', 'Your arm is a lever'],
+      answer: 1,
+      explain: 'Work needs displacement in the direction of the force. With no movement, W = F × 0 = 0, even though your muscles tire.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const m = pick([2, 5, 10]);
+      const a = pick([3, 4]);
+      return {
+        cg: 'P24-M1',
+        q: `A ${m} kg object accelerates at ${a} m/s². What net force (N) acts on it? (F = ma)`,
+        answer: m * a,
+        tolerance: 0.1,
+        explain: `F = ma = ${m} × ${a} = ${m * a} N.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const m = pick([2, 4]);
+      const v = pick([3, 5, 10]);
+      return {
+        cg: 'P24-M2',
+        q: `Find the kinetic energy of a ${m} kg object moving at ${v} m/s. KE = ½mv², in joules.`,
+        answer: 0.5 * m * v * v,
+        tolerance: 0.1,
+        explain: `KE = ½ × ${m} × ${v}² = ${0.5 * m * v * v} J.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P24-M3',
+      q: 'A car accelerates uniformly from rest. Using v = u + at with u = 0, doubling the time doubles the:',
+      opts: ['Acceleration', 'Final velocity', 'Mass', 'Force needed'],
+      answer: 1,
+      explain: 'With u = 0, v = at — velocity is proportional to time, so twice the time gives twice the final speed (at constant a).'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P24-M4',
+      q: 'The turning effect of a force about a pivot is called its moment, or ___.',
+      answer: 'torque',
+      accept: ['torque', 'moment'],
+      explain: 'τ = F × d (perpendicular distance), measured in N·m — which is why a longer spanner turns a bolt more easily.'
+    }), 'medium'),
+    typeanswer(() => {
+      const m = pick([2, 3, 5]);
+      const v = pick([4, 10]);
+      return {
+        cg: 'P24-M5',
+        q: `What is the momentum of a ${m} kg trolley moving at ${v} m/s? (p = mv, in kg·m/s)`,
+        answer: m * v,
+        tolerance: 0.1,
+        explain: `p = mv = ${m} × ${v} = ${m * v} kg·m/s.`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const v = pick([10, 20, 30]);
+      const R = Math.round(v * v / 9.8 * 10) / 10;
+      return {
+        cg: 'P24-H1',
+        q: `A projectile is launched at 45° with speed ${v} m/s. Range R = v²sin(2θ)/g; at 45°, sin(2θ) = 1, so R = v²/g (g = 9.8). Find R in metres (1 d.p.).`,
+        answer: R,
+        tolerance: 0.5,
+        explain: `R = ${v}²/9.8 = ${R} m. The 45° launch gives the maximum range for a given speed.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const [m, v, r] = pick([[2, 10, 5], [1, 4, 2], [3, 10, 5]]);
+      return {
+        cg: 'P24-H2',
+        q: `An object of mass ${m} kg moves in a circle of radius ${r} m at ${v} m/s. Centripetal force F = mv²/r. Find F in N.`,
+        answer: m * v * v / r,
+        tolerance: 0.5,
+        explain: `F = ${m} × ${v}²/${r} = ${m * v * v / r} N, directed toward the centre.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P24-H3',
+      q: 'In a perfectly inelastic collision (the objects stick together), which quantity is conserved?',
+      opts: [
+        'Both momentum and kinetic energy',
+        'Momentum, but not kinetic energy',
+        'Kinetic energy, but not momentum',
+        'Neither'
+      ],
+      answer: 1,
+      explain: 'Momentum is always conserved without external forces. In an inelastic collision some kinetic energy becomes heat, sound and deformation, so KE is not conserved.'
+    }), 'hard'),
+    typeanswer(() => {
+      const a = pick([2, 4, 5]);
+      const s = pick([10, 20]);
+      const v = Math.round(Math.sqrt(2 * a * s) * 100) / 100;
+      return {
+        cg: 'P24-H4',
+        q: `A car starts from rest (u = 0) and accelerates at ${a} m/s² over ${s} m. Using v² = u² + 2as, find the final speed v in m/s (2 d.p.).`,
+        answer: v,
+        tolerance: 0.1,
+        explain: `v = √(2 × ${a} × ${s}) = ${v} m/s.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const F = pick([10, 20]);
+      const t = pick([0.2, 0.5]);
+      const J = Math.round(F * t * 100) / 100;
+      return {
+        cg: 'P24-H5',
+        q: `A force of ${F} N acts for ${t} s. Impulse J = F·Δt. Find the impulse in N·s.`,
+        answer: J,
+        tolerance: 0.05,
+        explain: `J = ${F} × ${t} = ${J} N·s, which equals the change in momentum it produces (J = Δp).`
+      };
+    }, 'hard')
+  ],
+
+  // ── P25 : Rotation, heat & thermodynamics (Frye) ──
+  P25: [
+    matchQuestion(() => ({
+      cg: 'P25-SE1',
+      q: 'Match each thermal/rotational term to its meaning.',
+      pairs: [
+        ['Specific heat', 'energy to raise 1 kg by 1 K'],
+        ['Latent heat', 'energy for a phase change at constant temperature'],
+        ['Moment of inertia', 'resistance to a change in spin'],
+        ['Absolute zero', '0 K, about −273 °C']
+      ],
+      explain: 'Specific and latent heat describe heating and phase changes; moment of inertia is rotational "mass"; absolute zero is the bottom of the temperature scale.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P25-SE2',
+      q: 'Heat always flows spontaneously from a ___ object to a colder one.',
+      answer: 'hotter',
+      accept: ['hotter', 'hot', 'warmer', 'warm'],
+      explain: 'The second law of thermodynamics: heat never flows by itself from cold to hot.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P25-SE3',
+      q: 'A figure skater pulls in her arms and spins faster. This demonstrates conservation of:',
+      opts: ['Energy', 'Momentum', 'Angular momentum', 'Charge'],
+      answer: 2,
+      explain: 'L = Iω is conserved. Pulling her arms in lowers I, so ω must rise to keep L constant.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P25-SE4',
+      q: 'Energy can change form but cannot be created or destroyed.',
+      answer: true,
+      explain: 'Conservation of energy: the total energy of an isolated system is constant, however the forms shift.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P25-SE5',
+      q: 'Absolute zero (0 K) is about −273 °C.',
+      answer: true,
+      explain: '0 K = −273.15 °C — the temperature at which molecular kinetic energy reaches its minimum.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P25-E1',
+      q: 'The ideal gas law is:',
+      opts: ['PV = nRT', 'F = ma', 'V = IR', 'E = mc²'],
+      answer: 0,
+      explain: 'PV = nRT links pressure, volume, amount and absolute temperature, with R = 8.314 J/mol·K.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P25-E2',
+      q: 'Match each gas law to what it holds fixed.',
+      pairs: [
+        ["Boyle's law", 'PV constant (temperature fixed)'],
+        ["Charles's law", 'V ∝ T (pressure fixed)'],
+        ["Gay-Lussac's law", 'P ∝ T (volume fixed)'],
+        ['Ideal gas law', 'PV = nRT (combines them all)']
+      ],
+      explain: 'Each simple gas law fixes one variable; together they give PV = nRT.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P25-E3',
+      q: 'The energy needed to melt or boil a substance without changing its temperature is called ___ heat.',
+      answer: 'latent',
+      accept: ['latent', 'latent heat'],
+      explain: 'Latent heat goes into breaking intermolecular bonds, so the temperature stays put during the phase change (Q = mL).'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P25-E4',
+      q: 'While a substance changes phase (for example, ice melting), its temperature stays constant even though heat is being added.',
+      answer: true,
+      explain: 'The added energy breaks bonds rather than raising kinetic energy, so the temperature holds steady until the phase change is complete.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P25-E5',
+      q: 'Water has an unusually high specific heat capacity (4186 J/kg·K). One consequence is that:',
+      opts: [
+        'Water boils very easily',
+        'Large bodies of water moderate the climate, warming and cooling slowly',
+        'Water freezes faster than other liquids',
+        'Water cannot store heat'
+      ],
+      answer: 1,
+      explain: 'A high specific heat means water absorbs or releases a lot of energy for a small temperature change, so oceans and lakes buffer local temperatures.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const m = pick([0.5, 1, 2]);
+      const dT = pick([10, 20]);
+      const Q = m * 4186 * dT;
+      return {
+        cg: 'P25-M1',
+        q: `How much heat (J) raises ${m} kg of water by ${dT} °C? Use Q = mcΔT with c = 4186 J/kg·K.`,
+        answer: Q,
+        tolerance: 10,
+        explain: `Q = ${m} × 4186 × ${dT} = ${Q} J.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const m = pick([0.1, 0.5, 2]);
+      const Q = m * 334000;
+      return {
+        cg: 'P25-M2',
+        q: `How much heat (J) melts ${m} kg of ice at 0 °C? Use Q = mL_f with L_f = 334000 J/kg.`,
+        answer: Q,
+        tolerance: 50,
+        explain: `Q = ${m} × 334000 = ${Q} J — all of it going into breaking bonds, at constant temperature.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P25-M3',
+      q: 'The maximum possible efficiency of a heat engine working between a hot reservoir T_H and a cold reservoir T_C (in kelvin) is:',
+      opts: ['1 − T_C/T_H', 'T_C/T_H', 'T_H − T_C', '1 − T_H/T_C'],
+      answer: 0,
+      explain: 'The Carnot efficiency η = 1 − T_C/T_H is the ceiling no real engine between those temperatures can beat.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P25-M4',
+      q: 'An object\'s resistance to a change in its rate of spin is called the moment of ___.',
+      answer: 'inertia',
+      accept: ['inertia'],
+      explain: 'Moment of inertia I = Σmr² plays the role mass plays in linear motion; for rotation, τ = Iα.'
+    }), 'medium'),
+    typeanswer(() => {
+      const V1 = pick([3, 4, 6]);
+      const P2 = 100 * V1 / 2;
+      return {
+        cg: 'P25-M5',
+        q: `${V1} L of gas at 100 kPa is compressed to 2.0 L at constant temperature. Boyle's law P₁V₁ = P₂V₂. Find the new pressure (kPa).`,
+        answer: P2,
+        tolerance: 1,
+        explain: `P₂ = 100 × ${V1}/2.0 = ${P2} kPa.`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const TH = pick([400, 500, 600]);
+      const e = Math.round((1 - 300 / TH) * 100) / 100;
+      return {
+        cg: 'P25-H1',
+        q: `A Carnot engine runs between T_H = ${TH} K and T_C = 300 K. Maximum efficiency η = 1 − T_C/T_H. Find η (2 d.p.).`,
+        answer: e,
+        tolerance: 0.01,
+        explain: `η = 1 − 300/${TH} = ${e}.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const V1 = pick([2, 3]);
+      const T2 = pick([450, 600]);
+      const V2 = Math.round(V1 * T2 / 300 * 10) / 10;
+      return {
+        cg: 'P25-H2',
+        q: `A gas occupies ${V1} L at 300 K. At constant pressure it is heated to ${T2} K. By Charles's law V₂ = V₁T₂/T₁, find the new volume in L (1 d.p.).`,
+        answer: V2,
+        tolerance: 0.1,
+        explain: `V₂ = ${V1} × ${T2}/300 = ${V2} L.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P25-H3',
+      q: 'According to kinetic theory, the average translational kinetic energy of gas molecules depends only on:',
+      opts: ['The pressure', 'The absolute temperature', 'The volume', 'The molar mass'],
+      answer: 1,
+      explain: 'KE_avg = (3/2)kT — it is set purely by absolute temperature, the same for every ideal gas at a given T.'
+    }), 'hard'),
+    typeanswer(() => {
+      const L0 = pick([10, 20]);
+      const dT = pick([30, 50]);
+      const dL = Math.round(12e-6 * L0 * dT * 1000 * 100) / 100;
+      return {
+        cg: 'P25-H4',
+        q: `A ${L0} m steel beam (α = 12×10⁻⁶ /°C) warms by ${dT} °C. Expansion ΔL = αL₀ΔT. Find ΔL in mm (2 d.p.).`,
+        answer: dL,
+        tolerance: 0.1,
+        explain: `ΔL = 12×10⁻⁶ × ${L0} × ${dT} = ${dL / 1000} m = ${dL} mm — the reason bridges need expansion joints.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const M = pick([2, 4]);
+      const R = pick([0.5, 1]);
+      const I = 0.5 * M * R * R;
+      return {
+        cg: 'P25-H5',
+        q: `A solid disk of mass M = ${M} kg and radius R = ${R} m spins about its centre. I = ½MR². Find I in kg·m².`,
+        answer: I,
+        tolerance: 0.01,
+        explain: `I = ½ × ${M} × ${R}² = ${I} kg·m².`
+      };
+    }, 'hard')
+  ],
+
+  // ── P26 : Optics — light, lenses & instruments (Frye) ──
+  P26: [
+    matchQuestion(() => ({
+      cg: 'P26-SE1',
+      q: 'Match each optical effect to its description.',
+      pairs: [
+        ['Reflection', 'light bouncing off a surface'],
+        ['Refraction', 'light bending at a boundary'],
+        ['Total internal reflection', 'light trapped inside a fibre'],
+        ['Dispersion', 'white light split into colours']
+      ],
+      explain: 'These four cover bouncing, bending, trapping and splitting of light.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P26-SE2',
+      q: 'The bending of light as it passes from air into water is called ___.',
+      answer: 'refraction',
+      accept: ['refraction', 'refract'],
+      explain: 'Light changes speed at the boundary, so it changes direction — refraction, governed by Snell\'s law.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P26-SE3',
+      q: 'The law of reflection says the angle of incidence equals the angle of:',
+      opts: ['Refraction', 'Reflection', 'Dispersion', 'Diffraction'],
+      answer: 1,
+      explain: 'θ_i = θ_r, both measured from the normal, with incident ray, reflected ray and normal in one plane.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P26-SE4',
+      q: 'Light travels more slowly in glass or water than in a vacuum.',
+      answer: true,
+      explain: 'In a medium, v = c/n with n > 1, so light is slower (about c/1.33 in water, c/1.5 in glass).'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P26-SE5',
+      q: 'A flat (plane) mirror forms an image that appears to be behind the mirror.',
+      answer: true,
+      explain: 'A plane mirror gives a virtual, upright image the same size, the same distance behind the mirror as the object is in front.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P26-E1',
+      q: "Snell's law of refraction is:",
+      opts: ['n₁ sin θ₁ = n₂ sin θ₂', '1/f = 1/u + 1/v', 'n = c/v only', 'θ_i = θ_r'],
+      answer: 0,
+      explain: 'n₁ sin θ₁ = n₂ sin θ₂ relates the angles on either side of a boundary to the two refractive indices.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P26-E2',
+      q: 'Match each material to its approximate refractive index.',
+      pairs: [
+        ['Vacuum', '1.0'],
+        ['Water', '1.33'],
+        ['Glass', '1.5'],
+        ['Diamond', '2.42']
+      ],
+      explain: 'Higher index means light slows more and bends more. Diamond\'s very high n gives its sparkle (and a small critical angle).'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P26-E3',
+      q: 'Light refracts (bends) at a boundary because it changes ___ when it enters a new medium.',
+      answer: 'speed',
+      accept: ['speed', 'velocity', 'its speed'],
+      explain: 'The change of speed (v = c/n) at the interface is what redirects the ray.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P26-E4',
+      q: 'Total internal reflection can only occur when light travels from a denser medium toward a less dense one (e.g. glass to air).',
+      answer: true,
+      explain: 'Only going from high n to low n is there a critical angle θ_c = arcsin(n₂/n₁) beyond which all the light reflects.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P26-E5',
+      q: 'An optical fibre carries light around bends over long distances by means of:',
+      opts: ['Diffraction', 'Total internal reflection', 'Dispersion', 'Polarization'],
+      answer: 1,
+      explain: 'Light strikes the core–cladding boundary above the critical angle and reflects completely, again and again, staying trapped in the core.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const n = pick([1.5, 2.0, 2.42]);
+      const v = Math.round(3 / n * 100) / 100;
+      return {
+        cg: 'P26-M1',
+        q: `Light enters a medium of refractive index n = ${n}. Its speed v = c/n with c = 3.0×10⁸ m/s. Find v in units of 10⁸ m/s (2 d.p.).`,
+        answer: v,
+        tolerance: 0.02,
+        explain: `v = 3.0/${n} = ${v} (×10⁸ m/s).`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const [f, u] = pick([[10, 15], [10, 20], [20, 30], [15, 30]]);
+      const v = Math.round(1 / (1 / f - 1 / u) * 10) / 10;
+      return {
+        cg: 'P26-M2',
+        q: `A converging lens has focal length ${f} cm. An object sits ${u} cm away. Using 1/f = 1/u + 1/v, find the image distance v in cm.`,
+        answer: v,
+        tolerance: 0.5,
+        explain: `1/v = 1/${f} − 1/${u}, so v = ${v} cm (a real image).`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P26-M3',
+      q: 'If you double your distance from a small lamp, the illuminance (brightness) on a surface becomes:',
+      opts: ['Half', 'One quarter', 'Twice', 'Unchanged'],
+      answer: 1,
+      explain: 'Illuminance follows the inverse-square law E = I/r². Doubling r multiplies E by 1/2² = 1/4.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P26-M4',
+      q: 'The power of a lens, in dioptres, is the reciprocal of its ___ (in metres).',
+      answer: 'focal length',
+      accept: ['focal length', 'focal-length', 'focal distance', 'f'],
+      explain: 'P = 1/f. A 0.5 m focal length is a 2 dioptre lens.'
+    }), 'medium'),
+    truefalse(() => ({
+      cg: 'P26-M5',
+      q: 'A convex (converging) lens can form either a real or a virtual image, depending on where the object is.',
+      answer: true,
+      explain: 'Beyond the focal point it makes a real, inverted image; inside the focal point it acts as a magnifier, giving a virtual, upright, enlarged image.'
+    }), 'medium'),
+
+    typeanswer(() => {
+      const n1 = pick([1.33, 1.5, 2.42]);
+      const tc = Math.round(Math.asin(1 / n1) * 180 / Math.PI * 10) / 10;
+      return {
+        cg: 'P26-H1',
+        q: `Find the critical angle for light passing from a medium of index n = ${n1} into air (n = 1). θ_c = arcsin(1/n). Answer in degrees (1 d.p.).`,
+        answer: tc,
+        tolerance: 0.5,
+        explain: `θ_c = arcsin(1/${n1}) = ${tc}°. Beyond this angle, light is totally internally reflected.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const [fo, fe] = pick([[100, 10], [120, 5], [90, 2]]);
+      return {
+        cg: 'P26-H2',
+        q: `An astronomical telescope has objective focal length f_o = ${fo} cm and eyepiece f_e = ${fe} cm. Angular magnification M = f_o/f_e. Find M.`,
+        answer: fo / fe,
+        tolerance: 0.5,
+        explain: `M = ${fo}/${fe} = ${fo / fe}×. A long objective and short eyepiece give high magnification.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P26-H3',
+      q: 'When white light passes through a glass prism, which colour is bent (refracted) the most?',
+      opts: ['Red', 'Green', 'Violet', 'They all bend equally'],
+      answer: 2,
+      explain: 'Refractive index is higher for shorter wavelengths (normal dispersion), so violet bends most and red least — spreading white light into a spectrum.'
+    }), 'hard'),
+    typeanswer(() => {
+      const t1 = pick([30, 45, 60]);
+      const t2 = Math.round(Math.asin(Math.sin(t1 * Math.PI / 180) / 1.5) * 180 / Math.PI * 10) / 10;
+      return {
+        cg: 'P26-H4',
+        q: `Light passes from air into glass (n = 1.5) at an angle of incidence ${t1}°. Using sin θ₁ = 1.5 sin θ₂, find the refraction angle θ₂ in degrees (1 d.p.).`,
+        answer: t2,
+        tolerance: 0.5,
+        explain: `sin θ₂ = sin(${t1}°)/1.5, so θ₂ = ${t2}° — bent toward the normal in the denser medium.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const [f, D] = pick([[50, 25], [100, 50], [50, 12.5]]);
+      const N = Math.round(f / D * 100) / 100;
+      return {
+        cg: 'P26-H5',
+        q: `A camera lens has focal length f = ${f} mm and aperture diameter D = ${D} mm. The f-number is N = f/D. Find N.`,
+        answer: N,
+        tolerance: 0.05,
+        explain: `N = ${f}/${D} = ${N} (written f/${N}). A smaller f-number means a wider aperture and more light.`
+      };
+    }, 'hard')
+  ],
+
+  // ── P27 : Engineering tools & electrical machines (Frye) ──
+  P27: [
+    matchQuestion(() => ({
+      cg: 'P27-SE1',
+      q: 'Match each device to what it does.',
+      pairs: [
+        ['Electric motor', 'turns electricity into rotation'],
+        ['Generator', 'turns rotation into electricity'],
+        ['Transformer', 'changes an AC voltage'],
+        ['Ammeter', 'measures electric current']
+      ],
+      explain: 'A motor and a generator are reverses of each other; a transformer scales AC voltage; an ammeter reads current.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P27-SE2',
+      q: 'An electric motor converts electrical energy into ___ energy.',
+      answer: 'mechanical',
+      accept: ['mechanical', 'kinetic', 'rotational', 'movement', 'motion'],
+      explain: 'Current in a magnetic field feels a force (τ = NIAB), spinning the rotor — electrical energy becomes mechanical work.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P27-SE3',
+      q: 'A transformer is used to:',
+      opts: ['Convert AC to DC', 'Change the voltage of an AC supply', 'Store charge', 'Measure resistance'],
+      answer: 1,
+      explain: 'By the turns ratio V₂/V₁ = N₂/N₁, a transformer steps AC voltage up or down (it does not work on steady DC).'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P27-SE4',
+      q: 'Accuracy is how close a measurement is to the true value; precision is how closely repeated measurements agree.',
+      answer: true,
+      explain: 'A reading can be precise (repeatable) yet inaccurate (off the true value), and vice versa.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P27-SE5',
+      q: 'An ammeter is connected in series with a circuit to measure the current through it.',
+      answer: true,
+      explain: 'The same current must pass through the ammeter, so it goes in series — and it has very low resistance to barely disturb the circuit.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P27-E1',
+      q: 'A generator (dynamo) produces electricity by:',
+      opts: [
+        'Heating a wire',
+        'Moving a coil or magnet to induce an EMF (electromagnetic induction)',
+        'Storing charge on plates',
+        'Splitting atoms'
+      ],
+      answer: 1,
+      explain: 'Faraday induction: a changing magnetic flux through a coil induces an EMF, ε = NBAω sin ωt — the reverse of a motor.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P27-E2',
+      q: 'Match each physical constant to its value.',
+      pairs: [
+        ['Speed of light c', '3×10⁸ m/s'],
+        ["Avogadro's number N_A", '6.02×10²³ /mol'],
+        ['Gas constant R', '8.314 J/mol·K'],
+        ['Elementary charge e', '1.6×10⁻¹⁹ C']
+      ],
+      explain: 'These constants recur throughout physics; since the 2019 SI redefinition, c, e (and others) are fixed exactly.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P27-E3',
+      q: 'A voltmeter must have a very ___ resistance so it draws almost no current from the circuit it measures.',
+      answer: 'high',
+      accept: ['high', 'large', 'big'],
+      explain: 'Connected in parallel, a high resistance (via a series multiplier) keeps the voltmeter from disturbing the voltage it reads.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P27-E4',
+      q: 'In an ideal transformer, the power delivered to the secondary equals the power supplied to the primary.',
+      answer: true,
+      explain: 'P₁ = P₂ for an ideal transformer, so stepping voltage up steps current down by the same factor (V₂/V₁ = N₂/N₁ = I₁/I₂).'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P27-E5',
+      q: 'The "weak-link principle" in measurement says a calculated result is only as precise as:',
+      opts: ['Its largest input', 'Its least precise input', 'The average of the inputs', 'The final digit you write'],
+      answer: 1,
+      explain: 'A chain is as strong as its weakest link: the least precise measurement caps how many significant figures the answer can honestly carry.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const N2 = pick([60, 2400, 300]);
+      const V2 = 240 * N2 / 1200;
+      return {
+        cg: 'P27-M1',
+        q: `A transformer has 1200 primary turns and ${N2} secondary turns, with 240 V on the primary. V₂ = V₁(N₂/N₁). Find the secondary voltage (V).`,
+        answer: V2,
+        tolerance: 1,
+        explain: `V₂ = 240 × ${N2}/1200 = ${V2} V — a step-${N2 > 1200 ? 'up' : 'down'} transformer.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const [a, b] = pick([[3, 4], [6, 8], [5, 12]]);
+      const c = Math.sqrt(a * a + b * b);
+      return {
+        cg: 'P27-M2',
+        q: `A force has perpendicular components ${a} N and ${b} N. Its magnitude is √(a² + b²). Find it in N.`,
+        answer: c,
+        tolerance: 0.1,
+        explain: `magnitude = √(${a}² + ${b}²) = √${a * a + b * b} = ${c} N (Pythagoras — the geometry toolkit at work).`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P27-M3',
+      q: 'As a DC motor speeds up, it generates a back-EMF that:',
+      opts: [
+        'Adds to the supply voltage',
+        'Opposes the supply voltage, reducing the current drawn',
+        'Has no effect',
+        'Reverses the motor'
+      ],
+      answer: 1,
+      explain: 'The spinning motor acts as a generator: ε_back = k_E ω opposes the supply, so V = IR + ε_back and the current falls as speed rises.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P27-M4',
+      q: 'To turn a sensitive galvanometer into an ammeter, you connect a low-resistance ___ in parallel with it.',
+      answer: 'shunt',
+      accept: ['shunt', 'shunt resistor'],
+      explain: 'The shunt carries most of the current, so the meter still reads full-scale on a much larger total current.'
+    }), 'medium'),
+    typeanswer(() => {
+      const th = pick([30, 45, 60]);
+      const opp = Math.round(10 * Math.sin(th * Math.PI / 180) * 100) / 100;
+      return {
+        cg: 'P27-M5',
+        q: `In a right triangle the hypotenuse is 10 and one angle is ${th}°. The opposite side = 10 sin θ. Find it (2 d.p.).`,
+        answer: opp,
+        tolerance: 0.05,
+        explain: `opposite = 10 × sin(${th}°) = ${opp} (the "SOH" of SOH-CAH-TOA).`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const R2 = pick([200, 400, 300]);
+      const R4 = 50 * R2 / 100;
+      return {
+        cg: 'P27-H1',
+        q: `A Wheatstone bridge balances when R₁/R₂ = R₃/R₄. Given R₁ = 100 Ω, R₂ = ${R2} Ω, R₃ = 50 Ω, find R₄ (Ω).`,
+        answer: R4,
+        tolerance: 0.5,
+        explain: `R₄ = R₃·R₂/R₁ = 50 × ${R2}/100 = ${R4} Ω. At balance no current flows through the galvanometer.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const I2 = pick([5, 10, 2]);
+      const I1 = Math.round(I2 * 12 / 240 * 100) / 100;
+      return {
+        cg: 'P27-H2',
+        q: `An ideal step-down transformer takes 240 V to 12 V. If the secondary delivers ${I2} A, then (since P₁ = P₂) I₁ = I₂·(V₂/V₁). Find the primary current in A (2 d.p.).`,
+        answer: I1,
+        tolerance: 0.02,
+        explain: `I₁ = ${I2} × 12/240 = ${I1} A — stepping voltage down steps current up on the secondary side.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P27-H3',
+      q: 'To find the third side of a triangle when you know two sides and the angle between them, you use:',
+      opts: ['The sine law', 'The cosine law (c² = a² + b² − 2ab cos C)', 'Pythagoras only', "Snell's law"],
+      answer: 1,
+      explain: 'The cosine law generalises Pythagoras to any angle; when C = 90°, cos C = 0 and it reduces to a² + b² = c².'
+    }), 'hard'),
+    typeanswer(() => {
+      const Pm = pick([700, 850, 900]);
+      const eff = Math.round(Pm / 1000 * 100);
+      return {
+        cg: 'P27-H4',
+        q: `A motor takes 1000 W of electrical power and delivers ${Pm} W of mechanical power. Efficiency η = (P_mech/P_elec)×100%. Find η in %.`,
+        answer: eff,
+        tolerance: 0.5,
+        explain: `η = ${Pm}/1000 × 100% = ${eff}%. The missing ${1000 - Pm} W is lost as heat in the windings and friction.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const hp = pick([2, 5, 10]);
+      const W = hp * 746;
+      return {
+        cg: 'P27-H5',
+        q: `Convert ${hp} horsepower to watts, using 1 hp ≈ 746 W.`,
+        answer: W,
+        tolerance: 1,
+        explain: `${hp} hp × 746 W/hp = ${W} W.`
+      };
+    }, 'hard')
+  ],
 };
 
 function shuffleInPlace(arr) {
