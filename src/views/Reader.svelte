@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { DEPTH_NAMES } from '../lib/content/deck.js';
   import { getBoard } from '../lib/content/dynamicBoards.js';
+  import { formatMath } from '../lib/content/mathFormat.js';
   import { pathsForCard } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { getVideoForCard, getDiagramForCard } from '../lib/content/media.js';
@@ -250,7 +251,7 @@
                   <span class="floor-pill" class:law={depthName(i, d) === 'The law'}>{depthName(i, d).toUpperCase()}</span>
                   <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
                 </div>
-                <div class="floor-text">{@html floorBodyHTML(i, d)}</div>
+                <div class="floor-text">{@html formatMath(floorBodyHTML(i, d))}</div>
                 {#if media}
                   <div class="floor-media">
                     {#if media.type === 'img'}
@@ -462,6 +463,10 @@
     font-size: 24px; font-weight: 800; color: var(--qx-text);
   }
   .floor-text :global(.gloss) { display: block; font-size: 11px; font-weight: 600; color: var(--qx-text-dim); margin-top: 6px; }
+  /* Math typography injected by formatMath (subscripts, superscripts, vectors) */
+  .floor-text :global(sub) { font-size: 0.72em; vertical-align: -0.25em; line-height: 0; }
+  .floor-text :global(sup) { font-size: 0.72em; vertical-align: 0.5em; line-height: 0; }
+  .floor-text :global(.vec) { font-weight: 800; font-style: italic; }
 
   .floor-media { flex: 45 1 0%; min-height: 0; margin: 10px 0 12px; border-radius: var(--qx-radius-md); overflow: hidden; background: var(--qx-surface-2); }
   .media-img { width: 100%; height: 100%; background-size: cover; background-position: center; }

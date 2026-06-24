@@ -1,5 +1,6 @@
 <script>
   import { getPathQuestions, DIFFICULTY_LABELS } from '../lib/content/questions.js';
+  import { formatMathText } from '../lib/content/mathFormat.js';
   import { PATHS } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import ChalkButton from '../lib/components/ChalkButton.svelte';
@@ -191,7 +192,7 @@
           <span class="q-band band-{questions[current].difficulty}">{DIFFICULTY_LABELS[questions[current].difficulty]}</span>
         {/if}
       </div>
-      <div class="q-text">{questions[current]?.q || ''}</div>
+      <div class="q-text">{@html formatMathText(questions[current]?.q || '')}</div>
 
       <!-- MCQ -->
       {#if questions[current]?.type === 'mcq'}
@@ -201,7 +202,7 @@
               class="opt-btn {answers[current] === oi ? (status[current] === 'correct' ? 'correct' : status[current] === 'failed' ? 'incorrect' : 'selected') : ''}"
               disabled={status[current] !== 'pending'}
               on:click={() => handleMCQ(current, oi)}
-            >{opt}</button>
+            >{@html formatMathText(opt)}</button>
           {/each}
         </div>
 
@@ -247,9 +248,9 @@
           <div class="match-grid">
             {#each questions[current].pairs || [] as pair, pi}
               <div class="match-row">
-                <span class="match-left">{pair[0]}</span>
+                <span class="match-left">{@html formatMathText(pair[0])}</span>
                 <span class="match-arrow">⟷</span>
-                <span class="match-right">{pair[1]}</span>
+                <span class="match-right">{@html formatMathText(pair[1])}</span>
               </div>
             {/each}
           </div>
@@ -261,7 +262,7 @@
 
       <!-- Feedback -->
       {#if showFeedback[current]}
-        <div class="feedback {showFeedback[current].type}">{showFeedback[current].text}</div>
+        <div class="feedback {showFeedback[current].type}">{@html formatMathText(showFeedback[current].text)}</div>
       {/if}
 
       <!-- Next / See score -->
@@ -335,6 +336,11 @@
   .q-band.band-medium { border-color: var(--chalk-yellow); color: var(--chalk-yellow); }
   .q-band.band-hard { border-color: #e07a5f; color: #e07a5f; }
   .q-text { font-family: var(--hand-display); font-size: 19px; margin-bottom: 18px; line-height: 1.4; }
+
+  /* Math typography injected by formatMathText (subscripts, superscripts, vectors) */
+  .question-card :global(sub) { font-size: 0.7em; vertical-align: -0.25em; line-height: 0; }
+  .question-card :global(sup) { font-size: 0.7em; vertical-align: 0.5em; line-height: 0; }
+  .question-card :global(.vec) { font-weight: 700; font-style: italic; }
 
   .options { display: flex; flex-direction: column; gap: 8px; }
   .opt-btn {
