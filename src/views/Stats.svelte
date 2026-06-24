@@ -28,7 +28,10 @@
 
 <div class="qx-shell stats-view">
   <div class="top-row">
-    <h1>Your stats</h1>
+    <div class="top-left">
+      <button class="back-chev" on:click={() => onNavigate?.('home')} aria-label="Back">‹</button>
+      <h1>Your stats</h1>
+    </div>
     <div class="theme-toggle">
       <QxToggle checked={$theme === 'dark'} onChange={() => theme.toggle()} />
       <span>{$theme === 'dark' ? 'Dark' : 'Light'}</span>
@@ -87,6 +90,11 @@
 <style>
   .stats-view { height: 100%; overflow-y: auto; padding: 16px 18px 24px; box-sizing: border-box; }
   .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .top-left { display: flex; align-items: center; gap: 10px; }
+  .back-chev {
+    width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
+    color: var(--qx-text-dim); font-size: 19px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
   h1 { font-size: 23px; font-weight: 800; color: var(--qx-text); margin: 0; }
   .theme-toggle { display: flex; align-items: center; gap: 7px; background: none; border: none; cursor: pointer; font-family: var(--qx-font); font-size: 12px; font-weight: 700; color: var(--qx-text-dim); }
 

@@ -1,13 +1,13 @@
 <script>
   import QxIcon from './QxIcon.svelte';
 
-  export let active = 'home'; // home | topics | stats | snippets
+  export let active = 'home'; // home | topics | map | snippets
   export let onNavigate;
 
   const TABS = [
     { id: 'home', label: 'Home', icon: 'home' },
     { id: 'topics', label: 'Topics', icon: 'topics' },
-    { id: 'stats', label: 'Stats', icon: 'stats' },
+    { id: 'map', label: 'Map', icon: 'map' },
     { id: 'snippets', label: 'Snippets', icon: 'snippets' }
   ];
 </script>

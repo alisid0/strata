@@ -8,6 +8,7 @@
   import Topics from './views/Topics.svelte';
   import PathView from './views/PathView.svelte';
   import Stats from './views/Stats.svelte';
+  import Map from './views/Map.svelte';
   import Leaderboard from './views/Leaderboard.svelte';
   import OtherUserStats from './views/OtherUserStats.svelte';
   import Snippets from './views/Snippets.svelte';
@@ -23,7 +24,7 @@
   let readerNumbers = [];
   let readerStart = 1;
 
-  const TAB_VIEWS = ['home', 'topics', 'stats', 'snippets'];
+  const TAB_VIEWS = ['home', 'topics', 'map', 'snippets'];
 
   onMount(async () => {
     try { await initAuth(); } catch (_) {}
@@ -72,8 +73,8 @@
           <Home onNavigate={navigate} />
         {:else if currentView === 'topics'}
           <Topics onNavigate={navigate} />
-        {:else if currentView === 'stats'}
-          <Stats onNavigate={navigate} />
+        {:else if currentView === 'map'}
+          <Map onNavigate={navigate} />
         {:else if currentView === 'snippets'}
           <Snippets onNavigate={navigate} />
         {/if}
@@ -83,6 +84,9 @@
 
   {:else if currentView === 'topicDetail'}
     <PathView pathId={currentPathId} onNavigate={navigate} />
+
+  {:else if currentView === 'stats'}
+    <Stats onNavigate={navigate} />
 
   {:else if currentView === 'leaderboard'}
     <Leaderboard onNavigate={navigate} />
