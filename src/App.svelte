@@ -91,12 +91,11 @@
     <OtherUserStats userId={currentUserId} onNavigate={navigate} />
 
   {:else if currentView === 'reader'}
-    <Reader numbers={readerNumbers} startNumber={readerStart} />
-    <nav class="reader-nav">
-      <button on:click={() => navigate('home')} class="nav-btn">Home</button>
-      <button on:click={() => navigate('topics')} class="nav-btn">Topics</button>
-      <button on:click={() => navigate('author')} class="nav-btn">Author</button>
-    </nav>
+    <Reader
+      numbers={readerNumbers}
+      startNumber={readerStart}
+      onBack={() => currentPathId ? navigate('topicDetail', currentPathId) : navigate('topics')}
+    />
 
   {:else if currentView === 'quiz'}
     <Quiz
@@ -125,16 +124,4 @@
 
   .tabbed-view { height: 100%; display: flex; flex-direction: column; }
   .tab-content { flex: 1; min-height: 0; overflow-y: auto; }
-
-  .reader-nav {
-    position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
-    max-width: 480px; margin: 0 auto;
-    display: flex; background: var(--board-1); border-top: 2px dashed var(--line);
-    padding: 10px 0; box-shadow: 0 -2px 8px rgba(0,0,0,0.4);
-  }
-  .nav-btn {
-    flex: 1; background: none; border: none; color: var(--chalk-faint);
-    font-family: var(--print); font-size: 13px; cursor: pointer; padding: 6px 0; transition: color 0.2s;
-  }
-  .nav-btn:active { color: var(--chalk-yellow); }
 </style>

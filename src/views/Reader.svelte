@@ -16,6 +16,7 @@
   // number itself, is what `idx`/`depthOf`/etc. index by from here on.
   export let numbers = [];
   export let startNumber = 1;
+  export let onBack = null;
 
   let idx = 0;
   let depthOf = numbers.map(() => 0);
@@ -170,6 +171,7 @@
 
 <div class="qx-shell reader">
   <div id="topbar">
+    <button id="back" on:click={() => onBack?.()} aria-label="Back to topic"><QxIcon name="chevronLeft" size={18} /></button>
     <div id="brand">QUBIX</div>
     <div id="progress-wrap"><div id="progress" style="width:{(idx + 1) / totalCards * 100}%"></div></div>
     <div id="counter">{String(idx + 1).padStart(2, '0')} / {totalCards}</div>
@@ -299,6 +301,13 @@
     display: flex; align-items: center; gap: 14px;
     padding: 14px clamp(18px, 4vw, 34px);
     pointer-events: none;
+  }
+  #back {
+    pointer-events: auto;
+    width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%;
+    border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
+    color: var(--qx-text-dim); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
   }
   #brand { font-size: 13px; font-weight: 900; letter-spacing: 0.14em; color: var(--qx-accent); }
   #progress-wrap { flex: 1; height: 2px; background: var(--qx-border-2); border-radius: 2px; position: relative; }
