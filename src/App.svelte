@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { initAuth, isAuthenticated } from './lib/stores/auth.js';
   import { theme } from './lib/stores/theme.js'; // side-effect: sets document.documentElement.dataset.qxTheme
+  import { PATHS } from './lib/content/paths.js';
   import Auth from './views/Auth.svelte';
   import Onboarding from './views/Onboarding.svelte';
   import Home from './views/Home.svelte';
@@ -28,6 +29,16 @@
 
   onMount(async () => {
     try { await initAuth(); } catch (_) {}
+
+    // SEO deep-link: ?path=P12 → open that topic directly
+    const params = new URLSearchParams(location.search);
+    const pathParam = params.get('path');
+    if (pathParam && PATHS[pathParam]) {
+      currentView = 'topicDetail';
+      currentPathId = pathParam;
+      return;
+    }
+
     currentView = $isAuthenticated ? 'home' : 'auth';
   });
 

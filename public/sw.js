@@ -60,6 +60,8 @@ async function networkFirst(req) {
   }
 }
 
+const CONCEPT_PATH_RE = /^\/(physics|maths|chemistry|compare)\/[a-z0-9-]+/;
+
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
@@ -71,6 +73,13 @@ self.addEventListener('fetch', (e) => {
   }
 
   if (url.origin !== self.location.origin) return;
+
+  // SEO concept pages: never serve the app shell for these paths;
+  // let the network deliver the static HTML directly.
+  if (req.mode === 'navigate' && CONCEPT_PATH_RE.test(url.pathname)) {
+    e.respondWith(fetch(req));
+    return;
+  }
 
   if (req.mode === 'navigate') {
     e.respondWith(networkFirst(req));
