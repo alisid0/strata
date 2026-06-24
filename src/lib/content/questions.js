@@ -4705,6 +4705,1091 @@ export const PATH_QUESTIONS = {
       };
     }, 'hard')
   ],
+
+  // ── P28 : Forces & motion — the basics (Micro-Frye) ──
+  P28: [
+    matchQuestion(() => ({
+      cg: 'P28-SE1',
+      q: 'Match each term to its meaning.',
+      pairs: [
+        ['Force', 'a push or pull, measured in newtons'],
+        ['Mass', 'how much matter there is, in kilograms'],
+        ['Friction', 'a force that opposes motion'],
+        ['Gravity', 'the pull toward Earth']
+      ],
+      explain: 'Force is a push/pull; mass is the amount of matter; friction opposes sliding; gravity pulls things down.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P28-SE2',
+      q: 'Force is measured in ___.',
+      answer: 'newtons',
+      accept: ['newtons', 'newton', 'n'],
+      explain: '1 newton (N) = 1 kg·m/s² — the force that accelerates 1 kg at 1 m/s².'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P28-SE3',
+      q: "Newton's first law is also called the law of:",
+      opts: ['Gravity', 'Inertia', 'Friction', 'Energy'],
+      answer: 1,
+      explain: 'Inertia is the tendency of an object to keep doing what it is doing — at rest or moving steadily — until a net force acts.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P28-SE4',
+      q: 'A force is a vector — it has both a size and a direction.',
+      answer: true,
+      explain: 'You must give both how strong a force is and which way it points; forces add as vectors.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P28-SE5',
+      q: 'Friction always acts to oppose motion (or attempted motion).',
+      answer: true,
+      explain: 'Friction points opposite to the way a surface is sliding, or tending to slide — which is what lets us walk and brakes work.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P28-E1',
+      q: "Newton's second law is written as:",
+      opts: ['F = ma', 'E = mc²', 'V = IR', 'p = mv'],
+      answer: 0,
+      explain: 'F = ma: net force equals mass times acceleration, with acceleration in the direction of the net force.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P28-E2',
+      q: "Match each of Newton's laws (and inertia) to its idea.",
+      pairs: [
+        ['First law', 'no net force ⇒ velocity stays constant'],
+        ['Second law', 'F = ma'],
+        ['Third law', 'equal and opposite forces'],
+        ['Inertia', 'resistance to a change in motion']
+      ],
+      explain: 'First = inertia, second = F = ma, third = action–reaction.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P28-E3',
+      q: 'The force a surface pushes back with, perpendicular to itself, is the ___ force.',
+      answer: 'normal',
+      accept: ['normal', 'normal force'],
+      explain: 'The normal force supports objects on a surface; on a flat floor it equals the weight, N = mg.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P28-E4',
+      q: 'Tension is a pulling force in a rope or cable — a rope can pull but never push.',
+      answer: true,
+      explain: 'A rope or cable only sustains tension (pull). Push on it and it just goes slack.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P28-E5',
+      q: 'When the forces on an object are balanced (net force zero), the object:',
+      opts: ['Must be at rest', 'Stays at rest or moves at constant velocity', 'Always slows down', 'Speeds up'],
+      answer: 1,
+      explain: 'Zero net force means zero acceleration — so a still object stays still, and a moving one keeps a constant velocity (equilibrium).'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const d = pick([100, 150, 200]);
+      const t = pick([5, 10]);
+      return {
+        cg: 'P28-M1',
+        q: `An object travels ${d} m in ${t} s. What is its average speed? (speed = distance ÷ time, in m/s)`,
+        answer: d / t,
+        tolerance: 0.1,
+        explain: `speed = ${d}/${t} = ${d / t} m/s.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const m = pick([3, 6, 10]);
+      const a = pick([2, 5]);
+      return {
+        cg: 'P28-M2',
+        q: `A ${m} kg object accelerates at ${a} m/s². What net force acts on it? (F = ma, in N)`,
+        answer: m * a,
+        tolerance: 0.1,
+        explain: `F = ma = ${m} × ${a} = ${m * a} N.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P28-M3',
+      q: 'A skydiver falling at terminal velocity moves at constant speed. The net force on her is:',
+      opts: ['Downward', 'Upward', 'Zero', 'Sideways'],
+      answer: 2,
+      explain: 'At terminal velocity, air resistance up equals weight down, so the net force is zero and she falls at constant velocity (dynamic equilibrium).'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P28-M4',
+      q: 'Weight is calculated as mass times ___ (about 9.8 N/kg on Earth).',
+      answer: 'g',
+      accept: ['g', 'gravity', 'gravitational field strength', 'gravitational acceleration'],
+      explain: 'Weight w = mg. The same mass weighs less on the Moon because g is smaller there.'
+    }), 'medium'),
+    typeanswer(() => {
+      const m = pick([2, 5, 10]);
+      const w = Math.round(m * 9.8 * 10) / 10;
+      return {
+        cg: 'P28-M5',
+        q: `What is the weight of a ${m} kg object on Earth? Use w = mg with g = 9.8 N/kg. Answer in N.`,
+        answer: w,
+        tolerance: 0.2,
+        explain: `w = ${m} × 9.8 = ${w} N.`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const mu = pick([0.2, 0.3, 0.5]);
+      const N = pick([100, 200]);
+      const f = Math.round(mu * N * 10) / 10;
+      return {
+        cg: 'P28-H1',
+        q: `A block presses on the ground with normal force ${N} N. The coefficient of friction is μ = ${mu}. Maximum friction f = μN. Find f in N.`,
+        answer: f,
+        tolerance: 0.5,
+        explain: `f = μN = ${mu} × ${N} = ${f} N.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const dv = pick([20, 30]);
+      const t = pick([5, 10]);
+      const a = Math.round(dv / t * 100) / 100;
+      return {
+        cg: 'P28-H2',
+        q: `A car's speed changes by ${dv} m/s over ${t} s. Acceleration a = Δv/Δt. Find a in m/s².`,
+        answer: a,
+        tolerance: 0.1,
+        explain: `a = ${dv}/${t} = ${a} m/s².`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P28-H3',
+      q: 'A 2 kg ball and a 5 kg ball are dropped together with no air resistance. They:',
+      opts: ['The 5 kg ball lands first', 'The 2 kg ball lands first', 'Land at the same time', 'Never land'],
+      answer: 2,
+      explain: 'a = mg/m = g for both — the mass cancels, so all objects fall with the same acceleration and land together.'
+    }), 'hard'),
+    typeanswer(() => {
+      const m = pick([10, 20]);
+      const th = pick([30, 60]);
+      const N = Math.round(m * 9.8 * Math.cos(th * Math.PI / 180) * 10) / 10;
+      return {
+        cg: 'P28-H4',
+        q: `A ${m} kg block rests on a slope angled at ${th}° to the horizontal. The normal force is N = mg cos θ (g = 9.8). Find N in N (1 d.p.).`,
+        answer: N,
+        tolerance: 0.5,
+        explain: `N = ${m} × 9.8 × cos(${th}°) = ${N} N — less than the full weight, because the slope only supports the perpendicular part.`
+      };
+    }, 'hard'),
+    truefalse(() => ({
+      cg: 'P28-H5',
+      q: "Newton's third-law action and reaction forces act on different objects, so they never cancel each other out.",
+      answer: true,
+      explain: 'The pair acts on two different bodies (e.g. you push the wall, the wall pushes you). Since they act on different objects, they do not cancel.'
+    }), 'hard')
+  ],
+
+  // ── P29 : Energy — the basics (Micro-Frye) ──
+  P29: [
+    matchQuestion(() => ({
+      cg: 'P29-SE1',
+      q: 'Match each term to its meaning.',
+      pairs: [
+        ['Kinetic energy', 'energy of motion'],
+        ['Potential energy', 'energy of position'],
+        ['Work', 'force × distance'],
+        ['Power', 'energy transferred per second']
+      ],
+      explain: 'Motion energy, stored (position) energy, work as force over distance, and power as the rate of energy transfer.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P29-SE2',
+      q: 'Energy is measured in ___.',
+      answer: 'joules',
+      accept: ['joules', 'joule', 'j'],
+      explain: '1 joule (J) = 1 N·m = 1 kg·m²/s².'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P29-SE3',
+      q: 'Energy cannot be created or destroyed, only:',
+      opts: ['Used up forever', 'Changed from one form to another', 'Made into matter', 'Slowed down'],
+      answer: 1,
+      explain: 'Conservation of energy: the total stays constant; it just changes form (chemical → kinetic → heat, and so on).'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P29-SE4',
+      q: 'Power is the rate at which energy is transferred (energy per unit time).',
+      answer: true,
+      explain: 'P = energy ÷ time, in watts (1 W = 1 J/s).'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P29-SE5',
+      q: 'Lifting a box higher gives it more gravitational potential energy.',
+      answer: true,
+      explain: 'GPE = mgh rises with height h, because you do work against gravity to lift it.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P29-E1',
+      q: 'Kinetic energy is given by:',
+      opts: ['mgh', '½mv²', 'Fd', 'mv'],
+      answer: 1,
+      explain: 'KE = ½mv² — the energy of motion, scaling with the square of speed.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P29-E2',
+      q: 'Match each quantity to its formula.',
+      pairs: [
+        ['Work', 'F·d·cos θ'],
+        ['Kinetic energy', '½mv²'],
+        ['Potential energy', 'mgh'],
+        ['Power', 'work ÷ time']
+      ],
+      explain: 'These four formulas cover work, motion energy, height energy, and the rate of doing work.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P29-E3',
+      q: 'No real machine is 100% efficient; the "lost" energy usually ends up as ___.',
+      answer: 'heat',
+      accept: ['heat', 'thermal energy', 'thermal'],
+      explain: 'Friction and other losses degrade useful energy into heat spread into the surroundings (the second law of thermodynamics).'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P29-E4',
+      q: 'Doing work (in the physics sense) requires that the object actually moves.',
+      answer: true,
+      explain: 'W = Fd. With no displacement, the work is zero — holding something still does no physical work, however tiring.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P29-E5',
+      q: 'One horsepower is about:',
+      opts: ['7.46 W', '74.6 W', '746 W', '7460 W'],
+      answer: 2,
+      explain: '1 hp ≈ 746 W — roughly the sustained output of a strong horse.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const F = pick([20, 50, 100]);
+      const d = pick([3, 5]);
+      return {
+        cg: 'P29-M1',
+        q: `A force of ${F} N pushes an object ${d} m in the direction of the force. Work W = Fd. Find W in joules.`,
+        answer: F * d,
+        tolerance: 0.1,
+        explain: `W = ${F} × ${d} = ${F * d} J.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const m = pick([2, 4]);
+      const v = pick([3, 5, 10]);
+      return {
+        cg: 'P29-M2',
+        q: `Find the kinetic energy of a ${m} kg object moving at ${v} m/s. KE = ½mv², in joules.`,
+        answer: 0.5 * m * v * v,
+        tolerance: 0.1,
+        explain: `KE = ½ × ${m} × ${v}² = ${0.5 * m * v * v} J.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P29-M3',
+      q: 'A motor uses 200 J of energy to do 150 J of useful work. Its efficiency is:',
+      opts: ['133%', '75%', '50%', '25%'],
+      answer: 1,
+      explain: 'η = useful ÷ input = 150/200 = 0.75 = 75%. The other 50 J becomes heat.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P29-M4',
+      q: 'Gravitational potential energy is mass × g × ___.',
+      answer: 'height',
+      accept: ['height', 'h', 'the height'],
+      explain: 'GPE = mgh. Only the change in height matters.'
+    }), 'medium'),
+    typeanswer(() => {
+      const m = pick([2, 5]);
+      const h = pick([3, 10]);
+      const E = Math.round(m * 9.8 * h * 10) / 10;
+      return {
+        cg: 'P29-M5',
+        q: `How much gravitational potential energy does a ${m} kg object gain when lifted ${h} m? Use GPE = mgh with g = 9.8. Answer in J.`,
+        answer: E,
+        tolerance: 0.5,
+        explain: `GPE = ${m} × 9.8 × ${h} = ${E} J.`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const W = pick([600, 1200, 2000]);
+      const t = pick([4, 10]);
+      const P = Math.round(W / t * 10) / 10;
+      return {
+        cg: 'P29-H1',
+        q: `A machine does ${W} J of work in ${t} s. Power P = W/t. Find P in watts.`,
+        answer: P,
+        tolerance: 0.5,
+        explain: `P = ${W}/${t} = ${P} W.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const useful = pick([300, 400, 450]);
+      const eff = Math.round(useful / 500 * 100);
+      return {
+        cg: 'P29-H2',
+        q: `A device takes in 500 J and delivers ${useful} J of useful output. Efficiency η = (output/input)×100%. Find η in %.`,
+        answer: eff,
+        tolerance: 0.5,
+        explain: `η = ${useful}/500 × 100% = ${eff}%.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P29-H3',
+      q: 'By the work–energy theorem, if the net work done on a moving object is negative, its speed:',
+      opts: ['Increases', 'Decreases', 'Stays the same', 'Becomes negative'],
+      answer: 1,
+      explain: 'W_net = ΔKE. Negative net work removes kinetic energy, so the object slows down.'
+    }), 'hard'),
+    typeanswer(() => {
+      const k = pick([200, 400, 800]);
+      const U = Math.round(0.5 * k * 0.1 * 0.1 * 100) / 100;
+      return {
+        cg: 'P29-H4',
+        q: `A spring of stiffness ${k} N/m is stretched 0.10 m. Elastic energy U = ½kx². Find U in joules.`,
+        answer: U,
+        tolerance: 0.05,
+        explain: `U = ½ × ${k} × (0.10)² = ${U} J.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const [m, E] = pick([[2, 100], [8, 144], [2, 64]]);
+      const v = Math.round(Math.sqrt(2 * E / m) * 100) / 100;
+      return {
+        cg: 'P29-H5',
+        q: `An object of mass ${m} kg has ${E} J of kinetic energy. From KE = ½mv², its speed v = √(2·KE/m). Find v in m/s.`,
+        answer: v,
+        tolerance: 0.1,
+        explain: `v = √(2 × ${E}/${m}) = ${v} m/s.`
+      };
+    }, 'hard')
+  ],
+
+  // ── P30 : Electricity — the basics (Micro-Frye) ──
+  P30: [
+    matchQuestion(() => ({
+      cg: 'P30-SE1',
+      q: 'Match each electrical quantity to its meaning.',
+      pairs: [
+        ['Current', 'the flow of charge (amps)'],
+        ['Voltage', 'the electrical push (volts)'],
+        ['Resistance', 'opposition to current (ohms)'],
+        ['Charge', 'a basic property of matter (coulombs)']
+      ],
+      explain: 'Current flows, voltage pushes, resistance opposes, and charge is the underlying quantity.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P30-SE2',
+      q: 'Electric current is measured in ___.',
+      answer: 'amperes',
+      accept: ['amperes', 'amps', 'ampere', 'amp', 'a'],
+      explain: '1 ampere (A) = 1 coulomb per second.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P30-SE3',
+      q: "Ohm's law relates voltage, current and resistance as:",
+      opts: ['V = IR', 'P = IV', 'V = I/R', 'R = IV'],
+      answer: 0,
+      explain: 'V = IR: voltage equals current times resistance.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P30-SE4',
+      q: 'A conductor (like copper) lets current flow easily, while an insulator (like rubber) does not.',
+      answer: true,
+      explain: 'Conductors have many free electrons (low resistivity); insulators have almost none (very high resistivity).'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P30-SE5',
+      q: 'Direct current (DC) flows one way; alternating current (AC) reverses direction periodically.',
+      answer: true,
+      explain: 'Batteries give DC; mains supply is AC, swinging back and forth as a sine wave.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P30-E1',
+      q: 'Electric current is defined as:',
+      opts: ['Voltage × resistance', 'Charge per unit time (I = Q/t)', 'Energy per charge', 'Power × time'],
+      answer: 1,
+      explain: 'I = Q/t — the rate at which charge flows, measured in amperes (C/s).'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P30-E2',
+      q: 'Match each formula to what it gives.',
+      pairs: [
+        ['V = IR', "Ohm's law"],
+        ['P = IV', 'electric power'],
+        ['R = ρl/A', 'resistance of a wire'],
+        ['I = Q/t', 'current']
+      ],
+      explain: 'The core electricity formulas: Ohm\'s law, power, wire resistance, and the definition of current.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P30-E3',
+      q: 'In a series circuit, the current is the ___ through every component.',
+      answer: 'same',
+      accept: ['same', 'equal', 'identical'],
+      explain: 'There is only one path, so the same current flows through each component in series.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P30-E4',
+      q: 'In a parallel circuit, every branch has the same voltage across it.',
+      answer: true,
+      explain: 'Branches share the same two nodes, so they all see the same potential difference; the current splits between them.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P30-E5',
+      q: 'A fuse protects a circuit by:',
+      opts: [
+        'Storing extra charge',
+        'Melting and breaking the circuit when the current gets too high',
+        'Increasing the voltage',
+        'Cooling the wires'
+      ],
+      answer: 1,
+      explain: 'Excess current heats the thin fuse wire (P = I²R) until it melts, cutting the circuit before damage occurs.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const I = pick([2, 3, 5]);
+      const R = pick([4, 10]);
+      return {
+        cg: 'P30-M1',
+        q: `A current of ${I} A flows through a ${R} Ω resistor. Using V = IR, find the voltage across it (V).`,
+        answer: I * R,
+        tolerance: 0.1,
+        explain: `V = IR = ${I} × ${R} = ${I * R} V.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const [V, R] = pick([[12, 3], [24, 6], [9, 3]]);
+      return {
+        cg: 'P30-M2',
+        q: `A ${V} V supply drives a ${R} Ω resistor. Using I = V/R, find the current (A).`,
+        answer: V / R,
+        tolerance: 0.1,
+        explain: `I = V/R = ${V}/${R} = ${V / R} A.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P30-M3',
+      q: 'Two resistors R₁ and R₂ in series have a total resistance of:',
+      opts: ['R₁ + R₂', 'R₁ × R₂', 'less than either one', '(R₁ + R₂)/2'],
+      answer: 0,
+      explain: 'Series resistances add directly: R_total = R₁ + R₂. (Parallel ones combine by the reciprocal rule and give less than the smallest.)'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P30-M4',
+      q: 'Electric power equals current times ___ (P = IV).',
+      answer: 'voltage',
+      accept: ['voltage', 'v', 'the voltage'],
+      explain: 'P = IV (watts). Equivalent forms are I²R and V²/R.'
+    }), 'medium'),
+    typeanswer(() => {
+      const [I, V] = pick([[2, 12], [3, 12], [0.5, 230]]);
+      return {
+        cg: 'P30-M5',
+        q: `A device draws ${I} A at ${V} V. Power P = IV. Find P in watts.`,
+        answer: I * V,
+        tolerance: 0.5,
+        explain: `P = ${I} × ${V} = ${I * V} W.`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const [R1, R2] = pick([[6, 3], [12, 4], [10, 40]]);
+      const Rp = Math.round(R1 * R2 / (R1 + R2) * 100) / 100;
+      return {
+        cg: 'P30-H1',
+        q: `Two resistors, ${R1} Ω and ${R2} Ω, are in parallel. R_total = R₁R₂/(R₁+R₂). Find the total resistance (Ω).`,
+        answer: Rp,
+        tolerance: 0.1,
+        explain: `R = (${R1}×${R2})/(${R1}+${R2}) = ${Rp} Ω — less than the smaller resistor.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const I = pick([2, 3]);
+      const R = pick([5, 10]);
+      const P = I * I * R;
+      return {
+        cg: 'P30-H2',
+        q: `A current of ${I} A flows through a ${R} Ω resistor. Power dissipated P = I²R. Find P in watts.`,
+        answer: P,
+        tolerance: 0.5,
+        explain: `P = ${I}² × ${R} = ${P} W, released as heat.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P30-H3',
+      q: 'Power lost as heat in a transmission wire is P = I²R. To cut these losses, power is sent long distances at:',
+      opts: ['High current, low voltage', 'High voltage, low current', 'Zero voltage', 'High resistance'],
+      answer: 1,
+      explain: 'For a given power P = VI, raising the voltage lowers the current. Since losses go as I², a smaller current sharply cuts the heat lost in the line.'
+    }), 'hard'),
+    typeanswer(() => {
+      const emf = pick([12, 9]);
+      const I = pick([2, 3]);
+      const r = pick([0.5, 1]);
+      const V = Math.round((emf - I * r) * 100) / 100;
+      return {
+        cg: 'P30-H4',
+        q: `A battery of EMF ${emf} V has internal resistance ${r} Ω. When it supplies ${I} A, the terminal voltage is V = EMF − Ir. Find V in volts.`,
+        answer: V,
+        tolerance: 0.05,
+        explain: `V = ${emf} − ${I}×${r} = ${V} V — the terminal voltage sags below the EMF under load.`
+      };
+    }, 'hard'),
+    truefalse(() => ({
+      cg: 'P30-H5',
+      q: 'Adding more resistors in parallel decreases the total resistance of that section.',
+      answer: true,
+      explain: 'Each extra parallel path gives current another route, so the combined resistance falls below that of any single branch.'
+    }), 'hard')
+  ],
+
+  // ── P31 : Waves & oscillations — the basics (Micro-Frye) ──
+  P31: [
+    matchQuestion(() => ({
+      cg: 'P31-SE1',
+      q: 'Match each wave term to its meaning.',
+      pairs: [
+        ['Amplitude', 'maximum displacement from rest'],
+        ['Frequency', 'cycles per second (Hz)'],
+        ['Wavelength', 'distance between two crests'],
+        ['Period', 'time for one full cycle']
+      ],
+      explain: 'Amplitude is how big, frequency is how often, wavelength is the length of a cycle, period is the time for one cycle.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P31-SE2',
+      q: 'The number of complete waves passing each second is the ___.',
+      answer: 'frequency',
+      accept: ['frequency', 'frequency (f)'],
+      explain: 'Frequency is measured in hertz (Hz); it sets the pitch of a sound.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P31-SE3',
+      q: 'The wave equation linking speed, frequency and wavelength is:',
+      opts: ['v = fλ', 'v = f/λ', 'v = f + λ', 'v = λ/f'],
+      answer: 0,
+      explain: 'v = fλ — wave speed equals frequency times wavelength.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P31-SE4',
+      q: 'Sound is a wave that needs a medium and cannot travel through a vacuum.',
+      answer: true,
+      explain: 'Sound is a vibration of matter; with no matter to compress, it cannot travel.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P31-SE5',
+      q: 'Light can travel through a vacuum, but sound cannot.',
+      answer: true,
+      explain: 'Light is an electromagnetic wave needing no medium; sound is mechanical and needs one.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P31-E1',
+      q: "A wave's frequency f and period T are related by:",
+      opts: ['f = 1/T', 'f = T', 'f = T²', 'f = 2T'],
+      answer: 0,
+      explain: 'Frequency is the reciprocal of the period: f = 1/T.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P31-E2',
+      q: 'Match each wave behaviour to its description.',
+      pairs: [
+        ['Reflection', 'bouncing off a surface'],
+        ['Refraction', 'bending at a boundary'],
+        ['Diffraction', 'spreading through a gap'],
+        ['Interference', 'waves adding or cancelling']
+      ],
+      explain: 'The four classic wave behaviours: bounce, bend, spread, and overlap.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P31-E3',
+      q: 'Sound is a ___ wave: the air vibrates back and forth along the direction the wave travels.',
+      answer: 'longitudinal',
+      accept: ['longitudinal'],
+      explain: 'In a longitudinal wave the oscillation is parallel to travel (compressions and rarefactions), unlike a transverse wave.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P31-E4',
+      q: 'Resonance occurs when a system is driven at its natural frequency, producing large oscillations.',
+      answer: true,
+      explain: 'Pushing a swing in time with its natural rhythm builds a big amplitude — that is resonance.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P31-E5',
+      q: 'A siren drops in pitch as it passes you. This is the:',
+      opts: ['Resonance effect', 'Doppler effect', 'Reflection effect', 'Diffraction effect'],
+      answer: 1,
+      explain: 'Relative motion changes the observed frequency: higher pitch approaching, lower pitch receding — the Doppler effect.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const f = pick([200, 500, 1000]);
+      const lam = pick([0.5, 2]);
+      return {
+        cg: 'P31-M1',
+        q: `A wave has frequency ${f} Hz and wavelength ${lam} m. Using v = fλ, find its speed in m/s.`,
+        answer: f * lam,
+        tolerance: 1,
+        explain: `v = ${f} × ${lam} = ${f * lam} m/s.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const f = pick([2, 4, 5, 50]);
+      const T = Math.round(1 / f * 1000) / 1000;
+      return {
+        cg: 'P31-M2',
+        q: `A wave has a frequency of ${f} Hz. Its period T = 1/f. Find T in seconds (3 d.p.).`,
+        answer: T,
+        tolerance: 0.002,
+        explain: `T = 1/${f} = ${T} s.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P31-M3',
+      q: 'Waves spread out (diffract) the most when they pass through a gap that is:',
+      opts: ['Much larger than the wavelength', 'About the same size as the wavelength', 'Perfectly square', 'Made of metal'],
+      answer: 1,
+      explain: 'Diffraction is strongest when the gap is comparable to (or smaller than) the wavelength.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P31-M4',
+      q: 'Whole-number multiples of the fundamental frequency are called ___.',
+      answer: 'harmonics',
+      accept: ['harmonics', 'harmonic', 'overtones'],
+      explain: 'The fundamental plus its harmonics (2f, 3f, …) and their relative strengths give an instrument its timbre.'
+    }), 'medium'),
+    typeanswer(() => {
+      const Tc = pick([10, 20, 25]);
+      const v = Math.round((331 + 0.6 * Tc) * 10) / 10;
+      return {
+        cg: 'P31-M5',
+        q: `The speed of sound in air is about v ≈ 331 + 0.6T (T in °C). Find v at ${Tc} °C, in m/s (1 d.p.).`,
+        answer: v,
+        tolerance: 0.5,
+        explain: `v ≈ 331 + 0.6 × ${Tc} = ${v} m/s.`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const lam = pick([0.5, 1, 2]);
+      const f = Math.round(340 / lam);
+      return {
+        cg: 'P31-H1',
+        q: `Sound travels at 340 m/s. A note has wavelength ${lam} m. Using f = v/λ, find its frequency in Hz.`,
+        answer: f,
+        tolerance: 1,
+        explain: `f = 340/${lam} = ${f} Hz.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const T = pick([50, 100, 200]);
+      const v = Math.round(Math.sqrt(T / 0.02) * 10) / 10;
+      return {
+        cg: 'P31-H2',
+        q: `A string under ${T} N of tension has mass per length 0.02 kg/m. Wave speed v = √(T/μ). Find v in m/s (1 d.p.).`,
+        answer: v,
+        tolerance: 0.5,
+        explain: `v = √(${T}/0.02) = ${v} m/s — tighter or lighter strings carry waves faster.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P31-H3',
+      q: 'Two identical waves meet exactly out of phase (a crest lines up with a trough). The result is:',
+      opts: ['Constructive interference (bigger wave)', 'Destructive interference (they cancel)', 'A standing wave', 'Refraction'],
+      answer: 1,
+      explain: 'Out-of-phase superposition subtracts the displacements — for equal waves, they cancel. This is how noise-cancelling headphones work.'
+    }), 'hard'),
+    typeanswer(() => {
+      const f1 = pick([256, 440]);
+      const d = pick([2, 3, 4]);
+      const f2 = f1 + d;
+      return {
+        cg: 'P31-H4',
+        q: `Two notes at ${f1} Hz and ${f2} Hz are played together. The beat frequency = |f₁ − f₂|. Find it in Hz.`,
+        answer: d,
+        tolerance: 0.1,
+        explain: `Beat frequency = |${f1} − ${f2}| = ${d} Hz — the loudness throbs ${d} times a second.`
+      };
+    }, 'hard'),
+    truefalse(() => ({
+      cg: 'P31-H5',
+      q: 'All electromagnetic waves travel at the same speed c in a vacuum, regardless of their frequency.',
+      answer: true,
+      explain: 'Radio, light and gamma rays all move at c ≈ 3×10⁸ m/s in vacuum; only their frequency and wavelength differ.'
+    }), 'hard')
+  ],
+
+  // ── P32 : Heat & matter — the basics (Micro-Frye) ──
+  P32: [
+    matchQuestion(() => ({
+      cg: 'P32-SE1',
+      q: 'Match each idea to its description.',
+      pairs: [
+        ['Conduction', 'heat passing through a solid by contact'],
+        ['Convection', 'heat carried by moving fluid'],
+        ['Radiation', 'heat as EM waves, needing no medium'],
+        ['Temperature', 'average energy of the particles']
+      ],
+      explain: 'The three modes of heat transfer plus temperature, the measure of average particle energy.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P32-SE2',
+      q: 'The SI unit of temperature is the ___.',
+      answer: 'kelvin',
+      accept: ['kelvin', 'kelvins', 'k'],
+      explain: '0 K is absolute zero; a change of 1 K equals a change of 1 °C.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P32-SE3',
+      q: 'Heat naturally flows from:',
+      opts: ['Cold to hot', 'Hot to cold', 'Low to high pressure', 'Light to dark'],
+      answer: 1,
+      explain: 'The second law of thermodynamics: heat flows by itself only from hotter to colder.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P32-SE4',
+      q: 'Most materials expand when they are heated.',
+      answer: true,
+      explain: 'Higher temperature makes particles vibrate more and take up more space — which is why bridges need expansion joints.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P32-SE5',
+      q: 'While ice melts or water boils, the temperature stays constant even though heat is added.',
+      answer: true,
+      explain: 'The added latent heat breaks bonds during the phase change rather than raising the temperature.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P32-E1',
+      q: 'The heat to warm an object is Q = mcΔT, where c is the:',
+      opts: ['Speed of light', 'Specific heat capacity', 'Charge', 'Latent heat'],
+      answer: 1,
+      explain: 'Specific heat capacity c is the energy to raise 1 kg by 1 K. Water\'s is high (≈4200 J/kg·K).'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P32-E2',
+      q: 'Match each formula to what it describes.',
+      pairs: [
+        ['Q = mcΔT', 'heating without phase change'],
+        ['Q = mL', 'phase change (melting/boiling)'],
+        ['Q/t = kAΔT/L', 'conduction rate'],
+        ['P = εσAT⁴', 'thermal radiation']
+      ],
+      explain: 'These cover heating, phase change, conduction and radiation.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P32-E3',
+      q: 'Energy absorbed during a phase change, with no temperature rise, is ___ heat.',
+      answer: 'latent',
+      accept: ['latent', 'latent heat'],
+      explain: 'Q = mL. Latent heat of fusion melts a solid; latent heat of vaporisation boils a liquid.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P32-E4',
+      q: 'Every object above absolute zero gives off thermal radiation.',
+      answer: true,
+      explain: 'By the Stefan–Boltzmann law P = εσAT⁴, any object warmer than 0 K radiates — which is how thermal cameras see in the dark.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P32-E5',
+      q: 'Water has a high specific heat capacity, which is why:',
+      opts: [
+        'It boils almost instantly',
+        'It takes a long time to heat up or cool down',
+        'It cannot store heat',
+        'It freezes faster than other liquids'
+      ],
+      answer: 1,
+      explain: 'A high c means lots of energy per degree, so water (and oceans) warm and cool slowly, buffering temperature.'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const m = pick([0.5, 1, 2]);
+      const dT = pick([10, 20]);
+      const Q = m * 4200 * dT;
+      return {
+        cg: 'P32-M1',
+        q: `How much heat (J) raises ${m} kg of water by ${dT} °C? Use Q = mcΔT with c = 4200 J/kg·K.`,
+        answer: Q,
+        tolerance: 10,
+        explain: `Q = ${m} × 4200 × ${dT} = ${Q} J.`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const m = pick([0.1, 0.5, 1]);
+      const Q = m * 334000;
+      return {
+        cg: 'P32-M2',
+        q: `How much heat (J) melts ${m} kg of ice at 0 °C? Use Q = mL_f with L_f = 334000 J/kg.`,
+        answer: Q,
+        tolerance: 50,
+        explain: `Q = ${m} × 334000 = ${Q} J — going into breaking bonds at constant temperature.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P32-M3',
+      q: 'The ideal gas law is:',
+      opts: ['PV = nRT', 'Q = mcΔT', 'V = IR', 'F = ma'],
+      answer: 0,
+      explain: 'PV = nRT links pressure, volume, amount and absolute temperature (R = 8.314 J/mol·K).'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P32-M4',
+      q: 'Heat carried by hot fluid physically rising and circulating is called ___.',
+      answer: 'convection',
+      accept: ['convection'],
+      explain: 'Warm fluid is less dense and rises; cool fluid sinks — a convection current.'
+    }), 'medium'),
+    typeanswer(() => {
+      const V1 = pick([3, 4, 6]);
+      const P2 = 100 * V1 / 2;
+      return {
+        cg: 'P32-M5',
+        q: `${V1} L of gas at 100 kPa is squeezed to 2.0 L at constant temperature. Boyle's law P₁V₁ = P₂V₂. Find the new pressure (kPa).`,
+        answer: P2,
+        tolerance: 1,
+        explain: `P₂ = 100 × ${V1}/2.0 = ${P2} kPa.`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const [a, metal] = pick([[12e-6, 'steel'], [23e-6, 'aluminium']]);
+      const L0 = pick([5, 10]);
+      const dT = pick([40, 50]);
+      const dL = Math.round(a * L0 * dT * 1000 * 100) / 100;
+      return {
+        cg: 'P32-H1',
+        q: `A ${L0} m ${metal} rod (α = ${a === 12e-6 ? '12' : '23'}×10⁻⁶ /°C) is heated by ${dT} °C. Expansion ΔL = αL₀ΔT. Find ΔL in mm (2 d.p.).`,
+        answer: dL,
+        tolerance: 0.1,
+        explain: `ΔL = ${a === 12e-6 ? '12' : '23'}×10⁻⁶ × ${L0} × ${dT} = ${dL} mm.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const k = pick([0.5, 1, 2]);
+      const dT = pick([20, 40]);
+      const L = pick([0.1, 0.2]);
+      const H = Math.round(k * 2 * dT / L);
+      return {
+        cg: 'P32-H2',
+        q: `Heat conducts through a slab: area 2 m², conductivity k = ${k} W/m·K, temperature difference ${dT} K, thickness ${L} m. Q/t = kAΔT/L. Find the heat current in W.`,
+        answer: H,
+        tolerance: 1,
+        explain: `Q/t = ${k} × 2 × ${dT} / ${L} = ${H} W.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P32-H3',
+      q: 'Thermal radiation follows P ∝ T⁴ (absolute temperature). If you double the absolute temperature of an object, its radiated power rises by a factor of:',
+      opts: ['2', '4', '8', '16'],
+      answer: 3,
+      explain: 'P ∝ T⁴, so doubling T multiplies the power by 2⁴ = 16.'
+    }), 'hard'),
+    typeanswer(() => {
+      const C = pick([27, 100, -23]);
+      const K = C + 273;
+      return {
+        cg: 'P32-H4',
+        q: `Convert ${C} °C to kelvin. (K = °C + 273.)`,
+        answer: K,
+        tolerance: 1,
+        explain: `${C} + 273 = ${K} K.`
+      };
+    }, 'hard'),
+    truefalse(() => ({
+      cg: 'P32-H5',
+      q: 'In an ideal gas, the average kinetic energy of the molecules depends only on the absolute temperature.',
+      answer: true,
+      explain: 'KE_avg = (3/2)k_B T — at a given temperature, every ideal gas has the same average molecular kinetic energy.'
+    }), 'hard')
+  ],
+
+  // ── P33 : Optics — the basics (Micro-Frye) ──
+  P33: [
+    matchQuestion(() => ({
+      cg: 'P33-SE1',
+      q: 'Match each optical idea to its description.',
+      pairs: [
+        ['Reflection', 'light bouncing off a mirror'],
+        ['Refraction', 'light bending entering glass'],
+        ['Lens', 'a shaped piece that focuses light'],
+        ['Shadow', 'light blocked by an opaque object']
+      ],
+      explain: 'Bouncing, bending, focusing, and blocking — the basics of how light behaves.'
+    }), 'super-easy'),
+    fillblank(() => ({
+      cg: 'P33-SE2',
+      q: 'In a uniform medium, light travels in straight ___.',
+      answer: 'lines',
+      accept: ['lines', 'rays', 'straight lines'],
+      explain: 'Rectilinear propagation — straight-line travel — explains sharp shadows and the pinhole camera.'
+    }), 'super-easy'),
+    mcq(() => ({
+      cg: 'P33-SE3',
+      q: 'The law of reflection says the angle of incidence equals the angle of:',
+      opts: ['Refraction', 'Reflection', 'Diffraction', 'Dispersion'],
+      answer: 1,
+      explain: 'θ_i = θ_r, both measured from the normal to the surface.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P33-SE4',
+      q: 'Light slows down when it enters glass or water.',
+      answer: true,
+      explain: 'In a medium, v = c/n with n > 1, so light is slower than in a vacuum.'
+    }), 'super-easy'),
+    truefalse(() => ({
+      cg: 'P33-SE5',
+      q: 'A plane (flat) mirror produces a virtual image that appears to be behind the mirror.',
+      answer: true,
+      explain: 'The image is upright, the same size, and the same distance behind the mirror as the object is in front.'
+    }), 'super-easy'),
+
+    mcq(() => ({
+      cg: 'P33-E1',
+      q: "Snell's law of refraction is:",
+      opts: ['n₁ sin θ₁ = n₂ sin θ₂', 'θ_i = θ_r', '1/f = 1/u + 1/v', 'n = c/v'],
+      answer: 0,
+      explain: 'n₁ sin θ₁ = n₂ sin θ₂ relates the angles on the two sides of a boundary to the refractive indices.'
+    }), 'easy'),
+    matchQuestion(() => ({
+      cg: 'P33-E2',
+      q: 'Match each optical element to what it does to light.',
+      pairs: [
+        ['Convex lens', 'converges (brings rays together)'],
+        ['Concave lens', 'diverges (spreads rays apart)'],
+        ['Concave mirror', 'converges reflected rays'],
+        ['Convex mirror', 'diverges reflected rays']
+      ],
+      explain: 'Convex lenses and concave mirrors converge; concave lenses and convex mirrors diverge.'
+    }), 'easy'),
+    fillblank(() => ({
+      cg: 'P33-E3',
+      q: 'The bending of light as it passes from one medium into another is called ___.',
+      answer: 'refraction',
+      accept: ['refraction', 'refract'],
+      explain: 'The change of speed at the boundary redirects the ray — refraction, set by Snell\'s law.'
+    }), 'easy'),
+    truefalse(() => ({
+      cg: 'P33-E4',
+      q: 'Total internal reflection can only happen when light goes from a denser medium toward a less dense one.',
+      answer: true,
+      explain: 'Only from high n to low n is there a critical angle θ_c = arcsin(n₂/n₁) beyond which the light is fully reflected.'
+    }), 'easy'),
+    mcq(() => ({
+      cg: 'P33-E5',
+      q: 'A real image is one that:',
+      opts: [
+        'Can be projected onto a screen',
+        'Only appears to be behind a mirror',
+        'Is always upright',
+        'Cannot be photographed'
+      ],
+      answer: 0,
+      explain: 'A real image forms where light rays actually converge, so it can be caught on a screen or sensor (and is inverted).'
+    }), 'easy'),
+
+    typeanswer(() => {
+      const n = pick([1.5, 2, 2.5]);
+      const v = Math.round(3 / n * 100) / 100;
+      return {
+        cg: 'P33-M1',
+        q: `Light enters a medium of refractive index n = ${n}. Its speed v = c/n with c = 3.0×10⁸ m/s. Find v in units of 10⁸ m/s (2 d.p.).`,
+        answer: v,
+        tolerance: 0.02,
+        explain: `v = 3.0/${n} = ${v} (×10⁸ m/s).`
+      };
+    }, 'medium'),
+    typeanswer(() => {
+      const R = pick([20, 30, 50]);
+      return {
+        cg: 'P33-M2',
+        q: `A concave mirror has radius of curvature R = ${R} cm. Its focal length f = R/2. Find f in cm.`,
+        answer: R / 2,
+        tolerance: 0.1,
+        explain: `f = R/2 = ${R}/2 = ${R / 2} cm.`
+      };
+    }, 'medium'),
+    mcq(() => ({
+      cg: 'P33-M3',
+      q: 'Optical fibres carry light around bends using:',
+      opts: ['Dispersion', 'Total internal reflection', 'Diffraction', 'Polarization'],
+      answer: 1,
+      explain: 'Light hits the core boundary above the critical angle and reflects completely, staying trapped as it travels.'
+    }), 'medium'),
+    fillblank(() => ({
+      cg: 'P33-M4',
+      q: 'A lens that brings parallel rays together to a focus is a ___ lens.',
+      answer: 'converging',
+      accept: ['converging', 'convex', 'convex (converging)'],
+      explain: 'A convex (converging) lens has a positive focal length and can form real images.'
+    }), 'medium'),
+    typeanswer(() => {
+      const [f, u] = pick([[10, 15], [10, 20], [20, 30]]);
+      const v = Math.round(1 / (1 / f - 1 / u) * 10) / 10;
+      return {
+        cg: 'P33-M5',
+        q: `A converging lens has focal length ${f} cm; an object is ${u} cm away. Using 1/f = 1/u + 1/v, find the image distance v in cm.`,
+        answer: v,
+        tolerance: 0.5,
+        explain: `1/v = 1/${f} − 1/${u}, so v = ${v} cm.`
+      };
+    }, 'medium'),
+
+    typeanswer(() => {
+      const n = pick([1.33, 1.5, 2]);
+      const tc = Math.round(Math.asin(1 / n) * 180 / Math.PI * 10) / 10;
+      return {
+        cg: 'P33-H1',
+        q: `Find the critical angle for light going from a medium of index n = ${n} into air (n = 1). θ_c = arcsin(1/n). Answer in degrees (1 d.p.).`,
+        answer: tc,
+        tolerance: 0.5,
+        explain: `θ_c = arcsin(1/${n}) = ${tc}°. Beyond this, light is totally internally reflected.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const [fo, fe] = pick([[80, 10], [120, 20], [90, 30]]);
+      return {
+        cg: 'P33-H2',
+        q: `A telescope has objective focal length f_o = ${fo} cm and eyepiece f_e = ${fe} cm. Magnification M = f_o/f_e. Find M.`,
+        answer: fo / fe,
+        tolerance: 0.2,
+        explain: `M = ${fo}/${fe} = ${fo / fe}×.`
+      };
+    }, 'hard'),
+    mcq(() => ({
+      cg: 'P33-H3',
+      q: 'When white light passes through a prism, which colour bends the most?',
+      opts: ['Red', 'Yellow', 'Violet', 'They bend equally'],
+      answer: 2,
+      explain: 'Shorter wavelengths have a higher refractive index (dispersion), so violet bends most and red least — splitting white light into a spectrum.'
+    }), 'hard'),
+    typeanswer(() => {
+      const t1 = pick([30, 40, 50]);
+      const t2 = Math.round(Math.asin(Math.sin(t1 * Math.PI / 180) / 1.33) * 180 / Math.PI * 10) / 10;
+      return {
+        cg: 'P33-H4',
+        q: `Light passes from air into water (n = 1.33) at an angle of incidence ${t1}°. Using sin θ₁ = 1.33 sin θ₂, find the refraction angle θ₂ in degrees (1 d.p.).`,
+        answer: t2,
+        tolerance: 0.5,
+        explain: `sin θ₂ = sin(${t1}°)/1.33, so θ₂ = ${t2}° — bent toward the normal in the denser water.`
+      };
+    }, 'hard'),
+    typeanswer(() => {
+      const f = pick([0.5, 0.25, 0.2]);
+      const P = Math.round(1 / f);
+      return {
+        cg: 'P33-H5',
+        q: `A lens has focal length ${f} m. Its power P = 1/f, in dioptres. Find P.`,
+        answer: P,
+        tolerance: 0.1,
+        explain: `P = 1/${f} = ${P} D.`
+      };
+    }, 'hard')
+  ],
 };
 
 function shuffleInPlace(arr) {

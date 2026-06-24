@@ -65,12 +65,19 @@ export const PATHS = {
   P24: { subject: 'physics', name: 'Newtonian mechanics', icon: 'physics', cards: [638, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653], quizUrls: ['tier0'] },
   P25: { subject: 'physics', name: 'Rotation, heat & thermodynamics', icon: 'physics', cards: [654, 655, 656, 657, 658, 659, 660, 661, 662, 663, 664, 665, 666, 667, 668, 669], quizUrls: ['tier0'] },
   P26: { subject: 'physics', name: 'Optics: light, lenses & instruments', icon: 'physics', cards: [670, 671, 672, 673, 674, 675, 676, 677, 678, 679, 680, 681, 682, 683, 684, 685], quizUrls: ['tier0'] },
-  P27: { subject: 'physics', name: 'Engineering tools & electrical machines', icon: 'physics', cards: [686, 687, 688, 689, 690, 691, 692, 693, 694, 695, 696, 697], quizUrls: ['tier0'] }
+  P27: { subject: 'physics', name: 'Engineering tools & electrical machines', icon: 'physics', cards: [686, 687, 688, 689, 690, 691, 692, 693, 694, 695, 696, 697], quizUrls: ['tier0'] },
+
+  P28: { subject: 'physics', name: 'Forces & motion — the basics', icon: 'physics', cards: [698, 699, 700, 701, 702, 703, 704, 705, 706, 707, 708, 709, 710, 711, 712, 713], quizUrls: ['tier0'] },
+  P29: { subject: 'physics', name: 'Energy — the basics', icon: 'physics', cards: [714, 715, 716, 717, 718, 719, 720, 721, 722, 723], quizUrls: ['tier0'] },
+  P30: { subject: 'physics', name: 'Electricity — the basics', icon: 'physics', cards: [724, 725, 726, 727, 728, 729, 730, 731, 732, 733, 734, 735, 736, 737, 738], quizUrls: ['tier0'] },
+  P31: { subject: 'physics', name: 'Waves & oscillations — the basics', icon: 'physics', cards: [739, 740, 741, 742, 743, 744, 745, 746, 747, 748, 749, 750, 751, 752, 753], quizUrls: ['tier0'] },
+  P32: { subject: 'physics', name: 'Heat & matter — the basics', icon: 'physics', cards: [754, 755, 756, 757, 758, 759, 760, 761, 762, 763, 764, 765, 766, 767, 768], quizUrls: ['tier0'] },
+  P33: { subject: 'physics', name: 'Optics — the basics', icon: 'physics', cards: [769, 770, 771, 772, 773, 774, 775, 776, 777, 778, 779, 780, 781, 782, 783], quizUrls: ['tier0'] }
 };
 
 /** Grouped by subject for the subjects overview */
 export const SUBJECT_PATHS = {
-  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27'],
+  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27', 'P28', 'P29', 'P30', 'P31', 'P32', 'P33'],
   maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'M15', 'M16'],
   chemistry: ['C1', 'C2', 'C3', 'C4', 'C5']
 };
