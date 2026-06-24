@@ -3,8 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Qubix — Learn in Bytes. Grow by Leaps.</title>
-  <meta name="description" content="A swipeable, tap-to-descend STEM microlearning app.">
+
+  <!-- Primary SEO -->
+  <title>Qubix — Learn Physics, Maths &amp; STEM Concepts in Bytes</title>
+  <meta name="description" content="Master physics, maths and chemistry concepts in bite-sized, swipeable boards with quizzes and a mastery map. A fresh, free way to learn STEM — and a lighter alternative if you've tried Brilliant.">
+  <meta name="keywords" content="learn physics, learn maths, learn mathematics, STEM learning, physics concepts, maths concepts, chemistry, microlearning, interactive learning, Brilliant alternative, apps like Brilliant, study physics online, quizzes, mastery">
+  <link rel="canonical" href="https://strata-nine-pi.vercel.app/">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Qubix">
+  <meta property="og:title" content="Qubix — Learn Physics, Maths &amp; STEM Concepts in Bytes">
+  <meta property="og:description" content="Master physics, maths and chemistry concepts in bite-sized, swipeable boards with quizzes and a mastery map. A fresh, free way to learn STEM.">
+  <meta property="og:url" content="https://strata-nine-pi.vercel.app/">
+  <meta property="og:image" content="https://strata-nine-pi.vercel.app/images/card-01.png">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Qubix — Learn Physics, Maths &amp; STEM Concepts in Bytes">
+  <meta name="twitter:description" content="Bite-sized, swipeable boards for physics, maths and chemistry, with quizzes and a mastery map. A fresh way to learn STEM.">
+  <meta name="twitter:image" content="https://strata-nine-pi.vercel.app/images/card-01.png">
+
+  <!-- App / PWA -->
   <meta name="theme-color" content="#0B132B">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,12 +34,77 @@
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/icons/apple-touch-180.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
+  <!-- Structured data: helps Google understand what Qubix is -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "Qubix",
+        "url": "https://strata-nine-pi.vercel.app/",
+        "description": "Bite-sized, swipeable microlearning for physics, maths and chemistry."
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Qubix",
+        "applicationCategory": "EducationApplication",
+        "operatingSystem": "Web, iOS, Android",
+        "url": "https://strata-nine-pi.vercel.app/",
+        "description": "Qubix teaches physics, maths and chemistry concepts in bite-sized, swipeable boards with quizzes and a cumulative mastery map.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "about": ["Physics", "Mathematics", "Chemistry", "STEM education"]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
+  <!-- Crawlable first paint: real content for search engines and the brief pre-JS
+       splash for users. Removed by main.js once the Svelte app mounts. -->
+  <div id="seo-splash">
+    <main class="seo-hero">
+      <div class="seo-brand">QUBIX</div>
+      <h1>Learn physics, maths &amp; chemistry — one byte at a time</h1>
+      <p>Qubix turns big STEM ideas into bite-sized, swipeable boards. Tap to descend from the plain-English idea down to the rigorous law, lock it in with quizzes, and watch your mastery grow on a cumulative learning map.</p>
+      <ul class="seo-topics">
+        <li>Physics — forces &amp; motion, energy, gravitation, electricity, optics, thermodynamics</li>
+        <li>Mathematics — algebra, trigonometry, calculus, vectors &amp; coordinate geometry</li>
+        <li>Chemistry — atomic structure, bonding, reactions &amp; electrochemistry</li>
+      </ul>
+      <p class="seo-alt">If you've tried Brilliant, Qubix is a lighter, faster way to learn the same STEM concepts — free, swipe-first, and built for short sessions.</p>
+      <div class="seo-loading" aria-hidden="true"><span></span><span></span><span></span></div>
+    </main>
+  </div>
+
   <div id="app"></div>
   <script type="module" src="/src/main.js"></script>
+
+  <style>
+    #seo-splash {
+      position: fixed; inset: 0; z-index: 9999; overflow-y: auto;
+      background: radial-gradient(ellipse at 50% 6%, #16223f, #0B132B 80%), #0B132B;
+      color: #f4f1e9; font-family: 'Mulish', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+      display: flex; align-items: center; justify-content: center; padding: 32px;
+    }
+    #seo-splash .seo-hero { max-width: 560px; text-align: center; }
+    #seo-splash .seo-brand { font-size: 14px; font-weight: 900; letter-spacing: 0.18em; color: #9AA0FF; margin-bottom: 18px; }
+    #seo-splash h1 { font-size: clamp(26px, 6vw, 40px); font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 16px; }
+    #seo-splash p { font-size: 16px; line-height: 1.6; color: #C9C6CD; margin: 0 auto 16px; max-width: 48ch; }
+    #seo-splash .seo-topics { list-style: none; padding: 0; margin: 0 auto 16px; max-width: 48ch; text-align: left; display: grid; gap: 8px; }
+    #seo-splash .seo-topics li { font-size: 14px; color: #C9C6CD; padding-left: 18px; position: relative; }
+    #seo-splash .seo-topics li::before { content: "▸"; position: absolute; left: 0; color: #9AA0FF; }
+    #seo-splash .seo-alt { font-size: 14px; color: #8E97AB; }
+    #seo-splash .seo-loading { display: flex; gap: 8px; justify-content: center; margin-top: 22px; }
+    #seo-splash .seo-loading span { width: 8px; height: 8px; border-radius: 50%; background: #6E7689; animation: seoBounce 1.4s infinite ease-in-out both; }
+    #seo-splash .seo-loading span:nth-child(1) { animation-delay: -0.32s; }
+    #seo-splash .seo-loading span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes seoBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+  </style>
 </body>
 </html>
