@@ -1,7 +1,8 @@
 <script>
   import { onMount } from 'svelte';
+  import { fly, fade } from 'svelte/transition';
   import { initAuth, isAuthenticated } from './lib/stores/auth.js';
-  import { theme } from './lib/stores/theme.js'; // side-effect: sets document.documentElement.dataset.qxTheme
+  import { theme } from './lib/stores/theme.js';
   import { PATHS } from './lib/content/paths.js';
   import Auth from './views/Auth.svelte';
   import Onboarding from './views/Onboarding.svelte';
@@ -24,8 +25,11 @@
   let currentUserId = '';
   let readerNumbers = [];
   let readerStart = 1;
+  let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
 
   const TAB_VIEWS = ['home', 'topics', 'map', 'snippets'];
+  const TAB_ORDER = ['home', 'topics', 'map', 'snippets'];
+  const PUSH_VIEWS = ['topicDetail', 'stats', 'leaderboard', 'otherUserStats', 'reader', 'quiz', 'author'];
 
   onMount(async () => {
     try { await initAuth(); } catch (_) {}
@@ -51,6 +55,17 @@
   }
 
   function navigate(view, arg) {
+    // Determine slide direction: push views slide in from right, back to tab slides from left
+    if (PUSH_VIEWS.includes(view)) {
+      slideDirection = 1;
+    } else if (TAB_VIEWS.includes(view) && PUSH_VIEWS.includes(currentView)) {
+      slideDirection = -1;
+    } else if (TAB_VIEWS.includes(view) && TAB_VIEWS.includes(currentView)) {
+      const fromIdx = TAB_ORDER.indexOf(currentView);
+      const toIdx = TAB_ORDER.indexOf(view);
+      slideDirection = toIdx > fromIdx ? 1 : -1;
+    }
+
     if (view === 'topicDetail') { currentPathId = arg; currentView = 'topicDetail'; }
     else if (view === 'otherUserStats') { currentUserId = arg || ''; currentView = 'otherUserStats'; }
     else if (view === 'reader') {
@@ -66,7 +81,7 @@
 
 <div class="app-shell">
   {#if currentView === 'loading'}
-    <div class="qx-shell loading-screen">
+    <div class="qx-shell loading-screen" in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
       <div class="loading-brand">QUBIX</div>
       <div class="loading-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
     </div>
@@ -78,7 +93,7 @@
     <Onboarding onComplete={() => currentView = 'home'} />
 
   {:else if TAB_VIEWS.includes(currentView)}
-    <div class="qx-shell tabbed-view">
+    <div class="qx-shell tabbed-view" in:fly={{ x: slideDirection * 80, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -slideDirection * 60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
       <div class="tab-content">
         {#if currentView === 'home'}
           <Home onNavigate={navigate} />
@@ -94,33 +109,47 @@
     </div>
 
   {:else if currentView === 'topicDetail'}
+    <div style="height:100%" in:fly={{ x: 100, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -80, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
     <PathView pathId={currentPathId} onNavigate={navigate} />
+    </div>
 
   {:else if currentView === 'stats'}
+    <div style="height:100%" in:fly={{ x: 100, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
     <Stats onNavigate={navigate} />
+    </div>
 
   {:else if currentView === 'leaderboard'}
+    <div style="height:100%" in:fly={{ x: 100, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
     <Leaderboard onNavigate={navigate} />
+    </div>
 
   {:else if currentView === 'otherUserStats'}
+    <div style="height:100%" in:fly={{ x: 100, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
     <OtherUserStats userId={currentUserId} onNavigate={navigate} />
+    </div>
 
   {:else if currentView === 'reader'}
+    <div style="height:100%" in:fly={{ x: 100, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -80, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
     <Reader
       numbers={readerNumbers}
       startNumber={readerStart}
       onBack={() => currentPathId ? navigate('topicDetail', currentPathId) : navigate('topics')}
     />
+    </div>
 
   {:else if currentView === 'quiz'}
+    <div style="height:100%" in:fly={{ x: 100, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -80, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
     <Quiz
       pathId={currentPathId}
       onComplete={() => {}}
       onBack={() => navigate('topicDetail', currentPathId)}
     />
+    </div>
 
   {:else if currentView === 'author'}
+    <div style="height:100%" in:fly={{ x: 100, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
     <Author onNavigate={navigate} />
+    </div>
   {/if}
 </div>
 

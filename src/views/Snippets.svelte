@@ -1,10 +1,10 @@
 <script>
   import { onMount } from 'svelte';
+  import { flip } from 'svelte/animate';
+  import { fly, fade } from 'svelte/transition';
   import { DECK } from '../lib/content/deck.js';
   import { fetchSnippets } from '../lib/content/dynamicBoards.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
-
-  export let onNavigate;
 
   function shuffleArray(arr) {
     const a = [...arr];
@@ -15,11 +15,12 @@
     return a;
   }
 
-  // Start with whatever's bundled in the static deck; pull the (much larger) set
-  // of dynamic snippets from Supabase on mount and merge them in, shuffled.
   const staticSnippets = DECK.filter(c => c.tags?.kind === 'snippet');
   let snippets = staticSnippets;
   let index = 0;
+  let liked = new Set();
+  let saved = new Set();
+
   $: current = snippets[index];
 
   onMount(async () => {
@@ -29,64 +30,135 @@
         snippets = shuffleArray([...staticSnippets, ...dynamic]);
         index = 0;
       }
-    } catch (_) {
-      // offline / fetch failure: keep the static snippets, no error surfaced.
-    }
+    } catch (_) {}
   });
 
-  function shuffle() {
+  function nextSnippet() {
     if (snippets.length < 2) return;
     let next = index;
     while (next === index) next = Math.floor(Math.random() * snippets.length);
     index = next;
   }
+
+  function toggleLike() {
+    if (!current) return;
+    const id = current.kicker + current.title;
+    if (liked.has(id)) liked.delete(id); else liked.add(id);
+    liked = new Set(liked);
+  }
+
+  function toggleSave() {
+    if (!current) return;
+    const id = current.kicker + current.title;
+    if (saved.has(id)) saved.delete(id); else saved.add(id);
+    saved = new Set(saved);
+  }
+
+  $: isLiked = current ? liked.has(current.kicker + current.title) : false;
+  $: isSaved = current ? saved.has(current.kicker + current.title) : false;
+
+  $: subjectTag = current?.tags?.subject
+    ? (current.tags.subject === 'physics' ? 'PHYSICS' : current.tags.subject === 'maths' ? 'MATHS' : 'CHEMISTRY')
+    : 'PHYSICS';
+  $: categoryTag = current?.tags?.concept || 'DID YOU KNOW';
 </script>
 
 <div class="qx-shell snippets-view">
-  <div class="top-row">
-    <h1>Snippets</h1>
-    <button class="icon-btn" on:click={shuffle} disabled={snippets.length < 2}>
-      <QxIcon name="shuffle" size={18} />
-    </button>
+  <div class="snippets-header">
+    <div>
+      <h1>Snippets</h1>
+      <p class="header-sub">No learning, just vibes</p>
+    </div>
   </div>
-  <div class="sub">No pressure, no progress tracking. Just things worth knowing.</div>
 
   {#if current}
-    <div class="snippet-card">
-      <div class="snippet-kicker">{current.kicker}</div>
-      <div class="snippet-title">{current.title}</div>
-      <div class="snippet-body">{@html current.layers?.[0] || ''}</div>
+    <div class="snippet-card" in:fly={{ x: 60, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -40, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
+      <div class="card-category">
+        <span class="cat-tag">{subjectTag} &middot; {categoryTag.toUpperCase()}</span>
+      </div>
+      <div class="card-visual">
+        {#if current.img}
+          <img src={current.img} alt="" class="card-img" />
+        {:else}
+          <div class="card-placeholder">
+            <QxIcon name="snippets" size={48} />
+          </div>
+        {/if}
+      </div>
+      <div class="card-body">
+        {#if current.layers?.[0]}
+          {@html current.layers[0]}
+        {/if}
+      </div>
+      <div class="card-actions">
+        <button class="action-btn" class:active={isLiked} on:click={toggleLike}>
+          <QxIcon name={isLiked ? 'check' : 'like'} size={16} />
+        </button>
+        <button class="action-btn" class:active={isSaved} on:click={toggleSave}>
+          <QxIcon name={isSaved ? 'check' : 'save'} size={16} />
+        </button>
+        <button class="action-btn next-btn" on:click={nextSnippet}>
+          Next snippet
+        </button>
+      </div>
     </div>
     {#if snippets.length > 1}
       <div class="pager">{index + 1} / {snippets.length}</div>
-    {:else}
-      <div class="pager">More snippets coming soon</div>
     {/if}
   {:else}
-    <div class="empty">No snippets yet — check back soon.</div>
+    <div class="empty">
+      <div class="empty-icon">📚</div>
+      <p>No snippets yet — check back soon.</p>
+    </div>
   {/if}
 </div>
 
 <style>
   .snippets-view { height: 100%; overflow-y: auto; padding: 16px 18px 24px; box-sizing: border-box; }
-  .top-row { display: flex; align-items: center; justify-content: space-between; }
+
+  .snippets-header { margin-bottom: 20px; }
   h1 { font-size: 23px; font-weight: 800; color: var(--qx-text); margin: 0; }
-  .icon-btn {
-    width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
-    color: var(--qx-text-dim); cursor: pointer; display: flex; align-items: center; justify-content: center;
-  }
-  .icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .sub { font-size: 13px; color: var(--qx-text-dim); margin: 4px 0 18px; }
+  .header-sub { font-size: 13px; color: var(--qx-text-dim); margin: 2px 0 0; }
 
   .snippet-card {
     border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-lg);
-    padding: 20px; margin-bottom: 12px;
+    overflow: hidden; margin-bottom: 12px;
   }
-  .snippet-kicker { font-size: 11px; font-weight: 700; color: var(--qx-accent); letter-spacing: 0.05em; margin-bottom: 6px; }
-  .snippet-title { font-size: 18px; font-weight: 800; color: var(--qx-text); margin-bottom: 12px; line-height: 1.25; }
-  .snippet-body { font-size: 14px; color: var(--qx-text-2); line-height: 1.55; }
-  .snippet-body :global(p) { margin-bottom: 10px; }
+  .card-category { padding: 14px 16px 0; }
+  .cat-tag {
+    font-size: 11px; font-weight: 700; color: var(--qx-accent); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .card-visual {
+    width: 100%; aspect-ratio: 2 / 1.3; background: var(--qx-surface-2);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .card-img { width: 100%; height: 100%; object-fit: cover; }
+  .card-placeholder { opacity: 0.2; }
+
+  .card-body {
+    padding: 18px 16px; font-size: 16px; color: var(--qx-text); line-height: 1.65;
+  }
+  .card-body :global(p) { margin-bottom: 10px; }
+  .card-body :global(strong) { font-weight: 800; color: var(--qx-text); }
+
+  .card-actions {
+    display: flex; align-items: center; gap: 6px; padding: 0 12px 14px;
+  }
+  .action-btn {
+    width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--qx-text-faint); transition: all 0.15s;
+  }
+  .action-btn.active { background: var(--qx-accent-soft); border-color: var(--qx-accent); color: var(--qx-accent); }
+  .next-btn {
+    width: auto; border-radius: var(--qx-radius-pill); padding: 0 16px; margin-left: auto;
+    font-family: var(--qx-font); font-size: 13px; font-weight: 700; color: var(--qx-text-dim);
+  }
+  .next-btn:hover { background: var(--qx-surface-2); }
 
   .pager { text-align: center; font-size: 12px; font-weight: 600; color: var(--qx-text-faint); }
   .empty { text-align: center; color: var(--qx-text-dim); padding: 40px 0; }
+  .empty-icon { font-size: 40px; margin-bottom: 10px; }
+  .empty p { font-size: 14px; }
 </style>

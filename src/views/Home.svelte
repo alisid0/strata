@@ -3,19 +3,17 @@
   import { progress } from '../lib/stores/progress.js';
   import { displayName } from '../lib/stores/auth.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
-  import QxButton from '../lib/components/qubix/QxButton.svelte';
 
   export let onNavigate; // (view, args?) => void
 
   const TOTAL_BOARDS = totalBoards();
   // TODO: no streak-tracking backend yet — placeholder until daily-activity logging exists.
   const STREAK_DAYS = 12;
+  const USER_LEVEL = 7;
+  const LEVEL_TITLE = 'Geologist';
 
   $: overall = progress.getOverall();
 
-  // Pick the most-started, not-yet-finished path as the "continue" card.
-  // progress.js doesn't expose per-path lastOpenedAt publicly, so this approximates
-  // "most recent" with "most boards read" rather than adding new store surface for it.
   $: continuePath = Object.entries(PATHS)
     .map(([id, manifest]) => ({ id, manifest, state: progress.getPathState(id, manifest) }))
     .filter(p => p.state.boardsRead > 0 && p.state.boardsRead < p.state.boardsTotal)
@@ -23,56 +21,70 @@
 
   $: continuePct = continuePath ? Math.round((continuePath.state.boardsRead / continuePath.state.boardsTotal) * 100) : 0;
 
-  const TILES = [
-    { id: 'leaderboard', label: 'Leaderboard', icon: 'stats', sub: () => "You're #5" },
-    { id: 'stats', label: 'Your stats', icon: 'stats', sub: () => '5 medals' },
-    { id: 'topics', label: 'Topics', icon: 'topics', sub: () => `${overall.read} / ${TOTAL_BOARDS} read` },
-    { id: 'snippets', label: 'Snippets', icon: 'snippets', sub: () => 'no pressure' }
+  const EXPLORE_ITEMS = [
+    { id: 'stats', label: 'Your stats', sub: () => '5 medals', icon: 'stats' },
+    { id: 'leaderboard', label: 'Leaderboard', sub: () => "#5", icon: 'stats' },
+    { id: 'snippets', label: 'Snippets', sub: () => 'no pressure', icon: 'snippets' }
   ];
 </script>
 
 <div class="qx-shell home-view">
+  <!-- Header: greeting + avatar + streak -->
   <div class="header">
-    <div class="welcome">
-      <div class="hi">Welcome back</div>
-      <div class="name">{$displayName}</div>
+    <button class="avatar" on:click={() => onNavigate?.('stats')} aria-label="Your stats">{$displayName.charAt(0).toUpperCase()}</button>
+    <div class="greeting">
+      <div class="hi">Hi, {$displayName}</div>
+      <div class="level">
+        <span class="level-badge">Level {USER_LEVEL}</span>
+        <span class="level-title">&middot; {LEVEL_TITLE}</span>
+      </div>
     </div>
-    <div class="streak-chip"><QxIcon name="flame" size={13} />{STREAK_DAYS}</div>
-    <div class="avatar">{$displayName.charAt(0).toUpperCase()}</div>
+    <div class="streak-chip">
+      <QxIcon name="flame" size={14} />{STREAK_DAYS}
+    </div>
   </div>
 
-  <div class="hero">
-    <div class="hero-label">PICK UP WHERE YOU LEFT OFF</div>
-    {#if continuePath}
-      <div class="hero-row">
-        <div class="ring" style="background:conic-gradient(var(--qx-accent) {continuePct * 3.6}deg, rgba(255,255,255,0.14) 0)">
-          <div class="ring-inner">{continuePct}%</div>
-        </div>
-        <div class="hero-info">
-          <div class="hero-title">{continuePath.manifest.name}</div>
-          <div class="hero-sub">{continuePath.state.boardsRead} / {continuePath.state.boardsTotal} boards</div>
-        </div>
-      </div>
-      <QxButton variant="primary" on:click={() => onNavigate?.('topicDetail', continuePath.id)}>Continue</QxButton>
-    {:else}
-      <div class="hero-row">
-        <div class="hero-info">
-          <div class="hero-title">No topic started yet</div>
-          <div class="hero-sub">Pick one from Topics to begin</div>
-        </div>
-      </div>
-      <QxButton variant="primary" on:click={() => onNavigate?.('topics')}>Browse topics</QxButton>
-    {/if}
-  </div>
+  <!-- Primary CTA: Start learning -->
+  <button class="start-cta" on:click={() => onNavigate?.('topics')}>
+    <span class="start-icon">✦</span>
+    <div>
+      <div class="start-label">Start learning</div>
+      <div class="start-sub">Open the topic map &amp; pick a new track</div>
+    </div>
+  </button>
 
-  <button class="new-topic-btn" on:click={() => onNavigate?.('topics')}>+ Start a new topic</button>
+  <!-- Continue card -->
+  {#if continuePath}
+    <div class="continue-card">
+      <div class="continue-ring" style="background:conic-gradient(var(--qx-accent) {continuePct * 3.6}deg, var(--qx-surface-2) 0)">
+        <div class="ring-inner">{continuePct}%</div>
+      </div>
+      <div class="continue-info">
+        <div class="continue-label">CONTINUE</div>
+        <div class="continue-title">{continuePath.manifest.name}</div>
+        <div class="continue-meta">{continuePath.state.boardsRead} / {continuePath.state.boardsTotal} boards &middot; {continuePath.manifest.subject === 'physics' ? 'Physics' : continuePath.manifest.subject === 'maths' ? 'Maths' : 'Chemistry'}</div>
+      </div>
+      <button class="continue-chev" on:click={() => onNavigate?.('topicDetail', continuePath.id)}>&rsaquo;</button>
+    </div>
+  {:else}
+    <button class="start-cta secondary" on:click={() => onNavigate?.('topics')}>
+      <span class="start-icon">+</span>
+      <div>
+        <div class="start-label">Start a new topic</div>
+        <div class="start-sub">Browse the full topic map</div>
+      </div>
+    </button>
+  {/if}
 
-  <div class="tile-grid">
-    {#each TILES as tile}
-      <button class="tile" on:click={() => onNavigate?.(tile.id)}>
-        <span class="tile-icon"><QxIcon name={tile.icon} size={16} /></span>
-        <div class="tile-name">{tile.label}</div>
-        <div class="tile-sub">{tile.sub()}</div>
+  <!-- Explore section -->
+  <div class="explore-label">Explore</div>
+  <div class="explore-list">
+    {#each EXPLORE_ITEMS as item}
+      <button class="explore-row" on:click={() => onNavigate?.(item.id)}>
+        <span class="explore-icon"><QxIcon name={item.icon} size={16} /></span>
+        <span class="explore-name">{item.label}</span>
+        <span class="explore-sub">{item.sub()}</span>
+        <span class="explore-chev">&rsaquo;</span>
       </button>
     {/each}
   </div>
@@ -81,45 +93,74 @@
 <style>
   .home-view { height: 100%; overflow-y: auto; display: flex; flex-direction: column; padding: 16px 18px 0; box-sizing: border-box; }
 
-  .header { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; }
-  .welcome { flex: 1; min-width: 0; }
-  .hi { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); }
-  .name { font-size: 21px; font-weight: 800; color: var(--qx-text); line-height: 1.05; }
-  .streak-chip {
-    display: flex; align-items: center; gap: 5px; background: var(--qx-yellow-soft); border: 1px solid var(--qx-yellow);
-    border-radius: var(--qx-radius-pill); padding: 5px 11px; color: var(--qx-yellow-text); font-size: 13px; font-weight: 800;
-  }
+  /* Header */
+  .header { display: flex; align-items: center; gap: 11px; margin-bottom: 20px; }
   .avatar {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--qx-accent); color: #fff;
+    font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    cursor: pointer; border: none; font-family: var(--qx-font);
+  }
+  .greeting { flex: 1; min-width: 0; }
+  .hi { font-size: 18px; font-weight: 800; color: var(--qx-text); line-height: 1.2; }
+  .level { font-size: 12px; font-weight: 600; color: var(--qx-text-dim); margin-top: 2px; }
+  .level-badge { color: var(--qx-accent-text); }
+  .streak-chip {
+    display: flex; align-items: center; gap: 4px; background: var(--qx-yellow-soft); border: 1px solid var(--qx-yellow);
+    border-radius: var(--qx-radius-pill); padding: 5px 12px; color: var(--qx-yellow-text); font-size: 14px; font-weight: 800;
+  }
+
+  /* Start CTA */
+  .start-cta {
+    width: 100%; display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: var(--qx-radius-lg);
+    border: 1.5px solid var(--qx-accent); background: var(--qx-accent-soft); cursor: pointer;
+    text-align: left; font-family: var(--qx-font); margin-bottom: 12px; transition: background 0.15s;
+  }
+  .start-cta:hover { background: var(--qx-accent-soft-2); }
+  .start-cta.secondary { border-color: var(--qx-border-2); background: var(--qx-surface); }
+  .start-cta.secondary:hover { background: var(--qx-surface-2); }
+  .start-icon {
     width: 40px; height: 40px; border-radius: 50%; background: var(--qx-accent); color: #fff;
-    font-weight: 800; font-size: 17px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .start-cta.secondary .start-icon { background: var(--qx-surface-2); color: var(--qx-text-dim); }
+  .start-label { font-size: 16px; font-weight: 800; color: var(--qx-text); }
+  .start-sub { font-size: 12px; font-weight: 500; color: var(--qx-text-dim); margin-top: 2px; }
+
+  /* Continue card */
+  .continue-card {
+    display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: var(--qx-radius-lg);
+    border: 1.5px solid var(--qx-border); background: var(--qx-surface); margin-bottom: 20px;
+  }
+  .continue-ring {
+    position: relative; width: 50px; height: 50px; flex-shrink: 0; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ring-inner {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--qx-surface);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--qx-text);
+  }
+  .continue-info { flex: 1; min-width: 0; }
+  .continue-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); letter-spacing: 0.04em; margin-bottom: 3px; }
+  .continue-title { font-size: 15px; font-weight: 800; color: var(--qx-text); line-height: 1.2; }
+  .continue-meta { font-size: 12px; font-weight: 500; color: var(--qx-text-dim); margin-top: 3px; }
+  .continue-chev {
+    background: none; border: none; font-size: 24px; color: var(--qx-text-faint); cursor: pointer; padding: 4px;
   }
 
-  .hero {
-    border-radius: var(--qx-radius-lg); background: var(--qx-surface-elevated); border: 1px solid var(--qx-border);
-    padding: 18px; margin-bottom: 13px; color: #fff;
+  /* Explore */
+  .explore-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); letter-spacing: 0.05em; margin-bottom: 8px; text-transform: uppercase; }
+  .explore-list { display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px; }
+  .explore-row {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--qx-radius-md);
+    border: none; background: transparent; cursor: pointer; text-align: left; font-family: var(--qx-font);
+    transition: background 0.1s;
   }
-  .hero-label { font-size: 11px; font-weight: 700; color: var(--qx-accent); letter-spacing: 0.06em; margin-bottom: 10px; }
-  .hero-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
-  .ring { position: relative; width: 58px; height: 58px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-  .ring-inner { width: 48px; height: 48px; border-radius: 50%; background: var(--qx-surface-elevated); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
-  .hero-info { flex: 1; min-width: 0; }
-  .hero-title { font-size: 17px; font-weight: 800; line-height: 1.1; }
-  .hero-sub { font-size: 12px; font-weight: 500; color: #b9b4c0; }
-
-  .new-topic-btn {
-    height: 46px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
-    color: var(--qx-text); font-family: var(--qx-font); font-size: 15px; font-weight: 800; cursor: pointer; margin-bottom: 16px;
+  .explore-row:hover { background: var(--qx-surface); }
+  .explore-icon {
+    width: 34px; height: 34px; border-radius: 9px; background: var(--qx-surface-2);
+    display: flex; align-items: center; justify-content: center; color: var(--qx-text-dim);
   }
-
-  .tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; padding-bottom: 16px; }
-  .tile {
-    border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-lg);
-    padding: 14px; text-align: left; cursor: pointer; font-family: var(--qx-font);
-  }
-  .tile-icon {
-    display: inline-flex; width: 32px; height: 32px; border-radius: 9px; background: var(--qx-surface-2);
-    color: var(--qx-text-2); align-items: center; justify-content: center; margin-bottom: 9px;
-  }
-  .tile-name { font-size: 14px; font-weight: 800; color: var(--qx-text); }
-  .tile-sub { font-size: 11px; font-weight: 600; color: var(--qx-text-dim); }
+  .explore-name { font-size: 15px; font-weight: 700; color: var(--qx-text); flex: 1; }
+  .explore-sub { font-size: 13px; font-weight: 600; color: var(--qx-text-faint); }
+  .explore-chev { font-size: 18px; color: var(--qx-text-faintest); }
 </style>

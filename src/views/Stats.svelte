@@ -2,8 +2,6 @@
   import { totalBoards } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { displayName, logOut } from '../lib/stores/auth.js';
-  import { theme } from '../lib/stores/theme.js';
-  import QxToggle from '../lib/components/qubix/QxToggle.svelte';
 
   export let onNavigate;
 
@@ -32,54 +30,61 @@
       <button class="back-chev" on:click={() => onNavigate?.('home')} aria-label="Back">‹</button>
       <h1>Your stats</h1>
     </div>
-    <div class="theme-toggle">
-      <QxToggle checked={$theme === 'dark'} onChange={() => theme.toggle()} />
-      <span>{$theme === 'dark' ? 'Dark' : 'Light'}</span>
+    <div class="avatar">{$displayName.charAt(0).toUpperCase()}</div>
+  </div>
+
+  <!-- Topics covered + Streak -->
+  <div class="top-cards">
+    <div class="tc-card">
+      <div class="tc-label">Topics covered</div>
+      <div class="tc-value">{overall.read}/{TOTAL_BOARDS}</div>
+    </div>
+    <div class="tc-card streak-card">
+      <div class="tc-label">Streak</div>
+      <div class="tc-value">🔥 {STREAK_DAYS} <span class="tc-unit">days</span></div>
     </div>
   </div>
 
-  <div class="hero">
-    <div class="ring" style="background:conic-gradient(var(--qx-accent) {pct * 3.6}deg, rgba(255,255,255,0.14) 0)">
-      <div class="ring-inner">{pct}%</div>
-    </div>
-    <div class="hero-info">
-      <div class="hero-title">{overall.read} / {TOTAL_BOARDS} boards read</div>
-      <div class="hero-sub">across every topic</div>
-    </div>
-  </div>
-
-  <div class="stat-grid">
-    <div class="stat-card">
-      <div class="stat-label">Streak</div>
-      <div class="stat-value">{STREAK_DAYS} days</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">This week</div>
-      <div class="stat-value">{TIME_THIS_WEEK}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Pace</div>
-      <div class="stat-value">{PACE}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Depth</div>
-      <div class="stat-value">{DEPTH}</div>
-    </div>
-  </div>
-
-  <div class="section-label">Consistency, last 7 days</div>
+  <!-- Consistency -->
+  <div class="section-label">Consistency</div>
   <div class="consistency-row">
-    {#each CONSISTENCY as v}
-      <div class="bar-track"><div class="bar-fill" style="height:{v}%"></div></div>
+    {#each CONSISTENCY as v, i}
+      <div class="bar-col">
+        <div class="bar-track"><div class="bar-fill" style="height:{v}%"></div></div>
+        <span class="bar-day">{['M','T','W','T','F','S','S'][i]}</span>
+      </div>
     {/each}
+    <span class="consistency-summary">5 of 7 days</span>
   </div>
 
-  <div class="section-label">Medals</div>
+  <!-- Pace / Depth / Time -->
+  <div class="metrics-row">
+    <div class="metric">
+      <div class="metric-label">Pace</div>
+      <div class="metric-value">4/wk</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Depth</div>
+      <div class="metric-value">Tier 3</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Time</div>
+      <div class="metric-value">14h</div>
+    </div>
+  </div>
+
+  <!-- Medals -->
+  <div class="section-label">Medals &middot; {MEDALS.length} earned</div>
   <div class="medal-row">
     {#each MEDALS as m}
       <div class="medal-chip">🏅 {m}</div>
     {/each}
   </div>
+
+  <!-- Leaderboard link -->
+  <button class="leaderboard-link" on:click={() => onNavigate?.('leaderboard')}>
+    Leaderboard <span class="link-chev">&rsaquo;</span>
+  </button>
 
   <div class="footer-links">
     <button class="footer-link" on:click={() => onNavigate?.('author')}>Author a BB</button>
@@ -89,36 +94,52 @@
 
 <style>
   .stats-view { height: 100%; overflow-y: auto; padding: 16px 18px 24px; box-sizing: border-box; }
-  .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
   .top-left { display: flex; align-items: center; gap: 10px; }
   .back-chev {
     width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
     color: var(--qx-text-dim); font-size: 19px; cursor: pointer; display: flex; align-items: center; justify-content: center;
   }
   h1 { font-size: 23px; font-weight: 800; color: var(--qx-text); margin: 0; }
-  .theme-toggle { display: flex; align-items: center; gap: 7px; background: none; border: none; cursor: pointer; font-family: var(--qx-font); font-size: 12px; font-weight: 700; color: var(--qx-text-dim); }
-
-  .hero {
-    display: flex; align-items: center; gap: 14px; border-radius: var(--qx-radius-lg); background: var(--qx-surface-elevated);
-    border: 1px solid var(--qx-border); padding: 18px; margin-bottom: 16px; color: #fff;
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--qx-accent); color: #fff;
+    font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .ring { position: relative; width: 58px; height: 58px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-  .ring-inner { width: 48px; height: 48px; border-radius: 50%; background: var(--qx-surface-elevated); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
-  .hero-title { font-size: 16px; font-weight: 800; }
-  .hero-sub { font-size: 12px; font-weight: 500; color: #b9b4c0; }
 
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-  .stat-card { border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-md); padding: 12px; }
-  .stat-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); margin-bottom: 3px; }
-  .stat-value { font-size: 16px; font-weight: 800; color: var(--qx-text); }
+  .top-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .tc-card { border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-md); padding: 14px; }
+  .tc-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); margin-bottom: 4px; }
+  .tc-value { font-size: 20px; font-weight: 800; color: var(--qx-text); }
+  .tc-unit { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); }
 
-  .section-label { font-size: 12px; font-weight: 700; color: var(--qx-text-dim); margin-bottom: 9px; }
-  .consistency-row { display: flex; gap: 7px; align-items: flex-end; height: 60px; margin-bottom: 18px; }
-  .bar-track { flex: 1; height: 100%; display: flex; align-items: flex-end; background: var(--qx-surface-2); border-radius: 5px; overflow: hidden; }
-  .bar-fill { width: 100%; background: var(--qx-accent); border-radius: 5px; }
+  .section-label { font-size: 12px; font-weight: 700; color: var(--qx-text-dim); margin-bottom: 10px; }
 
-  .medal-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
-  .medal-chip { font-size: 12px; font-weight: 700; color: var(--qx-yellow-text); background: var(--qx-yellow-soft); border-radius: var(--qx-radius-pill); padding: 7px 12px; }
+  /* Consistency */
+  .consistency-row { display: flex; gap: 6px; align-items: flex-end; height: 70px; margin-bottom: 20px; position: relative; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; gap: 4px; }
+  .bar-track { flex: 1; width: 100%; display: flex; align-items: flex-end; border-radius: 5px; overflow: hidden; background: var(--qx-surface-2); }
+  .bar-fill { width: 100%; background: var(--qx-accent); border-radius: 5px 5px 0 0; }
+  .bar-day { font-size: 10px; font-weight: 600; color: var(--qx-text-faint); }
+  .consistency-summary { font-size: 12px; font-weight: 600; color: var(--qx-text-faint); position: absolute; bottom: -18px; right: 0; }
+
+  /* Metrics */
+  .metrics-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .metric { flex: 1; border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-md); padding: 12px; text-align: center; }
+  .metric-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); margin-bottom: 3px; }
+  .metric-value { font-size: 17px; font-weight: 800; color: var(--qx-text); }
+
+  /* Medals */
+  .medal-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .medal-chip { font-size: 12px; font-weight: 700; color: var(--qx-yellow-text); background: var(--qx-yellow-soft); border-radius: var(--qx-radius-pill); padding: 7px 13px; }
+
+  /* Leaderboard link */
+  .leaderboard-link {
+    display: flex; align-items: center; justify-content: space-between; width: 100%;
+    padding: 14px 16px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border);
+    background: var(--qx-surface); cursor: pointer; font-family: var(--qx-font);
+    font-size: 15px; font-weight: 700; color: var(--qx-text); margin-bottom: 16px;
+  }
+  .link-chev { font-size: 18px; color: var(--qx-text-faint); }
 
   .footer-links { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--qx-border); padding-top: 14px; }
   .footer-link { background: none; border: none; text-align: left; font-family: var(--qx-font); font-size: 14px; font-weight: 700; color: var(--qx-text-dim); cursor: pointer; padding: 6px 0; }

@@ -7,12 +7,14 @@
   export let onAuthed = () => {}; // (isNewUser: boolean) => void
 
   let mode = 'welcome';
+  let authTab = 'login'; // login | signup
   let email = '', password = '', name = '', phone = '';
   let codeDigits = ['','','','','',''];
   let loading = false;
   let error = '';
   let resendTimer = 30;
   let interval;
+  let showPassword = false;
 
   $: if (mode === 'verify') {
     if (interval) clearInterval(interval);
@@ -23,8 +25,6 @@
 
   onDestroy(() => { if (interval) clearInterval(interval); });
 
-  function showSignup() { mode = 'signup'; error = ''; }
-  function showLogin() { mode = 'login'; error = ''; }
   function goBack() { mode = 'welcome'; error = ''; }
 
   function handleCodeInput(e, idx) {
@@ -54,7 +54,7 @@
 
   async function handleGoogle() {
     loading = true; error = '';
-    try { await signInWithGoogle(); } // redirects away; resumes via App.svelte's onMount
+    try { await signInWithGoogle(); }
     catch (e) { error = e.message; }
     finally { loading = false; }
   }
@@ -75,7 +75,7 @@
     finally { loading = false; }
   }
 
-  function valid() { return email.trim() && password.trim() && (mode === 'login' || name.trim()); }
+  function valid() { return email.trim() && password.trim() && (authTab === 'login' || name.trim()); }
 </script>
 
 <div class="qx-shell auth-view">
@@ -88,46 +88,50 @@
       </div>
       <div class="brand">QUB<span class="acc">I</span>X</div>
       <div class="tagline">Learn in Bytes. Grow by Leaps.</div>
-      <QxButton variant="primary" on:click={showSignup}>Create my account</QxButton>
-      <QxButton variant="ghost" on:click={onSkip}>Continue as guest</QxButton>
-      <div class="switch">Already have one? <button class="link" on:click={showLogin}>Log in</button></div>
-    </div>
 
-  {:else if mode === 'signup'}
-    <div class="screen form-screen">
-      <button class="back-chev" on:click={goBack}>‹</button>
-      <h2>Create your account</h2>
-      <p>One account keeps your boards in sync on every device.</p>
-      <button class="social-btn" on:click={handleGoogle} disabled={loading}><span class="g-dot">G</span>Continue with Google</button>
-      <button class="social-btn" on:click={handlePhone} disabled={loading}><span class="ph-icon">📱</span>Continue with phone</button>
-      <div class="divider"><span>or use email</span></div>
-      <label class="fl" for="su-name">Name</label>
-      <input id="su-name" class="field" type="text" placeholder="Ada" bind:value={name} />
-      <label class="fl" for="su-email">Email</label>
-      <input id="su-email" class="field" type="email" placeholder="ada@qubix.app" bind:value={email} />
-      <label class="fl" for="su-password">Password</label>
-      <input id="su-password" class="field" type="password" placeholder="········" bind:value={password} />
+      <!-- Tab toggle: Login / Sign up -->
+      <div class="tab-row">
+        <button class="tab" class:active={authTab === 'login'} on:click={() => { authTab = 'login'; error = ''; }}>Log in</button>
+        <button class="tab" class:active={authTab === 'signup'} on:click={() => { authTab = 'signup'; error = ''; }}>Sign up</button>
+      </div>
+
+      {#if authTab === 'signup'}
+        <label class="fl" for="su-name">Name</label>
+        <input id="su-name" class="field" type="text" placeholder="Ada" bind:value={name} />
+      {/if}
+
+      <label class="fl" for="auth-email">{authTab === 'signup' ? 'Email' : 'Email or phone'}</label>
+      <input id="auth-email" class="field" type="email" placeholder="ada@qubix.app" bind:value={email} />
+
+      <label class="fl" for="auth-pw">Password</label>
+      <div class="pw-row">
+        {#if showPassword}
+          <input id="auth-pw" class="field" type="text" placeholder="········" bind:value={password} />
+        {:else}
+          <input id="auth-pw" class="field" type="password" placeholder="········" bind:value={password} />
+        {/if}
+        <button class="show-btn" on:click={() => showPassword = !showPassword} type="button">{showPassword ? 'Hide' : 'Show'}</button>
+      </div>
+
+      {#if authTab === 'login'}
+        <button class="link forgot" on:click={() => {}}>Forgot password?</button>
+      {/if}
+
       {#if error}<div class="error">{error}</div>{/if}
-      <QxButton variant="primary" on:click={handleSignUp} disabled={loading || !valid()}>Create account</QxButton>
-      <div class="legal">By continuing you agree to the Terms & Privacy.</div>
-      <div class="switch">Already have an account? <button class="link" on:click={showLogin}>Log in</button></div>
-    </div>
 
-  {:else if mode === 'login'}
-    <div class="screen form-screen">
-      <button class="back-chev" on:click={goBack}>‹</button>
-      <h2>Welcome back</h2>
-      <p>Pick up right where you left off.</p>
-      <button class="social-btn" on:click={handleGoogle} disabled={loading}><span class="g-dot">G</span>Continue with Google</button>
-      <button class="social-btn" on:click={handlePhone} disabled={loading}><span class="ph-icon">📱</span>Continue with phone</button>
+      {#if authTab === 'login'}
+        <QxButton variant="primary" on:click={handleLogin} disabled={loading || !email.trim() || !password.trim()}>Log in</QxButton>
+      {:else}
+        <QxButton variant="primary" on:click={handleSignUp} disabled={loading || !valid()}>Create account</QxButton>
+      {/if}
+
       <div class="divider"><span>or</span></div>
-      <label class="fl" for="li-email">Email</label>
-      <input id="li-email" class="field" type="email" placeholder="ada@qubix.app" bind:value={email} />
-      <div class="label-row"><label class="fl" for="li-password">Password</label><button class="link small">Forgot?</button></div>
-      <input id="li-password" class="field" type="password" placeholder="········" bind:value={password} />
-      {#if error}<div class="error">{error}</div>{/if}
-      <QxButton variant="primary" on:click={handleLogin} disabled={loading || !email.trim() || !password.trim()}>Log in</QxButton>
-      <div class="switch">New here? <button class="link" on:click={showSignup}>Create an account</button></div>
+
+      <button class="social-btn google-btn" on:click={handleGoogle} disabled={loading}>
+        <span class="g-dot">G</span>Continue with Google
+      </button>
+
+      <button class="link skip-link" on:click={onSkip}>Continue as guest</button>
     </div>
 
   {:else if mode === 'verify'}
@@ -170,15 +174,59 @@
 
   .brand { font-size: 23px; font-weight: 900; letter-spacing: 0.13em; color: var(--qx-text); margin-bottom: 4px; }
   .acc { color: var(--qx-accent); }
-  .tagline { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); margin-bottom: 26px; }
+  .tagline { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); margin-bottom: 28px; }
+
+  /* Tab toggle */
+  .tab-row {
+    display: flex; width: 100%; background: var(--qx-surface); border-radius: var(--qx-radius-md);
+    border: 1.5px solid var(--qx-border-2); margin-bottom: 18px; padding: 3px;
+  }
+  .tab {
+    flex: 1; padding: 10px; border-radius: 11px; border: none; background: transparent;
+    font-family: var(--qx-font); font-size: 15px; font-weight: 700; color: var(--qx-text-dim); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab.active { background: var(--qx-accent); color: #fff; }
+
+  .fl { align-self: flex-start; font-size: 12px; font-weight: 700; color: var(--qx-text-dim); text-transform: uppercase; letter-spacing: 0.04em; margin: 10px 0 5px 4px; }
+  .field {
+    width: 100%; padding: 13px 14px; border-radius: var(--qx-radius-sm); border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface); color: var(--qx-text); font-family: var(--qx-font); font-size: 15px;
+    box-sizing: border-box; margin-bottom: 10px; transition: border 0.15s;
+  }
+  .field:focus { outline: none; border-color: var(--qx-accent); }
+
+  .pw-row { position: relative; width: 100%; }
+  .pw-row .field { padding-right: 56px; }
+  .show-btn {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-70%);
+    border: none; background: none; color: var(--qx-text-dim); font-size: 13px; font-weight: 700;
+    cursor: pointer; font-family: var(--qx-font);
+  }
+  .forgot { align-self: flex-end; margin: -6px 6px 4px 0; font-size: 13px; }
+  .link { background: none; border: none; color: var(--qx-accent); font-weight: 700; font-size: inherit; cursor: pointer; padding: 0; }
+
+  .error { font-size: 13px; font-weight: 600; color: var(--qx-pink); margin: 8px 0; }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px; width: 100%; margin: 18px 0; color: var(--qx-text-faint);
+    font-size: 13px; font-weight: 600;
+  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--qx-border-2); }
+
+  .social-btn {
+    width: 100%; padding: 13px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface); color: var(--qx-text); font-family: var(--qx-font); font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px;
+  }
+  .social-btn:disabled { opacity: 0.5; }
+  .google-btn { background: #fff; color: #1a1a1a; }
+  .g-dot { width: 22px; height: 22px; border-radius: 50%; background: #EEF1F5; color: #4E97BE; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; }
+
+  .skip-link { margin-top: 16px; font-size: 14px; color: var(--qx-text-dim); }
 
   h2 { font-weight: 800; font-size: 25px; color: var(--qx-text); margin: 8px 0 6px; letter-spacing: -0.01em; }
   p { font-size: 14px; font-weight: 400; color: var(--qx-text-dim); margin: 0 0 18px; max-width: 28ch; line-height: 1.5; }
-
-  :global(.qx-btn) { margin-bottom: 11px; }
-  .switch { font-size: 13.5px; color: var(--qx-text-dim); margin-top: 4px; }
-  .link { background: none; border: none; color: var(--qx-accent); font-weight: 700; font-size: inherit; cursor: pointer; padding: 0; }
-  .small { font-size: 12px; }
 
   .back-chev {
     position: absolute; top: 16px; left: 16px; width: 34px; height: 34px;
@@ -187,32 +235,8 @@
     display: flex; align-items: center; justify-content: center;
   }
   .form-screen { position: relative; padding-top: 14px; }
-
-  .social-btn {
-    width: 100%; padding: 13px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border-2);
-    background: var(--qx-surface); color: var(--qx-text); font-family: var(--qx-font); font-size: 15px; font-weight: 700;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 9px; min-height: 48px;
-  }
-  .social-btn:disabled { opacity: 0.5; }
-  .g-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--qx-surface-2); color: #4E97BE; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; }
-  .ph-icon { font-size: 18px; }
-
-  .divider { display: flex; align-items: center; gap: 12px; width: 100%; margin: 12px 0; }
-  .divider::before, .divider::after { content: ''; flex: 1; border-top: 1px solid var(--qx-border); }
-  .divider span { font-size: 12px; font-weight: 700; color: var(--qx-text-faint); }
-
-  .fl { font-size: 12px; font-weight: 700; color: var(--qx-text-dim); align-self: flex-start; margin-bottom: 6px; }
-  .label-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-  .field {
-    width: 100%; padding: 0 14px; height: 46px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border-2);
-    background: var(--qx-surface); color: var(--qx-text); font-family: var(--qx-font); font-size: 14px; outline: none;
-    box-sizing: border-box; margin-bottom: 14px;
-  }
-  .field:focus { border-color: var(--qx-accent); box-shadow: 0 0 0 3px var(--qx-accent-soft); }
-  .error { font-size: 12px; color: #e0574d; margin-bottom: 8px; }
-  .legal { font-size: 11px; color: var(--qx-text-faint); margin: 8px 0 12px; max-width: 28ch; }
-
   .verify-glyph { font-size: 36px; margin-bottom: 10px; }
+
   .code-inputs { display: flex; gap: 8px; margin-bottom: 14px; }
   .code-box {
     width: 40px; height: 50px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border-2);
