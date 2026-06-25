@@ -257,3 +257,21 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — The bedrock:** The baseline went further than it let on: not only is no frame absolutely still, the laws of physics come out identical in every frame moving at steady velocity. Galileo made the point with a ship — sealed below deck, no experiment can tell whether you're gliding smoothly or moored at the dock. That sameness is *why* velocities simply add. It held for three centuries until one quantity refused to play along: light. Its speed comes out the same in every frame, however you chase it, and forcing that single stubborn fact into the picture is exactly what gave Einstein his relativity.
 
 ---
+
+## BB 01 — What physics studies
+*Physics · Foundations (deck opener)* · ✓ publishable · *kept to 3 floors on purpose — orientation board, not a deep concept*
+
+**Floor 0 — Idea:** Why does a dropped cup fall, a hot drink cool, a bridge hold its own weight? Physics is the search for the handful of rules behind all of it — the study of matter, motion, force, and energy, and how they play out over time.
+
+**Floor 1 — Concrete:** The same small set of rules reaches across every scale. They explain why a coffee cup cools at a predictable rate, why objects fall toward the ground rather than away, and why planets and asteroids follow the orbits they do. The reach is the remarkable part: the rule that drops an apple also holds the Moon in its path.
+
+**Floor 2 — The frontier:** Not everything is settled — whether time could run backwards, whether teleportation is possible, what becomes of matter falling into a black hole are all open questions. But this deck starts with what observation and experiment have already nailed down: the established core you can build on. The frontier comes later.
+
+---
+
+## Snippet — On the frontier
+*kind: snippet · builds on BB 01 (live anchor: Card 1) · ✓ publishable · ingested (sort_order 791) · speculative frontier (honestly flagged unfalsifiable)*
+
+**Are we living in a video game? The simulation hypothesis.** Some physicists and philosophers take seriously the idea that our universe is a computer simulation, much like an elaborate video game — and a few features of reality fit that picture unnervingly well. A game doesn't render a room until the player looks at it; in quantum physics, a particle has no definite position until it's measured, as if reality only computes the detail you actually check. Games have a smallest pixel; space and time may bottom out too, at the Planck length (about 10⁻³⁵ m), below which "distance" stops meaning anything. Games run at a fixed frame rate; our universe enforces a hard speed limit, the speed of light, on how fast any information can travel. In 2003 the philosopher Nick Bostrom argued that if advanced civilisations ever run many detailed simulations of their ancestors, simulated minds would vastly outnumber real ones — so, statistically, we might be the simulated ones. The idea is unfalsifiable and firmly on the speculative frontier, not the established core. But it's a striking thought: the rules physics uncovers might one day turn out to be physical law, or somebody's code.
+
+---
