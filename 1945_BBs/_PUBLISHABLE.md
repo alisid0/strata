@@ -229,3 +229,31 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **More hands, less harvest: the law of diminishing returns.** Economists named this pattern long before physicists worried about it. In the eighteenth century, studying farmland, they observed that a farmer who doubles the labourers on a fixed field never doubles the harvest. The first extra hand takes on the most useful work; each one after adds a little less, until the ground is so crowded that another body barely helps. They called it the law of diminishing returns, and it holds wherever effort is poured into a fixed resource. A small bakery with a single oven shows the same thing: one baker is productive, a second nearly doubles output, but with the oven always full a fifth or sixth adds almost nothing, and a tenth only gets in the way. The fixed ingredient (the field, the oven) sets a ceiling that no amount of labour can lift. It is the same ceiling that caps how far averaging can sharpen a measurement: past a point, more of the same effort yields steadily less.
 
 ---
+
+## BB (new, baseline) — Frames of reference: motion is always measured against something
+*Physics · Kinematics* · ✓ publishable · *new baseline BB, precedes BB 108 (relative velocity)*
+
+**Floor 0 — Idea:** Sitting still reading this, you feel motionless. Yet you're being spun by the Earth at hundreds of metres a second, and carried around the Sun far faster. So are you moving or not? You're both — it depends entirely on what you measure yourself against.
+
+**Floor 1 — Concrete:** To say anything "moves," you first have to pick something to compare it to. A coffee cup on a train table sits perfectly still relative to the train, yet to someone on the platform it's tearing past at 100 km/h. Neither observer is wrong; they've simply chosen different things to measure against. Whatever you treat as fixed for that comparison is your reference frame — usually the ground, but it doesn't have to be.
+
+**Floor 2 — Definition:** A **frame of reference** is the vantage point you treat as fixed (an observer or object, with directions attached) in order to measure positions, speeds, and directions of motion. Every statement about motion is made inside some frame, whether or not you say so. "At rest" only ever means "not moving relative to my chosen frame" — and crucially, no frame is the one that's truly, absolutely still.
+
+**Floor 3 — In action:** Picking the right frame can turn a hard problem into an easy one. To follow a ball thrown on a moving ship, working in the ship's frame lets you ignore the ship's motion completely; switch to the shore's frame and you simply add that motion back in. Sailors, pilots, and physicists choose whichever frame makes the motion simplest, then translate when they need another view. That freedom to switch frames is exactly what the next board — combining velocities across frames — turns into a tool.
+
+---
+
+## BB 108 — Relative velocity: motion depends on who is watching
+*Physics · Kinematics* · ✓ publishable · *follows the frames-of-reference baseline*
+
+**Floor 0 — Idea:** You've just seen that motion is always measured against a frame. Relative velocity is what happens when the frame itself is moving. Two cars cruise the motorway, both at 80 km/h: to someone on the verge both race past, but to the driver of one, the other sits perfectly still alongside. Velocity depends on who's watching — so when two things are both moving, how do their velocities combine?
+
+**Floor 1 — Concrete:** A train runs east at 10 m/s relative to the ground. A passenger walks toward the front at 2 m/s relative to the train. To someone on the platform, the passenger moves at 10 + 2 = 12 m/s east. Turn around and walk toward the rear at 2 m/s, and the platform sees 10 − 2 = 8 m/s — still forward, just slower. In words: the passenger's velocity over the ground is their velocity on the train plus the train's velocity over the ground.
+
+**Floor 2 — Definition:** If A and B each have a velocity measured against the ground, the velocity of A *relative to B* is the difference: v⃗_{A/B} = v⃗_A − v⃗_B. Swap the two and you flip the sign: v⃗_{B/A} = −v⃗_{A/B}. Along one line this is subtracting speeds with the right signs; in two dimensions it's vector subtraction — draw both velocity arrows from one point, and the arrow from B's tip to A's tip is their relative velocity.
+
+**Floor 3 — In action:** Rain falling straight down at 5 m/s looks slanted from a car doing 20 m/s, because in your frame the rain also carries your 20 backwards — the two combine into a streak about tan⁻¹(20/5) ≈ 76° from vertical. That's why umbrellas tilt forward in a moving car. The same rule explains why a boat aimed straight across a river still lands downstream, and why a head-on collision is so much worse than a rear-end shunt: the closing speed is the sum of both, not the difference.
+
+**Floor 4 — The bedrock:** The baseline went further than it let on: not only is no frame absolutely still, the laws of physics come out identical in every frame moving at steady velocity. Galileo made the point with a ship — sealed below deck, no experiment can tell whether you're gliding smoothly or moored at the dock. That sameness is *why* velocities simply add. It held for three centuries until one quantity refused to play along: light. Its speed comes out the same in every frame, however you chase it, and forcing that single stubborn fact into the picture is exactly what gave Einstein his relativity.
+
+---
