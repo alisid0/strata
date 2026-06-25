@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  import { fly } from 'svelte/transition';
+  import { cubicOut } from 'svelte/easing';
   import { DEPTH_NAMES } from '../lib/content/deck.js';
   import { getBoard } from '../lib/content/dynamicBoards.js';
   import { formatMath } from '../lib/content/mathFormat.js';
@@ -292,7 +294,9 @@
 
               <div class="reading-content">
                 {#key d}
-                  <div class="floor-anim" style="--floor-from:{floorDir * 20}px">
+                  <div class="floor-anim"
+                       in:fly={{ y: floorDir * 38, duration: 320, easing: cubicOut }}
+                       out:fly={{ y: -floorDir * 38, duration: 320, easing: cubicOut }}>
                     <div class="floor-meta">
                       <span class="floor-pill" class:law={depthName(i, d) === 'The law'}>{depthName(i, d).toUpperCase()}</span>
                       <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
@@ -490,18 +494,13 @@
   .rail-dot.current { width: 8px; height: 8px; background: var(--qx-accent); }
 
   .reading-content {
-    flex: 1; min-width: 0; display: flex; flex-direction: column;
-    padding: 14px 16px 0; overflow: hidden;
+    flex: 1; min-width: 0; position: relative; overflow: hidden;
   }
-  /* Each floor change springs its content in (direction set by dig vs surface). */
+  /* Floors overlap so a floor change cross-slides (old out, new in) smoothly. */
   .floor-anim {
-    flex: 1; min-height: 0; width: 100%;
+    position: absolute; inset: 0;
     display: flex; flex-direction: column;
-    animation: floorIn 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  }
-  @keyframes floorIn {
-    from { opacity: 0; transform: translateY(var(--floor-from, 20px)); }
-    to   { opacity: 1; transform: translateY(0); }
+    padding: 14px 16px 0;
   }
   .floor-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
   .floor-pill {
