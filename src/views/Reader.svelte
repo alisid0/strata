@@ -40,9 +40,12 @@
     move(Math.max(0, numbers.indexOf(startNumber)));
   });
 
+  let floorDir = 1; // 1 = digging deeper (slide up from below), -1 = surfacing (slide down from above)
+
   function goDeeper(i) {
     const next = availableFloors(i).find(k => k > depthOf[i]);
     if (next === undefined) return;
+    floorDir = 1;
     depthOf[i] = next;
     depthOf = [...depthOf];
     rebuildDerived();
@@ -51,6 +54,7 @@
   function goShallower(i) {
     const below = [...availableFloors(i)].reverse().find(k => k < depthOf[i]);
     if (below === undefined) return;
+    floorDir = -1;
     depthOf[i] = below;
     depthOf = [...depthOf];
     rebuildDerived();
@@ -287,22 +291,26 @@
               </div>
 
               <div class="reading-content">
-                <div class="floor-meta">
-                  <span class="floor-pill" class:law={depthName(i, d) === 'The law'}>{depthName(i, d).toUpperCase()}</span>
-                  <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
-                </div>
-                <div class="floor-text">{@html formatMath(floorBodyHTML(i, d))}</div>
-                {#if media}
-                  <div class="floor-media">
-                    {#if media.type === 'img'}
-                      <div class="media-img" style="background-image:url('{media.src}')" role="img"></div>
-                    {:else if media.type === 'video'}
-                      <VideoPlayer src={media.src} />
-                    {:else if media.type === 'diagram'}
-                      <div class="media-diagram"><ChalkDiagram spec={media.spec} /></div>
+                {#key d}
+                  <div class="floor-anim" style="--floor-from:{floorDir * 20}px">
+                    <div class="floor-meta">
+                      <span class="floor-pill" class:law={depthName(i, d) === 'The law'}>{depthName(i, d).toUpperCase()}</span>
+                      <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
+                    </div>
+                    <div class="floor-text">{@html formatMath(floorBodyHTML(i, d))}</div>
+                    {#if media}
+                      <div class="floor-media">
+                        {#if media.type === 'img'}
+                          <div class="media-img" style="background-image:url('{media.src}')" role="img"></div>
+                        {:else if media.type === 'video'}
+                          <VideoPlayer src={media.src} />
+                        {:else if media.type === 'diagram'}
+                          <div class="media-diagram"><ChalkDiagram spec={media.spec} /></div>
+                        {/if}
+                      </div>
                     {/if}
                   </div>
-                {/if}
+                {/key}
               </div>
             </div>
 
@@ -484,6 +492,16 @@
   .reading-content {
     flex: 1; min-width: 0; display: flex; flex-direction: column;
     padding: 14px 16px 0; overflow: hidden;
+  }
+  /* Each floor change springs its content in (direction set by dig vs surface). */
+  .floor-anim {
+    flex: 1; min-height: 0; width: 100%;
+    display: flex; flex-direction: column;
+    animation: floorIn 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes floorIn {
+    from { opacity: 0; transform: translateY(var(--floor-from, 20px)); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   .floor-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
   .floor-pill {
