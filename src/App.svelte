@@ -31,6 +31,19 @@
   const TAB_ORDER = ['home', 'topics', 'map', 'snippets'];
   const PUSH_VIEWS = ['topicDetail', 'stats', 'leaderboard', 'otherUserStats', 'reader', 'quiz', 'author'];
 
+  // Honour reduced-motion: Svelte's fly is JS-driven, so the CSS media query
+  // can't stop it — zero the distance/duration instead.
+  const reduceMotion = typeof matchMedia !== 'undefined'
+    && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const easeInOutQuad = t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  // Incoming view: slide in from `dir`. Outgoing: slide out the opposite way.
+  const flyIn = (dir = 1) => reduceMotion
+    ? { duration: 0 }
+    : { x: dir * 100, duration: 280, easing: easeInOutQuad };
+  const flyOut = (dir = 1) => reduceMotion
+    ? { duration: 0 }
+    : { x: -dir * 60, duration: 200, easing: easeInOutQuad };
+
   onMount(async () => {
     try { await initAuth(); } catch (_) {}
 
@@ -55,7 +68,8 @@
   }
 
   function navigate(view, arg) {
-    // Determine slide direction: push views slide in from right, back to tab slides from left
+    // Slide direction: push views slide in from the right; back-to-tab slides
+    // from the left; tab→tab follows the tab order.
     if (PUSH_VIEWS.includes(view)) {
       slideDirection = 1;
     } else if (TAB_VIEWS.includes(view) && PUSH_VIEWS.includes(currentView)) {
@@ -81,19 +95,23 @@
 
 <div class="app-shell">
   {#if currentView === 'loading'}
-    <div class="qx-shell loading-screen" in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
+    <div class="view-layer qx-shell loading-screen" in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
       <div class="loading-brand">QUBIX</div>
       <div class="loading-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
     </div>
 
   {:else if currentView === 'auth'}
-    <Auth onSkip={skipAuth} onAuthed={handleAuthed} />
+    <div class="view-layer">
+      <Auth onSkip={skipAuth} onAuthed={handleAuthed} />
+    </div>
 
   {:else if currentView === 'onboarding'}
-    <Onboarding onComplete={() => currentView = 'home'} />
+    <div class="view-layer">
+      <Onboarding onComplete={() => currentView = 'home'} />
+    </div>
 
   {:else if TAB_VIEWS.includes(currentView)}
-    <div class="qx-shell tabbed-view" in:fly={{ x: slideDirection * 80, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -slideDirection * 60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
+    <div class="view-layer qx-shell tabbed-view" in:fly={flyIn(slideDirection)} out:fly={flyOut(slideDirection)}>
       <div class="tab-content">
         {#if currentView === 'home'}
           <Home onNavigate={navigate} />
@@ -109,55 +127,60 @@
     </div>
 
   {:else if currentView === 'topicDetail'}
-    <div style="height:100%" in:fly={{ x: 100, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -80, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
-    <PathView pathId={currentPathId} onNavigate={navigate} />
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <PathView pathId={currentPathId} onNavigate={navigate} />
     </div>
 
   {:else if currentView === 'stats'}
-    <div style="height:100%" in:fly={{ x: 100, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
-    <Stats onNavigate={navigate} />
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <Stats onNavigate={navigate} />
     </div>
 
   {:else if currentView === 'leaderboard'}
-    <div style="height:100%" in:fly={{ x: 100, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
-    <Leaderboard onNavigate={navigate} />
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <Leaderboard onNavigate={navigate} />
     </div>
 
   {:else if currentView === 'otherUserStats'}
-    <div style="height:100%" in:fly={{ x: 100, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
-    <OtherUserStats userId={currentUserId} onNavigate={navigate} />
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <OtherUserStats userId={currentUserId} onNavigate={navigate} />
     </div>
 
   {:else if currentView === 'reader'}
-    <div style="height:100%" in:fly={{ x: 100, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -80, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
-    <Reader
-      numbers={readerNumbers}
-      startNumber={readerStart}
-      onBack={() => currentPathId ? navigate('topicDetail', currentPathId) : navigate('topics')}
-    />
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <Reader
+        numbers={readerNumbers}
+        startNumber={readerStart}
+        onBack={() => currentPathId ? navigate('topicDetail', currentPathId) : navigate('topics')}
+      />
     </div>
 
   {:else if currentView === 'quiz'}
-    <div style="height:100%" in:fly={{ x: 100, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -80, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
-    <Quiz
-      pathId={currentPathId}
-      onComplete={() => {}}
-      onBack={() => navigate('topicDetail', currentPathId)}
-    />
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <Quiz
+        pathId={currentPathId}
+        onComplete={() => {}}
+        onBack={() => navigate('topicDetail', currentPathId)}
+      />
     </div>
 
   {:else if currentView === 'author'}
-    <div style="height:100%" in:fly={{ x: 100, duration: 280, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -60, duration: 180, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
-    <Author onNavigate={navigate} />
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <Author onNavigate={navigate} />
     </div>
   {/if}
 </div>
 
 <style>
-  .app-shell { height: 100%; width: 100%; position: relative; }
+  .app-shell { height: 100%; width: 100%; position: relative; overflow: hidden; }
+
+  /* Every top-level screen is its own absolutely-positioned layer, so during a
+     transition the outgoing and incoming views overlap and cross-slide cleanly
+     instead of stacking in normal flow. */
+  .view-layer { position: absolute; inset: 0; }
 
   .loading-screen {
-    height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
   }
   .loading-brand { font-size: 24px; font-weight: 900; letter-spacing: 0.16em; color: var(--qx-accent); }
   .loading-dots { display: flex; gap: 8px; }
@@ -166,6 +189,6 @@
   .dot:nth-child(2) { animation-delay: -0.16s; }
   @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-  .tabbed-view { height: 100%; display: flex; flex-direction: column; }
+  .tabbed-view { display: flex; flex-direction: column; }
   .tab-content { flex: 1; min-height: 0; overflow-y: auto; }
 </style>
