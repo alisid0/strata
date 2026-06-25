@@ -3,7 +3,7 @@
   import { fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
   import { DEPTH_NAMES } from '../lib/content/deck.js';
-  import { getBoard } from '../lib/content/dynamicBoards.js';
+  import { getBoard, fetchSnippets } from '../lib/content/dynamicBoards.js';
   import { formatMath } from '../lib/content/mathFormat.js';
   import { pathsForCard } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
@@ -27,6 +27,8 @@
   let totalCards = numbers.length;
   let audioEl;
   let playingKey = null;
+  let snippetByBoard = {}; // card number → a snippet that relates to it (via the snippet's buildsOn)
+  let activeSnippets = null; // the related snippets shown in the overlay (array)
 
   function availableFloors(i) {
     const card = getBoard(numbers[i]);
@@ -40,6 +42,19 @@
 
   onMount(() => {
     move(Math.max(0, numbers.indexOf(startNumber)));
+
+    // Index snippets by the board they relate to (resolvable "Card N"/"BB N"
+    // references in each snippet's buildsOn) so a board can offer "View snippet".
+    fetchSnippets().then(list => {
+      const map = {};
+      for (const sn of list || []) {
+        for (const ref of (sn.tags?.buildsOn || [])) {
+          const m = /(?:card|bb)\s*(\d+)/i.exec(String(ref));
+          if (m) (map[+m[1]] = map[+m[1]] || []).push(sn);
+        }
+      }
+      snippetByBoard = map;
+    }).catch(() => {});
   });
 
   let floorDir = 1; // 1 = digging deeper (slide up from below), -1 = surfacing (slide down from above)
@@ -277,6 +292,12 @@
                 <div class="header-title">{col.title}</div>
                 <div class="header-sub">{col.kicker} · {humanize(col.tags?.subject)}</div>
               </div>
+              {#if snippetByBoard[n]?.length}
+                <button class="snippet-btn" on:click={() => activeSnippets = snippetByBoard[n]} title="Related snippets" aria-label="View related snippets">
+                  <QxIcon name="snippets" size={14} />
+                  {#if snippetByBoard[n].length > 1}<span class="snippet-count">{snippetByBoard[n].length}</span>{/if}
+                </button>
+              {/if}
               <button
                 class="audio-btn small"
                 class:playing={playingKey === `${n}-${d}`}
@@ -337,6 +358,22 @@
       </div>
     {/each}
   </div>
+
+  {#if activeSnippets}
+    <div class="snippet-overlay" on:click={() => activeSnippets = null} role="presentation">
+      <div class="snippet-modal" on:click|stopPropagation role="dialog" aria-modal="true">
+        <button class="snippet-close" on:click={() => activeSnippets = null} aria-label="Close">✕</button>
+        {#if activeSnippets.length > 1}<div class="snippet-overlay-count">{activeSnippets.length} related snippets</div>{/if}
+        {#each activeSnippets as s, si}
+          <div class="snippet-item" class:divided={si > 0}>
+            <div class="snippet-overlay-kicker">{s.kicker}</div>
+            <div class="snippet-overlay-title">{s.title}</div>
+            <div class="snippet-overlay-body">{@html s.layers?.[0] || ''}</div>
+          </div>
+        {/each}
+      </div>
+    </div>
+  {/if}
 
   <audio bind:this={audioEl} on:ended={() => playingKey = null} hidden></audio>
 </div>
@@ -544,6 +581,37 @@
   }
   .arrow-btn.primary { background: var(--qx-accent); border-color: var(--qx-accent); color: #fff; }
   .arrow-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .snippet-btn {
+    position: relative;
+    width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%;
+    border: 1.5px solid var(--qx-accent); background: var(--qx-accent-soft);
+    color: var(--qx-accent-text); display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .snippet-count {
+    position: absolute; top: -5px; right: -5px; min-width: 15px; height: 15px; padding: 0 3px;
+    border-radius: 8px; background: var(--qx-accent); color: #fff; font-size: 9px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .snippet-overlay-count { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); margin-bottom: 14px; }
+  .snippet-item.divided { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--qx-border); }
+  .snippet-overlay {
+    position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center;
+    background: rgba(11,19,43,0.6); backdrop-filter: blur(3px); padding: 24px;
+  }
+  .snippet-modal {
+    position: relative; max-width: 380px; width: 100%; max-height: 80%; overflow-y: auto;
+    background: var(--qx-surface); border: 1px solid var(--qx-border); border-radius: var(--qx-radius-lg);
+    box-shadow: var(--qx-shadow-card); padding: 22px 20px;
+  }
+  .snippet-close {
+    position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 50%;
+    border: none; background: var(--qx-surface-2); color: var(--qx-text-dim); cursor: pointer; font-size: 13px;
+  }
+  .snippet-overlay-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; color: var(--qx-accent); margin-bottom: 6px; }
+  .snippet-overlay-title { font-size: 18px; font-weight: 800; color: var(--qx-text); margin-bottom: 12px; line-height: 1.2; padding-right: 28px; }
+  .snippet-overlay-body { font-size: 14px; line-height: 1.6; color: var(--qx-text-2); }
+  .snippet-overlay-body :global(p) { margin-bottom: 10px; }
 
   .loading-slab {
     display: flex; align-items: center; justify-content: center;
