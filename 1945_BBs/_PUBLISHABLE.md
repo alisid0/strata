@@ -207,3 +207,25 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — The bedrock:** This layering hides a deep idea: **emergence**. The laws at each level are real in their own right, not just bookkeeping for the level beneath. In 1972 the physicist Philip Anderson put it as "more is different" — knowing the rules for one particle does not, even in principle, let you predict what a trillion of them will do together. You can't read superconductivity, or a thought, off the equations for a single electron; new laws switch on at each scale. That's why physics, chemistry, and biology are separate sciences rather than footnotes to particle physics — the higher rungs carry information the lower ones simply don't.
 
 ---
+
+## BB 107 — Errors in measurement: no instrument tells the exact truth
+*Physics · Measurement (errors)* · ✓ publishable · *opens the errors strand*
+
+**Floor 0 — Idea:** No measurement is ever exact. Every instrument has a limit and every reading carries some uncertainty. The useful question isn't whether there's error (there always is), but how much, and of what kind.
+
+**Floor 1 — Concrete:** Weigh the same object five times on a sensitive balance: 12.34, 12.36, 12.33, 12.35, 12.37 g. The readings cluster near 12.35 but never settle on one number — that scatter is random, from air currents, faint vibrations, the balance's own noise. But if the balance was poorly zeroed and reads 0.05 g high every time, that's a different beast: a systematic error that shifts all five readings together and never shows up in the scatter.
+
+**Floor 2 — Definition:** **Random errors** scatter readings around the true value, equally likely to be high or low; averaging many trials cancels them out. **Systematic errors** push every reading the same way (a bad calibration, a zero offset, a consistent bias), and averaging does nothing to them. Two more words pin this down: **accuracy** is how close you are to the true value; **precision** is how tightly your readings agree with each other. You can be precise but inaccurate: a tight cluster around the wrong number.
+
+**Floor 3 — In action:** The mean of your readings is the best estimate of the true value, and the spread tells you how much to trust it. That spread is the **standard deviation**, σ = √[Σ(xᵢ − x̄)² / (n − 1)] — small σ, tight readings. So you report not a bare number but a range: 12.35 ± 0.02 g, where the ± says how far the last digit might wander. On a graph, error bars do the same job visually, marking the band the true value probably lies in.
+
+**Floor 4 — The bedrock:** Averaging beats random error, but only so fast. The uncertainty in the mean isn't σ, it's the **standard error**, σ/√n — so to halve it you need four times as many readings, and to cut it tenfold, a hundred times as many. Diminishing returns are built in. And this lever works on random error alone: no number of repeats touches a systematic error, because every reading is shifted the same way. Past a point, more trials are wasted effort — the only fix is to find the bias and correct the instrument.
+
+---
+
+## Snippet — The same law elsewhere
+*kind: snippet · builds on BB 107 (live anchor: Card 107) · ✓ publishable · ingested (sort_order 790) · cross-discipline (economics) — scope deliberately bent once*
+
+**More hands, less harvest: the law of diminishing returns.** Economists named this pattern long before physicists worried about it. In the eighteenth century, studying farmland, they observed that a farmer who doubles the labourers on a fixed field never doubles the harvest. The first extra hand takes on the most useful work; each one after adds a little less, until the ground is so crowded that another body barely helps. They called it the law of diminishing returns, and it holds wherever effort is poured into a fixed resource. A small bakery with a single oven shows the same thing: one baker is productive, a second nearly doubles output, but with the oven always full a fifth or sixth adds almost nothing, and a tenth only gets in the way. The fixed ingredient (the field, the oven) sets a ceiling that no amount of labour can lift. It is the same ceiling that caps how far averaging can sharpen a measurement: past a point, more of the same effort yields steadily less.
+
+---
