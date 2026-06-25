@@ -2,6 +2,8 @@
   import { totalBoards } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { displayName, logOut } from '../lib/stores/auth.js';
+  import { theme } from '../lib/stores/theme.js';
+  import QxToggle from '../lib/components/qubix/QxToggle.svelte';
 
   export let onNavigate;
 
@@ -86,6 +88,12 @@
     Leaderboard <span class="link-chev">&rsaquo;</span>
   </button>
 
+  <!-- Settings -->
+  <div class="settings-row">
+    <span class="settings-label">Dark mode</span>
+    <QxToggle checked={$theme === 'dark'} onChange={() => theme.toggle()} />
+  </div>
+
   <div class="footer-links">
     <button class="footer-link" on:click={() => onNavigate?.('author')}>Author a BB</button>
     <button class="footer-link danger" on:click={handleLogout}>Log out</button>
@@ -140,6 +148,13 @@
     font-size: 15px; font-weight: 700; color: var(--qx-text); margin-bottom: 16px;
   }
   .link-chev { font-size: 18px; color: var(--qx-text-faint); }
+
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border);
+    background: var(--qx-surface); margin-bottom: 16px;
+  }
+  .settings-label { font-size: 15px; font-weight: 700; color: var(--qx-text); }
 
   .footer-links { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--qx-border); padding-top: 14px; }
   .footer-link { background: none; border: none; text-align: left; font-family: var(--qx-font); font-size: 14px; font-weight: 700; color: var(--qx-text-dim); cursor: pointer; padding: 6px 0; }

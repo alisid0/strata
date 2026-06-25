@@ -1,12 +1,12 @@
 {
-  "name": "Strata — Physics, layer by layer",
-  "short_name": "Strata",
-  "description": "A swipeable, tap-to-descend STEM microlearning deck. Chalk on a greenboard.",
+  "name": "Qubix — Learn Physics, Maths & STEM",
+  "short_name": "Qubix",
+  "description": "Bite-sized, swipeable STEM microlearning — physics, maths and chemistry, layer by layer.",
   "start_url": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#1f3b30",
-  "theme_color": "#1f3b30",
+  "background_color": "#0B132B",
+  "theme_color": "#0B132B",
   "categories": ["education", "science"],
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },

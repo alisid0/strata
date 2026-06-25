@@ -43,6 +43,7 @@
   });
 
   let floorDir = 1; // 1 = digging deeper (slide up from below), -1 = surfacing (slide down from above)
+  const reduceMotion = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function goDeeper(i) {
     const next = availableFloors(i).find(k => k > depthOf[i]);
@@ -295,8 +296,8 @@
               <div class="reading-content">
                 {#key d}
                   <div class="floor-anim"
-                       in:fly={{ y: floorDir * 38, duration: 320, easing: cubicOut }}
-                       out:fly={{ y: -floorDir * 38, duration: 320, easing: cubicOut }}>
+                       in:fly={{ y: reduceMotion ? 0 : floorDir * 38, duration: reduceMotion ? 0 : 320, easing: cubicOut }}
+                       out:fly={{ y: reduceMotion ? 0 : -floorDir * 38, duration: reduceMotion ? 0 : 320, easing: cubicOut }}>
                     <div class="floor-meta">
                       <span class="floor-pill" class:law={depthName(i, d) === 'The law'}>{depthName(i, d).toUpperCase()}</span>
                       <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
