@@ -135,29 +135,45 @@
     return s ? s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : '';
   }
 
-  // Touch handling
+  // Touch handling — live drag-follow horizontal swipe across BBs, plus the
+  // vertical dig/surface flick. The rail tracks the finger 1:1 so the swipe
+  // feels responsive immediately, then snaps on release.
   let tx = 0, ty = 0, tdx = 0, tdy = 0, touching = false;
+  let axis = null;        // 'x' | 'y' once the gesture locks to an axis
+  let dragOffset = 0;     // live horizontal drag distance (px)
+  let isDragging = false; // horizontal drag in progress → disables rail transition
 
   function handleTouchStart(e) {
     touching = true;
     tx = e.touches[0].clientX;
     ty = e.touches[0].clientY;
-    tdx = 0; tdy = 0;
+    tdx = 0; tdy = 0; axis = null; dragOffset = 0; isDragging = false;
   }
   function handleTouchMove(e) {
     if (!touching) return;
     tdx = e.touches[0].clientX - tx;
     tdy = e.touches[0].clientY - ty;
+    if (!axis && (Math.abs(tdx) > 8 || Math.abs(tdy) > 8)) {
+      axis = Math.abs(tdx) > Math.abs(tdy) ? 'x' : 'y';
+    }
+    if (axis === 'x') {
+      isDragging = true;
+      const atEdge = (idx === 0 && tdx > 0) || (idx === totalCards - 1 && tdx < 0);
+      dragOffset = atEdge ? tdx * 0.3 : tdx; // rubber-band at the ends
+    }
   }
   function handleTouchEnd() {
     touching = false;
-    const ax = Math.abs(tdx), ay = Math.abs(tdy);
-    if (ax < 30 && ay < 30) return;
-    if (ax > ay) {
-      if (tdx < 0) move(idx + 1); else move(idx - 1);
-    } else {
+    if (axis === 'x') {
+      const w = typeof window !== 'undefined' ? window.innerWidth : 360;
+      const threshold = Math.min(80, w * 0.22);
+      if (tdx <= -threshold) move(idx + 1);
+      else if (tdx >= threshold) move(idx - 1);
+      // otherwise: snap back (resetting dragOffset re-runs the CSS transition)
+    } else if (axis === 'y' && Math.abs(tdy) >= 30) {
       if (tdy < 0) goDeeper(idx); else goShallower(idx);
     }
+    axis = null; dragOffset = 0; isDragging = false;
   }
 
   function handleKeydown(e) {
@@ -183,7 +199,8 @@
 
   <div
     id="rail"
-    style="transform:translateX(-{idx * 100}%)"
+    class:dragging={isDragging}
+    style="transform:translateX({-idx * 100}%) translateX({dragOffset}px)"
     on:touchstart={handleTouchStart}
     on:touchmove={handleTouchMove}
     on:touchend={handleTouchEnd}
@@ -335,7 +352,9 @@
     display: flex;
     transition: transform 0.62s cubic-bezier(0.16, 0.84, 0.24, 1);
     will-change: transform;
+    touch-action: pan-y; /* we own horizontal swipes; vertical still scrolls/digs */
   }
+  #rail.dragging { transition: none; } /* follow the finger 1:1 while dragging */
   .card {
     position: relative; flex: 0 0 100%;
     width: 100%; height: 100%;
