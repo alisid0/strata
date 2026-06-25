@@ -56,6 +56,19 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 
 ---
 
+## BB 87 — The seven pillars of SI
+*Physics · Measurement* · ✓ publishable
+
+**Floor 0 — Idea:** Every measurement in science rests on just seven base units. From the mass of an electron to the distance of a quasar, every physical quantity is expressed as some combination of these seven.
+
+**Floor 1 — Concrete:** The seven SI base units are: the metre (m) for length, the kilogram (kg) for mass, the second (s) for time, the ampere (A) for electric current, the kelvin (K) for temperature, the mole (mol) for amount of substance, and the candela (cd) for luminous intensity. Two more handle angles: the radian (rad) and the steradian (sr).
+
+**Floor 2 — Definition:** Since 2019, all seven are defined by fixing the numerical values of universal physical constants, not by physical objects. The metre is set by fixing the speed of light at exactly 299,792,458 m/s; the second by the caesium atom's hyperfine frequency; the kilogram by Planck's constant. Anyone, anywhere, can reproduce them exactly.
+
+**Floor 3 — In action:** Physical quantities span enormous ranges, from a proton (10⁻¹⁵ m) to a quasar (10²⁶ m), so SI uses prefixes for scale: kilo, mega, giga going up; milli, micro, nano going down. A nanometre is a billionth of a metre. The prefix carries the scale; the base unit carries the kind of quantity.
+
+---
+
 ## Snippets — Measuring the universe
 *kind: snippet · build on BB 87 (Card 87) · ✓ publishable · ingested (sort_order 784–788)*
 
@@ -68,5 +81,83 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **The atomic second.** A second used to be a slice of the day: 1/86,400 of one Earth rotation. But the Earth is a sloppy clock — winds, tides, and its molten core nudge its spin by milliseconds. So since 1967 the second has been 9,192,631,770 oscillations of a caesium-133 atom, which never varies. The best clocks built on this would lose less than a second over the entire age of the universe. You lean on it constantly: GPS works by timing signals to billionths of a second, and without that precision your phone's location would wander off by kilometres within minutes.
 
 **The proton end: how empty an atom is.** On the small end of the scale sits the proton, about one femtometre across: a millionth of a billionth of a metre. At that size the real surprise is how empty everything is. An atom is almost entirely space — if its nucleus were a marble on the centre spot of a football stadium, the electrons would be a faint haze up in the stands, with nothing in between. The floor you're standing on is mostly void; what stops you falling through isn't matter touching matter but the electric repulsion between electron clouds. "Solid" is a sensation, not a statement about how full the space is.
+
+---
+
+## BB (new, bridge) — Dimension vs unit: the kind, not the amount
+*Physics · Measurement* · ✓ publishable · *new bridge BB, slots between BB 87 and BB 88*
+
+**Floor 0 — Idea:** Measure your height in metres, feet, or inches: three different numbers, three different units, but all measuring the same kind of thing — a length. That kind of thing is the dimension. The unit is the amount; the dimension is the type.
+
+**Floor 1 — Concrete:** 5 feet, 1.5 metres, and 60 inches are the same height written three ways. Change the unit and the number changes, but every one is still a length. A clock can read seconds, minutes, or hours: different units, all the dimension *time*. Mass comes in kilograms or pounds: different units, same dimension, *mass*. The dimension is what all the units for a quantity share.
+
+**Floor 2 — Definition:** A **dimension** is the kind of physical quantity something is (length, mass, time, and so on), independent of the unit used to measure it. A **unit** is one agreed amount of that dimension. A single dimension can have many units (metre, foot, and inch are all units of length), so the dimension is the type and the unit is the size of the step you count in.
+
+**Floor 3 — In action:** Keeping the two apart is what makes the next idea work. Because a dimension ignores units, any quantity can be written purely as a combination of base dimensions (length, mass, time), and that recipe stays the same in any unit system. That's what lets you compare quantities and check equations across units — which the next board turns into a tool.
+
+**Floor 4 — The bedrock:** Units are a human choice; dimensions are not. Swap metres for feet and every number shifts, but the dimension of a quantity is fixed by what that quantity actually is. The cleanest proof that the two are different layers is the radian: it is a genuine unit for angles, yet it has no dimension at all, because an angle is one length divided by another and the lengths cancel out. So you can have a unit with nothing dimensional underneath it. The limit runs the other way too: torque and energy share the exact same dimensions (mass × length² ÷ time²) yet are completely different quantities. Dimensions tell you the kind of thing you are dealing with, a deeper fact than the unit, but not the whole story.
+
+---
+
+## BB 88 — Dimensions: the fingerprint of a physical quantity
+*Physics · Measurement* · ✓ publishable
+
+**Floor 0 — Idea:** Speed is always a length divided by a time, in any units. Force is always a mass times a length divided by a time squared. Strip away the units and every quantity has a fixed recipe of base quantities — its dimensions — that never changes.
+
+**Floor 1 — Concrete:** Force equals mass times acceleration. Acceleration is velocity over time; velocity is length over time. Chain them: force = mass × (length/time) / time = mass × length × time⁻². So force is 1 in mass, 1 in length, and −2 in time — written compactly as MLT⁻². That's the **dimensional formula** of force.
+
+**Floor 2 — Definition:** The **dimension** of a quantity in a given base quantity is the power that base is raised to in the quantity's recipe. Write them together and you get its dimensional formula: [quantity] = Mᵃ Lᵇ Tᶜ Iᵈ Kᵉ molᶠ cdᵍ. A quantity with every exponent zero — like a pure ratio — is **dimensionless**.
+
+**Floor 3 — In action:** Dimensions are not units. Speed can be in m/s, km/h, or mph — the number changes, but its dimensions (LT⁻¹) stay the same. An angle or a pure ratio has no dimensions at all. And because dimensions don't depend on units, they let you sanity-check an equation without any arithmetic — which is exactly what the next board does.
+
+---
+
+## BB 89 — The homogeneity principle
+*Physics · Measurement* · ✓ publishable (hesitant — the capstone is the payoff)
+
+**Floor 0 — Idea:** You can't add a speed to a force, or subtract a current from a temperature. Every term in a real physical equation has to be the same kind of thing — the same dimensions. That one rule catches mistakes before you calculate anything.
+
+**Floor 1 — Concrete:** Take x = ut + ½at². The left side, x, is a length (L). The first term ut is velocity × time = (L/T) × T = L. The second term ½at²: the ½ is dimensionless, acceleration is L/T², and times T² gives L. Every term is a length, so the equation passes — it may be correct.
+
+**Floor 2 — Definition:** **Homogeneous** simply means "all of the same kind." So the **principle of homogeneity** says that in any valid physical equation, every term must be the same dimensional kind — every term must have identical dimensions. Fail the test and the equation is certainly wrong; pass it and it may be right, but passing doesn't prove the numbers (the ½, the 2π) are correct.
+
+**Floor 3 — In action:** It's a fast filter. If someone writes F = mv, check: [F] = MLT⁻² but [mv] = M·LT⁻¹ = MLT⁻¹. The dimensions don't match, so it's impossible. The right form F = ma gives MLT⁻² on both sides. The check can't hand you the ½ in ½at², but it can tell you that at² belongs and at doesn't — and, pushed further, it can even build a formula from scratch, which the next board does.
+
+**Floor 4 — The bedrock:** Homogeneity isn't an imposed rule — it falls out of what an equation means. You can add two lengths, or set a length equal to a length, but "three metres plus five seconds" isn't a bigger or smaller quantity; it isn't a quantity at all. The same logic reaches past addition: the argument of any sin, log, or exponential must be dimensionless, because there is no such thing as the sine of 5 metres. So in a decay law like e^(−t/τ), the t/τ must be a pure number — which immediately tells you τ is a time. The principle quietly fixes the meaning of the constants in a formula, not just its form.
+
+---
+*Physics · Measurement* · ✓ publishable · *new capstone BB, slots after BB 89 (homogeneity)*
+
+**Floor 0 — Idea:** Here's the payoff for everything so far: you can often work out the shape of a physics formula without running a single experiment — just by forcing the dimensions to match.
+
+**Floor 1 — Concrete:** What sets a pendulum's swing time? Sensible guesses: its length L, its mass, and gravity g. The period is a time (dimension T); length is L; gravity is an acceleration, LT⁻². The only way to build a pure time from L and g is √(L/g), since √(L ÷ LT⁻²) = √(T²) = T. Mass simply can't appear (there's nothing for it to cancel against), so it drops out. Without touching a pendulum, the dimensions hand you T ∝ √(L/g): make it four times longer and it swings half as fast.
+
+**Floor 2 — Definition:** **Dimensional analysis** is finding or checking a relationship by demanding that the dimensions match on both sides. List what the answer could depend on, then find the combination of those quantities whose dimensions equal the target's. It fixes the powers — what depends on what, and how strongly — but never the plain numbers out front.
+
+**Floor 3 — In action:** This is how physicists size up a new problem before any data exists, and it exposes scaling laws: a pendulum's period grows as √L, air drag rises with v², a planet's orbital period squared tracks its radius cubed. What it won't give you is the dimensionless part — it finds the √(L/g) but not the 2π in T = 2π√(L/g). For that you still need the full theory or a measurement.
+
+**Floor 4 — The bedrock:** Dimensional analysis has a hard limit and a famous triumph. The limit: it cannot conjure dimensionless numbers (the 2π, a stray ½), and it stalls when too many quantities share the same dimensions. The triumph: in 1950 the physicist G.I. Taylor worked out the energy of the first atomic bomb from only a series of declassified photos of the fireball, each labelled with its radius and the time since detonation. Matching the dimensions of energy, air density, radius, and time, he derived a yield of about 20 kilotonnes — a number that was still officially secret. Dimensions alone, with no access to the device, gave it away.
+
+---
+
+## BB (new) — Finishing the formula: dimensions plus one measurement
+*Physics · Measurement* · ✓ publishable · *new board, slots after the dimensional-analysis capstone, before the recap*
+
+**Floor 0 — Idea:** Dimensions handed us T ∝ √(L/g), but a proportionality isn't a formula yet — it won't tell you a pendulum swings in 2 seconds. The shape is missing one number out front. One measurement supplies it, and the formula is complete.
+
+**Floor 1 — Concrete:** Build one pendulum, 1.0 m long, and time a swing: about 2.0 s. The shape says T = k√(L/g), and √(1.0/9.8) ≈ 0.32 s, so k = 2.0 ÷ 0.32 ≈ 6.3 — which is 2π. Drop it in: **T = 2π√(L/g)**. That one formula now predicts the swing of every pendulum, any length, anywhere, with no further experiments.
+
+**Floor 2 — Definition:** This is how physics actually builds a law. Dimensional analysis fixes the form — which quantities, raised to which powers. The full theory or a single calibration measurement fixes the one constant left over. Form plus constant is a complete, predictive formula: the dimensions do the structural work, and you supply just one number, once.
+
+**Floor 3 — In action:** The payoff is leverage. Without dimensions, finding T = 2π√(L/g) by trial means timing pendulums of every length and mass and hunting for the pattern in a table. With dimensions, the pattern is locked in advance and a single timing nails the last unknown. The harder the problem, the bigger the saving — a tangled relationship between many variables collapses to one constant waiting to be measured.
+
+**Floor 4 — The bedrock:** There's a theorem underneath this. The **Buckingham π theorem** says a relationship among n quantities, built from k independent dimensions, can always be rewritten with just n − k dimensionless groups — and that number is exactly how many constants you must still pin down by experiment or theory. For the pendulum (T, L, g, built from length and time), n − k = 1: a single group, which is why one measurement was enough. Dimensional analysis doesn't only hint at the shape; it tells you in advance how much work is left.
+
+---
+
+## Snippet — The theorem underneath
+*kind: snippet · builds on the Finishing-the-formula board (live anchor: Card 89, homogeneity) · ✓ publishable · ingested (sort_order 789)*
+
+**Buckingham's π theorem: why a toy model flies like the real plane.** In 1914 the physicist Edgar Buckingham turned dimensional analysis into a theorem. It says that any physical relationship between n quantities, built from k independent dimensions, can be rewritten using just n − k dimensionless groups — combinations with all the units cancelled out. Buckingham labelled these groups π₁, π₂, and so on (a different π from 3.14159), which is where the name comes from. The power is that it tells you, before any experiment, exactly how many independent knobs a problem really has. It's why scale models work: an aircraft in a wind tunnel or a ship hull in a test tank behaves like the full-size object only if its dimensionless groups match — the Reynolds number for viscous flow, the Mach number for compressibility, the Froude number for waves. Match the π groups and a metre-long model faithfully mimics a 300-metre ship. The theorem is the reason a handful of named dimensionless numbers run the whole of fluid engineering.
 
 ---
