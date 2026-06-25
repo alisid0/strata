@@ -161,3 +161,49 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Buckingham's π theorem: why a toy model flies like the real plane.** In 1914 the physicist Edgar Buckingham turned dimensional analysis into a theorem. It says that any physical relationship between n quantities, built from k independent dimensions, can be rewritten using just n − k dimensionless groups — combinations with all the units cancelled out. Buckingham labelled these groups π₁, π₂, and so on (a different π from 3.14159), which is where the name comes from. The power is that it tells you, before any experiment, exactly how many independent knobs a problem really has. It's why scale models work: an aircraft in a wind tunnel or a ship hull in a test tank behaves like the full-size object only if its dimensionless groups match — the Reynolds number for viscous flow, the Mach number for compressibility, the Froude number for waves. Match the π groups and a metre-long model faithfully mimics a 300-metre ship. The theorem is the reason a handful of named dimensionless numbers run the whole of fluid engineering.
 
 ---
+
+## BB (new, recap) — Recap: Units & dimensions
+*Physics · Measurement · kind: recap* · ✓ publishable · *closes the Units & Dimensions tier (one floor, quick-reference)*
+
+- A measurement is a **number × a unit**; a unit is an agreed reference amount. A number with no unit means nothing.
+- Measuring length = counting how many unit lengths fit. **Area = length × breadth** → square units; volume → cubic units.
+- **Derived quantities** are products or ratios of others — area (m²), speed (m/s), density (kg/m³); the unit is built the same way.
+- **Base quantities** are a small mutually independent set. SI uses **seven**: length (m), mass (kg), time (s), current (A), temperature (K), amount (mol), luminous intensity (cd).
+- Since **2019** the SI units are fixed by exact physical constants (the metre via the speed of light), not objects. Prefixes (kilo, milli, …) carry the scale.
+- **Dimension vs unit:** a dimension is the *kind* of quantity (length, mass, time), independent of the unit; one dimension has many units. Dimension = type, unit = amount.
+- **Dimensional formula:** [quantity] = Mᵃ Lᵇ Tᶜ Iᵈ Kᵉ molᶠ cdᵍ (force = MLT⁻²). All exponents zero ⇒ **dimensionless**.
+- **Homogeneity:** every term in a valid equation has identical dimensions. Fails ⇒ wrong; passes ⇒ maybe. Arguments of sin/log/exp must be dimensionless.
+- **Dimensional analysis** derives the *form* by matching dimensions → T ∝ √(L/g); it fixes the powers, not the number out front.
+- **Finishing it:** one measurement (or the theory) supplies that number → a complete formula, **T = 2π√(L/g)**. The **Buckingham π theorem** says how many constants a problem needs (n − k).
+
+---
+
+## BB 90 — Order of magnitude
+*Physics · Measurement (scale & estimation)* · ✓ publishable · *opens the scale & estimation strand*
+
+**Floor 0 — Idea:** Often you don't need the exact number, just the ballpark: is it about a thousand, a million, or a billion? That ballpark — the order of magnitude — is enough to catch nonsense and get your bearings in a world that spans the atom to the galaxy.
+
+**Floor 1 — Concrete:** An electron's mass is about 9.1 × 10⁻³¹ kg; our galaxy's is about 2.2 × 10⁴¹ kg. "An electron is light and a galaxy is heavy" is useless. Saying the galaxy is about 10⁷² times heavier — a 1 followed by 72 zeros — actually pins it down. That exponent, 72, is the order-of-magnitude gap between them.
+
+**Floor 2 — Definition:** The **order of magnitude** of a quantity is the nearest power of ten to its value. Write it as a × 10ᵇ: if 0.5 ≤ a < 5 the order of magnitude is 10ᵇ; if a ≥ 5 it rounds up to 10ᵇ⁺¹. The whole span from a proton to the observable universe is about 10⁶¹ — which orders of magnitude shrink to roughly 60 countable steps.
+
+**Floor 3 — In action:** Physicists estimate this way constantly. When Enrico Fermi asked "how many piano tuners are in Chicago?", he wasn't after the exact count — he was teaching them to split an unfamiliar problem into guessable pieces (city population, pianos per household, tunings a year, tunings one tuner manages), multiply the rough numbers, and land in the right ballpark. An estimate off by 100× can still rule out a thousand impossible answers.
+
+**Floor 4 — The bedrock:** Orders of magnitude aren't just for estimating — they're how the world handles enormous ranges, by counting in powers of ten instead of raw numbers. That's a logarithmic scale, and it's everywhere: decibels for sound, the Richter scale for earthquakes, pH for acidity, stellar magnitudes for brightness. Each step is a ten-fold jump, not a fixed amount — a magnitude-7 quake releases about a thousand times the energy of a magnitude-5. Even your senses work this way: a sound that feels "twice as loud" is really about ten times the power.
+
+---
+
+## BB 91 — The structure of the world
+*Physics · Measurement (scale & estimation)* · ✓ publishable · *closes the scale & estimation strand; noted as the most snippet-leaning core BB (Floors 3–4 are wonder/perspective)*
+
+**Floor 0 — Idea:** Reality is built in layers, each roughly a million times bigger or smaller than the last. The same physics that binds an atom also steers a galaxy — but what matters, and what you even notice, changes completely from one rung of the ladder to the next.
+
+**Floor 1 — Concrete:** Start at the human scale, about 1 m. Go down: a grain of sand is ~10⁻³ m, a cell ~10⁻⁵ m, an atom ~10⁻¹⁰ m, a proton ~10⁻¹⁵ m, and quarks below 10⁻¹⁸ m. Go up: a city is ~10⁴ m, Earth ~10⁷ m, the solar system ~10¹³ m, the Milky Way ~10²¹ m, the observable universe ~10²⁶ m. That's about 44 powers of ten from quark to cosmos.
+
+**Floor 2 — Definition:** The world is **hierarchically structured**: particles form atoms, atoms form molecules, molecules form matter, matter forms planets and stars, stars form galaxies, galaxies form clusters. At each level, new phenomena appear that don't exist below it. Temperature is meaningless for a single atom but rules the behaviour of a gas; wetness, pressure, life — none belong to one particle.
+
+**Floor 3 — In action:** Different rungs answer to different physics: quantum mechanics rules the subatomic, classical mechanics the everyday, general relativity the cosmic. A full description of nature needs all three, and a great unsolved problem is that they don't yet fit into one framework — gravity and quantum theory clash at the smallest scales. The search for a unified theory is partly the search for the rungs that join them.
+
+**Floor 4 — The bedrock:** This layering hides a deep idea: **emergence**. The laws at each level are real in their own right, not just bookkeeping for the level beneath. In 1972 the physicist Philip Anderson put it as "more is different" — knowing the rules for one particle does not, even in principle, let you predict what a trillion of them will do together. You can't read superconductivity, or a thought, off the equations for a single electron; new laws switch on at each scale. That's why physics, chemistry, and biology are separate sciences rather than footnotes to particle physics — the higher rungs carry information the lower ones simply don't.
+
+---
