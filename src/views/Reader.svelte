@@ -135,19 +135,27 @@
     return s ? s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : '';
   }
 
-  // Touch handling — live drag-follow horizontal swipe across BBs, plus the
-  // vertical dig/surface flick. The rail tracks the finger 1:1 so the swipe
-  // feels responsive immediately, then snaps on release.
+  // Touch handling — horizontal drag-follow across BBs, plus a reel-style
+  // vertical elastic overscroll on the dig/surface axis (the card rubber-bands
+  // ~1.5% of the screen and springs back; overscrolling past a threshold
+  // digs/surfaces).
   let tx = 0, ty = 0, tdx = 0, tdy = 0, touching = false;
-  let axis = null;        // 'x' | 'y' once the gesture locks to an axis
-  let dragOffset = 0;     // live horizontal drag distance (px)
-  let isDragging = false; // horizontal drag in progress → disables rail transition
+  let axis = null;          // 'x' | 'y' once the gesture locks to an axis
+  let dragOffset = 0;       // live horizontal drag distance (px)
+  let isDragging = false;   // horizontal drag → disables rail transition
+  let dragOffsetY = 0;      // live vertical elastic offset on the active card (px)
+  let isVDragging = false;  // vertical overscroll → disables card transition
+  let vScroller = null;     // the active floor's scrollable text, if any
+  let vEngaged = false;     // the vertical swipe actually reached an overscroll edge
 
   function handleTouchStart(e) {
     touching = true;
     tx = e.touches[0].clientX;
     ty = e.touches[0].clientY;
-    tdx = 0; tdy = 0; axis = null; dragOffset = 0; isDragging = false;
+    tdx = 0; tdy = 0; axis = null;
+    dragOffset = 0; isDragging = false;
+    dragOffsetY = 0; isVDragging = false; vEngaged = false;
+    vScroller = e.target.closest?.('.card')?.querySelector('.floor-text') || null;
   }
   function handleTouchMove(e) {
     if (!touching) return;
@@ -160,6 +168,18 @@
       isDragging = true;
       const atEdge = (idx === 0 && tdx > 0) || (idx === totalCards - 1 && tdx < 0);
       dragOffset = atEdge ? tdx * 0.3 : tdx; // rubber-band at the ends
+    } else if (axis === 'y') {
+      // Only bounce once the reading text can't scroll further that way (or
+      // there's no scroller) — otherwise let the text scroll normally.
+      const atTop = !vScroller || vScroller.scrollTop <= 0;
+      const atBottom = !vScroller || (vScroller.scrollTop + vScroller.clientHeight >= vScroller.scrollHeight - 1);
+      if ((tdy > 0 && atTop) || (tdy < 0 && atBottom)) {
+        vEngaged = true; isVDragging = true;
+        const maxB = (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.015;
+        dragOffsetY = maxB * Math.tanh(tdy / (maxB * 3)); // smooth asymptote toward ±1.5%
+      } else {
+        isVDragging = false; dragOffsetY = 0;
+      }
     }
   }
   function handleTouchEnd() {
@@ -169,11 +189,14 @@
       const threshold = Math.min(80, w * 0.22);
       if (tdx <= -threshold) move(idx + 1);
       else if (tdx >= threshold) move(idx - 1);
-      // otherwise: snap back (resetting dragOffset re-runs the CSS transition)
-    } else if (axis === 'y' && Math.abs(tdy) >= 30) {
+    } else if (axis === 'y' && vEngaged && Math.abs(tdy) >= 40) {
+      // Overscrolled past the threshold → change floor (a no-op at bedrock/top,
+      // which simply leaves the elastic bounce as the feedback).
       if (tdy < 0) goDeeper(idx); else goShallower(idx);
     }
-    axis = null; dragOffset = 0; isDragging = false;
+    axis = null;
+    dragOffset = 0; isDragging = false;
+    dragOffsetY = 0; isVDragging = false; vEngaged = false;
   }
 
   function handleKeydown(e) {
@@ -207,7 +230,7 @@
   >
     {#each numbers as n, i}
       {@const col = getBoard(n)}
-      <div class="card">
+      <div class="card" class:vdragging={isVDragging && i === idx} style="transform:translateY({i === idx ? dragOffsetY : 0}px)">
         {#if col}
         <div class="slab">
           {#if isSwipeCard(i, depthOf[i])}
@@ -361,7 +384,9 @@
     display: flex; align-items: center; justify-content: center;
     padding: clamp(56px, 7vh, 80px) clamp(14px, 4vw, 60px) clamp(18px, 3vh, 32px);
     box-sizing: border-box;
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); /* springy elastic snap-back */
   }
+  .card.vdragging { transition: none; } /* follow the finger 1:1 while overscrolling */
   .slab {
     position: relative;
     width: min(420px, 100%);
