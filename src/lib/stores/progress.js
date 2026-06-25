@@ -127,6 +127,14 @@ function createProgressStore() {
       };
     },
 
+    /** Get the read/unread state for a single board (card number).
+     *  Boards only carry a read/unread distinction; quiz/mastery is path-level. */
+    getBoardState(cardNumber) {
+      const data = get({ subscribe });
+      const b = data.boards[cardNumber];
+      return { state: b && b.firstOpenedAt ? 'checked' : 'unwandered' };
+    },
+
     /** Get overall progress count */
     getOverall() {
       const data = get({ subscribe });
