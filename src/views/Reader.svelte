@@ -290,7 +290,7 @@
               <span class="header-mark"><SubjectMark subject={col.tags?.subject} accent="#454ADE" size={18} /></span>
               <div class="header-text">
                 <div class="header-title">{col.title}</div>
-                <div class="header-sub">{col.kicker} · {humanize(col.tags?.subject)}</div>
+                <div class="header-sub">{col.kicker} · {humanize(col.tags?.subject)}{#if col.tags?.reviewStatus === 'final'}<span class="review-chip-r">✓ Final</span>{/if}</div>
               </div>
               {#if snippetByBoard[n]?.length}
                 <button class="snippet-btn" on:click={() => activeSnippets = snippetByBoard[n]} title="Related snippets" aria-label="View related snippets">
@@ -582,6 +582,10 @@
   .arrow-btn.primary { background: var(--qx-accent); border-color: var(--qx-accent); color: #fff; }
   .arrow-btn:disabled { opacity: 0.35; cursor: default; }
 
+  .review-chip-r {
+    display: inline-block; margin-left: 8px; font-size: 10px; font-weight: 800; vertical-align: middle;
+    color: var(--qx-green); background: var(--qx-green)1e; border-radius: var(--qx-radius-pill); padding: 1px 7px;
+  }
   .snippet-btn {
     position: relative;
     width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%;

@@ -126,6 +126,8 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — The bedrock:** Homogeneity isn't an imposed rule — it falls out of what an equation means. You can add two lengths, or set a length equal to a length, but "three metres plus five seconds" isn't a bigger or smaller quantity; it isn't a quantity at all. The same logic reaches past addition: the argument of any sin, log, or exponential must be dimensionless, because there is no such thing as the sine of 5 metres. So in a decay law like e^(−t/τ), the t/τ must be a pure number — which immediately tells you τ is a time. The principle quietly fixes the meaning of the constants in a formula, not just its form.
 
 ---
+
+## BB (new, capstone) — Dimensional analysis: finding the formula from the dimensions
 *Physics · Measurement* · ✓ publishable · *new capstone BB, slots after BB 89 (homogeneity)*
 
 **Floor 0 — Idea:** Here's the payoff for everything so far: you can often work out the shape of a physics formula without running a single experiment — just by forcing the dimensions to match.

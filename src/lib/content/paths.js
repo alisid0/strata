@@ -72,12 +72,17 @@ export const PATHS = {
   P30: { subject: 'physics', name: 'Electricity — the basics', icon: 'physics', cards: [724, 725, 726, 727, 728, 729, 730, 731, 732, 733, 734, 735, 736, 737, 738], quizUrls: ['tier0'] },
   P31: { subject: 'physics', name: 'Waves & oscillations — the basics', icon: 'physics', cards: [739, 740, 741, 742, 743, 744, 745, 746, 747, 748, 749, 750, 751, 752, 753], quizUrls: ['tier0'] },
   P32: { subject: 'physics', name: 'Heat & matter — the basics', icon: 'physics', cards: [754, 755, 756, 757, 758, 759, 760, 761, 762, 763, 764, 765, 766, 767, 768], quizUrls: ['tier0'] },
-  P33: { subject: 'physics', name: 'Optics — the basics', icon: 'physics', cards: [769, 770, 771, 772, 773, 774, 775, 776, 777, 778, 779, 780, 781, 782, 783], quizUrls: ['tier0'] }
+  P33: { subject: 'physics', name: 'Optics — the basics', icon: 'physics', cards: [769, 770, 771, 772, 773, 774, 775, 776, 777, 778, 779, 780, 781, 782, 783], quizUrls: ['tier0'] },
+
+  // Finalised publishable BBs, ingested as a self-contained review topic
+  // (sort_order 800+, tagged reviewStatus:'final' → colour-coded green).
+  // Rebuilt by: node --env-file=.env.local scripts/ingest-final-review.mjs
+  PFINAL: { subject: 'physics', name: '★ Final draft — review', icon: 'physics', cards: [800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816], quizUrls: [] }
 };
 
 /** Grouped by subject for the subjects overview */
 export const SUBJECT_PATHS = {
-  physics: ['P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27', 'P28', 'P29', 'P30', 'P31', 'P32', 'P33'],
+  physics: ['PFINAL', 'P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27', 'P28', 'P29', 'P30', 'P31', 'P32', 'P33'],
   maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'M15', 'M16'],
   chemistry: ['C1', 'C2', 'C3', 'C4', 'C5']
 };
