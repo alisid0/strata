@@ -292,3 +292,18 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — The bedrock:** Most of these forces are secretly the same force. Gravity is its own fundamental interaction, but buoyancy, friction, and the table pushing your book up are all electromagnetic at root — they come from the electron clouds of atoms repelling each other where surfaces meet. When the hull shoulders water aside or the table holds up a book, what's really happening is countless atoms' electrons refusing to overlap. So the long list of everyday "forces" collapses to just a handful of fundamental ones, wearing different costumes.
 
 ---
+
+## BB 02 — Matter and mass
+*Physics · Foundations* · ✓ publishable · *follows the ship BB*
+
+**Floor 0 — Idea:** Matter is the physical stuff things are made of, down to their atoms. Mass measures how hard an object is to get moving — and for anything built of matter, the more matter packed in, the harder it is, so mass also tells you how much stuff is there. A bowling ball takes far more force to get rolling than a beach ball because it holds far more matter.
+
+**Floor 1 — Concrete:** You can't count that matter directly, so how is mass measured? By how hard the object is to move. Picture two objects drifting in deep space, far from any planet — no gravity, no friction, nothing to interfere. Give each the same push: the one with more matter inside speeds up far less. Out there, stripped of everything else, the only thing setting how much a push moves an object is its mass.
+
+**Floor 2 — Definition:** **Matter** is anything made of atoms that takes up space. **Mass**, measured in kilograms, is how hard an object is to speed up or slow down. For ordinary objects this is set by the amount of matter inside, so mass doubles as a measure of how much stuff is present. Either way it's a property of the object itself — the same on Earth, the Moon, or in deep space.
+
+**Floor 3 — In action:** This is why mass and weight aren't the same. **Weight** is the force of gravity pulling on an object's mass, so it shifts with location: on the Moon you'd weigh a sixth as much, in deep space nothing at all. But how hard you are to push, your mass, never changes. A bathroom scale measures weight and labels it mass — fine on Earth, misleading on the Moon.
+
+**Floor 4 — The bedrock:** At the smallest scale the "amount of matter" picture breaks. An electron has mass, about 9 × 10⁻³¹ kg, yet it's a fundamental particle — a point, as far as any experiment can tell, with no smaller parts to count. No stuff inside, but it still takes force to move it, so it still has mass. That's the proof that mass is fundamentally about how hard something is to accelerate, not how much it's built from. So where does it come from? Fundamental particles like the electron get theirs from the **Higgs field**, an invisible field filling space that they drag against — the stronger the drag, the more mass. And for everything built from them, most of the mass is the energy binding the parts together: over 99% of a proton's mass is the energy holding its quarks, via E = mc².
+
+---
