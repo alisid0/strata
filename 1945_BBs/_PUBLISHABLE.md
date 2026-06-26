@@ -307,3 +307,63 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — The bedrock:** At the smallest scale the "amount of matter" picture breaks. An electron has mass, about 9 × 10⁻³¹ kg, yet it's a fundamental particle — a point, as far as any experiment can tell, with no smaller parts to count. No stuff inside, but it still takes force to move it, so it still has mass. That's the proof that mass is fundamentally about how hard something is to accelerate, not how much it's built from. So where does it come from? Fundamental particles like the electron get theirs from the **Higgs field**, an invisible field filling space that they drag against — the stronger the drag, the more mass. And for everything built from them, most of the mass is the energy binding the parts together: over 99% of a proton's mass is the energy holding its quarks, via E = mc².
 
 ---
+
+## BB 03 — Inertia & Newton's first law
+*Physics · Foundations* · ✓ publishable
+
+**Floor 0 — Idea:** A car rolls down a long, straight highway at a steady speed. You want it to stop — so what has to happen? It won't simply halt because you wish it to. A moving object keeps going, same speed and same direction, until something acts on it to change that. That stubborn tendency to hold on to its motion is **inertia**.
+
+**Floor 1 — Concrete:** To stop the car, you press the brakes. The pads clamp the wheels and push back hard against its motion (an external force), and only then does it slow and come to rest. This is Newton's first law: an object stays at rest, or keeps moving in a straight line at constant speed, unless an outside force acts on it. Without a force, the car would never stop on its own — something always has to stop it.
+
+**Floor 2 — Definition:** Take your foot off the pedals without braking, and the car still coasts to a stop. If motion carries on by itself, why does it stop here? Because a quieter force is always acting: friction in the wheels and air pushing back. Strip that away (picture the car on a vast sheet of frictionless ice) and it would coast forever. The motion was never fading on its own; friction was draining it. So a moving thing's continued motion needs no explanation. Its stopping does, and the answer is always a force.
+
+**Floor 3 — In action:** You feel inertia every day. When a car brakes hard, your body keeps moving forward — that's why seatbelts exist: the car stops, but your inertia doesn't. Pull away fast and you're pressed back into your seat as the car accelerates out from under you. A magician yanking a tablecloth leaves the dishes standing, because nothing pushed them sideways. In each case, things hold on to their motion until a force changes it.
+
+**Floor 4 — The bedrock:** This law overturned two thousand years of physics. Aristotle taught that motion needs a continuous cause — stop pushing and a thing stops, which matches everyday life on a friction-filled Earth. Galileo and then Newton saw through it: the stopping was friction's doing, not the motion's nature. Strip the friction away and motion simply persists, free of charge. That flip, from "motion needs a cause" to "only a *change* in motion needs a cause," is what made the rest of mechanics possible. It also quietly defines the special "inertial" frames in which the law holds: ones that aren't themselves accelerating.
+
+---
+
+## BB (new) — The asteroid that ended the dinosaurs
+*Physics · Mechanics* · ✓ publishable · *kinematics intro arc: precedes the "farther to fall" what-if and BB 06 (the bus)*
+
+**Floor 0 — Idea:** About 66 million years ago, a mountain-sized rock fell out of the sky and ended the age of the dinosaurs. What turned a lump of rock into a planet-wide catastrophe wasn't just its size — it was the way it was moving. Three things describe that motion, and together they sealed the dinosaurs' fate: its speed, its velocity, and its acceleration.
+
+**Floor 1 — Concrete:** Start with **speed** — how fast it was going. This was no falling pebble. The asteroid tore in at something like 20 kilometres every second: over 70,000 km/h, roughly twenty times the speed of a rifle bullet. At that pace it crossed the last stretch of sky in seconds. Speed alone already made it dangerous, because the faster something moves, the more energy it carries.
+
+**Floor 2 — Concrete:** But it wasn't just fast — it was aimed. A rock drifting harmlessly past Earth and one barrelling straight at it can share the exact same speed; what separates them is direction. Speed together with a direction is **velocity**. This asteroid's velocity pointed dead at our planet: 20 km/s, straight down. Same speed as a near-miss, utterly different outcome — all because of where it was headed.
+
+**Floor 3 — Concrete:** And it was still speeding up. Earth's gravity had been pulling it in, adding speed mile after mile — that steady building-up of velocity is **acceleration**. The closer it fell, the stronger gravity's grip became, so it didn't just get faster, it got faster *faster*. By the moment of impact, the fall had wrung out every last bit of speed it could.
+
+**Floor 4 — Deeper:** Put the three together and you get the catastrophe: an enormous velocity, still climbing under acceleration, slamming into the ground. The impact hit with the energy of billions of Hiroshima bombs — enough to throw up a cloud that darkened the skies for years and wipe out around three-quarters of all species, the dinosaurs among them. Speed, velocity, acceleration: the same three quantities that decided that day also describe something as ordinary as a city bus pulling away from a stop — which is exactly where the next board goes to pin down what each one really means.
+
+---
+
+## BB (new) — What if the asteroid had farther to fall?
+*Physics · Mechanics* · ✓ publishable · *kinematics intro arc: follows the asteroid BB (pending), precedes BB 06 (the bus)*
+
+**Floor 0 — Idea:** Run the disaster again, but move Earth a million miles further out, giving the asteroid that much extra distance to fall before it lands. Does it hit harder? Two fair questions: how fast is it going when it lands (its velocity), and how hard is it still being pulled at that instant (its acceleration)? The two answers split apart — and the split is exactly what separates these ideas.
+
+**Floor 1 — Concrete:** The velocity is the easy call: it lands faster. Every extra mile of falling is another stretch over which gravity keeps adding speed, and velocity is the running total of all that speeding-up. More distance to fall means longer being accelerated, so the rock arrives with a higher velocity. Give it farther to fall and it hits harder — that part matches your gut.
+
+**Floor 2 — Concrete:** Now the surprise: its acceleration at the moment of impact is the *same* as before — it doesn't rise at all. Acceleration here is just how hard Earth's gravity pulls at the ground, and that pull is set by Earth itself, not by how far the rock has travelled. Whether it fell from near or from a million miles further, the gravity it meets at the surface is identical. Velocity remembers the whole journey; acceleration only knows where you are right now.
+
+**Floor 3 — In action:** There's even a ceiling on how much the extra distance helps. Far from Earth, gravity is feeble — out there it barely speeds the rock up; almost all the gain comes in the final plunge. Drop something from rest from anywhere, even unimaginably far, and Earth's gravity alone can't bring it in faster than about 11 km/s. (The real asteroid beat that only because it wasn't starting from rest — it already carried its own huge speed from orbiting the Sun, and gravity just added the last stretch.)
+
+**Floor 4 — Deeper:** So the what-if cleanly separates the trio. Speed and velocity are *accumulated* — the sum of everything that's happened to the object so far, and falling farther raises them. Acceleration is *instantaneous* — only the pull acting right now, and at the surface that never changed. Hold on to that split, because the next board takes the same three quantities out of the sky and into something you ride to work: a city bus.
+
+---
+
+## BB 06 — Speed, velocity & acceleration
+*Physics · Mechanics* · ✓ publishable · *follows the asteroid what-if; seals the kinematics intro arc*
+
+**Floor 0 — Idea:** We just watched speed, velocity, and acceleration end the age of the dinosaurs. Here are the very same three in something far tamer — a city bus pulling out of a stop, cruising down the road, then braking at a red light. They still sound like synonyms, but physics keeps them sharply apart, and on the bus we can finally pin down exactly what each one means.
+
+**Floor 1 — Concrete:** Follow the bus through the trip. At the stop it's motionless. The driver pulls away and it gains pace; out on the open road it settles into a steady cruise; nearing the light it slows and halts. Speed, velocity, and acceleration each capture a different part of what just happened — so let's separate them.
+
+**Floor 2 — Definition:** **Speed** is how fast something moves, with no direction attached. At the stop the bus's speed is zero; pulling away, it climbs; at the light, it drops back to zero. Speed is a single number (say 30 km/h) telling you how fast, not which way — a quantity with magnitude only, called a scalar.
+
+**Floor 3 — In action:** **Velocity** is speed plus a direction. "30 km/h" is a speed; "30 km/h heading north" is a velocity. Two buses going the same speed in opposite directions have identical speeds but opposite velocities. That added direction makes velocity a vector — and it means velocity can change even when speed holds steady.
+
+**Floor 4 — Deeper:** **Acceleration** is the rate at which velocity changes. Pulling away, the bus speeds up (it accelerates); braking, it slows (negative acceleration). Standing still, or cruising straight at steady speed, its acceleration is zero — nothing about its velocity is changing. Here's the subtle part: because velocity includes direction, turning counts as acceleration too. A bus rounding a bend at a constant 30 km/h is accelerating the whole way, since its direction, and so its velocity, keeps changing.
+
+---
