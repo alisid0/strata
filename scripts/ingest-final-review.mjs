@@ -14,7 +14,7 @@ import { readFileSync } from 'fs';
 const s = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 const md = readFileSync('1945_BBs/_PUBLISHABLE.md', 'utf8');
 
-const REVIEW_BASE = 800;
+const REVIEW_BASE = 1000; // well clear of the snippet lane (784+) so they never collide
 
 function toHtml(text) {
   let t = text.trim();
@@ -46,7 +46,7 @@ for (const sec of sections) {
 
 console.log(`Parsed ${boards.length} finalised BBs from _PUBLISHABLE.md`);
 
-const { error: delErr } = await s.from('cards').delete().gte('sort_order', REVIEW_BASE);
+const { error: delErr } = await s.from('cards').delete().eq('tags->>source', 'publishable-review');
 if (delErr) { console.error('delete failed:', delErr.message); process.exit(1); }
 
 let so = REVIEW_BASE;

@@ -367,3 +367,42 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — Deeper:** **Acceleration** is the rate at which velocity changes. Pulling away, the bus speeds up (it accelerates); braking, it slows (negative acceleration). Standing still, or cruising straight at steady speed, its acceleration is zero — nothing about its velocity is changing. Here's the subtle part: because velocity includes direction, turning counts as acceleration too. A bus rounding a bend at a constant 30 km/h is accelerating the whole way, since its direction, and so its velocity, keeps changing.
 
 ---
+
+## BB (new, precedes BB 71) — Newtonian physics: the clockwork of motion
+*Physics · Foundations* · ✓ publishable · *6 floors; precedes BB 71 (laws as equations)*
+
+**Floor 0 — Idea:** We now have a language for motion: position, speed, velocity, acceleration — that's **kinematics**. Newtonian physics is what makes that language *predictive*. Its claim is bold: if you know where an object is, how it's moving, and what forces act on it, you can work out its entire future motion — exactly. Motion isn't haphazard; it follows rules precise enough to compute.
+
+**Floor 1 — Concrete:** Here's the chain that makes it work. Forces set an object's acceleration. Acceleration is the rate its velocity changes, so it continuously reshapes that velocity. Velocity is the rate its position changes, so it continuously moves the object. Forces → acceleration → velocity → position. Throw a ball and, knowing gravity and how you threw it, you can trace its whole arc in advance — every point it will pass through until it lands. None of the flight is left to chance.
+
+**Floor 2 — Definition:** **Kinematics** describes motion (position, velocity, acceleration) without asking what causes it. **Newtonian physics** (classical mechanics) adds the cause: Newton's laws of motion, which tie forces to the acceleration they produce. Together they make the framework *deterministic* — the same starting positions, velocities, and forces always return the same future motion.
+
+**Floor 3 — In action:** This predictive power is why we can do astonishing things on schedule. The same framework forecasts a solar eclipse to the second centuries ahead, steers a spacecraft across billions of kilometres into orbit around a distant planet, and tells an engineer exactly how a bridge will carry its load. Pierre-Simon Laplace pushed the idea to its limit: an intellect knowing the position and velocity of every particle, and every force, could in principle compute the entire future of the universe — a clockwork cosmos.
+
+**Floor 4 — The bedrock:** Newtonian physics isn't the final word; it's a magnificent approximation with hidden assumptions. It treats space and time as absolute, and takes for granted that an object's position and motion can both be known exactly. The first assumption fails when things move near the speed of light, where Einstein's relativity takes over — clocks slow, lengths contract, and Newton's tidy picture bends. Yet across the everyday and astronomical world, from thrown balls to planets, it's so accurate we steer spacecraft across the solar system with it.
+
+**Floor 5 — Where it stops:** The other frontier is smallness. Newtonian mechanics describes the motion of matter (even sound, which is just air pushed back and forth), but it says nothing about electricity, magnetism, or light; those run on their own laws, electromagnetism. Shrink down to the scale of atoms and both frameworks dissolve into a stranger one: **quantum mechanics**, where particles behave like waves, energy comes in discrete lumps, and exact paths blur into probabilities. That quantum world is the bedrock everything sits on — the electrons moving through every wire, the chemistry of every material, the light from every screen. Newton's laws aren't wrong; they're the large, slow, everyday face of a deeper, smaller reality.
+
+---
+
+## BB 71 — From words to equations: how physics writes a law
+*Physics · Foundations* · ✓ publishable · *follows the Newtonian-physics board; opens the formal/mathematical tier*
+
+**Floor 0 — Idea:** You can describe a law in words: "the harder you push an object, the faster it speeds up." True, but vague — how *much* faster? Physics answers with an equation. A physical law written as an equation is a precise, exact relationship between measured quantities, and it holds for any numbers you put in, not just the ones you happened to test.
+
+**Floor 1 — Concrete:** Take Newton's second law: F = ma. In words it's "force causes acceleration." As an equation it says far more — acceleration equals force divided by mass, exactly. Double the force and you double the acceleration; double the mass and you halve it. That single line captures every one of those trade-offs at once, for any force and any mass, in a way no sentence can.
+
+**Floor 2 — Definition:** A **physical law**, written mathematically, is an equation relating measurable quantities, each carrying its own unit: F in newtons, m in kilograms, a in metres per second squared. The equation isn't a one-off fact; it's a rule that stays true whatever values you substitute — a single statement standing in for infinitely many specific cases.
+
+**Floor 3 — In action:** This is what makes an equation a tool, not just a summary. Knowing F = ma, you can *predict*: plug in a 1000 kg car and a 2000 N push, and out comes its acceleration, 2 m/s². You can *rearrange* it to solve for whatever you don't know (m = F/a). And you can *dimension-check* it to catch errors. A verbal law lets you nod along; an equation lets you calculate. Every board from here turns the qualitative foundations into equations like this one.
+
+**Floor 4 — The bedrock:** Because an equation holds for every value, not just the ones already tested, you can apply it to situations no one has measured. In the 1840s, astronomers found Uranus drifting slightly off the orbit Newton's gravity predicted. Rather than suspect the law was broken, Urbain Le Verrier trusted it: he worked out that an unseen planet must be tugging on Uranus, and calculated exactly where it had to be. He sent the coordinates to an observatory, and that same night they spotted Neptune, less than a degree from his prediction. The planet was found on paper before a single telescope was aimed at it.
+
+---
+
+## Snippet — The edge of Newton's law
+*kind: snippet · builds on BB 71 (live anchor: Card 71) · ✓ publishable · ingested (sort_order 792)*
+
+**The planet that never was: Vulcan.** Flush with the triumph of Neptune, Urbain Le Verrier turned the same method on Mercury. Mercury's orbit also drifted from Newton's prediction — its closest point to the Sun crept around a little faster than the equations allowed. Le Verrier proposed the obvious fix: another unseen planet, this one orbiting between Mercury and the Sun. He named it Vulcan. For half a century astronomers hunted for it, and a few even reported seeing it cross the Sun's face, but Vulcan was never there. The puzzle held until 1915, when Einstein's general relativity gave the real answer: Mercury orbits so close to the Sun that it travels through space the Sun's mass has noticeably curved, and that curvature shifts its orbit by exactly the missing amount. There was no extra planet to find — this time it was Newton's law itself that had to give way.
+
+---

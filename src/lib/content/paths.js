@@ -77,7 +77,7 @@ export const PATHS = {
   // Finalised publishable BBs, ingested as a self-contained review topic
   // (sort_order 800+, tagged reviewStatus:'final' → colour-coded green).
   // Rebuilt by: node --env-file=.env.local scripts/ingest-final-review.mjs
-  PFINAL: { subject: 'physics', name: '★ Final draft — review', icon: 'physics', cards: [800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820, 821], quizUrls: [] }
+  PFINAL: { subject: 'physics', name: '★ Final draft — review', icon: 'physics', cards: [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023], quizUrls: [] }
 };
 
 /** Grouped by subject for the subjects overview */

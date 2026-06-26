@@ -109,10 +109,12 @@ async function main() {
     if (r.tags?.slug) slugToOrder[r.tags.slug] = r.sort_order;
   }
 
-  const { data: maxRow, error: maxErr } = await supabase
-    .from('cards').select('sort_order').order('sort_order', { ascending: false }).limit(1);
-  if (maxErr) fail(maxErr.message);
-  let nextOrder = (maxRow?.[0]?.sort_order || 0) + 1;
+  // Next sort_order from the SNIPPET lane only — never the global max, so that
+  // review boards and other dynamic cards (which live in their own ranges)
+  // can't push snippet numbers up into them and cause sort_order collisions.
+  const SNIPPET_BASE = 784;
+  const maxSnippet = (existing || []).reduce((m, r) => Math.max(m, r.sort_order || 0), SNIPPET_BASE - 1);
+  let nextOrder = maxSnippet + 1;
 
   const rows = snippets.map(s => {
     const sortOrder = slugToOrder[s.slug] ?? nextOrder++;
