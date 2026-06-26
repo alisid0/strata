@@ -406,3 +406,33 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **The planet that never was: Vulcan.** Flush with the triumph of Neptune, Urbain Le Verrier turned the same method on Mercury. Mercury's orbit also drifted from Newton's prediction — its closest point to the Sun crept around a little faster than the equations allowed. Le Verrier proposed the obvious fix: another unseen planet, this one orbiting between Mercury and the Sun. He named it Vulcan. For half a century astronomers hunted for it, and a few even reported seeing it cross the Sun's face, but Vulcan was never there. The puzzle held until 1915, when Einstein's general relativity gave the real answer: Mercury orbits so close to the Sun that it travels through space the Sun's mass has noticeably curved, and that curvature shifts its orbit by exactly the missing amount. There was no extra planet to find — this time it was Newton's law itself that had to give way.
 
 ---
+
+## BB 72 — Mass, weight & units
+*Physics · Foundations (formal tier)* · ✓ publishable · *formal-tier partner to BB 02; follows BB 71*
+
+**Floor 0 — Idea:** You've met mass and weight as ideas; now meet them as an equation. Mass is how much matter you have, the same everywhere. Weight is the force gravity pulls on that mass, and it changes with location. One short formula ties them together: **W = mg**.
+
+**Floor 1 — Concrete:** Read W = mg literally: weight equals mass times g, the local gravitational acceleration. Take a 1 kg bag of sugar. On Earth, g ≈ 9.8 m/s², so its weight is 1 × 9.8 = 9.8 newtons. Carry the same bag to the Moon, where g ≈ 1.6 m/s², and W = 1 × 1.6 = 1.6 newtons. The mass never moved off 1 kg; only the weight dropped — to about a sixth.
+
+**Floor 2 — Definition:** **Mass** is a *scalar*, measured in **kilograms (kg)**: a magnitude with no direction, fixed wherever the object goes. **Weight** is a *force*, measured in **newtons (N)**, and like any force it points somewhere — straight down, toward the Earth's centre. The letter **g** is the gravitational acceleration of wherever you're standing: 9.8 m/s² on Earth, 1.6 on the Moon, about 24 on Jupiter. Change g and you change the weight, never the mass.
+
+**Floor 3 — In action:** This is why a bathroom scale can mislead. A scale measures the force you press on it (your weight, in newtons), then quietly divides by 9.8 and shows a "mass" in kilograms. That shortcut only works because g is fixed on Earth. Take the scale to the Moon and it would read a sixth of your weight and call it a sixth of your mass — which is wrong; your mass hasn't changed. Astronauts feel weightless in orbit not because they've lost mass, but because they and their craft fall together, so nothing presses on a scale: the weight you *feel* is zero, the mass is untouched.
+
+**Floor 4 — The bedrock:** There's a hidden elegance in W = mg. Drop an object and the only force on it is its weight, so Newton's second law gives mg = ma — and the mass cancels, leaving a = g. Every falling object, heavy or light, accelerates at exactly g. That's why a hammer and a feather, released together in a vacuum, land at the same instant — astronaut David Scott actually did it on the airless Moon in 1971, and they hit the dust together. The same g that sets your weight sets the fall of everything around you.
+
+---
+
+## BB 73 — Newton's first law as a condition (ΣF = 0)
+*Physics · Mechanics (formal tier)* · ✓ publishable · *formal version of BB 03's "left alone"*
+
+**Floor 0 — Idea:** Add up every push and pull acting on an object. If they cancel out completely, leaving nothing left over, then the object's motion simply can't change — whatever it was doing, it keeps doing. That total of all the forces is called the **net force**, and it's the heart of Newton's first law.
+
+**Floor 1 — Concrete:** Put a solid steel block under a hydraulic press and drive down on it with tonnes of force. The block doesn't move a hair. Why not? It's pinned against the press bed, which pushes back up just as hard — two enormous forces, dead equal and opposite, cancelling to nothing. Net force zero, no motion, even with all that weight bearing down. The first law doesn't care how big the forces are, only whether they cancel. Now crank the press past what the steel can withstand: the block can no longer push back hard enough, the forces stop cancelling, and the leftover downward force drives the head through — the block crushes. Motion appears the instant the balance breaks.
+
+**Floor 2 — Definition:** In shorthand, the net force is written **ΣF** — the Greek letter sigma (Σ) just means "add them all up." So the law becomes **ΣF = 0 ⇒ velocity stays constant**. Why does zero force mean unchanging motion? Because of F = ma from the last boards: acceleration is force divided by mass, so if the net force is zero, the acceleration is zero too — and zero acceleration means the velocity isn't changing, whether it's cruising steadily or standing still. "At rest" is just the special case where that unchanging velocity happens to be zero.
+
+**Floor 3 — In action:** The law reads both directions, which is what makes it useful. See something at rest or moving steadily, and you know at once its forces balance — even ones you can't see. A skydiver who has stopped speeding up has hit terminal velocity: as she fell faster, air resistance grew, until it finally equalled her weight. Net force zero, so from there she falls at a steady speed. Nobody measured the drag — the constant velocity announced it had matched gravity.
+
+**Floor 4 — The bedrock:** Net force zero is quietly the most-used equation in engineering. Every structure that stays put — a bridge, a tower, a shelf bracket, a crane holding its load — has all its forces summing to zero. Designing one is largely the work of making sure they do, joint by joint. Let the sum miss zero by even a little and you no longer have a still structure but an accelerating one: something bends, slips, or gives way. Newton's first law isn't only about motion; it's the condition for anything to hold still.
+
+---
