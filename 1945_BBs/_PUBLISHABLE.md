@@ -527,3 +527,33 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — The bedrock:** Get this one habit solid and everything visual in maths opens up. Every line, curve, and shape from here on is really just a collection of these points — a line is all the (x, y) that obey y = 2x + 1; a circle is all the points a fixed distance from a centre. Before you can see an equation *as* a curve, you have to be fluent in the single point: across, then up, without thinking. Master the address and the whole map becomes readable.
 
 ---
+
+## BB (new) — A line is a rule connecting x and y
+*Maths · Coordinate geometry* · ✓ publishable · *precedes the gradient board; from points → segment → the x-y relationship*
+
+**Floor 0 — Idea:** So far each point has stood alone. Join two of them with a straight stroke and you get a line segment — the piece of a line between two endpoints. But something more interesting hides along the way: the points that make up that line aren't a random scatter. Their x and y values are quietly tied together by a rule. A line, it turns out, is a relationship between x and y.
+
+**Floor 1 — Concrete:** Plot two points, say (1, 1) and (4, 4), and draw the straight segment joining them. You've turned two addresses into a continuous path — every spot between them is now part of the line. To uncover the hidden rule, the easiest place to start is the two simplest lines there are: one running straight up-and-down, and one flat across.
+
+**Floor 2 — Concrete:** Draw a vertical segment — say from (3, 1) straight up to (3, 5). Then a horizontal one — from (1, 2) across to (6, 2). These are the plainest lines you can make: one only goes up, the other only goes across. Keep both in view, because picking points off each reveals exactly how x and y are tied.
+
+**Floor 3 — In action:** Pick points along the vertical segment: (3, 1), (3, 2), (3, 4)… notice anything? The x is always 3. The line travels up and down, but its across-value never budges — its rule is simply **x = 3**. Now the horizontal one: (1, 2), (4, 2), (6, 2)… here the y is always 2 while x roams freely — its rule is **y = 2**. That's how a line moves: the points aren't free to wander anywhere, they're held to a relationship between x and y.
+
+**Floor 4 — The bedrock:** Vertical and horizontal lines are the easy cases — one coordinate is frozen while the other runs free. Every other line works the same way, just less obviously: its points still obey a fixed relationship between x and y, except now *both* change together, in step. A tilted line through the origin might keep y always equal to x (the rule y = x), or always double it (y = 2x). Finding and writing that rule — how much y shifts for each step in x — is exactly what slope, and then the equation of a line, are for. Every straight line is a rule; the next boards learn to read it.
+
+---
+
+## BB (new) — The slanted line: y follows x
+*Maths · Coordinate geometry* · ✓ publishable · *introduces "function"; precedes the gradient board*
+
+**Floor 0 — Idea:** Vertical and horizontal lines were the easy ones — one coordinate frozen, the other free. Tilt the line off level and now both x and y change as you move along it. The surprise is that they don't change independently: y is tied to x by a fixed rule, so knowing one tells you the other.
+
+**Floor 1 — Concrete:** Draw a line slanting up through the origin and read off some points: (1, 2), (2, 4), (3, 6), (4, 8). Look down the list — every y is exactly double its x. That's the rule of this particular line: **y = 2x**. It isn't a fluke at one or two spots; it holds at every single point on the line, all the way along.
+
+**Floor 2 — Definition:** So a slanted line is captured by an equation linking y to x — and a rule like that has a name: a **function**. Picture it as a little machine: an input goes in, exactly one output comes out. Here x is the input and y the output, and y = 2x is the machine's rule — put in x = 10 and out comes y = 20, so (10, 20) sits on the line without your drawing a thing. The line is simply the picture of the function: every point on it is one input paired with its single output.
+
+**Floor 3 — In action:** Change the multiplier and you change the line. y = x is the gentle diagonal — for every step right, y climbs just 1: (1,1), (2,2), (3,3). y = 3x is steeper — y leaps up 3 each step: (1,3), (2,6), (3,9). The bigger the number in front of x, the harder the line climbs. That one number is doing all the work of setting how steep the line is.
+
+**Floor 4 — The bedrock:** Notice what that multiplier really is: the number of units y rises for each single step x takes to the right. In y = 2x, y gains 2 per step; in y = 3x, 3 per step. That steady "rise per step" is the most important number a line has — it's the line's steepness, made exact. It deserves a name and a way to measure it from *any* two points, not just neat ones through the origin — which is precisely the next board.
+
+---

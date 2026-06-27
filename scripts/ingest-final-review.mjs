@@ -35,13 +35,18 @@ for (const sec of sections) {
   const dash = heading.indexOf(' — ');
   const title = (dash >= 0 ? heading.slice(dash + 3) : heading).trim();
 
+  // Subject from the italic meta line (e.g. "*Maths · Coordinate geometry*").
+  const subjMatch = sec.match(/\n\*(Physics|Maths|Mathematics|Chemistry)\b/i);
+  const subjRaw = (subjMatch ? subjMatch[1] : 'Physics').toLowerCase();
+  const subject = subjRaw.startsWith('math') ? 'maths' : subjRaw.startsWith('chem') ? 'chemistry' : 'physics';
+
   const floorRe = /\*\*Floor\s+\d+\s*—[^:]*:\*\*\s*([\s\S]*?)(?=\n\s*\n\*\*Floor|\n\s*\n---|\n---|$)/g;
   const layers = [];
   let m;
   while ((m = floorRe.exec(sec)) !== null) layers.push(toHtml(m[1]));
 
   if (layers.length === 0) continue; // snippet / recap / intro — skip
-  boards.push({ title, layers });
+  boards.push({ title, layers, subject });
 }
 
 console.log(`Parsed ${boards.length} finalised BBs from _PUBLISHABLE.md`);
@@ -57,12 +62,15 @@ const rows = boards.map(b => ({
   title: b.title,
   layers: b.layers,
   img_url: null,
-  tags: { subject: 'physics', reviewStatus: 'final', kind: 'bb', source: 'publishable-review' },
+  tags: { subject: b.subject, reviewStatus: 'final', kind: 'bb', source: 'publishable-review' },
 }));
 
 const { error: insErr } = await s.from('cards').insert(rows);
 if (insErr) { console.error('insert failed:', insErr.message); process.exit(1); }
 
-console.log(`Inserted ${rows.length} review boards (sort_order ${REVIEW_BASE}-${so - 1}):`);
-rows.forEach(r => console.log(`  ${r.sort_order} | ${r.layers.length} floors | ${r.title}`));
-console.log(`\nWire into paths.js: cards: [${rows.map(r => r.sort_order).join(', ')}]`);
+console.log(`Inserted ${rows.length} review boards (sort_order ${REVIEW_BASE}-${so - 1}).`);
+const bySubject = {};
+for (const r of rows) (bySubject[r.tags.subject] ||= []).push(r.sort_order);
+for (const [subj, orders] of Object.entries(bySubject)) {
+  console.log(`\nWire into paths.js — ${subj} (${orders.length} boards):\n  cards: [${orders.join(', ')}]`);
+}

@@ -77,13 +77,14 @@ export const PATHS = {
   // Finalised publishable BBs, ingested as a self-contained review topic
   // (sort_order 800+, tagged reviewStatus:'final' → colour-coded green).
   // Rebuilt by: node --env-file=.env.local scripts/ingest-final-review.mjs
-  PFINAL: { subject: 'physics', name: '★ Final draft — review', icon: 'physics', cards: [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027], quizUrls: [] }
+  PFINAL: { subject: 'physics', name: '★ Final draft — review', icon: 'physics', cards: [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027], quizUrls: [] },
+  PFINAL_MATHS: { subject: 'maths', name: '★ Final draft — review (maths)', icon: 'maths', cards: [1028, 1029, 1030, 1031, 1032], quizUrls: [] }
 };
 
 /** Grouped by subject for the subjects overview */
 export const SUBJECT_PATHS = {
   physics: ['PFINAL', 'P0', 'P0T1', 'P0T2', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27', 'P28', 'P29', 'P30', 'P31', 'P32', 'P33'],
-  maths: ['M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'M15', 'M16'],
+  maths: ['PFINAL_MATHS', 'M1', 'M2', 'M3', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'M15', 'M16'],
   chemistry: ['C1', 'C2', 'C3', 'C4', 'C5']
 };
 
