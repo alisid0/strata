@@ -64,8 +64,8 @@
   // Review-status colour coding (internal designer review app): boards finalised
   // into the publishable set carry tags.reviewStatus = 'final' (green); ones still
   // being worked carry 'review' (amber). Lets reviewers skip what's already locked.
-  const REVIEW_LABEL = { final: '✓ Final', review: '◌ In review' };
-  const REVIEW_COLOR = { final: 'var(--qx-green)', review: 'var(--qx-yellow)' };
+  const REVIEW_LABEL = { final: '✓ Final', p3: '◐ P3', review: '◌ In review' };
+  const REVIEW_COLOR = { final: 'var(--qx-green)', p3: 'var(--qx-yellow)', review: 'var(--qx-text-faint)' };
   const reviewOf = (b) => b && b.tags && b.tags.reviewStatus;
   $: allFinal = cards.length > 0 && cardStates.every(c => reviewOf(c.board) === 'final');
 </script>
@@ -99,7 +99,7 @@
     {:else}
       <div class="board-list">
         {#each cardStates as c, i}
-          <button class="board-row" class:done={c.stateBadge === '✓' || c.stateBadge === '★' || c.stateBadge === '↻'} class:final={reviewOf(c.board) === 'final'} on:click={() => openReader(c.number)}>
+          <button class="board-row" class:done={c.stateBadge === '✓' || c.stateBadge === '★' || c.stateBadge === '↻'} class:final={reviewOf(c.board) === 'final'} class:p3={reviewOf(c.board) === 'p3'} on:click={() => openReader(c.number)}>
             <span class="row-num" style="background:{c.stateColor}18; color:{c.stateColor}">
               {#if c.stateBadge === '✓' || c.stateBadge === '★' || c.stateBadge === '↻'}
                 {c.stateBadge}
@@ -168,6 +168,7 @@
   .board-row:hover { background: var(--qx-surface); }
   .board-row.done { opacity: 0.62; }
   .board-row.final { box-shadow: inset 3px 0 0 var(--qx-green); }
+  .board-row.p3 { box-shadow: inset 3px 0 0 var(--qx-yellow); }
   .review-chip {
     display: inline-block; margin-left: 7px; font-size: 10px; font-weight: 800;
     border-radius: var(--qx-radius-pill); padding: 1px 7px; vertical-align: middle; white-space: nowrap;

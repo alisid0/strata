@@ -557,3 +557,42 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — The bedrock:** Notice what that multiplier really is: the number of units y rises for each single step x takes to the right. In y = 2x, y gains 2 per step; in y = 3x, 3 per step. That steady "rise per step" is the most important number a line has — it's the line's steepness, made exact. It deserves a name and a way to measure it from *any* two points, not just neat ones through the origin — which is precisely the next board.
 
 ---
+
+## BB (P3 batch) — The slope of a line
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed — pending final P)
+
+**Floor 0 — Idea:** On the slanted line we watched y climb a fixed amount for each step in x — its "rise per step." That number is the line's **slope** (also called the **gradient**), and we can read it off *any* two points, not just neat ones through the origin.
+
+**Floor 1 — Concrete:** Pick two points and measure the vertical change Δy and the horizontal change Δx (Δ means "change in"). For (1, 2) and (4, 8): Δy = 8 − 2 = 6 and Δx = 4 − 1 = 3.
+
+**Floor 2 — Definition:** **slope = m = Δy / Δx = (y₂ − y₁)/(x₂ − x₁).** Here m = 6/3 = 2. On a straight line *any* two points give the same m — that constancy is what makes it straight. The sign gives the direction: positive climbs, negative falls, zero is flat (Δy = 0). The one exception is a vertical line: Δx = 0, you'd divide by zero, so it has no slope at all.
+
+**Floor 3 — In action:** This single number is everywhere steepness matters — a "10%" road sign, a wheelchair ramp, a roof's pitch, a ski run's rating, all Δy/Δx. It's also the seed of calculus: a curve's steepness changes point to point (found by shrinking Δx toward zero), while a straight line needs just one constant m.
+
+---
+
+## BB (P3 batch) — The equation of a line: y = mx + c
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed — pending final P)
+
+**Floor 0 — Idea:** A slant through the origin is y = (slope)·x. But most lines sit higher or lower — lift one off the origin and you need a second number. The result is the equation of *any* straight line: **y = mx + c**.
+
+**Floor 1 — Concrete:** Take y = 2x + 3: feed x = 1 → y = 5, x = 4 → y = 11. Same lean as y = 2x, but every point raised by 3 — the line now crosses the y-axis at 3.
+
+**Floor 2 — Definition:** Two letters, two jobs. **m** is the slope (the lean); **c** is the **y-intercept** — where the line crosses the y-axis, the value of y when x = 0. Change m and the line tilts; change c and it slides up or down without tilting.
+
+**Floor 3 — In action:** Every non-vertical line is exactly one pair (m, c) — two numbers fix a whole infinite line, its steepness and its height. y = 2x + 3 and y = 2x + 7 are parallel (same m, shifted apart); y = 2x + 3 and y = 5x + 3 cross the y-axis together but one is far steeper. (Vertical lines, having no slope, are the exception: x = a.)
+
+---
+
+## BB (P3 batch) — Building a line from two points
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed — pending final P)
+
+**Floor 0 — Idea:** You don't need the equation handed to you — two points rebuild the whole line, since exactly one straight line runs through any two points.
+
+**Floor 1 — Concrete:** Take (2, 7) and (5, 16). Slope: m = (16 − 7)/(5 − 2) = 3. Then c from one point: 7 = 3(2) + c, so c = 1. The line is **y = 3x + 1** — check the other point: 3(5) + 1 = 16. ✓
+
+**Floor 2 — Definition:** The recipe: (1) slope from Δy/Δx; (2) put m and a point into y = mx + c and solve for c. The equation also gives the crossings — the y-intercept is c; the x-intercept, where y = 0, is called the **root** (e.g. y = 2x − 6 gives x = 3).
+
+**Floor 3 — In action:** Now you move freely between a picture of points and an algebraic rule, each recoverable from the other. That round trip, equation ⇄ graph, is the engine of coordinate geometry — and it scales straight to every curve ahead: parabolas, circles, and beyond.
+
+---

@@ -40,13 +40,17 @@ for (const sec of sections) {
   const subjRaw = (subjMatch ? subjMatch[1] : 'Physics').toLowerCase();
   const subject = subjRaw.startsWith('math') ? 'maths' : subjRaw.startsWith('chem') ? 'chemistry' : 'physics';
 
+  // Review status from the meta line: "P3" = batch-reviewed/provisional, else final.
+  const metaLine = (sec.match(/\n(\*[^\n]*)/) || [])[1] || '';
+  const status = /\bP3\b/i.test(metaLine) ? 'p3' : 'final';
+
   const floorRe = /\*\*Floor\s+\d+\s*—[^:]*:\*\*\s*([\s\S]*?)(?=\n\s*\n\*\*Floor|\n\s*\n---|\n---|$)/g;
   const layers = [];
   let m;
   while ((m = floorRe.exec(sec)) !== null) layers.push(toHtml(m[1]));
 
   if (layers.length === 0) continue; // snippet / recap / intro — skip
-  boards.push({ title, layers, subject });
+  boards.push({ title, layers, subject, status });
 }
 
 console.log(`Parsed ${boards.length} finalised BBs from _PUBLISHABLE.md`);
@@ -62,7 +66,7 @@ const rows = boards.map(b => ({
   title: b.title,
   layers: b.layers,
   img_url: null,
-  tags: { subject: b.subject, reviewStatus: 'final', kind: 'bb', source: 'publishable-review' },
+  tags: { subject: b.subject, reviewStatus: b.status, kind: 'bb', source: 'publishable-review' },
 }));
 
 const { error: insErr } = await s.from('cards').insert(rows);
