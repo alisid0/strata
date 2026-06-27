@@ -475,3 +475,55 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Vindicated: the rocket man the Times mocked.** In 1920, the American physicist Robert Goddard published the idea that a rocket might one day reach the Moon. The New York Times mocked him for it: a rocket needs air to push against, the editorial scoffed, so in the vacuum of space it would have nothing to work on — Goddard seemed to "lack the knowledge ladled out daily in high schools." But he was right and the paper was wrong, for the exact reason this board lays out: a rocket doesn't push against the air, it pushes against its own exhaust, so it works just fine in a vacuum — arguably better, with no air to slow it. In 1969, as Apollo 11 coasted toward the Moon, the Times ran a three-line correction: "it is now definitely established that a rocket can function in a vacuum as well as in an atmosphere. The Times regrets the error." Forty-nine years late.
 
 ---
+
+## BB 148 — The simplest thing you can draw
+*Maths · Coordinate geometry* · ✓ publishable · *coordinate-geometry opener; folds in thin Card 40 (negative = direction)*
+
+**Floor 0 — Idea:** Draw a line on a page and, strictly speaking, you've drawn the wrong thing. In everyday language a "line" is a straight mark with a start and an end — but in geometry that's a **line segment**. A true **line**, in Euclid's sense, is a straight path of zero thickness that runs on forever in both directions, with no start and no finish. Keep that distinction in your pocket, because coordinate geometry is built on lines — and on one special line above all: the number line, where every point is a number.
+
+**Floor 1 — Concrete:** The real world and the perfect world of mathematics are never quite the same — a gap you'll keep meeting as these courses go deeper. A pencil line has width and a slightly ragged edge; even a laser beam spreads a little and eventually hits something. A true line has none of that: zero thickness, dead straight, no end. So how do you fit an infinite line onto a finite page? You don't draw the whole thing (you can't) — you draw a stretch of it and put an arrowhead on each end, a small signal meaning "this carries on forever, both ways." The sketch is only a stand-in; the arrows hold the infinity the paper can't.
+
+**Floor 2 — Definition:** Now take that infinite line and put it to work. Pick a point on it and call it zero — the **origin**. Choose a spacing and step off equal units: 1, 2, 3, … to the right, −1, −2, −3, … to the left. That's a **number line**. Every number now has exactly one home on it, and every point is exactly one number — a perfect, gapless match between numbers and places. That's the whole idea: a number isn't only *how many*, it's also *where*.
+
+**Floor 3 — In action:** This is the bridge between arithmetic and geometry. "Five is more than three" becomes "five sits further right than three." The distance between two numbers is just the gap between their points, |a − b|. Adding 3 is a step three units right; subtracting 2, a step two left. Even a negative stops being mysterious — −5 isn't a smaller 5, it's 5 steps the other way from zero, a direction as much as a size.
+
+**Floor 4 — The bedrock:** Once numbers are positions, arithmetic becomes movement — the doorway to everything visual in maths. Sliding, scaling, and flipping along the line do what +, ×, and the minus sign do to numbers; the ancient Greeks, with no algebra notation at all, did their whole "algebra" as lengths and areas on lines like this. The deeper promise: if one number pins a point on a line, a pair of numbers can pin a point on a page — and then any equation can be drawn and any shape measured. That promise is the next board.
+
+---
+
+## BB 149 — The second number line
+*Maths · Coordinate geometry* · ✓ publishable · *the Cartesian plane; cement (x,y) before lines/slopes/curves*
+
+**Floor 0 — Idea:** One number line gives you a 1-D world: every point is a single number, and all you can do is go left or right. Stand a second number line upright and cross it through the first at zero, and something new appears — every point on a whole flat surface now has its own address, written as a pair of numbers.
+
+**Floor 1 — Concrete:** Finding your seat in a cinema: Row 5, Seat 8. Two numbers pin you to exactly one chair. Row alone won't do it (a whole row would claim it); seat alone won't either (seat 8 exists in every row). It takes both. A coordinate grid works the same way: one number says how far across, the other how far up, and the pair (x, y) names a single point on the surface — no two points share the same pair.
+
+**Floor 2 — Definition:** Two number lines crossed at right angles at their shared zero make a **Cartesian coordinate system**, named after René Descartes. The horizontal one is the **x-axis**, the vertical the **y-axis**, and their crossing point is the **origin**, (0, 0). Every point is an **ordered pair** (x, y) — x first, y second, always (so (3, 4) and (4, 3) are different points). The axes cut the plane into four **quadrants**, numbered I to IV anticlockwise from the top right.
+
+**Floor 3 — In action:** This is the translation that powers modern mathematics. A shape becomes a set of number pairs; a straight line becomes an equation like y = 2x + 1; a circle becomes x² + y² = r²; a parabola becomes y = x². Geometry and algebra stop being separate subjects and become two languages for the same thing — you can solve a geometry problem with algebra, or picture an equation as a curve. When a game engine places a pixel or a satnav fixes your position, this is the machinery underneath.
+
+**Floor 4 — The bedrock:** This idea, from Descartes in 1637, is one of the great turning points in mathematics. Before it, geometry (shapes) and algebra (equations) were largely separate crafts; after it, every shape had an equation and every equation a shape. That single bridge is what made calculus possible a generation later — Newton and Leibniz needed curves they could write as equations. It runs under computer graphics, GPS, and every chart you've ever read, and one extra number (x, y, z) locates anything in space, from a molecule to a spacecraft. Almost every graph you'll ever see stands on this one move.
+
+---
+
+## Snippet — The mind behind the grid
+*kind: snippet · builds on BB 149 (live anchor: Card 149) · ✓ publishable · ingested (sort_order 506, updated a pre-existing Descartes snippet in place)*
+
+**Descartes and the fly on the ceiling.** René Descartes was a sickly child, and his Jesuit school let him lie in bed until late each morning — a habit he kept all his life, insisting he thought best lying down. The story goes that one morning, watching a fly crawl across his bedroom ceiling, he realised he could pin its position exactly with two numbers: its distance from each of two walls. From that idle thought grew the coordinate grid that now bears his name. (The fly tale is almost certainly a later embellishment, with no record of it from his own time, but it captures the idea perfectly.) What's certain is that in 1637 he published La Géométrie, fusing algebra and geometry into a single subject and changing mathematics forever. There's a sting in the tale: in 1649 Queen Christina of Sweden hired him as her tutor and demanded lessons at five in the morning, in an unheated palace, through a Scandinavian winter. The man who lived by his late mornings lasted only months — pneumonia took him in 1650.
+
+---
+
+## BB (consolidated) — Every point has an address: across, then up
+*Maths · Coordinate geometry* · ✓ publishable · *consolidates the thin plotting/reading/quadrant cards; cements (x,y) before lines & slopes*
+
+**Floor 0 — Idea:** A point on the grid has an address, written (x, y). The rule never changes: the first number is how far **across** (along the x-axis), the second is how far **up** (along the y-axis). Always that order — across, then up.
+
+**Floor 1 — Concrete:** To plot (3, 4): start at the origin, go 3 steps right along the x-axis, then 4 steps straight up. Mark that spot — it's (3, 4). Try a couple more: (5, 2) is 5 across and 2 up; (−2, 3) is 2 to the *left*, since x is negative, then 3 up. The first number always moves you sideways, the second always vertically.
+
+**Floor 2 — Definition:** Because the order is fixed, (x, y) is an **ordered pair** — swap the numbers and you get a different point. (3, 4) is three across and four up; (4, 3) is four across and three up — two entirely different places. Reading a point works in reverse: drop a straight line from it down to the x-axis to read x, and across to the y-axis to read y. Plotting turns numbers into a place; reading turns a place back into numbers.
+
+**Floor 3 — In action:** This two-number address is everywhere a position must be exact. A spreadsheet cell is column-then-row (B7); a chess square is file-then-rank (e4); a screen pixel is (across, down); a map reference is eastings-then-northings. In every case the order is a fixed convention everyone agrees on — get it backwards and you point at the wrong place entirely. The grid is just the cleanest version: two numbers, fixed order, one exact spot.
+
+**Floor 4 — The bedrock:** Get this one habit solid and everything visual in maths opens up. Every line, curve, and shape from here on is really just a collection of these points — a line is all the (x, y) that obey y = 2x + 1; a circle is all the points a fixed distance from a centre. Before you can see an equation *as* a curve, you have to be fluent in the single point: across, then up, without thinking. Master the address and the whole map becomes readable.
+
+---
