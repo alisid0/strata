@@ -596,3 +596,42 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 3 — In action:** Now you move freely between a picture of points and an algebraic rule, each recoverable from the other. That round trip, equation ⇄ graph, is the engine of coordinate geometry — and it scales straight to every curve ahead: parabolas, circles, and beyond.
 
 ---
+
+## BB (P3 batch) — Parallel lines
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Two lines with the same gradient lean at exactly the same angle. Lean the same way forever and you never close the gap, so same-gradient lines run side by side and never meet. They're parallel.
+
+**Floor 1 — Concrete:** Take y = 2x + 3 and y = 2x − 4. Both have m = 2, so both climb 2 for every 1 across, an identical lean. The only difference is c, the height: at every x the second sits exactly 7 below the first. They stay 7 apart forever and never cross.
+
+**Floor 2 — Definition:** The condition is simple: two lines are parallel exactly when their gradients are equal, **m₁ = m₂** (with different intercepts, or they'd be the same line). Slope alone decides it; the intercepts don't matter.
+
+**Floor 3 — In action:** Parallels are everywhere you need things not to converge: railway tracks, ruled lines on a page, the opposite edges of a door. And "parallel lines never meet" is one of geometry's deepest assumptions, Euclid's parallel postulate. Questioning it (what if they could meet, or spread apart?) opened up non-Euclidean geometry, the mathematics of curved surfaces Einstein later used to describe gravity and the shape of space itself.
+
+---
+
+## BB (P3 batch) — Perpendicular lines
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Two lines meet at a perfect right angle (90°) when their gradients are negative reciprocals: take one gradient, flip it upside down, and switch its sign to get the other.
+
+**Floor 1 — Concrete:** A line with gradient 2 is perpendicular to one with gradient −1/2. Flip 2 to 1/2, make it negative: −1/2. The quick test: multiply the two gradients and you always get −1. Here, 2 × (−1/2) = −1. ✓
+
+**Floor 2 — Definition:** So the condition for perpendicular lines is **m₁ × m₂ = −1**: one steep, one shallow, opposite signs, meeting at a clean corner. (The exception is a horizontal line meeting a vertical one: also perpendicular, but the formula can't show it, since a vertical line has no gradient.)
+
+**Floor 3 — In action:** Right angles are the backbone of the built world: walls to floors, the corners of every screen and page, the x- and y-axes themselves. And the reason the rule is a negative reciprocal: turning a line 90° swaps its rise and run (the "flip") and reverses one direction (the sign), so the new gradient is −Δx/Δy, exactly the negative reciprocal of the old Δy/Δx.
+
+---
+
+## BB (P3 batch) — Distance between two points
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** On a number line, the distance between two points is just subtraction. On a grid, the straight-line gap runs diagonally, and subtraction alone can't measure a slant. The fix: build a right-angled triangle and call in Pythagoras.
+
+**Floor 1 — Concrete:** The horizontal gap (Δx) is one leg, the vertical gap (Δy) the other, and the distance you want is the hypotenuse. From (1, 2) to (4, 6): Δx = 3, Δy = 4, so d = √(3² + 4²) = √(9 + 16) = √25 = **5**.
+
+**Floor 2 — Definition:** In general, **d = √((x₂ − x₁)² + (y₂ − y₁)²)**. It's nothing new: the number-line distance done twice, horizontally and vertically, then stitched together with Pythagoras' theorem.
+
+**Floor 3 — In action:** This is how any "how far apart?" gets answered on a grid: GPS positions, two pixels on a screen, whether two objects in a game have collided. And it climbs into 3D untouched: d = √(Δx² + Δy² + Δz²), just one more squared gap under the root. The same Pythagorean idea measures distance in any number of dimensions.
+
+---
