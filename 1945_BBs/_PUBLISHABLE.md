@@ -635,3 +635,42 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 3 — In action:** This is how any "how far apart?" gets answered on a grid: GPS positions, two pixels on a screen, whether two objects in a game have collided. And it climbs into 3D untouched: d = √(Δx² + Δy² + Δz²), just one more squared gap under the root. The same Pythagorean idea measures distance in any number of dimensions.
 
 ---
+
+## BB (P3 batch) — Midpoint of two points
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** The midpoint is the exact middle of two points. On a number line you find it by averaging the two numbers; on a grid you just do that twice, once for x and once for y.
+
+**Floor 1 — Concrete:** From (2, 4) to (8, 10): the middle x is (2 + 8)/2 = 5, the middle y is (4 + 10)/2 = 7. So the midpoint is **(5, 7)**, sitting exactly halfway along the segment between them.
+
+**Floor 2 — Definition:** **midpoint = ((x₁ + x₂)/2, (y₁ + y₂)/2).** Average the x's, average the y's, and that pair is the point dead centre of the segment joining the two.
+
+**Floor 3 — In action:** Handy anywhere you need a centre: the middle of a line on screen, the balance point between two positions, the centre of a circle given the two ends of a diameter. It also pairs with the distance formula: distance gives a segment's length, midpoint gives its centre.
+
+---
+
+## BB (P3 batch) — A shape is just points, joined up
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Once every point has an address, a shape is nothing more than a handful of points joined in order. Plot the corners, connect them, and the shape appears.
+
+**Floor 1 — Concrete:** Three points joined make a triangle. Four make a quadrilateral, which might be a square, a rectangle, a kite, or nothing tidy at all, depending on where they sit. The corners (called vertices) are just ordered pairs; the sides are the segments between them.
+
+**Floor 2 — Definition:** A polygon on the grid is a closed shape defined by its list of vertices, each an (x, y) pair, joined in sequence. Give the coordinates and you've given the whole shape exactly: position, size, and orientation all baked in.
+
+**Floor 3 — In action:** This is how every shape on a screen is stored: a font letter, a game character, a map border are all just lists of points the computer joins and fills. Change the numbers and the shape moves, grows, or rotates. The next question is which shape a set of points actually makes, and for that you measure.
+
+---
+
+## BB (P3 batch) — Proving a shape with coordinates
+*Maths · Coordinate geometry* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Eyeballing a shape can fool you: a "rectangle" might be a slightly skewed parallelogram. With coordinates you don't guess, you prove it by calculation.
+
+**Floor 1 — Concrete:** Take (0, 0), (4, 0), (4, 3), (0, 3). Run the distance formula on each side and you get 4, 3, 4, 3. Opposite sides equal, and the corners sit at right angles (a horizontal side meeting a vertical one), so it is a rectangle, confirmed by numbers rather than by looking.
+
+**Floor 2 — Definition:** The method: measure side lengths with the distance formula and slopes with Δy/Δx, then check the defining conditions. If opposite sides are equal it's a parallelogram; add a right angle and it's a rectangle; make all four sides equal and it's a rhombus; both at once and it's a square.
+
+**Floor 3 — In action:** This is the whole purpose of coordinate geometry: turning a visual claim into an arithmetic check. It's how a computer decides whether four detected corners form a square, and it's a first taste of proof, a statement settled by calculation that no amount of careful drawing could ever guarantee.
+
+---
