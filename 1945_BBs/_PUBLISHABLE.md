@@ -674,3 +674,18 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 3 — In action:** This is the whole purpose of coordinate geometry: turning a visual claim into an arithmetic check. It's how a computer decides whether four detected corners form a square, and it's a first taste of proof, a statement settled by calculation that no amount of careful drawing could ever guarantee.
 
 ---
+
+## BB (recap) — Recap: Coordinate geometry
+*Maths · Coordinate geometry · kind: recap* · ✓ publishable · *reference quick-card; not ingested into the review topic (no floors)*
+
+- **Number line:** a number is a *position*; the distance between two numbers is |a − b|.
+- **The plane:** two number lines crossed at the **origin** (0, 0); every point is an ordered pair **(x, y)**, read x across then y up. Order matters: (3, 4) ≠ (4, 3).
+- **A line is a relationship between x and y.** Vertical line: x = constant. Horizontal line: y = constant.
+- **Slope (gradient):** m = Δy / Δx = (y₂ − y₁)/(x₂ − x₁). Positive climbs, negative falls, zero is flat; a vertical line has no slope (Δx = 0).
+- **Equation of a line:** **y = mx + c**, where m is the slope and c is the **y-intercept** (y when x = 0). Vertical lines are the exception: x = a.
+- **From two points:** find m with Δy/Δx, then put one point into y = mx + c and solve for c. The **x-intercept** (root) is where y = 0.
+- **Parallel lines:** same slope, m₁ = m₂. **Perpendicular lines:** m₁ × m₂ = −1.
+- **Distance:** d = √((x₂ − x₁)² + (y₂ − y₁)²). **Midpoint:** ((x₁ + x₂)/2, (y₁ + y₂)/2).
+- **Shapes:** a polygon is a list of vertices (x, y) joined in order; prove which shape it is with side lengths (distance) and slopes (parallel / perpendicular).
+
+---
