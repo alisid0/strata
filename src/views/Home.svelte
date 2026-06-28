@@ -7,24 +7,22 @@
   export let onNavigate; // (view, args?) => void
 
   const TOTAL_BOARDS = totalBoards();
-  // TODO: no streak-tracking backend yet — placeholder until daily-activity logging exists.
-  const STREAK_DAYS = 12;
-  const USER_LEVEL = 7;
-  const LEVEL_TITLE = 'Geologist';
 
-  $: overall = progress.getOverall();
+  $: overall = ($progress, progress.getOverall());
+  $: streak = ($progress, progress.getStreak());
+  $: level = 1 + Math.floor(overall.read / 5);
+  $: earnedMedals = ($progress, progress.getMedals().filter(m => m.earned).length);
 
-  $: continuePath = Object.entries(PATHS)
+  $: continuePath = ($progress, Object.entries(PATHS)
     .map(([id, manifest]) => ({ id, manifest, state: progress.getPathState(id, manifest) }))
     .filter(p => p.state.boardsRead > 0 && p.state.boardsRead < p.state.boardsTotal)
-    .sort((a, b) => b.state.boardsRead - a.state.boardsRead)[0];
+    .sort((a, b) => b.state.boardsRead - a.state.boardsRead)[0]);
 
   $: continuePct = continuePath ? Math.round((continuePath.state.boardsRead / continuePath.state.boardsTotal) * 100) : 0;
 
-  const EXPLORE_ITEMS = [
-    { id: 'stats', label: 'Your stats', sub: () => '5 medals', icon: 'stats' },
-    { id: 'leaderboard', label: 'Leaderboard', sub: () => "#5", icon: 'stats' },
-    { id: 'snippets', label: 'Snippets', sub: () => 'no pressure', icon: 'snippets' }
+  $: EXPLORE_ITEMS = [
+    { id: 'stats', label: 'Your stats', sub: earnedMedals === 1 ? '1 medal' : `${earnedMedals} medals`, icon: 'stats' },
+    { id: 'snippets', label: 'Snippets', sub: 'no pressure', icon: 'snippets' }
   ];
 </script>
 
@@ -35,12 +33,11 @@
     <div class="greeting">
       <div class="hi">Hi, {$displayName}</div>
       <div class="level">
-        <span class="level-badge">Level {USER_LEVEL}</span>
-        <span class="level-title">&middot; {LEVEL_TITLE}</span>
+        <span class="level-badge">Level {level}</span>
       </div>
     </div>
     <div class="streak-chip">
-      <QxIcon name="flame" size={14} />{STREAK_DAYS}
+      <QxIcon name="flame" size={14} />{streak}
     </div>
   </div>
 
@@ -83,7 +80,7 @@
       <button class="explore-row" on:click={() => onNavigate?.(item.id)}>
         <span class="explore-icon"><QxIcon name={item.icon} size={16} /></span>
         <span class="explore-name">{item.label}</span>
-        <span class="explore-sub">{item.sub()}</span>
+        <span class="explore-sub">{item.sub}</span>
         <span class="explore-chev">&rsaquo;</span>
       </button>
     {/each}

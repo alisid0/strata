@@ -1,5 +1,5 @@
 <script>
-  import { totalBoards } from '../lib/content/paths.js';
+  import { PATHS, totalBoards } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { displayName, logOut } from '../lib/stores/auth.js';
   import { theme } from '../lib/stores/theme.js';
@@ -8,17 +8,24 @@
   export let onNavigate;
 
   const TOTAL_BOARDS = totalBoards();
-  $: overall = progress.getOverall();
-  $: pct = TOTAL_BOARDS ? Math.round((overall.read / TOTAL_BOARDS) * 100) : 0;
 
-  // TODO: no backend yet for these — placeholder until daily-activity logging,
-  // study-session timing, and a medals table exist.
-  const STREAK_DAYS = 12;
-  const CONSISTENCY = [60, 80, 40, 90, 70, 100, 50];
-  const PACE = 'Steady';
-  const DEPTH = 'Digs deep';
-  const TIME_THIS_WEEK = '2h 14m';
-  const MEDALS = ['First board', 'First quiz', '7-day streak', 'Topic complete', 'Perfect quiz'];
+  // All real, derived from local progress (referencing $progress to stay reactive).
+  $: overall = ($progress, progress.getOverall());
+  $: pct = TOTAL_BOARDS ? Math.round((overall.read / TOTAL_BOARDS) * 100) : 0;
+  $: streak = ($progress, progress.getStreak());
+  $: activity = ($progress, progress.getActivity(7));
+  $: activeDays = activity.filter(a => a.active).length;
+  $: pace = ($progress, progress.getPace());
+  $: medals = ($progress, progress.getMedals());
+  $: earnedMedals = medals.filter(m => m.earned);
+  $: started = ($progress, Object.values(PATHS).filter(m => m.cards.some(n => $progress.boards && $progress.boards[n] && $progress.boards[n].firstOpenedAt)).length);
+  $: topicsTotal = Object.keys(PATHS).length;
+  $: quizzesTaken = ($progress, Object.values($progress.quizzes || {}).reduce((a, arr) => a + (arr ? arr.length : 0), 0));
+
+  function barH(count) {
+    if (!count) return 6;
+    return Math.min(100, 30 + count * 20);
+  }
 
   async function handleLogout() {
     try { await logOut(); } catch (_) {}
@@ -35,58 +42,57 @@
     <div class="avatar">{$displayName.charAt(0).toUpperCase()}</div>
   </div>
 
-  <!-- Topics covered + Streak -->
+  <!-- Boards read + Streak -->
   <div class="top-cards">
     <div class="tc-card">
-      <div class="tc-label">Topics covered</div>
+      <div class="tc-label">Boards read</div>
       <div class="tc-value">{overall.read}/{TOTAL_BOARDS}</div>
     </div>
     <div class="tc-card streak-card">
       <div class="tc-label">Streak</div>
-      <div class="tc-value">🔥 {STREAK_DAYS} <span class="tc-unit">days</span></div>
+      <div class="tc-value">🔥 {streak} <span class="tc-unit">{streak === 1 ? 'day' : 'days'}</span></div>
     </div>
   </div>
 
-  <!-- Consistency -->
-  <div class="section-label">Consistency</div>
+  <!-- Consistency (last 7 days) -->
+  <div class="section-label">This week</div>
   <div class="consistency-row">
-    {#each CONSISTENCY as v, i}
+    {#each activity as d}
       <div class="bar-col">
-        <div class="bar-track"><div class="bar-fill" style="height:{v}%"></div></div>
-        <span class="bar-day">{['M','T','W','T','F','S','S'][i]}</span>
+        <div class="bar-track"><div class="bar-fill" class:on={d.active} style="height:{barH(d.count)}%"></div></div>
+        <span class="bar-day">{d.weekday}</span>
       </div>
     {/each}
-    <span class="consistency-summary">5 of 7 days</span>
+    <span class="consistency-summary">{activeDays} of 7 days</span>
   </div>
 
-  <!-- Pace / Depth / Time -->
+  <!-- Metrics -->
   <div class="metrics-row">
     <div class="metric">
-      <div class="metric-label">Pace</div>
-      <div class="metric-value">4/wk</div>
+      <div class="metric-label">This week</div>
+      <div class="metric-value">{pace}</div>
     </div>
     <div class="metric">
-      <div class="metric-label">Depth</div>
-      <div class="metric-value">Tier 3</div>
+      <div class="metric-label">Quizzes</div>
+      <div class="metric-value">{quizzesTaken}</div>
     </div>
     <div class="metric">
-      <div class="metric-label">Time</div>
-      <div class="metric-value">14h</div>
+      <div class="metric-label">Topics</div>
+      <div class="metric-value">{started}/{topicsTotal}</div>
     </div>
   </div>
 
   <!-- Medals -->
-  <div class="section-label">Medals &middot; {MEDALS.length} earned</div>
-  <div class="medal-row">
-    {#each MEDALS as m}
-      <div class="medal-chip">🏅 {m}</div>
-    {/each}
-  </div>
-
-  <!-- Leaderboard link -->
-  <button class="leaderboard-link" on:click={() => onNavigate?.('leaderboard')}>
-    Leaderboard <span class="link-chev">&rsaquo;</span>
-  </button>
+  <div class="section-label">Medals &middot; {earnedMedals.length} earned</div>
+  {#if earnedMedals.length}
+    <div class="medal-row">
+      {#each earnedMedals as m}
+        <div class="medal-chip">🏅 {m.label}</div>
+      {/each}
+    </div>
+  {:else}
+    <div class="medal-empty">Read a board or take a quiz to earn your first medal.</div>
+  {/if}
 
   <!-- Settings -->
   <div class="settings-row">
@@ -95,7 +101,6 @@
   </div>
 
   <div class="footer-links">
-    <button class="footer-link" on:click={() => onNavigate?.('author')}>Author a BB</button>
     <button class="footer-link danger" on:click={handleLogout}>Log out</button>
   </div>
 </div>
@@ -123,12 +128,13 @@
   .section-label { font-size: 12px; font-weight: 700; color: var(--qx-text-dim); margin-bottom: 10px; }
 
   /* Consistency */
-  .consistency-row { display: flex; gap: 6px; align-items: flex-end; height: 70px; margin-bottom: 20px; position: relative; }
+  .consistency-row { display: flex; gap: 6px; align-items: flex-end; height: 70px; margin-bottom: 30px; position: relative; }
   .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; gap: 4px; }
   .bar-track { flex: 1; width: 100%; display: flex; align-items: flex-end; border-radius: 5px; overflow: hidden; background: var(--qx-surface-2); }
-  .bar-fill { width: 100%; background: var(--qx-accent); border-radius: 5px 5px 0 0; }
+  .bar-fill { width: 100%; background: var(--qx-border-2); border-radius: 5px 5px 0 0; transition: height 0.3s; }
+  .bar-fill.on { background: var(--qx-accent); }
   .bar-day { font-size: 10px; font-weight: 600; color: var(--qx-text-faint); }
-  .consistency-summary { font-size: 12px; font-weight: 600; color: var(--qx-text-faint); position: absolute; bottom: -18px; right: 0; }
+  .consistency-summary { font-size: 12px; font-weight: 600; color: var(--qx-text-faint); position: absolute; bottom: -20px; right: 0; }
 
   /* Metrics */
   .metrics-row { display: flex; gap: 10px; margin-bottom: 20px; }
@@ -139,15 +145,7 @@
   /* Medals */
   .medal-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
   .medal-chip { font-size: 12px; font-weight: 700; color: var(--qx-yellow-text); background: var(--qx-yellow-soft); border-radius: var(--qx-radius-pill); padding: 7px 13px; }
-
-  /* Leaderboard link */
-  .leaderboard-link {
-    display: flex; align-items: center; justify-content: space-between; width: 100%;
-    padding: 14px 16px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border);
-    background: var(--qx-surface); cursor: pointer; font-family: var(--qx-font);
-    font-size: 15px; font-weight: 700; color: var(--qx-text); margin-bottom: 16px;
-  }
-  .link-chev { font-size: 18px; color: var(--qx-text-faint); }
+  .medal-empty { font-size: 13px; color: var(--qx-text-faint); margin-bottom: 20px; }
 
   .settings-row {
     display: flex; align-items: center; justify-content: space-between;
