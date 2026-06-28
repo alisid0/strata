@@ -689,3 +689,48 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 - **Shapes:** a polygon is a list of vertices (x, y) joined in order; prove which shape it is with side lengths (distance) and slopes (parallel / perpendicular).
 
 ---
+
+## BB (P3 batch) — What chemistry is
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Chemistry is the study of matter: what everything is made of, and how it changes. Its defining move is scale: to understand a material, chemistry zooms in far past anything you can see, down to the atoms it is built from.
+
+**Floor 1 — Concrete:** The smallness is hard to overstate. It takes billions of atoms to make a single speck of dust. Yet the way those atoms are arranged decides everything you can see, touch, and taste about the material.
+
+**Floor 2 — Definition:** This is the central idea of chemistry: the microscopic structure controls the visible world. Change the structure and you change the substance. Move a single atom in a large drug molecule and a life-saving medicine can turn into a poison.
+
+**Floor 3 — In action:** It is why chemistry is an engine of survival: medicines, rust-proof alloys, water filters, fertilisers, even freeze-dried food for orbit all come from controlling matter at this scale. But it leaves a hard problem the next boards take on: how do you count and weigh particles far too small to ever see?
+
+**Floor 4 — The bedrock:** How small is a single atom? Take the apple in your hand and imagine magnifying it until it is as big as the entire Earth. At that magnification, each atom inside the apple would be roughly the size of the original apple. An atom sits below an apple about as far as that apple sits below the whole planet. That is the scale chemistry reaches down to, and the strangest part is that events at that depth decide everything happening up here.
+
+---
+
+## BB (P3 batch) — The elements and the periodic table
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Everything you have ever seen, every star, ocean, building, and living thing, is built from just over a hundred basic ingredients. The whole touchable world runs on one short recipe list.
+
+**Floor 1 — Concrete:** These ingredients are the elements, 118 of them, laid out on one famous chart: the periodic table. It is not a poster to memorise; it is the complete inventory of what the universe is made of.
+
+**Floor 2 — Definition:** An element is a substance made of only one kind of atom, one that chemistry cannot break into anything simpler. Hydrogen, oxygen, iron, gold: each is a single entry on the table, and together they are the full set.
+
+**Floor 3 — In action:** The richness of the world comes not from many ingredients but from how the few combine. Take three elements, carbon, hydrogen, and oxygen: link them one way and you get the sugar in your coffee; another way, the alcohol in wine; another, the cellulose of a tree trunk.
+
+**Floor 4 — The bedrock:** And there are unimaginably many of them. Now run it the other way: blow every atom up to the size of a grain of rice. A single gram of carbon, a pinch on a fingertip, holds about fifty billion trillion atoms (5 × 10²²). As grains of rice, that one gram would bury the entire surface of the Earth a couple of metres deep. Scale up to a hundred grams and the rice would pile over the whole planet deeper than a tower block. The ingredients are few, but the count of them in the smallest handful of matter is beyond imagining.
+
+---
+
+## BB (P3 batch) — The atom: the 80th cut
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Take a 100-gram lump of iron and start cutting it in half, again and again. How many cuts to reach the smallest piece that is still iron? Not billions. Surprisingly few.
+
+**Floor 1 — Concrete:** Each cut halves it: 100 g, 50, 25, 12.5, and on. By cut 10 it is smaller than a grain of sand; by cut 50, smaller than a virus; by cut 70, past the DNA coiled inside a cell. You keep halving until the knife cannot divide it and still leave iron.
+
+**Floor 2 — Definition:** That last piece is the **atom**: the smallest piece of an element that is still that element. It takes only about 80 halvings to get there. Cut the atom itself and it stops being iron, breaking into something else. The name comes from the Greek *atomos*, meaning uncuttable.
+
+**Floor 3 — In action:** Every one of the 118 elements is just a vast crowd of these atoms: gold atoms, oxygen atoms, iron atoms. So what makes an iron atom different from a gold one? To answer that we have to look inside the atom, which turns out not to be uncuttable after all.
+
+**Floor 4 — The bedrock:** Here is the fact every chemistry textbook opens with: the atom is almost entirely empty space. Nearly all its mass huddles in a tiny, dense core at the very centre, the nucleus, while the rest is a near-vacuum the electrons streak through. Blow an atom up to the size of a football stadium and its nucleus would be a single marble on the centre spot, the electrons a faint haze up in the stands. The solid iron in your hand is, up close, almost nothing at all.
+
+---
