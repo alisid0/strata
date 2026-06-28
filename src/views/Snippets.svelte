@@ -1,10 +1,11 @@
 <script>
   import { onMount } from 'svelte';
-  import { flip } from 'svelte/animate';
-  import { fly, fade } from 'svelte/transition';
+  import { fly } from 'svelte/transition';
   import { DECK } from '../lib/content/deck.js';
   import { fetchSnippets } from '../lib/content/dynamicBoards.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
+
+  export let onNavigate;
 
   function shuffleArray(arr) {
     const a = [...arr];
@@ -127,7 +128,13 @@
   {#if snippets.length === 0}
     <div class="empty">
       <div class="empty-icon">📚</div>
-      <p>No snippets in this topic yet.</p>
+      {#if mode === 'topic' && topicFilter !== 'all'}
+        <p>No {FILTER_LABELS[topicFilter]} snippets yet.</p>
+      {:else if allSnippets.length === 0}
+        <p>No snippets yet — check back soon.</p>
+      {:else}
+        <p>No snippets match this filter.</p>
+      {/if}
     </div>
   {:else if current}
     <div class="snippet-card" in:fly={{ x: 60, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -40, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
