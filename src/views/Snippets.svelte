@@ -16,28 +16,61 @@
   }
 
   const staticSnippets = DECK.filter(c => c.tags?.kind === 'snippet');
-  let snippets = staticSnippets;
+  let allSnippets = [];
+  let snippets = [];
   let index = 0;
   let liked = new Set();
   let saved = new Set();
 
+  let mode = 'shuffle'; // shuffle | topic
+  let topicFilter = 'all'; // all | physics | maths | chemistry
+
   $: current = snippets[index];
+
+  $: if (allSnippets.length) rebuildSnippets(mode, topicFilter);
+
+  function rebuildSnippets(m, filter) {
+    let pool = [...allSnippets];
+    if (m === 'topic' && filter !== 'all') {
+      pool = pool.filter(s => s.tags?.subject === filter);
+    }
+    if (m === 'shuffle') {
+      snippets = shuffleArray(pool);
+    } else {
+      snippets = pool;
+    }
+    index = 0;
+  }
 
   onMount(async () => {
     try {
       const dynamic = await fetchSnippets();
-      if (dynamic.length) {
-        snippets = shuffleArray([...staticSnippets, ...dynamic]);
-        index = 0;
-      }
-    } catch (_) {}
+      allSnippets = [...staticSnippets, ...(dynamic || [])];
+      snippets = shuffleArray([...allSnippets]);
+      index = 0;
+    } catch (_) {
+      allSnippets = [...staticSnippets];
+      snippets = shuffleArray([...allSnippets]);
+    }
   });
 
   function nextSnippet() {
     if (snippets.length < 2) return;
-    let next = index;
-    while (next === index) next = Math.floor(Math.random() * snippets.length);
-    index = next;
+    if (mode === 'shuffle') {
+      let next = index;
+      while (next === index) next = Math.floor(Math.random() * snippets.length);
+      index = next;
+    } else {
+      index = (index + 1) % snippets.length;
+    }
+  }
+
+  function toggleMode(m) {
+    mode = m;
+  }
+
+  function setFilter(f) {
+    topicFilter = f;
   }
 
   function toggleLike() {
@@ -61,6 +94,9 @@
     ? (current.tags.subject === 'physics' ? 'PHYSICS' : current.tags.subject === 'maths' ? 'MATHS' : 'CHEMISTRY')
     : 'PHYSICS';
   $: categoryTag = current?.tags?.concept || 'DID YOU KNOW';
+
+  const FILTERS = ['all', 'physics', 'maths', 'chemistry'];
+  const FILTER_LABELS = { all: 'All', physics: 'Physics', maths: 'Maths', chemistry: 'Chem' };
 </script>
 
 <div class="qx-shell snippets-view">
@@ -71,7 +107,29 @@
     </div>
   </div>
 
-  {#if current}
+  <!-- Mode toggle -->
+  <div class="mode-row">
+    <button class="mode-btn" class:active={mode === 'shuffle'} on:click={() => toggleMode('shuffle')}>Shuffle</button>
+    <button class="mode-btn" class:active={mode === 'topic'} on:click={() => toggleMode('topic')}>Topic</button>
+  </div>
+
+  <!-- Topic filter (only in topic mode) -->
+  {#if mode === 'topic'}
+    <div class="filter-row">
+      {#each FILTERS as f}
+        <button class="filter-pill" class:active={topicFilter === f} on:click={() => setFilter(f)}>
+          {FILTER_LABELS[f]}
+        </button>
+      {/each}
+    </div>
+  {/if}
+
+  {#if snippets.length === 0}
+    <div class="empty">
+      <div class="empty-icon">📚</div>
+      <p>No snippets in this topic yet.</p>
+    </div>
+  {:else if current}
     <div class="snippet-card" in:fly={{ x: 60, duration: 300, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }} out:fly={{ x: -40, duration: 200, easing: t => t<.5 ? 2*t*t : -1+(4-2*t)*t }}>
       <div class="card-category">
         <span class="cat-tag">{subjectTag} &middot; {categoryTag.toUpperCase()}</span>
@@ -103,7 +161,7 @@
       </div>
     </div>
     {#if snippets.length > 1}
-      <div class="pager">{index + 1} / {snippets.length}</div>
+      <div class="pager">{index + 1} / {snippets.length}{#if mode === 'topic' && topicFilter !== 'all'} · {FILTER_LABELS[topicFilter]}{/if}</div>
     {/if}
   {:else}
     <div class="empty">
@@ -116,9 +174,31 @@
 <style>
   .snippets-view { height: 100%; overflow-y: auto; padding: 16px 18px 24px; box-sizing: border-box; }
 
-  .snippets-header { margin-bottom: 20px; }
+  .snippets-header { margin-bottom: 14px; }
   h1 { font-size: 23px; font-weight: 800; color: var(--qx-text); margin: 0; }
   .header-sub { font-size: 13px; color: var(--qx-text-dim); margin: 2px 0 0; }
+
+  /* Mode toggle */
+  .mode-row {
+    display: flex; background: var(--qx-surface); border-radius: var(--qx-radius-md);
+    border: 1.5px solid var(--qx-border-2); margin-bottom: 10px; padding: 3px;
+  }
+  .mode-btn {
+    flex: 1; padding: 8px; border-radius: 10px; border: none; background: transparent;
+    font-family: var(--qx-font); font-size: 13px; font-weight: 700; color: var(--qx-text-dim);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .mode-btn.active { background: var(--qx-accent); color: #fff; }
+
+  /* Topic filter */
+  .filter-row { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; }
+  .filter-pill {
+    font-size: 12px; font-weight: 700; color: var(--qx-text-2); background: var(--qx-surface);
+    border: 1.5px solid var(--qx-border-2); border-radius: var(--qx-radius-pill); padding: 6px 12px;
+    cursor: pointer; font-family: var(--qx-font); white-space: nowrap; flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .filter-pill.active { color: var(--qx-accent); background: var(--qx-accent-soft); border-color: var(--qx-accent); }
 
   .snippet-card {
     border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-lg);
