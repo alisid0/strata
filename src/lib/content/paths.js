@@ -2,11 +2,11 @@
  * Strata — Paths Manifest (launch curriculum)
  * Subject → topic → ordered board numbers.
  *
- * Launch content is the audited set only: 67 reviewed boards, ingested into
- * Supabase as dynamic cards at sort_order 1000-1066 (see
+ * Launch content is the audited set: 78 reviewed boards, ingested into
+ * Supabase as dynamic cards at sort_order 1000-1077 (see
  * scripts/ingest-final-review.mjs, source 1945_BBs/_PUBLISHABLE.md).
- * The old un-audited path map (P0-P33 / M1-M16 / C1-C5) and the temporary
- * "Final draft — review" topics were retired at launch finalization.
+ * Topic groupings need re-audit after 2026-06-28 ingest (3 new boards
+ * appended: molecule, bond angles, DNA/proteins shifted numbering).
  */
 export const PATHS = {
   // ── Physics ──

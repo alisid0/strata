@@ -5,8 +5,8 @@
 //
 //   node --env-file=.env.local scripts/ingest-final-review.mjs
 //
-// Source of truth: 1945_BBs/_PUBLISHABLE.md. Only sections with **Floor**
-// markers are ingested (snippets are already live; the recap is skipped).
+// Source of truth: 1945_BBs/_PUBLISHABLE.md. Floors are paragraphs between
+// the meta line and ---; no label markers needed.
 
 import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'fs';
@@ -44,10 +44,12 @@ for (const sec of sections) {
   const metaLine = (sec.match(/\n(\*[^\n]*)/) || [])[1] || '';
   const status = /\bP3\b/i.test(metaLine) ? 'p3' : 'final';
 
-  const floorRe = /\*\*Floor\s+\d+\s*—[^:]*:\*\*\s*([\s\S]*?)(?=\n\s*\n\*\*Floor|\n\s*\n---|\n---|$)/g;
-  const layers = [];
-  let m;
-  while ((m = floorRe.exec(sec)) !== null) layers.push(toHtml(m[1]));
+  // Floors are paragraphs separated by blank lines, between the meta line and ---.
+  // Strip the meta line (starts with *) first, then split remaining text into paragraphs.
+  const bodyStart = sec.indexOf('\n', sec.indexOf('\n*') + 1);
+  const body = bodyStart >= 0 ? sec.slice(bodyStart) : '';
+  const rawFloors = body.split(/\n\s*\n/).map(p => p.trim()).filter(p => p && !p.startsWith('---'));
+  const layers = rawFloors.map(p => toHtml(p));
 
   if (layers.length === 0) continue; // snippet / recap / intro — skip
   boards.push({ title, layers, subject, status });
