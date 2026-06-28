@@ -5,7 +5,7 @@
   import { fetchSnippets } from '../lib/content/dynamicBoards.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
-  export let onNavigate;
+  export const onNavigate = undefined;
 
   function shuffleArray(arr) {
     const a = [...arr];
