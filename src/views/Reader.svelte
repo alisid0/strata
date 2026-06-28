@@ -8,8 +8,10 @@
   import { pathsForCard } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { getVideoForCard, getDiagramForCard } from '../lib/content/media.js';
+  import { getFloorMedia } from '../lib/content/boardMedia.js';
   import VideoPlayer from '../lib/components/VideoPlayer.svelte';
   import ChalkDiagram from '../lib/components/ChalkDiagram.svelte';
+  import ThreeScene from '../lib/components/media/ThreeScene.svelte';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
@@ -124,6 +126,9 @@
     const cardNumber = numbers[i];
     const isObj = content && typeof content === 'object';
     if (isObj && content.img) return { type: 'img', src: content.img };
+    // Per-floor attached media (dynamic boards): 3D scenes now; audio/interactive later.
+    const attached = getFloorMedia(cardNumber, d);
+    if (attached) return attached;
     if (d === 0 && getVideoForCard(cardNumber)) return { type: 'video', src: getVideoForCard(cardNumber) };
     if (d <= 1 && getDiagramForCard(cardNumber)) return { type: 'diagram', spec: getDiagramForCard(cardNumber) };
     return null;
@@ -332,6 +337,10 @@
                           <VideoPlayer src={media.src} />
                         {:else if media.type === 'diagram'}
                           <div class="media-diagram"><ChalkDiagram spec={media.spec} /></div>
+                        {:else if media.type === 'three'}
+                          {#key numbers[i] + '-' + d}
+                            <ThreeScene spec={media.spec} />
+                          {/key}
                         {/if}
                       </div>
                     {/if}
