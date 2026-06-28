@@ -938,3 +938,81 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 3 — In action:** Those decimals are not rounding errors; they are the fingerprint of isotopes, measured precisely by mass spectrometry. The same isotope ratios do detective work: the ¹³C-to-¹²C ratio in a sample can reveal which kind of plant a food or fibre came from, or trace the origin of a drug. The numbers after the decimal point on the periodic table are nuclear physics, quietly recorded in every element.
 
 ---
+
+## BB (P3 batch) — Empirical and molecular formulas
+*Chemistry · Reactions* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** A molecular formula like C₆H₁₂O₆ (glucose) gives the exact count of each atom in one molecule. An empirical formula like CH₂O gives only the simplest whole-number ratio. They differ by a whole-number multiplier: molecular = empirical × n.
+
+**Floor 1 — Concrete:** A compound is 40.0% carbon, 6.7% hydrogen, and 53.3% oxygen by mass. Take 100 g and convert to moles: C = 40/12 = 3.33, H = 6.7/1 = 6.7, O = 53.3/16 = 3.33. Divide by the smallest (3.33): C 1, H 2, O 1, so the empirical formula is CH₂O. If the molar mass turns out to be 180, then 180/30 = 6, and the molecular formula is (CH₂O)₆ = C₆H₁₂O₆, glucose.
+
+**Floor 2 — Definition:** The **empirical formula** is the simplest whole-number ratio of atoms; the **molecular formula** is the actual count in one molecule. To find it: convert masses (or percentages) to moles, divide by the smallest, clear any fractions to whole numbers, and that is the empirical formula. Divide the real molar mass by the empirical formula mass to get the multiplier for the molecular formula.
+
+**Floor 3 — In action:** This is the detective work of chemistry. Burn an unknown, measure the carbon dioxide and water it gives off, back-calculate the ratios, find the molar mass, and you have identified the compound. For ionic substances there is no molecule, so the empirical formula is the formula (NaCl, CaCl₂): it states the ion ratio, not a molecular unit.
+
+---
+
+## BB (P3 batch) — Ionic lattices: the giant structure
+*Chemistry · Molecular architecture* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** An ionic bond isn't a lone Na⁺–Cl⁻ pair. It is a giant repeating 3D grid of alternating positive and negative ions, stretching in every direction. A single grain of salt is billions of ions in one continuous crystal, with no separate molecules at all, and that giant structure dictates every property salt has.
+
+**Floor 1 — Concrete:** Sodium chloride melts at 801°C because every Na⁺ is locked to six Cl⁻ neighbours and vice versa, so melting means breaking all those attractions at once. Magnesium oxide melts even higher, at 2,852°C, because its 2+ and 2− charges pull four times harder. Strike a salt crystal, though, and it shatters: the blow slides one layer until like charges line up, they repel, and the crystal splits clean.
+
+**Floor 2 — Definition:** An **ionic lattice** is a giant, regular, repeating 3D array of oppositely charged ions held by strong electrostatic forces throughout. From that come its properties: high melting and boiling points (strong forces everywhere), hard but brittle (a small shift brings like charges together), and conduction only when molten or dissolved (the ions must be free to move; in the solid they are locked).
+
+**Floor 3 — In action:** The lattice is why we write NaCl, not a molecule count: the formula is just the simplest ion ratio. It is why salt water conducts but solid salt does not, and why magnesium oxide lines furnaces. The properties live not in any single ion pair but in the cooperative pull of the whole lattice.
+
+---
+
+## BB (P3 batch) — Covalent networks: diamond and graphite
+*Chemistry · Molecular architecture* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Some covalent substances are small discrete molecules (H₂O, CO₂). Others are giant covalent networks, every atom bonded to its neighbours in one continuous framework. Diamond and graphite are both pure carbon, yet one is the hardest natural substance and the other soft enough to write with. Same atoms; the bonding pattern is everything.
+
+**Floor 1 — Concrete:** In diamond, each carbon bonds to four others in a rigid tetrahedral network, every electron locked in a bond: the result is the hardest natural material, non-conducting, melting near 3,500°C. In graphite, each carbon bonds to only three, in flat hexagonal sheets, and the spare electron roams free between the sheets. So graphite conducts, and its sheets slide over one another, making it soft and slippery. One element, two patterns, opposite properties.
+
+**Floor 2 — Definition:** Giant covalent (network) solids are continuous 3D frameworks of atoms joined by covalent bonds throughout, with no discrete molecules: the whole crystal is effectively one molecule. Examples are diamond and graphite (both carbon) and silicon dioxide (sand, quartz). They share very high melting points and hardness, and (graphite aside) do not conduct. Different structural forms of one element, like diamond and graphite, are called **allotropes**.
+
+**Floor 3 — In action:** This is the sharpest case of structure deciding properties in all of chemistry. Diamond cuts and grinds; graphite lubricates and conducts, which is why it serves as electrodes and pencil "lead." And carbon's flexibility keeps giving: graphene, a single graphite sheet, is the strongest material known, and the football-shaped fullerenes extend one element into a whole materials library.
+
+---
+
+## BB (P3 batch) — Molecular shapes: VSEPR
+*Chemistry · Molecular architecture* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Molecules are not flat sketches; they are 3D objects with definite shapes, linear, bent, tetrahedral, pyramidal. And the shape is not arbitrary. It follows one rule: electron pairs repel, so they spread themselves around the central atom as far apart as they can get. That rule is **VSEPR**, and it predicts the shape of almost any molecule.
+
+**Floor 1 — Concrete:** Count the regions of electron density around the central atom. Carbon dioxide has two (two double bonds), which push to opposite sides: linear, 180°. Methane has four bonds and no lone pairs: a perfect tetrahedron, 109.5°. Water has four regions too (two bonds, two lone pairs), but the lone pairs press harder, squeezing the H-O-H angle to 104.5° and bending the molecule. Ammonia, with three bonds and one lone pair, is pushed into a trigonal pyramid.
+
+**Floor 2 — Definition:** **VSEPR** (valence-shell electron-pair repulsion) says the electron pairs around a central atom, bonding and lone alike, arrange to minimise repulsion, and that sets the shape. Two regions give linear, three trigonal planar, four tetrahedral. Lone pairs bend the shape further: four regions with one lone pair give a pyramid, with two lone pairs give a bent molecule, because lone pairs repel more strongly than bonds.
+
+**Floor 3 — In action:** Shape decides function. Water's bend makes it polar, which makes it an extraordinary solvent; methane's symmetry makes it non-polar, which is why oil and water don't mix. A drug works only if its shape fits its target like a key in a lock, and DNA's double helix is held at specific angles. VSEPR turns a flat formula into the 3D object that does the real work.
+
+---
+
+## BB (P3 batch) — Polarity: when sharing isn't equal
+*Chemistry · Molecular architecture* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** In a covalent bond electrons are shared, but rarely equally. Oxygen pulls harder than hydrogen, so in an O-H bond the electrons sit closer to oxygen, giving it a slight negative charge (δ−) and leaving hydrogen slightly positive (δ+). That is a polar bond. If the molecule's shape lets those bond polarities add up instead of cancelling, the whole molecule is polar.
+
+**Floor 1 — Concrete:** The pull is measured by electronegativity, which rises across the periodic table and falls down it; fluorine is the highest at 4.0. Water's O-H bonds are polar, and its bent shape stops them cancelling, so water carries a net polarity. Carbon dioxide's C=O bonds are just as polar, but its straight linear shape points them in exactly opposite directions, so they cancel and CO₂ is non-polar overall. Shape decides whether the bond polarities add or cancel.
+
+**Floor 2 — Definition:** **Electronegativity** is an atom's pull on shared electrons. A bond is **polar** when the two atoms differ enough in it, the stronger puller taking the δ−. A molecule is polar when it carries a net lopsided charge, a **dipole**. Crucially, a molecule can have polar bonds yet be non-polar overall if its symmetry cancels them out, as in CO₂ and CCl₄.
+
+**Floor 3 — In action:** Polarity runs by one rule of thumb: like dissolves like. Polar water dissolves polar and ionic things (salt, sugar); non-polar solvents dissolve non-polar things (grease, wax), which is why water alone won't shift oil. Polarity also sets boiling points (polar molecules cling harder) and decides how a drug crosses the non-polar wall of a cell. How lopsided a molecule's electrons are shapes how it meets everything around it.
+
+---
+
+## BB (P3 batch) — Intermolecular forces
+*Chemistry · Molecular architecture* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Covalent and ionic bonds hold atoms together inside a molecule. Intermolecular forces hold whole molecules to each other. They are much weaker, but they are why water is liquid at room temperature, why geckos can walk on ceilings, and why DNA's two strands stay zipped. Every molecule feels at least one.
+
+**Floor 1 — Concrete:** Methane and water have almost the same mass, yet methane boils at −161°C and water at +100°C. The 261°C gap is all intermolecular forces: methane has only weak dispersion forces, while water has hydrogen bonding, the strongest kind. Among the halogens, all non-polar, boiling points still climb from fluorine (a gas) to iodine (a solid), because more electrons make stronger dispersion forces.
+
+**Floor 2 — Definition:** There are three **intermolecular forces**, weakest to strongest: **London dispersion forces** (fleeting dipoles from shifting electrons, present in everything, stronger the more electrons there are), **dipole-dipole forces** (between polar molecules), and **hydrogen bonding** (a strong special case when hydrogen is bonded to nitrogen, oxygen, or fluorine). Each is far weaker than a covalent bond, but they add up: across a huge molecule their total can be enormous.
+
+**Floor 3 — In action:** These forces set the physical properties of nearly everything. A longer hydrocarbon has more electrons, so stronger dispersion forces and a higher boiling point. Water beads on a waxed car because its molecules cling to each other through hydrogen bonds but barely stick to the non-polar wax. And life runs on them: protein folding, DNA base-pairing, and cell membranes are all held by these weak, additive, selective attractions.
+
+---
