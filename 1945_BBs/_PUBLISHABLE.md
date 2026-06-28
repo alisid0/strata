@@ -778,6 +778,47 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 
 ---
 
+## BB (P3 batch) — Electron shells: where electrons live
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Electrons don't orbit the nucleus like planets round a sun; that's a handy picture, not the truth. What is real is that they sit in layers, like the rungs of a ladder. Each layer, each shell, holds only so many electrons before the next begins to fill, and it is the outermost shell that decides almost everything about how an atom behaves.
+
+**Floor 1 — Concrete:** Sodium has 11 electrons, filling from the inside out: 2 in the first shell, 8 in the second, 1 left over in the third, written 2,8,1. That lone outer electron is restless, ready to leave. Chlorine has 17: 2,8,7, an outer shell one short of full and desperate to grab one more. That mismatch is why sodium and chlorine react so fiercely: one wants to give, the other to take.
+
+**Floor 2 — Definition:** **Electron shells** (energy levels) are the regions around the nucleus where electrons sit, numbered n = 1, 2, 3 outward. Each has a capacity: shell 1 holds 2, shell 2 holds 8, shell 3 up to 18 (but sits comfortably at 8 for the first twenty elements). The outermost occupied shell is the **valence shell**, and its **valence electrons** set the atom's chemistry.
+
+**Floor 3 — In action:** This explains the shape of the periodic table. Elements in the same column share the same number of valence electrons, so they behave alike: lithium (2,1), sodium (2,8,1), and potassium (2,8,8,1) all have one outer electron, and all are soft, violently reactive metals. The table is not a random grid; it is a map of how shells fill.
+
+**Floor 4 — The bedrock:** One pattern rules it all: atoms behave as if they want a full outer shell, usually 8 electrons. That is the **octet rule**, the most useful single rule in chemistry. A nearly empty outer shell (sodium's 1) makes an atom eager to dump it; a nearly full one (chlorine's 7) makes it eager to grab. Almost every reaction you will meet is atoms chasing a full outer shell.
+
+---
+
+## BB (P3 batch) — Ions: atoms that have lost or gained electrons
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** An atom is electrically neutral, its protons and electrons in balance. Knock an electron off and the balance tips: the atom is left positively charged. Add one and it turns negative. An ion is just an atom carrying that imbalance, and the imbalance changes everything about how it behaves.
+
+**Floor 1 — Concrete:** Sodium has 11 protons and 11 electrons, neutral. Lose one electron and it becomes Na⁺: 11 protons, 10 electrons, net charge +1. Chlorine (17 and 17) gains one to become Cl⁻: 17 protons, 18 electrons, charge −1. Opposite charges attract, so Na⁺ and Cl⁻ snap together into NaCl, table salt. Neutral sodium metal explodes in water; the sodium ion dissolves in it harmlessly. One electron makes all the difference.
+
+**Floor 2 — Definition:** An **ion** is an atom that has lost or gained electrons, giving it a net charge. Lose electrons and you get a positive ion, a **cation** (metals tend to: Na → Na⁺ + e⁻). Gain electrons and you get a negative ion, an **anion** (non-metals tend to: Cl + e⁻ → Cl⁻). The charge is written as a superscript: Na⁺, Ca²⁺, O²⁻.
+
+**Floor 3 — In action:** Why do atoms bother? To reach a full outer shell. Sodium (2,8,1) sheds its lone outer electron to become Na⁺ (2,8), the configuration of neon. Chlorine (2,8,7) grabs one to become Cl⁻ (2,8,8), the configuration of argon. The pull toward a full shell is the engine of ion formation, and the electrostatic attraction between the ions that result is the basis of **ionic bonding**, the next big idea.
+
+---
+
+## BB (P3 batch) — The noble gases: already full, already happy
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** At the far right of the periodic table sits a column of elements that react with almost nothing. They don't bond, don't burn, don't combine. They are already complete: their outer shells are full, so they have nothing to gain and nothing to give. These are the noble gases.
+
+**Floor 1 — Concrete:** Helium has 2 electrons, filling its only shell. Neon has 10: 2 then 8, both shells full. Argon has 18: 2,8,8, full again. Each has a complete outer shell, no room and no gaps. A sodium atom is desperate to look like neon, so it sheds an electron; a chlorine atom is desperate to look like argon, so it grabs one. The noble gases are the destination every other atom is trying to reach.
+
+**Floor 2 — Definition:** The **noble gases** (Group 18) are helium, neon, argon, krypton, xenon, and radon, each with a completely filled outer shell. That full shell is exceptionally stable, which makes them chemically **inert**: they barely form compounds at all. The **octet rule**, the tendency of atoms to seek 8 outer electrons, is named for this noble-gas stability ("octet" means eight).
+
+**Floor 3 — In action:** This makes the noble gases the key to all bonding. Every bond, ionic, covalent, or metallic, is at heart atoms rearranging electrons to reach a noble-gas configuration. The octet rule (with a few exceptions: hydrogen wants 2, and heavier atoms can hold more) is the most predictive rule in introductory chemistry. The noble gases are the baseline; everything else in chemistry is a departure from it, and a drive to return.
+
+---
+
 ## BB (recap) — Recap: Atomic structure
 *Chemistry · Atomic structure · kind: recap* · ✓ publishable · *reference quick-card; not ingested into the review topic (no floors)*
 
@@ -788,5 +829,8 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 - **Atomic number Z** = number of protons = the element's identity (and = number of electrons in a neutral atom).
 - **Mass number A** = protons + neutrons; number of neutrons = A − Z. Notation: ᴬ_Z X, e.g. ²³₁₁Na.
 - **Isotopes:** atoms of the same element (same Z) with different neutron counts (different A). Chemically identical; the periodic table's atomic masses are weighted averages across an element's isotopes.
+- **Electron shells:** electrons sit in layers (2, 8, …); the outermost (**valence**) shell sets an atom's chemistry. **Octet rule:** atoms behave as if they want a full outer shell, usually 8.
+- **Ions:** an atom that has lost electrons (a positive **cation**) or gained them (a negative **anion**) to reach a full shell. Opposite charges attract: the basis of ionic bonding.
+- **Noble gases:** Group 18, outer shells already full, so chemically inert; the stable state every other atom is chasing.
 
 ---
