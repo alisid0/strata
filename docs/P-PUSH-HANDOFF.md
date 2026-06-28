@@ -67,14 +67,7 @@ final later = change its meta line to `✓ publishable` and re-ingest.
 ## BB NN — Title            (or "## BB (new) — Title" / "## BB (P3 batch) — Title")
 *Maths · Coordinate geometry* · ◐ P3 (batch-reviewed, pending final P)
 
-**Floor 0 — Idea:** ...
-**Floor 1 — Concrete:** ...
-**Floor 2 — Definition:** ...
-**Floor 3 — In action:** ...
-
----
-```
-
+Floor text starts directly — no labels. Each paragraph is a floor.
 Keep blank lines between floors. End every entry with a `---`.
 
 ---

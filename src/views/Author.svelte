@@ -100,7 +100,7 @@
             <textarea
               bind:value={floors[i]}
               class="floor-input"
-              placeholder={`Floor ${i}: ${{0:'Idea (swipe card, hook)',1:'Concrete (real scenario)',2:'Definition (textbook)',3:'In action (applications)',4:'The law (formula, edge cases)'}[i] || 'Extra depth'}`}
+              placeholder={`Floor ${i}`}
               rows="3"
             ></textarea>
             <button class="floor-remove" on:click={() => removeFloor(i)} title="Remove floor">×</button>

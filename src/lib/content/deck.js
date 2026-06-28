@@ -15,7 +15,7 @@ export const ACTS = {
   V: 'V · Trigonometry, vectors and angles'
 };
 
-export const DEPTH_NAMES = ['Idea', 'Concrete', 'Definition', 'In action', 'The law'];
+export const DEPTH_NAMES = [];
 
 // ═══════════════════════════════════════════════════════════════════
 // 84-BB deck: 1-32 (original) + 33-37 (chemistry) + 38-70 (CG T0+T1)

@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
-  import { DEPTH_NAMES } from '../lib/content/deck.js';
   import { getBoard, fetchSnippets } from '../lib/content/dynamicBoards.js';
   import { formatMath } from '../lib/content/mathFormat.js';
   import { pathsForCard } from '../lib/content/paths.js';
@@ -99,12 +98,6 @@
     return d === 0 && !!floor0Img(i);
   }
 
-  // DEPTH_NAMES indexes the five reading floors. When floor 0 is the image-only
-  // swipe card, reading starts at floor 1, so the name/number shift by one.
-  function depthName(i, d) {
-    const idx = floor0Img(i) ? d - 1 : d;
-    return DEPTH_NAMES[idx] || '';
-  }
   function floorNumber(i, d) {
     return floor0Img(i) ? d : d + 1;
   }
@@ -325,7 +318,6 @@
                        in:fly={{ y: reduceMotion ? 0 : floorDir * 38, duration: reduceMotion ? 0 : 320, easing: cubicOut }}
                        out:fly={{ y: reduceMotion ? 0 : -floorDir * 38, duration: reduceMotion ? 0 : 320, easing: cubicOut }}>
                     <div class="floor-meta">
-                      <span class="floor-pill" class:law={depthName(i, d) === 'The law'}>{depthName(i, d).toUpperCase()}</span>
                       <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
                     </div>
                     <div class="floor-text">{@html formatMath(floorBodyHTML(i, d))}</div>
@@ -549,13 +541,7 @@
     display: flex; flex-direction: column;
     padding: 14px 16px 0;
   }
-  .floor-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
-  .floor-pill {
-    font-size: 10px; font-weight: 800; letter-spacing: 0.07em;
-    color: var(--qx-accent-text); background: var(--qx-accent-soft);
-    border-radius: var(--qx-radius-pill); padding: 4px 10px;
-  }
-  .floor-pill.law { color: #fff; background: var(--qx-pink); }
+  .floor-meta { display: flex; align-items: center; margin-bottom: 10px; flex-shrink: 0; }
   .floor-count { font-size: 10.5px; font-weight: 700; color: var(--qx-text-faint); }
 
   .floor-text {
