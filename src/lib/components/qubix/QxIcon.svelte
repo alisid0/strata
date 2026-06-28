@@ -16,7 +16,10 @@
     chevronRight: '<path d="M9 18l6-6-6-6"/>',
     chevronUp: '<path d="M18 15l-6-6-6 6"/>',
     chevronDown: '<path d="M6 9l6 6 6-6"/>',
-    volume: '<path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 8a5 5 0 010 8"/>'
+    volume: '<path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 8a5 5 0 010 8"/>',
+    like: '<path d="M12 21s-7-4.5-9.5-9C1 9 2.5 6 6 6c2 0 3 1.2 3.8 2.3C10.6 7.2 11.6 6 14 6c3.5 0 5 3 3.5 6-2.5 4.5-9.5 9-9.5 9z"/>',
+    save: '<path d="M6 4v16l6-5 6 5V4z"/>',
+    check: '<path d="M20 6L9 17l-5-5"/>'
   };
 
   const FILLED = new Set(['heart']);
