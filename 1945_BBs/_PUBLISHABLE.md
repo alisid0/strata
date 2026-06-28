@@ -834,3 +834,42 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 - **Noble gases:** Group 18, outer shells already full, so chemically inert; the stable state every other atom is chasing.
 
 ---
+
+## BB (P3 batch) — Why atoms bond: the drive to fill the shell
+*Chemistry · Bonding* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** We've seen that every atom is chasing a full outer shell. Bonding is what happens when two atoms meet and help each other get there. Together they reach a more stable, lower-energy arrangement than either had alone, and that drop in energy is the whole reason bonds form.
+
+**Floor 1 — Concrete:** Two hydrogen atoms drift together, each with a single lonely electron, each wanting one more to match helium. So they share: their electron clouds overlap, and each nucleus now feels the pull of both electrons. The two become one molecule, H₂, more stable than two lone atoms, and the leftover energy is released as the bond forms.
+
+**Floor 2 — Definition:** Atoms bond to reach a lower-energy, more stable state, almost always a full outer shell. There are three strategies: **give and take** (ionic, one atom hands electrons to another), **share** (covalent, atoms pool a pair between them), and a **communal pool** (metallic, electrons roam across many atoms). Every one is electrostatic at root: positive nuclei pulling on negative electrons, arranged to minimise total energy.
+
+**Floor 3 — In action:** Bonding isn't something atoms "want"; it is a consequence of electrostatics. Whenever the bonded arrangement has lower total energy than the separate atoms, the bond forms on its own, releasing that energy difference, the **bond energy**. Breaking the bond costs the same energy back. That accounting, energy out when bonds form and energy in to break them, is why burning fuel releases heat and why food powers your body.
+
+---
+
+## BB (P3 batch) — Ionic bonding: give and take
+*Chemistry · Bonding* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Sodium gives an electron; chlorine takes it. Now they carry opposite charges, and opposite charges attract, hard. That is ionic bonding in a sentence: one atom transfers an electron to another, the resulting ions cling together electrostatically, and a compound is born.
+
+**Floor 1 — Concrete:** Hold a lump of sodium, soft and silvery, soft enough to cut with a knife. Drop it into chlorine, a pale green poison gas, and it erupts in a brilliant yellow flame. What is left is a white powder: sodium chloride, table salt. Each sodium gave an electron to a chlorine, and the Na⁺ and Cl⁻ ions packed into a regular repeating grid, an **ionic lattice**, every sodium ringed by six chlorides and vice versa. The result, brittle, high-melting and salty, shares almost nothing with either parent.
+
+**Floor 2 — Definition:** **Ionic bonding** is the electrostatic attraction between oppositely charged ions, formed when electrons transfer from a metal (which holds them loosely) to a non-metal (which pulls hard). The product is not separate molecules but an ionic lattice, an extended repeating array of ions. Hence its properties: high melting points (strong forces throughout), brittle (shift the layers and like charges collide), and conducting only when molten or dissolved (the ions must be free to move).
+
+**Floor 3 — In action:** It is far more than table salt. In magnesium oxide, magnesium loses two electrons and oxygen gains two; the double charges pull far harder, so MgO melts at 2,852°C, hot enough to line furnaces. Calcium carbonate is the ionic lattice of limestone, chalk, and seashells. And an ionic formula isn't a molecule count but the simplest whole-number ratio of ions that balances the charge: NaCl is 1:1, CaCl₂ is 1:2. There is no single "molecule" of salt, only the endless lattice.
+
+---
+
+## BB (P3 batch) — Covalent bonding: sharing is the strategy
+*Chemistry · Bonding* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** What if neither atom will give an electron up? Then they share. Each contributes one electron to a shared pair, and both nuclei are pulled toward that pair, which acts as the glue holding them together. This is covalent bonding, and it holds together almost everything in your body.
+
+**Floor 1 — Concrete:** Two hydrogen atoms, evenly matched, cannot rip an electron from each other, so they overlap and let their two electrons sit in the space between, pulling both nuclei in: a single bond, H₂. Two fluorine atoms share one pair to complete each other's octet, making F₂. Oxygen atoms share two pairs, a double bond, as O₂. Nitrogen atoms share three pairs, a triple bond, as N₂, one of the strongest bonds in all of nature.
+
+**Floor 2 — Definition:** **Covalent bonding** is the sharing of one or more electron pairs between atoms, usually non-metals. One shared pair is a single bond, two a double bond, three a triple bond, each shorter and stronger than the last. Unlike ionic lattices, covalent atoms form discrete **molecules**: finite groups with a fixed formula, like H₂O or CO₂.
+
+**Floor 3 — In action:** Covalent bonding is the chemistry of life. Water, carbon dioxide, glucose, DNA, all are covalent molecules. Carbon, with four valence electrons, forms four covalent bonds, letting it build chains, rings, and frameworks of nearly endless variety, which is why it is the backbone of life. And shape matters: the electron pairs around an atom repel into the arrangement that spreads them out, giving water its bend and methane its tetrahedron. In chemistry as in biology, shape decides function.
+
+---
