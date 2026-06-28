@@ -8,8 +8,10 @@
   export let onNavigate;
 
   let filter = 'all'; // all | physics | maths | chemistry
-  let viewMode = 'list'; // list | grid
+  let viewMode = (typeof localStorage !== 'undefined' && localStorage.getItem('qubix-topics-view')) || 'list';
   let searchQuery = '';
+
+  $: if (typeof localStorage !== 'undefined') localStorage.setItem('qubix-topics-view', viewMode);
 
   const STATE_COLOR = {
     unwandered: 'var(--qx-text-faintest)', wandered: 'var(--qx-text-faint)',
