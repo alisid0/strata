@@ -1016,3 +1016,67 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 3 — In action:** These forces set the physical properties of nearly everything. A longer hydrocarbon has more electrons, so stronger dispersion forces and a higher boiling point. Water beads on a waxed car because its molecules cling to each other through hydrogen bonds but barely stick to the non-polar wax. And life runs on them: protein folding, DNA base-pairing, and cell membranes are all held by these weak, additive, selective attractions.
 
 ---
+
+## BB (new) — What is a molecule?
+*Chemistry · bonding* · ✓ publishable
+
+**Floor 0 — Idea:** An atom is the smallest unit of an element. But walk outside and almost nothing you see is single atoms. The air, the water, your skin — all of it is atoms grouped together, stuck by bonds, moving as a unit. Each group is a molecule: the smallest piece of a substance that is still that substance.
+
+**Floor 1 — What water teaches you:** Take a glass of water. Divide the water in half, again and again, until you reach a single unit: two hydrogens bonded to one oxygen. That unit, H₂O, is a water molecule. It still tastes like water, freezes like water, boils like water. Split it further — tear the H away from the O — and it is no longer water. The atoms are the same. The substance is gone. The molecule is the identity.
+
+**Floor 2 — Same atoms, different molecule:** Oxygen gas is O₂ — two oxygen atoms bonded together. A single oxygen atom, O, is violently reactive and does not exist free in nature. O₂ is stable, colourless, the gas you breathe. Same element, same atom — but the grouping changes everything. The molecule, not the atom, is what you actually encounter.
+
+**Floor 3 — Definition:** A **molecule** is a group of two or more atoms held together by covalent bonds — bonds where atoms share electrons. It is the smallest particle of a covalent substance that has the chemical properties of that substance. A molecule can be an element (O₂, N₂) or a compound (H₂O, CO₂). It has a fixed number and type of atoms — its molecular formula — and a specific 3D shape. That shape comes from its bond angles.
+
+**Floor 4 — What is NOT a molecule:** Not everything is molecular. Table salt, NaCl, is ionic — a giant lattice of alternating Na⁺ and Cl⁻ ions. There is no single "NaCl molecule" sitting alone. Diamond is a giant covalent network — carbon atoms bonded in all directions, one enormous single structure. Helium gas is single atoms. The word "molecule" has a specific meaning: a discrete, countable group of atoms. If you cannot point to one unit and say "that's it," it's probably not a molecule.
+
+**Floor 5 — The formula tells the recipe:** A molecular formula lists which atoms and how many. H₂O: two hydrogens, one oxygen. CO₂: one carbon, two oxygens. C₆H₁₂O₆: six carbons, twelve hydrogens, six oxygens — glucose. The formula is the molecule's identity card. Change one number and it's a different substance. H₂O is water. H₂O₂ is hydrogen peroxide — bleaches hair, burns skin. One extra oxygen atom per molecule. The formula is that precise.
+
+**Floor 6 — Molecules have shapes:** A molecule is not a flat drawing on paper. The bonds point in specific directions, at specific angles, in three-dimensional space. Water is bent at 104.5°. CO₂ is a straight line at 180°. Methane is a tetrahedron at 109.5°. The shape determines whether the molecule is polar, how it packs with other molecules, and what it can react with. The formula tells you what's in it; the shape tells you how it behaves.
+
+**Floor 7 — The four classes, side by side:** Every substance fits one of four boxes. Atomic: single atoms (He, Ne, Ar). Molecular: discrete groups of bonded atoms (H₂O, O₂, glucose). Ionic: a lattice of positive and negative ions (NaCl, MgO). Giant covalent: an endless network of covalent bonds (diamond, quartz). The box determines melting point, conductivity, hardness, and solubility. Identifying which box a substance belongs to is the first step in predicting its properties.
+
+---
+
+
+## BB (new) — Bond angles and the shape of a molecule
+*Chemistry · bonding* · ✓ publishable
+
+**Floor 0 — Idea:** A molecule's shape is not random. It is set by one rule: electron pairs repel, so they push as far apart as they can. The angle between two bonds is the widest spread those electron pairs can achieve. Count the pairs — two, three, or four — and the angle is fixed: 180°, 120°, or 109.5°. Lone pairs squeeze those angles smaller. Add hydrogen bonding between molecules, and the same tetrahedral pattern extends into a 3D network that makes ice float.
+
+**Floor 1 — Two pairs: straight line:** Beryllium chloride, BeCl₂. Two chlorine atoms bonded to beryllium — two electron pairs. They repel. They push to opposite sides. The Cl–Be–Cl angle is 180°. The molecule is linear.
+
+**Floor 2 — Three pairs: flat triangle:** Boron trifluoride, BF₃. Three fluorine atoms bonded to boron — three electron pairs. They spread flat in a circle, as far from each other as possible: 120° apart. The molecule is a flat triangle, trigonal planar.
+
+**Floor 3 — Four pairs: the tetrahedron:** Methane, CH₄. Four hydrogens bonded to carbon — four electron pairs. They cannot all fit flat without crowding; 90° is too close. They pop into three dimensions: a tetrahedron. Every H–C–H angle is 109.5°. That is the widest possible spread for four pairs in 3D space.
+
+**Floor 4 — Lone pairs squeeze the angle:** Ammonia, NH₃. Four electron pairs around nitrogen: three bonded to hydrogens, one lone pair sitting unused. The lone pair repels more strongly — it sits closer to the nucleus. It squeezes the three bonding pairs together. H–N–H angle: 107°, down from 109.5°. Water, H₂O: four pairs — two bonds, two lone pairs. Double the squeeze. H–O–H angle: 104.5°.
+
+**Floor 5 — Water's angles build a network:** Each water molecule is bent at 104.5°, but the four electron pairs around oxygen still point to tetrahedron corners. Two corners hold hydrogens, two hold lone pairs. In ice, each water uses this tetrahedral template to hydrogen-bond to four neighbours: the hydrogens donate, the lone pairs accept. The result is an open hexagonal cage — the ice lattice — with empty space inside each hexagon. That space is why ice is 9% less dense than liquid water. It floats.
+
+**Floor 6 — Angles decide properties:** A few degrees of bond angle is the difference between behaviours. Water's 104.5° bend means the O–H bond dipoles don't cancel — water is polar, a powerful solvent. CO₂'s 180° linear shape means the two C=O dipoles point opposite ways and cancel — CO₂ is non-polar despite its polar bonds. Methane's tetrahedral symmetry makes it a compact, slippery ball with almost no intermolecular stickiness — a gas. Shape is destiny.
+
+---
+
+
+## BB (new) — DNA and proteins: the molecules that run life
+*Chemistry · biology-bridge* · ✓ publishable
+
+**Floor 0 — Idea:** Two molecular structures keep appearing when you study hydrogen bonding. One is DNA — a twisted ladder that stores the instructions for every living thing. The other is proteins — chains that fold into machines. You don't need a biology course to follow a chemistry board. You just need to know what they are, briefly, so the hydrogen bonds make sense.
+
+**Floor 1 — DNA is a chain:** DNA is a polymer — a long chain of repeating units. Each unit has three parts: a sugar (deoxyribose), a phosphate group, and a base (one of four types: A, T, G, or C). The sugar and phosphate link together to form the backbone — like the rail of a ladder. The base sticks out sideways from the sugar, pointing inward. One strand of DNA is just this: a string of bases hanging off a sugar-phosphate rail.
+
+**Floor 2 — Two strands make a helix:** DNA has two strands, not one. They run in opposite directions — antiparallel. And they don't lie flat. They wind around each other into a spiral: the double helix. The sugar-phosphate backbones are on the outside. The bases point inward, toward each other, across the gap between the strands.
+
+**Floor 3 — Base pairs are the rungs:** A base on one strand pairs with a base on the other strand — that's the rung of the ladder. The pairing is specific: A always pairs with T, G always pairs with C. A and T are held by two hydrogen bonds. G and C are held by three hydrogen bonds. The sequence of bases along one strand determines the sequence on the other — if one strand reads A-T-G-C, the other must read T-A-C-G. This is complementary base pairing, and it is the reason DNA can copy itself.
+
+**Floor 4 — Unzip, copy, re-zip:** Because A always pairs with T and G with C, each strand contains all the information needed to rebuild the other. To replicate, enzymes unzip the hydrogen bonds between base pairs. Each separated strand acts as a template — free-floating A, T, G, and C bases pair up with their complements. Two new double helices form, each identical to the original. The hydrogen bonds are the zipper: strong enough to hold the helix together, weak enough to open for copying.
+
+**Floor 5 — Proteins are chains of amino acids:** A protein is also a polymer — a chain, but this time of amino acids. There are 20 different amino acids. They are linked by covalent peptide bonds into a long chain called a polypeptide. The sequence of amino acids is the protein's primary structure. But the chain doesn't stay straight — it folds.
+
+**Floor 6 — The α-helix and β-sheet:** The folded chain forms regular patterns held by hydrogen bonds. In an **α-helix**, the chain coils into a right-handed spiral — like a spiral staircase. A hydrogen bond forms between the C=O group of one amino acid and the N-H group of the amino acid four positions ahead. This repeats every fourth residue, pulling the chain into a tight coil. In a **β-sheet**, stretches of the chain lie side by side — either parallel or antiparallel — like pleats in a curtain. Hydrogen bonds form between the C=O of one strand and the N-H of the adjacent strand. A single protein may contain several helices and several sheets, packed together.
+
+**Floor 7 — The same force, different contexts:** Hydrogen bonds zip DNA. Hydrogen bonds coil proteins into helices and sheets. Hydrogen bonds hold water in a tetrahedral network that makes ice float. The bond is the same. The context changes. Chemistry and biology are not separate subjects at this scale — they are the same interaction, doing different jobs in different molecules. If you understand the hydrogen bond, you understand the fastener that holds life together.
+
+---
+

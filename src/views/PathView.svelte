@@ -61,13 +61,7 @@
 
   $: boardsCompleted = cardStates.filter(c => c.state !== 'unwandered' && c.state !== 'wandered').length;
 
-  // Review-status colour coding (internal designer review app): boards finalised
-  // into the publishable set carry tags.reviewStatus = 'final' (green); ones still
-  // being worked carry 'review' (amber). Lets reviewers skip what's already locked.
-  const REVIEW_LABEL = { final: '✓ Final', p3: '◐ P3', review: '◌ In review' };
-  const REVIEW_COLOR = { final: 'var(--qx-green)', p3: 'var(--qx-yellow)', review: 'var(--qx-text-faint)' };
-  const reviewOf = (b) => b && b.tags && b.tags.reviewStatus;
-  $: allFinal = cards.length > 0 && cardStates.every(c => reviewOf(c.board) === 'final');
+  $: hasQuiz = !!(manifest && manifest.quizUrls && manifest.quizUrls.length);
 </script>
 
 {#if manifest && state}
@@ -80,7 +74,7 @@
     <div class="topic-header">
       <span class="mark-wrap"><SubjectMark subject={manifest.subject} accent={STATE_COLOR[state.state]} size={40} /></span>
       <div class="header-info">
-        <div class="state-chip" style="color:{STATE_COLOR[state.state]}; background:{STATE_COLOR[state.state]}18">{state.label}</div>{#if allFinal}<div class="state-chip review-final" style="color:var(--qx-green); background:var(--qx-green)1e">✓ Final draft</div>{/if}
+        <div class="state-chip" style="color:{STATE_COLOR[state.state]}; background:{STATE_COLOR[state.state]}18">{state.label}</div>
         <h1>{manifest.name}</h1>
         <div class="progress-line">
           <span>{state.boardsRead} of {state.boardsTotal} boards read</span>
@@ -99,7 +93,7 @@
     {:else}
       <div class="board-list">
         {#each cardStates as c, i}
-          <button class="board-row" class:done={c.stateBadge === '✓' || c.stateBadge === '★' || c.stateBadge === '↻'} class:final={reviewOf(c.board) === 'final'} class:p3={reviewOf(c.board) === 'p3'} on:click={() => openReader(c.number)}>
+          <button class="board-row" class:done={c.stateBadge === '✓' || c.stateBadge === '★' || c.stateBadge === '↻'} on:click={() => openReader(c.number)}>
             <span class="row-num" style="background:{c.stateColor}18; color:{c.stateColor}">
               {#if c.stateBadge === '✓' || c.stateBadge === '★' || c.stateBadge === '↻'}
                 {c.stateBadge}
@@ -108,7 +102,7 @@
               {/if}
             </span>
             <div class="row-info">
-              <div class="row-title">{c.board.title || 'Untitled'}{#if reviewOf(c.board)}<span class="review-chip" style="color:{REVIEW_COLOR[reviewOf(c.board)]}; background:{REVIEW_COLOR[reviewOf(c.board)]}1e">{REVIEW_LABEL[reviewOf(c.board)]}</span>{/if}</div>
+              <div class="row-title">{c.board.title || 'Untitled'}</div>
               <div class="row-kicker">{c.board.kicker || ''}</div>
             </div>
             {#if c.number === nextBoardNumber}
@@ -124,10 +118,12 @@
         <button class="cta-primary" on:click={() => openReader(nextBoardNumber)}>
           Continue · Board {cards.findIndex(c => c.number === nextBoardNumber) + 1}
         </button>
-        <button class="cta-secondary" on:click={() => onNavigate?.('quiz', pathId)}>
-          Take the quiz
-          {#if state.bestScore != null}<span class="cta-score">Best {state.bestScore}/{state.bestTotal}</span>{/if}
-        </button>
+        {#if hasQuiz}
+          <button class="cta-secondary" on:click={() => onNavigate?.('quiz', pathId)}>
+            Take the quiz
+            {#if state.bestScore != null}<span class="cta-score">Best {state.bestScore}/{state.bestTotal}</span>{/if}
+          </button>
+        {/if}
       </div>
     {/if}
   </div>
@@ -167,13 +163,6 @@
   }
   .board-row:hover { background: var(--qx-surface); }
   .board-row.done { opacity: 0.62; }
-  .board-row.final { box-shadow: inset 3px 0 0 var(--qx-green); }
-  .board-row.p3 { box-shadow: inset 3px 0 0 var(--qx-yellow); }
-  .review-chip {
-    display: inline-block; margin-left: 7px; font-size: 10px; font-weight: 800;
-    border-radius: var(--qx-radius-pill); padding: 1px 7px; vertical-align: middle; white-space: nowrap;
-  }
-  .review-final { margin-left: 6px; }
   .row-num {
     width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-size: 14px; font-weight: 800; flex-shrink: 0;
