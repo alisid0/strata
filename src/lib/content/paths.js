@@ -11,25 +11,25 @@
 export const PATHS = {
   // ── Physics ──
   PHY_UNITS: { subject: 'physics', name: 'Units & dimensions', icon: 'physics',
-    cards: [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009], quizUrls: [] },
+    cards: [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009], quizUrls: ['tier0'] },
   PHY_SCALE: { subject: 'physics', name: 'Scale, estimation & errors', icon: 'physics',
     cards: [1010, 1011, 1012], quizUrls: [] },
   PHY_KIN: { subject: 'physics', name: 'Kinematics', icon: 'physics',
     cards: [1019, 1020, 1021, 1013, 1014], quizUrls: [] },
   PHY_FORCES: { subject: 'physics', name: "Forces & Newton's laws", icon: 'physics',
-    cards: [1015, 1016, 1017, 1018, 1022, 1023, 1024, 1025, 1026, 1027], quizUrls: [] },
+    cards: [1015, 1016, 1017, 1018, 1022, 1023, 1024, 1025, 1026, 1027], quizUrls: ['tier0'] },
 
   // ── Mathematics ──
   MATH_COORD: { subject: 'maths', name: 'Coordinate geometry', icon: 'maths',
-    cards: [1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041], quizUrls: [] },
+    cards: [1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041], quizUrls: ['tier0'] },
 
   // ── Chemistry ──
   CHEM_ATOMIC: { subject: 'chemistry', name: 'Atomic structure', icon: 'chemistry',
-    cards: [1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050], quizUrls: [] },
+    cards: [1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050], quizUrls: ['tier0'] },
   CHEM_BONDING: { subject: 'chemistry', name: 'Chemical bonding', icon: 'chemistry',
-    cards: [1051, 1052, 1053, 1064, 1054], quizUrls: [] },
+    cards: [1051, 1052, 1053, 1064, 1054], quizUrls: ['tier0'] },
   CHEM_MOLE: { subject: 'chemistry', name: 'Reactions & the mole', icon: 'chemistry',
-    cards: [1055, 1056, 1057, 1058], quizUrls: [] },
+    cards: [1055, 1056, 1057, 1058], quizUrls: ['tier0'] },
   CHEM_ARCH: { subject: 'chemistry', name: 'Molecular architecture', icon: 'chemistry',
     cards: [1059, 1060, 1061, 1065, 1062, 1063, 1066], quizUrls: [] }
 };

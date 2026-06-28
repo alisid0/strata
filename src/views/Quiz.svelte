@@ -3,7 +3,7 @@
   import { formatMathText } from '../lib/content/mathFormat.js';
   import { PATHS } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
-  import ChalkButton from '../lib/components/ChalkButton.svelte';
+  import QxButton from '../lib/components/qubix/QxButton.svelte';
 
   export let pathId = '';
   export let onComplete; // () => void
@@ -50,7 +50,7 @@
       const correctAnswer = q.opts ? q.opts[q.answer] : q.answer;
       showFeedback[questionIdx] = { type: 'bad', text: `The answer was: ${correctAnswer}. ${q.explain || ''}` };
     } else {
-      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite — try once more.' };
+      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite, try once more.' };
     }
     answers = Object.assign({}, answers);
     status = Object.assign({}, status);
@@ -73,7 +73,7 @@
       status[questionIdx] = 'failed';
       showFeedback[questionIdx] = { type: 'bad', text: `The answer was: ${q.answer}. ${q.explain || ''}` };
     } else {
-      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite — try once more.' };
+      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite, try once more.' };
     }
     status = { ...status };
     showFeedback = { ...showFeedback };
@@ -99,7 +99,7 @@
       status[questionIdx] = 'failed';
       showFeedback[questionIdx] = { type: 'bad', text: `The answer was: ${q.answer}. ${q.explain || ''}` };
     } else {
-      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite — try once more.' };
+      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite, try once more.' };
     }
     status = { ...status };
     showFeedback = { ...showFeedback };
@@ -125,7 +125,7 @@
       status[questionIdx] = 'failed';
       showFeedback[questionIdx] = { type: 'bad', text: `Answer: ${q.answer}. ${q.explain || ''}` };
     } else {
-      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite — try once more.' };
+      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite, try once more.' };
     }
     status = { ...status };
     showFeedback = { ...showFeedback };
@@ -173,21 +173,25 @@
   $: progressPct = questions.length > 0 ? (doneCount / questions.length) * 100 : 0;
 </script>
 
-<div class="quiz-view">
+<div class="qx-shell quiz-view">
   <div class="quiz-header">
-    <button class="back-link" on:click={onBack}>‹ back</button>
-    <h1>{manifest?.name || 'Quiz'}</h1>
+    <div class="head-top">
+      <button class="back-chev" on:click={onBack} aria-label="Back">‹</button>
+      <h1>{manifest?.name || 'Quiz'}</h1>
+    </div>
     <p class="quiz-sub">{questions.length} questions · randomized every time</p>
   </div>
 
-  {#if !finished}
+  {#if questions.length === 0}
+    <div class="empty-quiz">No quiz for this topic yet.</div>
+  {:else if !finished}
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" style="width:{progressPct}%"></div>
     </div>
 
     <div class="question-card">
       <div class="q-meta">
-        <span class="q-tag">{questions[current]?.cg || ''} · Question {current + 1} of {questions.length}</span>
+        <span class="q-tag">Question {current + 1} of {questions.length}</span>
         {#if questions[current]?.difficulty && DIFFICULTY_LABELS[questions[current].difficulty]}
           <span class="q-band band-{questions[current].difficulty}">{DIFFICULTY_LABELS[questions[current].difficulty]}</span>
         {/if}
@@ -226,9 +230,9 @@
         <div class="numeric-wrap">
           <input id="num-input-{current}" type="number" step="any" class="num-input" placeholder="Your answer"
             disabled={status[current] !== 'pending'} on:keydown={(e) => e.key === 'Enter' && handleNumeric(current)} />
-          <ChalkButton on:click={() => handleNumeric(current)} disabled={status[current] !== 'pending'}>
+          <QxButton fullWidth={false} variant="secondary" on:click={() => handleNumeric(current)} disabled={status[current] !== 'pending'}>
             Check
-          </ChalkButton>
+          </QxButton>
         </div>
 
       <!-- Fill in the blank -->
@@ -236,9 +240,9 @@
         <div class="fill-wrap">
           <input id="fill-input-{current}" type="text" class="num-input" placeholder="Type your answer"
             disabled={status[current] !== 'pending'} on:keydown={(e) => e.key === 'Enter' && handleFillBlank(current)} />
-          <ChalkButton on:click={() => handleFillBlank(current)} disabled={status[current] !== 'pending'}>
+          <QxButton fullWidth={false} variant="secondary" on:click={() => handleFillBlank(current)} disabled={status[current] !== 'pending'}>
             Check
-          </ChalkButton>
+          </QxButton>
         </div>
 
       <!-- Match the following -->
@@ -254,9 +258,9 @@
               </div>
             {/each}
           </div>
-          <ChalkButton fullWidth on:click={() => { status[current] = 'correct'; score++; showFeedback[current] = { type: 'good', text: questions[current]?.explain || '' }; status = { ...status }; showFeedback = { ...showFeedback }; }}>
-            All matched — check
-          </ChalkButton>
+          <QxButton on:click={() => { status[current] = 'correct'; score++; showFeedback[current] = { type: 'good', text: questions[current]?.explain || '' }; status = { ...status }; showFeedback = { ...showFeedback }; }}>
+            All matched, check
+          </QxButton>
         </div>
       {/if}
 
@@ -268,9 +272,9 @@
       <!-- Next / See score -->
       <div class="q-nav">
         {#if status[current] === 'correct' || status[current] === 'failed'}
-          <ChalkButton on:click={goNext}>
+          <QxButton fullWidth={false} on:click={goNext}>
             {current < questions.length - 1 ? 'Next' : 'See score'}
-          </ChalkButton>
+          </QxButton>
         {/if}
       </div>
     </div>
@@ -282,60 +286,56 @@
       <div class="big-score">{score} / {questions.length}</div>
       <p class="result-msg">
         {#if score === questions.length}
-          Perfect score! Every answer correct.
+          Perfect score. Every answer correct.
         {:else if score >= questions.length * 0.7}
           Solid work. A quick review of the ones you missed will lock it in.
         {:else}
-          Worth revisiting the path boards before trying again.
+          Worth revisiting the topic boards before trying again.
         {/if}
       </p>
-      <ChalkButton fullWidth on:click={restart}>Try again (new values)</ChalkButton>
-      <ChalkButton variant="ghost" fullWidth on:click={onBack}>Back to path</ChalkButton>
+      <div class="result-actions">
+        <QxButton on:click={restart}>Try again (new values)</QxButton>
+        <QxButton variant="ghost" on:click={onBack}>Back to topic</QxButton>
+      </div>
     </div>
   {/if}
 </div>
 
 <style>
-  .quiz-view {
-    height: 100%; overflow-y: auto;
-    padding: 24px 18px 100px;
-    background: var(--board-1);
-    border: 12px solid var(--frame);
-    border-radius: 6px;
-    box-shadow: 0 0 0 2px var(--frame-dark), 0 30px 70px -28px rgba(0,0,0,0.85), inset 0 0 80px rgba(0,0,0,0.35);
-  }
+  .quiz-view { height: 100%; overflow-y: auto; padding: 16px 18px 100px; box-sizing: border-box; }
+
   .quiz-header { margin-bottom: 18px; }
-  .back-link {
-    font-family: var(--print); font-size: 13px; color: var(--chalk-faint);
-    text-decoration: none; cursor: pointer; background: none; border: none; margin-bottom: 8px; display: inline-block;
+  .head-top { display: flex; align-items: center; gap: 10px; }
+  .back-chev {
+    width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
+    color: var(--qx-text-dim); font-size: 19px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .quiz-header h1 { font-family: var(--hand-display); font-weight: 400; font-size: 26px; margin-bottom: 2px; }
-  .quiz-sub { font-family: var(--print); font-size: 13px; color: var(--chalk-faint); }
+  .quiz-header h1 { font-family: var(--qx-font); font-weight: 800; font-size: 21px; color: var(--qx-text); margin: 0; letter-spacing: -0.01em; }
+  .quiz-sub { font-size: 13px; color: var(--qx-text-dim); font-weight: 600; margin: 8px 0 0 44px; }
+
+  .empty-quiz { text-align: center; color: var(--qx-text-faint); padding: 40px 0; font-size: 14px; }
 
   .progress-bar-wrap {
-    height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; margin-bottom: 20px; overflow: hidden;
-    border: 1.2px dashed var(--chalk-faint);
+    height: 6px; background: var(--qx-border-2); border-radius: 999px; margin-bottom: 18px; overflow: hidden;
   }
-  .progress-bar-fill {
-    height: 100%; background: var(--chalk-yellow); border-radius: 4px; transition: width 0.3s;
-  }
+  .progress-bar-fill { height: 100%; background: var(--qx-accent); border-radius: 999px; transition: width 0.3s; }
 
   .question-card {
-    background: var(--board-2); border: 2px solid var(--frame); border-radius: 8px;
-    padding: 24px 22px;
+    background: var(--qx-surface); border: 1.5px solid var(--qx-border); border-radius: var(--qx-radius-lg);
+    padding: 22px 20px;
   }
-  .q-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-  .q-tag { font-family: var(--print); font-size: 12px; color: var(--chalk-yellow); }
+  .q-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .q-tag { font-size: 12px; font-weight: 700; color: var(--qx-text-faint); }
   .q-band {
-    font-family: var(--print); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;
-    padding: 3px 9px; border-radius: 999px; border: 1.2px dashed var(--chalk-faint); color: var(--chalk-dim);
-    white-space: nowrap;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: var(--qx-radius-pill); white-space: nowrap;
+    color: var(--qx-text-dim); background: var(--qx-surface-2);
   }
-  .q-band.band-super-easy { border-color: var(--chalk-green); color: var(--chalk-green); }
-  .q-band.band-easy { border-color: var(--chalk-green); color: var(--chalk-green); }
-  .q-band.band-medium { border-color: var(--chalk-yellow); color: var(--chalk-yellow); }
-  .q-band.band-hard { border-color: #e07a5f; color: #e07a5f; }
-  .q-text { font-family: var(--hand-display); font-size: 19px; margin-bottom: 18px; line-height: 1.4; }
+  .q-band.band-super-easy { color: var(--qx-green-text); background: var(--qx-green-soft); }
+  .q-band.band-easy { color: var(--qx-green-text); background: var(--qx-green-soft); }
+  .q-band.band-medium { color: var(--qx-yellow-text); background: var(--qx-yellow-soft); }
+  .q-band.band-hard { color: var(--qx-pink-text); background: var(--qx-pink-soft); }
+  .q-text { font-family: var(--qx-font); font-weight: 700; font-size: 18px; color: var(--qx-text); margin-bottom: 18px; line-height: 1.45; }
 
   /* Math typography injected by formatMathText (subscripts, superscripts, vectors) */
   .question-card :global(sub) { font-size: 0.7em; vertical-align: -0.25em; line-height: 0; }
@@ -345,59 +345,60 @@
   .options { display: flex; flex-direction: column; gap: 8px; }
   .opt-btn {
     display: block; width: 100%; text-align: left;
-    background: rgba(0,0,0,0.18);
-    border: 1.5px solid rgba(244,241,233,0.2); border-radius: 6px;
-    padding: 12px 16px; color: var(--chalk-dim);
-    font-family: var(--hand); font-size: 16px; cursor: pointer; transition: 0.15s;
+    background: var(--qx-surface-2);
+    border: 1.5px solid var(--qx-border-2); border-radius: var(--qx-radius-md);
+    padding: 13px 16px; color: var(--qx-text);
+    font-family: var(--qx-font); font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.15s;
   }
-  .opt-btn:hover:not(:disabled) { border-color: var(--chalk-yellow); }
-  .opt-btn.selected { border-color: var(--chalk-yellow); }
-  .opt-btn.correct { border-color: var(--chalk-green); background: rgba(169,214,160,0.18); color: var(--chalk); }
-  .opt-btn.incorrect { border-color: #e07a5f; background: rgba(224,122,95,0.18); color: var(--chalk); }
+  .opt-btn:hover:not(:disabled) { border-color: var(--qx-accent); }
+  .opt-btn.selected { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .opt-btn.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .opt-btn.incorrect { border-color: #E5484D; background: rgba(229,72,77,0.12); color: #E5484D; }
   .opt-btn:disabled { cursor: default; }
 
   .tf-options { display: flex; gap: 12px; }
-  .tf-options .opt-btn { flex: 1; text-align: center; }
+  .tf-options .opt-btn { flex: 1; text-align: center; font-weight: 700; }
 
   .numeric-wrap, .fill-wrap { display: flex; gap: 10px; align-items: center; }
   .num-input {
-    flex: 1; padding: 12px 14px; border-radius: 6px;
-    border: 1.5px solid rgba(244,241,233,0.25);
-    background: rgba(0,0,0,0.18); color: var(--chalk);
-    font-family: var(--hand); font-size: 16px;
+    flex: 1; padding: 12px 14px; border-radius: var(--qx-radius-md);
+    border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface-2); color: var(--qx-text);
+    font-family: var(--qx-font); font-size: 15px; outline: none;
   }
+  .num-input:focus { border-color: var(--qx-accent); }
   .num-input:disabled { opacity: 0.7; }
 
-  .match-wrap { }
-  .match-hint { font-family: var(--print); font-size: 13px; color: var(--chalk-dim); margin-bottom: 14px; }
+  .match-hint { font-size: 13px; color: var(--qx-text-dim); margin-bottom: 14px; }
   .match-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
   .match-row {
     display: flex; align-items: center; gap: 10px;
-    background: rgba(0,0,0,0.12); padding: 10px 14px; border-radius: 6px;
-    border: 1.5px dashed rgba(244,241,233,0.1);
+    background: var(--qx-surface-2); padding: 11px 14px; border-radius: var(--qx-radius-md);
+    border: 1.5px solid var(--qx-border-2);
   }
-  .match-left { flex: 1; font-family: var(--hand); font-size: 15px; color: var(--chalk); }
-  .match-arrow { color: var(--chalk-faint); font-size: 14px; }
-  .match-right { flex: 1; font-family: var(--hand); font-size: 15px; color: var(--chalk-dim); text-align: right; }
+  .match-left { flex: 1; font-size: 15px; color: var(--qx-text); font-weight: 600; }
+  .match-arrow { color: var(--qx-text-faint); font-size: 14px; }
+  .match-right { flex: 1; font-size: 15px; color: var(--qx-text-dim); text-align: right; }
 
   .feedback {
-    font-family: var(--print); font-size: 13.5px;
-    margin-top: 14px; padding-top: 10px;
-    border-top: 1px dashed rgba(244,241,233,0.15);
+    font-size: 13.5px; line-height: 1.5;
+    margin-top: 14px; padding-top: 12px;
+    border-top: 1px solid var(--qx-border);
   }
-  .feedback.good { color: var(--chalk-green); }
-  .feedback.bad { color: #e07a5f; }
+  .feedback.good { color: var(--qx-green-text); }
+  .feedback.bad { color: #E5484D; }
 
   .q-nav { display: flex; justify-content: flex-end; margin-top: 16px; }
 
   .result-card {
-    background: var(--board-2); border: 2px solid var(--chalk-yellow);
-    border-radius: 8px; padding: 32px 28px; text-align: center;
+    background: var(--qx-surface); border: 1.5px solid var(--qx-border); border-left: 4px solid var(--qx-accent);
+    border-radius: var(--qx-radius-lg); padding: 30px 26px; text-align: center;
   }
-  .result-card h2 { font-family: var(--hand-display); font-size: 26px; margin-bottom: 10px; }
+  .result-card h2 { font-family: var(--qx-font); font-weight: 800; font-size: 22px; color: var(--qx-text); margin: 0 0 8px; }
   .big-score {
-    font-family: var(--hand-display); font-size: 48px; color: var(--chalk-yellow);
-    margin: 14px 0;
+    font-family: var(--qx-font); font-weight: 800; font-size: 46px; color: var(--qx-accent);
+    margin: 12px 0;
   }
-  .result-msg { font-family: var(--print); font-size: 14px; color: var(--chalk-dim); margin-bottom: 18px; }
+  .result-msg { font-size: 14px; color: var(--qx-text-dim); margin-bottom: 20px; line-height: 1.5; }
+  .result-actions { display: flex; flex-direction: column; gap: 10px; }
 </style>

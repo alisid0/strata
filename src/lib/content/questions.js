@@ -5809,8 +5809,20 @@ function shuffleInPlace(arr) {
  * difficulty. Un-banded paths (everything still on the default 'medium') keep the
  * original behaviour: a single shuffled slice.
  */
+// Launch topics (paths.js) reuse the question pools authored under the old path
+// ids. Only tight subject matches are aliased; topics without an entry simply
+// have no quiz (PathView hides the CTA via the quizUrls gate).
+const PATH_ALIAS = {
+  PHY_UNITS: 'P4',     // Units & dimensions  ← Measurement & dimensions pool
+  PHY_FORCES: 'P7',    // Forces & Newton's laws ← Newton's laws & forces pool
+  MATH_COORD: 'M3',    // Coordinate geometry ← Coordinate geometry pool
+  CHEM_ATOMIC: 'C2',   // Atomic structure
+  CHEM_BONDING: 'C3',  // Chemical bonding
+  CHEM_MOLE: 'C4'      // Reactions & the mole ← Reactions & molecular architecture pool
+};
+
 export function getPathQuestions(pathId, count = 10) {
-  const pool = PATH_QUESTIONS[pathId];
+  const pool = PATH_QUESTIONS[pathId] || PATH_QUESTIONS[PATH_ALIAS[pathId]];
   if (!pool) return [];
 
   const generated = pool.map(def => ({
