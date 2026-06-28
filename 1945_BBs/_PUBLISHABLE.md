@@ -873,3 +873,29 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 3 — In action:** Covalent bonding is the chemistry of life. Water, carbon dioxide, glucose, DNA, all are covalent molecules. Carbon, with four valence electrons, forms four covalent bonds, letting it build chains, rings, and frameworks of nearly endless variety, which is why it is the backbone of life. And shape matters: the electron pairs around an atom repel into the arrangement that spreads them out, giving water its bend and methane its tetrahedron. In chemistry as in biology, shape decides function.
 
 ---
+
+## BB (P3 batch) — Metallic bonding: a sea of electrons
+*Chemistry · Bonding* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Metals don't give electrons away and they don't share them in pairs. Each metal atom lets its outer electrons loose into a shared pool, a sea of electrons that flows freely between the fixed positive ions. The ions stay put; the electrons roam. That one picture explains why metals conduct, bend, and shine.
+
+**Floor 1 — Concrete:** Take a copper wire. The copper ions sit in a regular lattice, but their outer electrons belong to no single atom; they drift through the whole structure. Apply a voltage and that drift becomes an electric current. Hammer the wire and the layers of ions slide past each other while the electron sea flows around them, so the metal bends instead of shattering. Shine light on it and the mobile electrons throw it back, so the surface gleams.
+
+**Floor 2 — Definition:** **Metallic bonding** is the attraction between a lattice of positive metal ions and a sea of **delocalised electrons**, valence electrons no longer tied to any one atom but free to move through the whole metal. That mobility is the source of nearly every metallic property: electrical conductivity (electrons carry charge), thermal conductivity (electrons carry energy), malleability (layers slide without breaking the bond), and lustre (electrons interact with light).
+
+**Floor 3 — In action:** The bond's strength, set by how many electrons each atom contributes and how big the ions are, runs the whole range. Sodium, with one loose electron per atom, is soft enough to cut and melts at 98°C; tungsten, with many electrons and small ions, is hard enough to machine steel and melts at 3,422°C, which is why it is a light-bulb filament. Alloys tune it further: a little carbon mixed into iron jams the layers so they can't slide freely, turning bendable iron into hard, strong steel.
+
+**Floor 4 — The bedrock:** Step back and the three bond types are one idea in three costumes. Ionic transfers electrons, covalent shares a pair, metallic pools them communally, but all three are just positive nuclei and negative electrons arranging themselves into a lower-energy, fuller-shell state. The only difference is what the electrons do: handed over, shared between two, or set loose among many. That single electrostatic drive builds salt crystals, water molecules, and copper wire alike.
+
+---
+
+## BB (recap) — Recap: Chemical bonding
+*Chemistry · Bonding · kind: recap* · ✓ publishable · *reference quick-card; not ingested into the review topic (no floors)*
+
+- **Why atoms bond:** to reach a lower-energy, more stable state, almost always a full outer shell. Forming bonds releases energy (**bond energy**); breaking them costs it back.
+- **Ionic:** a metal transfers electrons to a non-metal; the + and − ions attract in a giant **lattice**. High-melting, brittle, conduct only when molten or dissolved. Formula = simplest ion ratio (NaCl, CaCl₂).
+- **Covalent:** two non-metals share electron pairs (single/double/triple), forming discrete **molecules** (H₂O, CO₂). Carbon's four bonds build the molecules of life; electron-pair repulsion sets molecular shape.
+- **Metallic:** positive ions in a sea of **delocalised electrons**, giving conductivity, malleability, and lustre; alloys like steel tune the strength.
+- **Common thread:** all three are electrostatic, nuclei and electrons arranging to lower energy and fill shells, differing only in what the electrons do (transferred, shared, or pooled).
+
+---
