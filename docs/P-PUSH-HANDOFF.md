@@ -141,19 +141,42 @@ for a snippet to appear (it's Supabase data), but commit the draft file.
 
 ---
 
-## 8. Current state (handoff point)
+## 8. Current state (handoff point — updated 2026-06-28)
 
-- **40 publishable boards** (34 Final + 6 P3) + **11 snippets**.
-- **Physics (28 Final, `PFINAL` 1000–1027):** measurement / units / dimensions tier, scale,
+- **64 review boards** live (mostly P3, some Final) + **4 recap cards** + **11 snippets**.
+  Counts by subject: Physics 28 · Maths 14 · Chemistry 22.
+- **Physics (28, `PFINAL` 1000–1027):** measurement / units / dimensions tier, scale,
   errors, frames & relative motion, **Newton's three laws**, kinematics intro.
   - **Parked (drafted, not P'd):** the friction board ("Friction: pressing, not weight, F = μN").
     Return to it when back in physics.
-- **Maths (11 boards, `PFINAL_MATHS` 1028–1038):** coordinate geometry — number line → plane →
-  (x,y) → line-as-rule → slanted line → slope → y = mx + c → building from two points →
-  parallel / perpendicular / distance. (5 Final, 6 P3.)
-- **Chemistry (45 canonical):** untouched. Needs a `PFINAL_CHEM` review path when started.
-- **Next maths P3 batch (suggested):** midpoint of two points · shapes from points · proving a
-  shape with coordinates.
+- **Maths (14, `PFINAL_MATHS` 1028–1041):** coordinate geometry — number line → plane → (x,y) →
+  line-as-rule → slope → y = mx + c → two-point build → parallel / perpendicular / distance →
+  midpoint → shapes from points → proving a shape.
+- **Chemistry (22, `PFINAL_CHEM` 1042–1063)** — three sections done or nearly:
+  1. **Atomic structure** (1042–1050): what chemistry is · elements & periodic table · the atom ·
+     protons/neutrons/electrons · atomic & mass number · isotopes · electron shells · ions · noble
+     gases. (+ recap)
+  2. **Chemical bonding** (1051–1054): why atoms bond · ionic · covalent · metallic. (+ recap)
+  3. **Reactions & molecular architecture** (1055–1063): the mole (chemist's dozen) · mole in
+     practice (n = m/M) · relative atomic mass · empirical/molecular formulas · ionic lattices ·
+     covalent networks · VSEPR shapes · polarity · intermolecular forces.
+
+### >>> PICK UP HERE (chemistry, `1945_BBs/Chemistry.md` section 3, ~line 379+)
+
+Closing batch to finish "Reactions & molecular architecture":
+  1. **Hydrogen bonding** (line 379) — the special strong IMF; the payoff to the intermolecular-forces board.
+  2. **Why water is weird** (~line 392) — high boiling point, ice floats, the universal solvent; all from H-bonding.
+  3. **Properties from structure** (~line 405) — the section capstone: structure → properties end to end.
+  4. then a **Reactions / molecular-architecture recap** card to seal the section.
+
+New `PFINAL_CHEM` sort_orders will start at **1064**. After this section, continue down
+`Chemistry.md` (section 4 onward). Then physics/maths still have plenty of canonical left.
+
+- **Rhythm:** P3 batches of **3** (Ali says "P" or "next batch"); a **recap card closes each
+  section**. Two-batch (6-board) runs are fine when Ali says "proceed with next batches".
+- The atomic-structure & bonding recaps are reference cards (bullet lists, no floors) — they are
+  **not ingested** into the review topic (the ingest skips floor-less entries); they live in
+  `_PUBLISHABLE.md` only.
 
 ---
 
