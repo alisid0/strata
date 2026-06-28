@@ -15,6 +15,7 @@
 
   let loading = true;
   let cards = [];
+  let error = false;
 
   // This is the "user selects a topic" pull point: any card numbers beyond
   // the static deck get fetched from Supabase here, once, before the board
@@ -23,9 +24,12 @@
 
   async function loadCards(numbers) {
     loading = true;
+    error = false;
     try {
       const resolved = await fetchBoardsByNumbers(numbers);
       cards = numbers.map(n => ({ number: n, board: resolved[n] })).filter(c => c.board);
+    } catch (e) {
+      error = true;
     } finally {
       loading = false;
     }
@@ -90,6 +94,10 @@
 
     {#if loading}
       <div class="loading-row">Loading boards…</div>
+    {:else if error}
+      <div class="loading-row">Couldn't load these boards. <button class="retry-btn" on:click={() => loadCards(manifest.cards)}>Retry</button></div>
+    {:else if cards.length === 0}
+      <div class="loading-row">No boards here yet.</div>
     {:else}
       <div class="board-list">
         {#each cardStates as c, i}
@@ -187,4 +195,5 @@
   .cta-score { font-weight: 600; color: var(--qx-text-dim); font-size: 13px; }
 
   .loading-row { text-align: center; color: var(--qx-text-faint); padding: 32px 0; font-size: 14px; }
+  .retry-btn { background: none; border: none; color: var(--qx-accent); font-family: var(--qx-font); font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: underline; }
 </style>
