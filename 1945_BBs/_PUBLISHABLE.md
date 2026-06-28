@@ -899,3 +899,42 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 - **Common thread:** all three are electrostatic, nuclei and electrons arranging to lower energy and fill shells, differing only in what the electrons do (transferred, shared, or pooled).
 
 ---
+
+## BB (P3 batch) — The chemist's dozen
+*Chemistry · Reactions* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** We count things in groups: a dozen eggs is 12, a century is 100 years. Chemists need to count atoms, but atoms are so small that a dozen of them is uselessly few. So they invented the biggest counting word there is: the **mole**.
+
+**Floor 1 — Concrete:** Just as "dozen" always means 12, a mole always means about 6.022 × 10²³ things. It is just a number, nothing mystical, chosen because it is the right size for atoms.
+
+**Floor 2 — Definition:** **1 mole = 6.022 × 10²³ particles** (Avogadro's number). The size is staggering: a mole of marbles would bury the Earth kilometres deep. But because atoms are so tiny, a mole of water molecules fits in about a tablespoon.
+
+**Floor 3 — In action:** The mole is the translator between the invisible and the visible. Because of it, a chemist can put a spoon of powder on an ordinary balance and know exactly how many trillions of atoms are inside, without counting a single one. It turns "weigh it" into "count it," the move that makes all of chemistry's arithmetic possible.
+
+---
+
+## BB (P3 batch) — The mole in practice: formula to grams and back
+*Chemistry · Reactions* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** The mole is the bridge between the atomic world, which you can't weigh, and the lab bench, which you can. One small equation, **n = m/M**, ferries you across: grams to moles and back. The periodic table hands you M (the molar mass), the balance gives you m (the mass), and n, the number of moles, is what every chemical equation actually runs on.
+
+**Floor 1 — Concrete:** How many moles in 80 g of sodium hydroxide, NaOH? Add the masses: Na 23, O 16, H 1, so M = 40 g/mol. Then n = m/M = 80/40 = 2 moles. Reverse it: you need 0.5 moles of sulfuric acid, H₂SO₄, with M = 98 g/mol, so m = nM = 0.5 × 98 = 49 g. Weigh out 49 g and you have exactly half a mole. The balance reads grams; the equation reads moles; n = m/M translates between them.
+
+**Floor 2 — Definition:** The core equation is **n = m/M**: moles equal mass in grams over molar mass in g/mol (and the molar mass is just the relative atomic or formula mass read off the periodic table). Two siblings handle other cases: a gas at room conditions has one mole in about 24 dm³, so n = V/24; a solution gives n = cV (concentration times volume). Those three cover most mole arithmetic.
+
+**Floor 3 — In action:** This is the daily arithmetic of chemistry. Every balanced equation is read in moles: "2H₂ + O₂ → 2H₂O" means two moles of hydrogen react with one of oxygen to give two of water. The coefficients are mole ratios. So the workflow never changes: convert what you have into moles, apply the ratio from the equation, then convert back to whatever unit you need, grams, litres, or particles.
+
+---
+
+## BB (P3 batch) — Relative atomic mass: why chlorine is 35.5
+*Chemistry · Reactions* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Look at chlorine on the periodic table: its mass is 35.5, not a whole number. But you cannot have half a proton or half a neutron. The reason reaches back to isotopes: natural chlorine is a mixture, about 75% chlorine-35 and 25% chlorine-37, and 35.5 is the weighted average. No single chlorine atom weighs 35.5; it is the average of a handful.
+
+**Floor 1 — Concrete:** Work it out. Natural chlorine is 75.8% chlorine-35 (mass ≈ 35) and 24.2% chlorine-37 (mass ≈ 37). The weighted average is (0.758 × 35) + (0.242 × 37) = 26.5 + 9.0 = 35.5. Bromine, split almost evenly between bromine-79 and bromine-81, averages out near 79.9. Every mass on the periodic table is this kind of average across an element's natural isotopes.
+
+**Floor 2 — Definition:** The **relative atomic mass** (A_r) of an element is the weighted average mass of its natural isotopes, measured against 1/12 the mass of a carbon-12 atom (which is defined as exactly 12). It is a pure ratio with no units, but numerically equal to the molar mass in g/mol, which is what ties it back to n = m/M. Add up the A_r of every atom in a formula and you get the relative molecular (or formula) mass.
+
+**Floor 3 — In action:** Those decimals are not rounding errors; they are the fingerprint of isotopes, measured precisely by mass spectrometry. The same isotope ratios do detective work: the ¹³C-to-¹²C ratio in a sample can reveal which kind of plant a food or fibre came from, or trace the origin of a drug. The numbers after the decimal point on the periodic table are nuclear physics, quietly recorded in every element.
+
+---
