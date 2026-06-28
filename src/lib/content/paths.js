@@ -79,7 +79,7 @@ export const PATHS = {
   // Rebuilt by: node --env-file=.env.local scripts/ingest-final-review.mjs
   PFINAL: { subject: 'physics', name: '★ Final draft — review', icon: 'physics', cards: [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027], quizUrls: [] },
   PFINAL_MATHS: { subject: 'maths', name: '★ Final draft — review (maths)', icon: 'maths', cards: [1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041], quizUrls: [] },
-  PFINAL_CHEM: { subject: 'chemistry', name: '★ Final draft — review (chemistry)', icon: 'chemistry', cards: [1042, 1043, 1044], quizUrls: [] }
+  PFINAL_CHEM: { subject: 'chemistry', name: '★ Final draft — review (chemistry)', icon: 'chemistry', cards: [1042, 1043, 1044, 1045, 1046, 1047], quizUrls: [] }
 };
 
 /** Grouped by subject for the subjects overview */

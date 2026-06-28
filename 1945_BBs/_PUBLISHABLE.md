@@ -734,3 +734,59 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 **Floor 4 — The bedrock:** Here is the fact every chemistry textbook opens with: the atom is almost entirely empty space. Nearly all its mass huddles in a tiny, dense core at the very centre, the nucleus, while the rest is a near-vacuum the electrons streak through. Blow an atom up to the size of a football stadium and its nucleus would be a single marble on the centre spot, the electrons a faint haze up in the stands. The solid iron in your hand is, up close, almost nothing at all.
 
 ---
+
+## BB (P3 batch) — The three puzzle pieces
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** That "uncuttable" atom turns out to be cuttable after all. In the early 1900s scientists cracked one open and found it is not a solid dot but a container, holding just three smaller kinds of piece.
+
+**Floor 1 — Concrete:** Those three pieces are **protons, neutrons, and electrons**. Here is the twist: an iron atom and a gold atom are built from the exact same three parts. There is no "gold proton" or "iron electron." A proton is a proton, everywhere in the universe.
+
+**Floor 2 — Definition:** The protons (positive charge) and neutrons (no charge) are packed into a tiny, heavy clump at the centre, the **nucleus**. The electrons (negative charge) are far lighter and swarm the space around it in a cloud. At this level the "type" of matter disappears; there is only counting.
+
+**Floor 3 — In action:** The only thing that makes an atom behave like gold, oxygen, or iron is how many protons it carries. The universe isn't a kitchen with 118 different ingredients; it's a construction set with just three kinds of brick, assembled in different numbers.
+
+**Floor 4 — The bedrock:** That proton count is the atom's identity, and it has a name: the **atomic number, Z**. 26 protons is iron, 79 is gold, 1 is hydrogen. The periodic table is just the elements lined up by Z, one proton at a time. Change that number and you have changed one element into another, the closest thing nature has to alchemy.
+
+---
+
+## BB (P3 batch) — Atomic number and mass number
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Every atom carries two numbers that pin down its core. The **atomic number Z** is how many protons it has, which fixes what element it is. The **mass number A** is protons plus neutrons, which fixes how heavy that particular atom is. Z is the identity; A is the heft.
+
+**Floor 1 — Concrete:** An atom with Z = 11 is sodium, always. Change the proton count and you change the element: 11 is sodium, 12 is magnesium. The mass number can vary without changing the element: sodium-23 has 11 protons and 12 neutrons, so A = 23. It is written ²³₁₁Na, mass number on top, atomic number below.
+
+**Floor 2 — Definition:** The **atomic number Z** is the proton count; it names the element, sets its place on the periodic table, and in a neutral atom equals the electron count too. The **mass number A** is the total of protons and neutrons. So the neutron count is simply A − Z.
+
+**Floor 3 — In action:** Z answers "what is it?", A answers "how heavy is this version?" Together they give the full particle count of any atom: protons = Z, electrons = Z (if neutral), neutrons = A − Z. For ²³₁₁Na: 11 protons, 11 electrons, 12 neutrons. For ³⁵₁₇Cl: 17, 17, 18. Two numbers, and the whole atom is pinned down.
+
+---
+
+## BB (P3 batch) — Isotopes: same element, different weight
+*Chemistry · Atomic structure* · ◐ P3 (batch-reviewed, pending final P)
+
+**Floor 0 — Idea:** Two atoms of the same element don't have to weigh the same. Carbon comes in at least three versions, chemically identical but different in mass. The only difference is the number of neutrons. These variants are **isotopes**.
+
+**Floor 1 — Concrete:** Carbon-12 has 6 protons and 6 neutrons; carbon-13 has 6 and 7; carbon-14 has 6 and 8. All three are carbon, because all have 6 protons, so all have 6 electrons arranged the same way, so all form the same bonds. Chemically they are indistinguishable. The only differences are mass, and for carbon-14, a slow instability that makes it decay (the basis of radiocarbon dating).
+
+**Floor 2 — Definition:** **Isotopes** are atoms of one element (same Z, same proton count) with different numbers of neutrons, and so different mass numbers A. They are named by mass number: carbon-12, carbon-13, carbon-14. Most elements occur as a mixture of isotopes, and because chemistry is run by electrons, not neutrons, the isotopes behave alike.
+
+**Floor 3 — In action:** This is why atomic masses on the periodic table are not whole numbers. Chlorine's mass is 35.5 not because any atom has half a neutron, but because natural chlorine is about 75% chlorine-35 and 25% chlorine-37, and 35.5 is the weighted average. The listed mass is a population average, not any single atom's.
+
+**Floor 4 — The bedrock:** Isotopes are quietly useful precisely because they are chemically identical but physically different. Carbon-14's steady decay dates ancient bones and charcoal to within decades. Unstable isotopes injected as tracers light up a PET scan, followed through the body's chemistry as a detector tracks their decay. And nuclear power turns on separating one isotope from another: uranium-235 splits in a chain reaction, uranium-238 mostly doesn't, though they are the same element. Same chemistry, very different physics.
+
+---
+
+## BB (recap) — Recap: Atomic structure
+*Chemistry · Atomic structure · kind: recap* · ✓ publishable · *reference quick-card; not ingested into the review topic (no floors)*
+
+- **Chemistry** studies matter and its changes at the scale of **atoms**; the microscopic structure controls the visible world.
+- **Element:** a substance made of only one kind of atom (about 118 in total). The **periodic table** is the full inventory, ordered by atomic number.
+- **Atom:** the smallest piece of an element that is still that element. It is almost entirely empty space, with a tiny, dense **nucleus** at the centre.
+- **Subatomic particles:** **protons** (positive) and **neutrons** (neutral) sit in the nucleus; **electrons** (negative) occupy a cloud around it.
+- **Atomic number Z** = number of protons = the element's identity (and = number of electrons in a neutral atom).
+- **Mass number A** = protons + neutrons; number of neutrons = A − Z. Notation: ᴬ_Z X, e.g. ²³₁₁Na.
+- **Isotopes:** atoms of the same element (same Z) with different neutron counts (different A). Chemically identical; the periodic table's atomic masses are weighted averages across an element's isotopes.
+
+---
