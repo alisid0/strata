@@ -23,6 +23,7 @@
  *   --dry-run       Log what would be generated, don't call APIs
  *   --board N       Process only board at sort_order N
  *   --subject X     Process only boards of subject (physics|maths|chemistry)
+ *   --all           Include P3 (provisional) boards — default is final-P only
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -64,6 +65,7 @@ const SUBJECT_FILTER = (() => {
   const i = args.indexOf('--subject');
   return i >= 0 ? args[i + 1] : null;
 })();
+const INCLUDE_P3 = args.includes('--all');
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -144,17 +146,22 @@ async function main() {
 
   if (BOARD_FILTER) query = query.eq('sort_order', BOARD_FILTER);
 
-  const { data: boards, error } = await query;
+  const { data: rawBoards, error } = await query;
   if (error) { console.error('Fetch failed:', error.message); process.exit(1); }
 
+  let boards = [...rawBoards];
+
   if (SUBJECT_FILTER) {
-    const filtered = boards.filter(b => (b.tags?.subject || '') === SUBJECT_FILTER);
-    console.log(`Subject filter "${SUBJECT_FILTER}": ${filtered.length} of ${boards.length} boards`);
-    boards.length = 0;
-    boards.push(...filtered);
+    boards = boards.filter(b => (b.tags?.subject || '') === SUBJECT_FILTER);
+    console.log(`Subject filter "${SUBJECT_FILTER}": ${boards.length} of ${rawBoards.length} boards`);
+  }
+  if (!INCLUDE_P3) {
+    const before = boards.length;
+    boards = boards.filter(b => b.tags?.reviewStatus !== 'p3');
+    console.log(`Final-P only (skip P3): ${boards.length} of ${before} boards`);
   }
 
-  console.log(`Found ${boards.length} boards.${DRY_RUN ? ' (DRY RUN)' : ''}`);
+  console.log(`Processing ${boards.length} boards.${DRY_RUN ? ' (DRY RUN)' : ''}`);
 
   if (!existsSync(AUDIO_DIR)) mkdirSync(AUDIO_DIR, { recursive: true });
 
