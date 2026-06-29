@@ -171,15 +171,43 @@ So, if you see a radioactive decay law like e^(−t/τ), the fraction t/τ must 
 ## BB (new, capstone) — Dimensional analysis: finding the formula from the dimensions
 *Physics · Measurement* · ✓ publishable · *new capstone BB, slots after BB 89 (homogeneity)*
 
-Here's the payoff for everything so far: you can often work out the shape of a physics formula without running a single experiment — just by forcing the dimensions to match.
+**The Power of Prediction**
 
-What sets a pendulum's swing time? Sensible guesses: its length L, its mass, and gravity g. The period is a time (dimension T); length is L; gravity is an acceleration, LT⁻². The only way to build a pure time from L and g is √(L/g), since √(L ÷ LT⁻²) = √(T²) = T. Mass simply can't appear (there's nothing for it to cancel against), so it drops out. Without touching a pendulum, the dimensions hand you T ∝ √(L/g): make it four times longer and it swings half as fast.
+Imagine trying to figure out what determines the time it takes a pendulum to complete one full swing (its period). A sensible guess is that it depends on three things: the length of the string, the mass of the bob, and the acceleration due to gravity.
 
-**Dimensional analysis** is finding or checking a relationship by demanding that the dimensions match on both sides. List what the answer could depend on, then find the combination of those quantities whose dimensions equal the target's. It fixes the powers — what depends on what, and how strongly — but never the plain numbers out front.
+Let's look at the dimensions:
 
-This is how physicists size up a new problem before any data exists, and it exposes scaling laws: a pendulum's period grows as √L, air drag rises with v², a planet's orbital period squared tracks its radius cubed. What it won't give you is the dimensionless part — it finds the √(L/g) but not the 2π in T = 2π√(L/g). For that you still need the full theory or a measurement.
+- **Period:** T
+- **Length:** L
+- **Gravity:** LT⁻²
+- **Mass:** M
+The only mathematical way to build a pure time (T) from these ingredients is to divide Length by Gravity, and take the square root:
 
-Dimensional analysis has a hard limit and a famous triumph. The limit: it cannot conjure dimensionless numbers (the 2π, a stray ½), and it stalls when too many quantities share the same dimensions. The triumph: in 1950 the physicist G.I. Taylor worked out the energy of the first atomic bomb from only a series of declassified photos of the fireball, each labelled with its radius and the time since detonation. Matching the dimensions of energy, air density, radius, and time, he derived a yield of about 20 kilotonnes — a number that was still officially secret. Dimensions alone, with no access to the device, gave it away.
+√(L / LT⁻²) = √T² = T
+
+Notice what happened to mass (M)? Because there is no other mass dimension to cancel it out, it physically *cannot* appear in the final formula. Without ever touching a real pendulum, the dimensions hand you the scaling law: T ∝ √(L/g). This tells you instantly that if you make a pendulum four times longer, its swing will take exactly twice as long.
+
+**What is Dimensional Analysis?**
+
+This process is called **dimensional analysis**. It is the mathematical method of finding or checking a relationship by demanding that the dimensions match on both sides of an equation. It tells you what depends on what, and how strongly (the powers/exponents).
+
+Physicists use this tool to size up brand new problems before any data exists. It exposes universal scaling laws: a pendulum's period grows as √L, air drag rises with v², and a planet's orbital period squared tracks its radius cubed.
+
+**The Hard Limit**
+
+Dimensional analysis does have one major blind spot: it cannot conjure dimensionless numbers. It easily finds the √(L/g) for a pendulum, but it cannot predict the 2π in the actual formula:
+
+T = 2π√(L/g)
+
+For the pure numbers (like a 2π or a ½), you still need to run an experiment or use advanced calculus.
+
+**A Famous Triumph**
+
+Despite its limits, dimensional analysis is incredibly powerful. In 1950, physicist G.I. Taylor wanted to know the energy of the first atomic bomb. The U.S. military kept this highly classified. However, they released a series of photos of the fireball, labelled only with the fireball's radius and the time since detonation.
+
+Taylor simply matched the dimensions of energy (ML²T⁻²) with the variables he could see: the radius of the blast (L), the time (T), and the density of the surrounding air (ML⁻³). By balancing the dimensions, he derived the explosive yield: roughly **20 kilotonnes**.
+
+He published the exact number while it was still an official government secret. Dimensions alone, with no access to the actual device, gave it all away.
 
 ---
 

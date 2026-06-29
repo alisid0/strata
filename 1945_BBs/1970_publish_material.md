@@ -180,3 +180,20 @@ F = mv? [F] = MLT^-2 but [mv] = MLT^-1. Mismatch - impossible. F = ma gives MLT^
 
 **Floor 4 - The Rule of Math Functions**
 sin, cos, log, e^x must take dimensionless inputs. There is no 'sine of 5 metres'. In e^(-t/tau), t/tau must be unitless - so tau must be a time. Passing homogeneity means an equation might be right; failing means it is certainly wrong. This principle can even build new formulas from scratch.
+
+---
+
+## BB 1009 - Dimensional analysis: finding the formula from the dimensions
+*Physics - Measurement* - live
+
+**Floor 0 - The Power of Prediction**
+What determines a pendulum's swing time? Length (L), mass (M), gravity (LT^-2). To build a pure time (T): sqrt(L / LT^-2) = sqrt(T^2) = T. Mass cannot appear - nothing to cancel it. Result: T ~ sqrt(L/g). Four times longer = twice as slow.
+
+**Floor 1 - What is Dimensional Analysis?**
+Dimensional analysis finds or checks relationships by matching dimensions on both sides. It tells you what depends on what, and how strongly. Scaling laws: pendulum ~ sqrt(L), air drag ~ v^2, orbital period^2 ~ radius^3.
+
+**Floor 2 - The Hard Limit**
+Dimensional analysis cannot find dimensionless numbers. It finds sqrt(L/g) but not the 2pi in T = 2pi sqrt(L/g). For pure numbers (2pi, 1/2), you need experiment or calculus.
+
+**Floor 3 - A Famous Triumph**
+In 1950, G.I. Taylor matched dimensions of energy (ML^2 T^-2) with fireball radius (L), time (T), and air density (ML^-3) from declassified Trinity test photos. He derived ~20 kilotonnes - still an official secret. Dimensions alone gave it away.
