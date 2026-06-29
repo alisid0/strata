@@ -1,34 +1,42 @@
 /**
- * Lightweight render-time math typography — no LaTeX engine, no dependency.
+ * Lightweight render-time math & chemistry typography — no LaTeX engine.
  *
- * The BB and quiz content is authored in a plaintext maths convention (Unicode
- * symbols plus `X_sub`, `x^pow`, and combining-arrow vectors like F⃗). Browsers
- * render the underscores literally and the combining arrow inconsistently, which
- * reads as unpolished. This pass upgrades those conventions to clean HTML at
- * render time:
+ * Conventions upgraded to clean HTML at render time:
  *
- *   F_net   → F<sub>net</sub>          v_rms → v<sub>rms</sub>
- *   r^1.5   → r<sup>1.5</sup>          x^{n+1} → x<sup>n+1</sup>
- *   F⃗ a⃗ v⃗ → <span class="vec">F</span>  (styled as a proper vector)
+ *   F_net    → F<sub>net</sub>           x^{n+1} → x<sup>n+1</sup>
+ *   F⃗ a⃗ v⃗   → <span class="vec">F</span>   ^{12}_6C → ¹²₆C (isotope)
+ *   Na^+     → Na<sup>+</sup>           Ca^{2+}  → Ca<sup>2+</sup>
  *
- * It is deliberately conservative: it only ever touches text *between* tags
- * (never tag names or attributes), and the sub/sup bases are limited so prose
- * underscores in ordinary words are unlikely to be caught. Existing Unicode
- * super/subscripts (², ₀, ⁻¹) are left untouched.
+ * It only touches text *between* tags (never tag names or attributes).
+ * Existing Unicode super/subscripts (², ₀, ⁻¹, ²³₁₁Na) are left untouched.
  */
 
-// Combining over-arrows used for vectors: U+20D7 (right), U+20D6 (left).
+// Combining over-arrows: U+20D7 (right), U+20D6 (left).
 const VEC = /([A-Za-z])[⃗⃖]/g;
 
-// A subscript/superscript may follow a letter, digit, closing bracket, a vector
-// span we just emitted (so `</span>`'s `>`), or a few common unit glyphs.
 const PRE = 'A-Za-z0-9)\\]>°℃πΩμ';
 
 const SUP = new RegExp(`([${PRE}])\\^(\\{[^}]{1,16}\\}|-?[A-Za-z0-9.]{1,8})`, 'g');
 const SUB = new RegExp(`([${PRE}])_(\\{[^}]{1,18}\\}|[A-Za-z0-9]{1,14})`, 'g');
 
+// Isotope: ^{A}_{Z}Symbol  →  <sup>A</sup><sub>Z</sub>Symbol
+const ISOTOPE = /\^\{(\d{1,3})\}_\{(\d{1,3})\}([A-Z][a-z]?)/g;
+
+// Standalone charge superscript: Na^+, Ca^{2+}, SO_4^{2-}
+const CHARGE = /([A-Z][a-z]?(?:_\d+)?)\^\{(\d*[-+])\}/g;
+const SIMPLE_CHARGE = /([A-Z][a-z]?(?:_\d+)?)\^(\d*[-+])/g;
+
 function vectors(t) {
   return t.replace(VEC, '<span class="vec">$1</span>');
+}
+function chemistry(t) {
+  // Isotope: ^{12}_{6}C → <sup>12</sup><sub>6</sub>C
+  t = t.replace(ISOTOPE, '<sup>$1</sup><sub>$2</sub>$3');
+  // Charge with braces: Ca^{2+} → Ca<sup>2+</sup>
+  t = t.replace(CHARGE, '$1<sup>$2</sup>');
+  // Simple charge: Na^+ → Na<sup>+</sup>
+  t = t.replace(SIMPLE_CHARGE, '$1<sup>$2</sup>');
+  return t;
 }
 function subsup(t) {
   t = t.replace(SUP, (_m, a, b) => `${a}<sup>${b.replace(/[{}]/g, '')}</sup>`);
@@ -36,23 +44,20 @@ function subsup(t) {
   return t;
 }
 
-/** Run `fn` only on the text between tags, never inside `<...>`. */
 function onTextNodes(html, fn) {
   return html.replace(/<[^>]+>|[^<]+/g, (chunk) => (chunk[0] === '<' ? chunk : fn(chunk)));
 }
 
-/** Format an HTML string (BB floor content). Tags are preserved untouched. */
 export function formatMath(html) {
   if (!html) return html;
-  return onTextNodes(html, (t) => subsup(vectors(t)));
+  return onTextNodes(html, (t) => chemistry(subsup(vectors(t))));
 }
 
-/** Escape a plain-text string, then format — for plain-text contexts (quizzes). */
 export function formatMathText(text) {
   if (text == null) return '';
   const escaped = String(text)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-  return subsup(vectors(escaped));
+  return chemistry(subsup(vectors(escaped)));
 }

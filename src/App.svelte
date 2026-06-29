@@ -101,7 +101,7 @@
     </div>
 
   {:else if currentView === 'auth'}
-    <div class="view-layer">
+    <div class="view-layer scrollable-layer">
       <Auth onSkip={skipAuth} onAuthed={handleAuthed} />
     </div>
 
@@ -178,6 +178,7 @@
      transition the outgoing and incoming views overlap and cross-slide cleanly
      instead of stacking in normal flow. */
   .view-layer { position: absolute; inset: 0; }
+  .scrollable-layer { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
   .loading-screen {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;

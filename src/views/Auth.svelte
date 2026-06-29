@@ -158,12 +158,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     padding: 20px;
     box-sizing: border-box;
-    overflow-y: auto;
   }
-  .screen { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; max-width: 320px; }
+  .screen { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; max-width: 320px; margin: auto 0; }
 
   .logo-row { display: flex; gap: 6px; margin-bottom: 14px; }
   .chip { width: 34px; height: 34px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; }
