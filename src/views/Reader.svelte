@@ -606,7 +606,7 @@
   }
   .snippet-modal {
     position: relative; max-width: 380px; width: 100%; max-height: 80%; overflow-y: auto;
-    background: var(--qx-surface); border: 1px solid var(--qx-border); border-radius: var(--qx-radius-lg);
+    background: var(--qx-surface); border: 1.5px solid var(--qx-pink); border-radius: var(--qx-radius-lg);
     box-shadow: var(--qx-shadow-card); padding: 22px 20px;
   }
   .snippet-close {
