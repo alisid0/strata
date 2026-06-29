@@ -7,6 +7,10 @@
  * video / interactive specs for the dynamic launch boards (1000+) will live too;
  * Three.js 3D is the first type wired up.
  *
+ * NOTE: keyed by Supabase sort_order, which the review ingest reassigns on every
+ * run. Re-check these against the live board titles after any re-ingest.
+ * Current mapping verified against the 2026-06-28 re-ingest (78 boards, 1000-1077).
+ *
  * 3D specs (rendered by src/lib/components/media/ThreeScene.svelte):
  *   { type:'three', spec:{ kind:'atom',     symbol, shells:[2,8,1] } }
  *   { type:'three', spec:{ kind:'molecule', formula, shape, center, ligand, count } }
@@ -16,20 +20,18 @@
 
 export const BOARD_MEDIA = {
   // ── Chemistry · Atomic structure ──
-  // 1048 "Electron shells: where electrons live" — Concrete floor walks sodium 2,8,1.
-  1048: { 1: { type: 'three', spec: { kind: 'atom', symbol: 'Na', shells: [2, 8, 1] } } },
-
-  // ── Chemistry · Chemical bonding ──
-  // 1064 "What is a molecule?" — open on the most familiar molecule.
-  1064: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'H₂O', shape: 'bent', center: 'O', ligand: 'H', count: 2 } } },
+  // 1057 "Electron shells: where electrons live" — Concrete floor walks sodium 2,8,1.
+  1057: { 1: { type: 'three', spec: { kind: 'atom', symbol: 'Na', shells: [2, 8, 1] } } },
 
   // ── Chemistry · Molecular architecture ──
-  // 1059 "Ionic lattices: the giant structure" — the repeating NaCl grid.
-  1059: { 0: { type: 'three', spec: { kind: 'lattice', a: 'Na', b: 'Cl', size: 3 } } },
-  // 1061 "Molecular shapes: VSEPR" — the showcase: a rotatable tetrahedron.
-  1061: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'CH₄', shape: 'tetrahedral', center: 'C', ligand: 'H', count: 4 } } },
-  // 1065 "Bond angles and the shape of a molecule" — the classic bent 104.5°.
-  1065: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'H₂O', shape: 'bent', center: 'O', ligand: 'H', count: 2 } } }
+  // 1070 "Ionic lattices: the giant structure" — the repeating NaCl grid.
+  1070: { 0: { type: 'three', spec: { kind: 'lattice', a: 'Na', b: 'Cl', size: 3 } } },
+  // 1072 "Molecular shapes: VSEPR" — the showcase: a rotatable tetrahedron.
+  1072: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'CH₄', shape: 'tetrahedral', center: 'C', ligand: 'H', count: 4 } } },
+  // 1075 "What is a molecule?" — the most familiar molecule.
+  1075: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'H₂O', shape: 'bent', center: 'O', ligand: 'H', count: 2 } } },
+  // 1076 "Bond angles and the shape of a molecule" — the pyramidal case.
+  1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } }
 };
 
 /** Media spec for a board number + floor index, or null. */
