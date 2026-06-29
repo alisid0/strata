@@ -7,13 +7,13 @@ Each entry below has passed the manual audit (CONTENT.md / AUTHORING Loop editor
 ## BB 85 — Why we need standard units
 *Physics · Measurement* · ✓ publishable
 
-How heavy is an elephant? You can't answer until everyone agrees what "heavy" is measured against. A number on its own means nothing — it needs a unit, and that unit must mean the same thing to everyone.
+What is the mass of an elephant? A number on its own means nothing. It requires a standardized unit, like the kilogram, so the measurement is universally understood by the global scientific community.
 
-An elephant is about 200 times the mass of a goat. That works because both are compared to the same invisible standard: a unit of mass. Without it, "200" is just a number with no physical meaning. Every measurement works this way — a value times a unit. "2 hours" means two of the standard unit called an hour.
+You might say an elephant is 200 times the mass of a goat, but to find their actual physical mass, both must be measured against that exact same universal standard. Every measurement in science works this way: it is a numerical value multiplied by a unit. Just like '2 hours' literally means two times the standard unit of one hour, a mass of '5,000 kg' means 5,000 times the standard unit of one kilogram.
 
-A **unit** is a fixed, agreed quantity of a physical property, used as the reference everything else is measured against. Any measurement is just the ratio of the thing measured to that reference.
+A unit is a fixed, standardized quantity of a physical property, used as the universal reference that everything else is measured against. When you measure something, you are simply finding the ratio of that object to this standard reference.
 
-The body that fixes these standards is the CGPM (the General Conference on Weights and Measures), so a metre in Delhi is the same length as a metre in Tokyo. Before such bodies existed, every region had its own units: cubits, feet, stones. That made trade and science across borders nearly impossible.
+Before global standards existed, every region had its own units: cubits, feet, or stones. Because a 'foot' varied depending on whose foot you measured, sharing scientific discoveries or trading goods across borders was nearly impossible. To solve this, a global body called the CGPM (General Conference on Weights and Measures) established the **International System of Units (SI)**. Thanks to the SI, a standard meter in Delhi is exactly the same length as a standard meter in Tokyo.
 
 ---
 
