@@ -13,13 +13,16 @@
  *   - Supabase Storage bucket "card-audio" (created by migration 0002)
  *   - Boards already ingested via ingest-final-review.mjs (Phase 1 complete)
  *
+ * Voice assignment: 5 voices rotate per board (board N → voice N%5).
+ * Each board gets one consistent voice across all its floors.
+ *
  * Usage:
  *   node --env-file=.env.local scripts/generate-audio.mjs
  *
  * Options:
  *   --dry-run       Log what would be generated, don't call APIs
  *   --board N       Process only board at sort_order N
- *   --voice ID      ElevenLabs voice ID (default: 21m00Tcm4TlvDq8ikWAM — Rachel)
+ *   --subject X     Process only boards of subject (physics|maths|chemistry)
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -33,8 +36,22 @@ const AUDIO_DIR = join(ROOT, 'audio');
 
 // ── Config ──────────────────────────────────────────────────────────────────
 const ELEVENLABS_URL = 'https://api.elevenlabs.io/v1/text-to-speech';
-const DEFAULT_VOICE = '21m00Tcm4TlvDq8ikWAM'; // Rachel — warm, clear
 const CHUNK_SIZE = 4000; // characters per TTS request (ElevenLabs limit)
+
+// 5 distinct voices — one per board, cycled round-robin.
+// Each board keeps the same voice for all its floors.
+const VOICES = [
+  { id: '21m00Tcm4TlvDq8ikWAM', label: 'Rachel — warm, calm female (US)' },
+  { id: 'pNInz6obpgDQGcFmaJgB', label: 'Adam — deep, authoritative male (US)' },
+  { id: 'ErXwobaYiN019PkySvjV', label: 'Antoni — crisp, clear male (US)' },
+  { id: 'EXAVITQu4vr4xnSDxMaL', label: 'Bella — soft, gentle female (US)' },
+  { id: 'MF3mGyEYCl7XYWbV9V6O', label: 'Elli — natural, conversational female (US)' }
+];
+
+/** Voice for a board: consistent per board, cycles round-robin */
+function voiceForBoard(boardIdx) {
+  return VOICES[boardIdx % VOICES.length];
+}
 
 // ── Parse CLI ───────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -43,9 +60,9 @@ const BOARD_FILTER = (() => {
   const i = args.indexOf('--board');
   return i >= 0 ? parseInt(args[i + 1]) : null;
 })();
-const VOICE_ID = (() => {
-  const i = args.indexOf('--voice');
-  return i >= 0 ? args[i + 1] : DEFAULT_VOICE;
+const SUBJECT_FILTER = (() => {
+  const i = args.indexOf('--subject');
+  return i >= 0 ? args[i + 1] : null;
 })();
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -83,8 +100,8 @@ function chunkText(text, maxLen = CHUNK_SIZE) {
 }
 
 /** Call ElevenLabs TTS, return MP3 buffer. */
-async function tts(text, apiKey) {
-  const resp = await fetch(`${ELEVENLABS_URL}/${VOICE_ID}`, {
+async function tts(text, voiceId, apiKey) {
+  const resp = await fetch(`${ELEVENLABS_URL}/${voiceId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -130,6 +147,13 @@ async function main() {
   const { data: boards, error } = await query;
   if (error) { console.error('Fetch failed:', error.message); process.exit(1); }
 
+  if (SUBJECT_FILTER) {
+    const filtered = boards.filter(b => (b.tags?.subject || '') === SUBJECT_FILTER);
+    console.log(`Subject filter "${SUBJECT_FILTER}": ${filtered.length} of ${boards.length} boards`);
+    boards.length = 0;
+    boards.push(...filtered);
+  }
+
   console.log(`Found ${boards.length} boards.${DRY_RUN ? ' (DRY RUN)' : ''}`);
 
   if (!existsSync(AUDIO_DIR)) mkdirSync(AUDIO_DIR, { recursive: true });
@@ -137,11 +161,14 @@ async function main() {
   let generated = 0;
   let skipped = 0;
 
-  for (const board of boards) {
+  for (let bi = 0; bi < boards.length; bi++) {
+    const board = boards[bi];
+    const voice = voiceForBoard(bi);
     const layers = board.layers || [];
     let changed = false;
     const newLayers = [];
 
+    console.log(`\nBoard ${board.sort_order}: "${board.title}" — voice: ${voice.label}`);
     for (let d = 0; d < layers.length; d++) {
       const layer = layers[d];
 
@@ -175,11 +202,10 @@ async function main() {
 
         let mp3Buffer;
         if (chunks.length === 1) {
-          mp3Buffer = await tts(chunks[0], apiKey);
+          mp3Buffer = await tts(chunks[0], voice.id, apiKey);
         } else {
-          // Concatenate multiple chunks (simple approach — TTS each, save separately)
           for (let ci = 0; ci < chunks.length; ci++) {
-            const chunkBuf = await tts(chunks[ci], apiKey);
+            const chunkBuf = await tts(chunks[ci], voice.id, apiKey);
             const chunkSlug = `${slug}-p${ci}`;
             writeFileSync(join(AUDIO_DIR, `${chunkSlug}.mp3`), chunkBuf);
           }
