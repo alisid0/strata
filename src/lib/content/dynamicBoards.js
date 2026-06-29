@@ -2,7 +2,7 @@ import { writable, get } from 'svelte/store';
 import { supabase } from '../supabase.js';
 import { DECK } from './deck.js';
 
-const KEY = 'strata-dynamic-boards-v1';
+const KEY = 'strata-dynamic-boards-v2';
 
 function loadCache() {
   try {
