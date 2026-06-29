@@ -1,0 +1,13 @@
+import { createClient } from '@supabase/supabase-js';
+const s = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+const floors = [
+  "<p>You cannot add a speed to a force, or subtract a current from a temperature. It is the physics equivalent of adding apples to oranges. In any real equation, every term you add, subtract, or equate must be the exact same 'kind' of thing.</p>",
+  "<p>In science, this is called the <strong>Principle of Dimensional Homogeneity</strong> (homogeneous simply means 'all of the same kind'). It states that in any valid physical equation, every separate term must have identical dimensions.</p>",
+  "<p>Let's test this rule on a famous kinematics equation:</p><p>x = ut + &frac12;at<sup>2</sup></p><ul><li><strong>The Left Side (x):</strong> This is a distance, so its dimension is Length (L).</li><li><strong>The First Term (ut):</strong> Velocity &times; time = (L/T) &times; T = L.</li><li><strong>The Second Term (&frac12;at<sup>2</sup>):</strong> The &frac12; is just a pure number (dimensionless). Acceleration &times; time squared = (L/T<sup>2</sup>) &times; T<sup>2</sup> = L.</li></ul><p>Because L = L + L, every term is a length. The equation passes the test!</p>",
+  "<p><strong>The Fast Filter:</strong> Dimensional homogeneity is an instant filter for catching mistakes. If someone writes Force equals mass times velocity (F = mv), check the dimensions: [F] = MLT<sup>&minus;2</sup>, but [mv] = M &times; LT<sup>&minus;1</sup> = MLT<sup>&minus;1</sup>. The dimensions do not match, so the formula is physically impossible. The correct form, F = ma, gives MLT<sup>&minus;2</sup> on both sides.</p>",
+  "<p><strong>The Rule of Math Functions:</strong> This principle also reveals a hidden rule about advanced math. The input of any trigonometric function (sin, cos), logarithm (log), or exponential (e<sup>x</sup>) <strong>must be completely dimensionless</strong>. There is no such thing as the 'sine of 5 metres'.</p><p>So, if you see a radioactive decay law like e<sup>&minus;t/&tau;</sup>, the fraction t/&tau; must be a pure, unitless number. Because t is a time, this immediately tells you that the constant &tau; <em>must</em> also be a time so the dimensions cancel out!</p><p><em>Note: Passing the homogeneity test means an equation might be right, but it cannot prove that pure numbers (like the &frac12; or a 2&pi;) are correct. However, if pushed further, this principle can actually build entirely new formulas from scratch &mdash; which the next module will show you how to do.</em></p>"
+];
+
+await s.from('cards').update({ layers: floors.map(t => ({ text: t })) }).eq('sort_order', 1008);
+console.log('Board 1008 updated.');
