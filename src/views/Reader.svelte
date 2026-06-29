@@ -334,7 +334,9 @@
                     {#if media}
                       <div class="floor-media">
                         {#if media.type === 'img'}
-                          <div class="media-img" style="background-image:url('{media.src}')" role="img"></div>
+                          <div class="media-card">
+                            <img class="media-img" src={media.src} alt="Diagram" />
+                          </div>
                         {:else if media.type === 'video'}
                           <VideoPlayer src={media.src} />
                         {:else if media.type === 'diagram'}
@@ -572,8 +574,14 @@
   .floor-text :global(sup) { font-size: 0.72em; vertical-align: 0.5em; line-height: 0; }
   .floor-text :global(.vec) { font-weight: 800; font-style: italic; }
 
-  .floor-media { flex: 45 1 0%; min-height: 0; margin: 10px 0 12px; border-radius: var(--qx-radius-md); overflow: hidden; background: var(--qx-surface-2); }
-  .media-img { width: 100%; height: 100%; background-size: cover; background-position: center; }
+  .floor-media { flex: 45 1 0%; min-height: 0; margin: 10px 0 12px; display: flex; align-items: center; justify-content: center; }
+  .media-card {
+    width: 100%; height: 100%; border-radius: var(--qx-radius-md);
+    border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface-2);
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+  }
+  .media-img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .media-diagram { width: 100%; height: 100%; }
   .floor-media :global(.video-container) { width: 100%; height: 100%; margin: 0; border: none; }
 
