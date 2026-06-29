@@ -16,3 +16,5 @@ source-material/*.pdf
 dist/
 _deepseek_*
 node_modules/
+
+audio/
