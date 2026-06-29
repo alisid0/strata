@@ -319,14 +319,16 @@
                        out:fly={{ y: reduceMotion ? 0 : -floorDir * 38, duration: reduceMotion ? 0 : 320, easing: cubicOut }}>
                     <div class="floor-meta">
                       <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
-                      {@const fa = floorAudio(i, d)}
-                      <button
-                        class="audio-btn"
-                        class:playing={playingKey === `${n}-${d}`}
-                        disabled={!fa}
-                        title={fa ? (playingKey === `${n}-${d}` ? 'Pause audio' : 'Play audio') : 'Audio coming soon'}
-                        on:click|stopPropagation={() => toggleAudio(i, d)}
-                      ><QxIcon name="volume" size={14} /></button>
+                      {#if floorAudio(i, d)}
+                        <button
+                          class="audio-btn"
+                          class:playing={playingKey === `${n}-${d}`}
+                          on:click|stopPropagation={() => toggleAudio(i, d)}
+                          title={playingKey === `${n}-${d}` ? 'Pause audio' : 'Play audio'}
+                        ><QxIcon name="volume" size={14} /></button>
+                      {:else}
+                        <button class="audio-btn" disabled title="Audio coming soon"><QxIcon name="volume" size={14} /></button>
+                      {/if}
                     </div>
                     <div class="floor-text">{@html formatMath(floorBodyHTML(i, d))}</div>
                     {#if media}
