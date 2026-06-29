@@ -208,7 +208,7 @@
   .filter-pill.active { color: var(--qx-accent); background: var(--qx-accent-soft); border-color: var(--qx-accent); }
 
   .snippet-card {
-    border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-lg);
+    border: 1.5px solid var(--qx-pink); background: var(--qx-surface); border-radius: var(--qx-radius-lg);
     overflow: hidden; margin-bottom: 12px;
   }
   .card-category { padding: 14px 16px 0; }
