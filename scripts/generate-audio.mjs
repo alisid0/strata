@@ -39,14 +39,13 @@ const AUDIO_DIR = join(ROOT, 'audio');
 const ELEVENLABS_URL = 'https://api.elevenlabs.io/v1/text-to-speech';
 const CHUNK_SIZE = 4000; // characters per TTS request (ElevenLabs limit)
 
-// 5 distinct voices — one per board, cycled round-robin.
+// 4 distinct voices — one per board, cycled round-robin.
 // Each board keeps the same voice for all its floors.
 const VOICES = [
-  { id: '21m00Tcm4TlvDq8ikWAM', label: 'Rachel — warm, calm female (US)' },
-  { id: 'pNInz6obpgDQGcFmaJgB', label: 'Adam — deep, authoritative male (US)' },
-  { id: 'ErXwobaYiN019PkySvjV', label: 'Antoni — crisp, clear male (US)' },
-  { id: 'EXAVITQu4vr4xnSDxMaL', label: 'Bella — soft, gentle female (US)' },
-  { id: 'MF3mGyEYCl7XYWbV9V6O', label: 'Elli — natural, conversational female (US)' }
+  { id: 'ZT9u07TYPVl83ejeLakq', label: 'Voice 1' },
+  { id: 'SCbIlR40EEyW2I6quW1h', label: 'Voice 2' },
+  { id: 't4U671CQHG58R11znrVj', label: 'Voice 3' },
+  { id: 'qxTFXDYbGcR8GaHSjczg', label: 'Voice 4' }
 ];
 
 /** Voice for a board: consistent per board, cycles round-robin */
