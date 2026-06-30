@@ -175,7 +175,7 @@
     tdx = 0; tdy = 0; axis = null;
     dragOffset = 0; isDragging = false;
     dragOffsetY = 0; isVDragging = false; vEngaged = false;
-    vScroller = e.target.closest?.('.card')?.querySelector('.floor-text') || null;
+    vScroller = e.target.closest?.('.card')?.querySelector('.floor-anim') || null;
   }
   function handleTouchMove(e) {
     if (!touching) return;
@@ -332,7 +332,7 @@
                     </div>
                     <div class="floor-text">{@html formatMath(floorBodyHTML(i, d))}</div>
                     {#if media}
-                      <div class="floor-media">
+                      <div class="floor-media" class:interactive={media.type !== 'img'}>
                         {#if media.type === 'img'}
                           <div class="media-card">
                             <img class="media-img" src={media.src} alt="Diagram" />
@@ -551,13 +551,14 @@
   .floor-anim {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
-    padding: 14px 16px 0;
+    padding: 14px 16px 18px;
+    overflow-y: auto;
   }
   .floor-meta { display: flex; align-items: center; margin-bottom: 10px; flex-shrink: 0; }
   .floor-count { font-size: 10.5px; font-weight: 700; color: var(--qx-text-faint); }
 
   .floor-text {
-    flex: 50 1 0%; min-height: 0; overflow-y: auto;
+    flex: 0 0 auto;
     font-size: 14.5px; line-height: 1.58; color: var(--qx-text-2);
   }
   .floor-text :global(p) { margin-bottom: 0.75em; }
@@ -574,14 +575,17 @@
   .floor-text :global(sup) { font-size: 0.72em; vertical-align: 0.5em; line-height: 0; }
   .floor-text :global(.vec) { font-weight: 800; font-style: italic; }
 
-  .floor-media { flex: 45 1 0%; min-height: 0; margin: 10px 0 12px; display: flex; align-items: center; justify-content: center; }
+  /* Image sits directly beneath its text and scrolls with it (the whole floor
+     scrolls). Interactive media (3D/video/diagram) keeps a fixed box since it
+     has no intrinsic height. */
+  .floor-media { flex: 0 0 auto; margin: 14px 0 4px; }
+  .floor-media.interactive { height: min(46vh, 340px); }
   .media-card {
-    width: 100%; height: 100%; border-radius: var(--qx-radius-md);
+    width: 100%; border-radius: var(--qx-radius-md);
     border: 1.5px solid var(--qx-border-2);
-    background: var(--qx-surface-2);
-    overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background: var(--qx-surface-2); overflow: hidden;
   }
-  .media-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .media-img { display: block; width: 100%; height: auto; max-height: 48vh; object-fit: contain; }
   .media-diagram { width: 100%; height: 100%; }
   .floor-media :global(.video-container) { width: 100%; height: 100%; margin: 0; border: none; }
 
