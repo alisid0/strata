@@ -31,6 +31,11 @@
   let snippetByBoard = {}; // card number → a snippet that relates to it (via the snippet's buildsOn)
   let activeSnippets = null; // the related snippets shown in the overlay (array)
   let lightboxSrc = null;    // a floor image shown full-screen (tap to expand)
+  // Lightbox pinch-zoom + pan state.
+  let lbScale = 1, lbX = 0, lbY = 0;
+  let lbMode = null;         // 'pinch' | 'pan'
+  let lbMoved = false, lbTapTimer = null;
+  let lbStartDist = 0, lbStartScale = 1, lbStartX = 0, lbStartY = 0, lbStartPX = 0, lbStartPY = 0;
 
   function availableFloors(i) {
     const card = getBoard(numbers[i]);
@@ -227,6 +232,62 @@
     else if (e.key === 'ArrowDown') { goDeeper(idx); e.preventDefault(); }
     else if (e.key === 'ArrowUp') { goShallower(idx); e.preventDefault(); }
   }
+
+  // ── Lightbox: open/close + pinch-zoom & pan ──
+  function openLightbox(src) { lightboxSrc = src; lbScale = 1; lbX = 0; lbY = 0; }
+  function closeLightbox() { lightboxSrc = null; lbScale = 1; lbX = 0; lbY = 0; }
+
+  const lbDist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+
+  function lbTouchStart(e) {
+    lbMoved = false;
+    if (e.touches.length === 2) {
+      lbMode = 'pinch';
+      lbStartDist = lbDist(e.touches);
+      lbStartScale = lbScale; lbStartX = lbX; lbStartY = lbY;
+      lbStartPX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      lbStartPY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    } else if (e.touches.length === 1) {
+      lbMode = 'pan';
+      lbStartX = lbX; lbStartY = lbY;
+      lbStartPX = e.touches[0].clientX; lbStartPY = e.touches[0].clientY;
+    }
+  }
+  function lbTouchMove(e) {
+    if (lbMode === 'pinch' && e.touches.length === 2) {
+      lbScale = Math.max(1, Math.min(5, lbStartScale * (lbDist(e.touches) / lbStartDist)));
+      const px = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const py = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      lbX = lbStartX + (px - lbStartPX);
+      lbY = lbStartY + (py - lbStartPY);
+      lbMoved = true;
+    } else if (lbMode === 'pan' && e.touches.length === 1 && lbScale > 1) {
+      lbX = lbStartX + (e.touches[0].clientX - lbStartPX);
+      lbY = lbStartY + (e.touches[0].clientY - lbStartPY);
+      lbMoved = true;
+    }
+  }
+  function lbTouchEnd() {
+    if (lbScale <= 1.02) { lbScale = 1; lbX = 0; lbY = 0; }
+    lbMode = null;
+  }
+  function lbImgTap() {
+    if (lbMoved) { lbMoved = false; return; }   // ignore taps that were really drags
+    if (lbTapTimer) {                            // double tap → toggle zoom
+      clearTimeout(lbTapTimer); lbTapTimer = null;
+      if (lbScale > 1) { lbScale = 1; lbX = 0; lbY = 0; } else { lbScale = 2.5; }
+    } else {
+      lbTapTimer = setTimeout(() => {            // single tap (unzoomed) → close
+        lbTapTimer = null;
+        if (lbScale <= 1) closeLightbox();
+      }, 260);
+    }
+  }
+  function lbWheel(e) {
+    e.preventDefault();
+    lbScale = Math.max(1, Math.min(5, lbScale - e.deltaY * 0.0025));
+    if (lbScale === 1) { lbX = 0; lbY = 0; }
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -336,7 +397,7 @@
                     {#if media}
                       <div class="floor-media" class:interactive={media.type !== 'img'}>
                         {#if media.type === 'img'}
-                          <button class="media-card" on:click|stopPropagation={() => lightboxSrc = media.src} aria-label="Expand image">
+                          <button class="media-card" on:click|stopPropagation={() => openLightbox(media.src)} aria-label="Expand image">
                             <img class="media-img" src={media.src} alt="Diagram" />
                             <span class="media-expand" aria-hidden="true">
                               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
@@ -394,9 +455,20 @@
   {/if}
 
   {#if lightboxSrc}
-    <div class="lightbox" on:click={() => lightboxSrc = null} role="presentation">
-      <button class="lightbox-close" on:click={() => lightboxSrc = null} aria-label="Close">✕</button>
-      <img class="lightbox-img" src={lightboxSrc} alt="" />
+    <div class="lightbox" on:click={closeLightbox} on:wheel|nonpassive={lbWheel} role="presentation">
+      <button class="lightbox-close" on:click|stopPropagation={closeLightbox} aria-label="Close">✕</button>
+      <img
+        class="lightbox-img"
+        src={lightboxSrc}
+        alt=""
+        draggable="false"
+        style="transform: translate({lbX}px,{lbY}px) scale({lbScale});{lbMode ? '' : ' transition: transform 0.18s ease;'}"
+        on:click|stopPropagation={lbImgTap}
+        on:touchstart={lbTouchStart}
+        on:touchmove={lbTouchMove}
+        on:touchend={lbTouchEnd}
+      />
+      {#if lbScale === 1}<div class="lightbox-hint">Pinch or double-tap to zoom</div>{/if}
     </div>
   {/if}
 
@@ -613,7 +685,15 @@
     background: rgba(8,8,12,0.92);
     display: flex; align-items: center; justify-content: center; padding: 20px;
   }
-  .lightbox-img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+  .lightbox-img {
+    max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;
+    touch-action: none; user-select: none; -webkit-user-drag: none; will-change: transform;
+  }
+  .lightbox-hint {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    font-family: var(--qx-font); font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6);
+    pointer-events: none;
+  }
   .lightbox-close {
     position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%;
     border: none; background: rgba(255,255,255,0.14); color: #fff; font-size: 17px; cursor: pointer;
