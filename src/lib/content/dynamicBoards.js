@@ -38,23 +38,29 @@ function normalize(row) {
  * (cache hits + freshly fetched) keyed by number.
  */
 export async function fetchBoardsByNumbers(numbers) {
-  const cache = get(dynamicBoards);
-  const toFetch = numbers.filter(n => n > DECK.length && !cache[n]);
+  // Always refresh the requested dynamic boards from Supabase so authored edits
+  // (text, images, audio, even floor shape) show on the next view. A "fetch once,
+  // never refresh" cache silently froze boards mid-authoring; the cache is now
+  // only an offline fallback. Static deck (<= DECK.length) is bundled locally.
+  const dynamicNums = numbers.filter(n => n > DECK.length);
 
-  if (toFetch.length > 0) {
-    const { data, error } = await supabase
-      .from('cards')
-      .select('*')
-      .in('sort_order', toFetch);
+  if (dynamicNums.length > 0) {
+    try {
+      const { data, error } = await supabase
+        .from('cards')
+        .select('*')
+        .in('sort_order', dynamicNums);
+      if (error) throw error;
 
-    if (error) throw error;
-
-    const next = { ...cache };
-    for (const row of data || []) {
-      next[row.sort_order] = normalize(row);
+      const next = { ...get(dynamicBoards) };
+      for (const row of data || []) {
+        next[row.sort_order] = normalize(row);
+      }
+      dynamicBoards.set(next);
+      persistCache(next);
+    } catch (_) {
+      // offline / fetch failed — fall back to whatever's already cached below
     }
-    dynamicBoards.set(next);
-    persistCache(next);
   }
 
   const result = {};
