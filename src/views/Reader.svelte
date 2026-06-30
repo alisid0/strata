@@ -30,6 +30,7 @@
   let playingKey = null;
   let snippetByBoard = {}; // card number → a snippet that relates to it (via the snippet's buildsOn)
   let activeSnippets = null; // the related snippets shown in the overlay (array)
+  let lightboxSrc = null;    // a floor image shown full-screen (tap to expand)
 
   function availableFloors(i) {
     const card = getBoard(numbers[i]);
@@ -220,6 +221,7 @@
   }
 
   function handleKeydown(e) {
+    if (lightboxSrc) { if (e.key === 'Escape') lightboxSrc = null; return; }
     if (e.key === 'ArrowRight') { move(idx + 1); e.preventDefault(); }
     else if (e.key === 'ArrowLeft') { move(idx - 1); e.preventDefault(); }
     else if (e.key === 'ArrowDown') { goDeeper(idx); e.preventDefault(); }
@@ -334,9 +336,12 @@
                     {#if media}
                       <div class="floor-media" class:interactive={media.type !== 'img'}>
                         {#if media.type === 'img'}
-                          <div class="media-card">
+                          <button class="media-card" on:click|stopPropagation={() => lightboxSrc = media.src} aria-label="Expand image">
                             <img class="media-img" src={media.src} alt="Diagram" />
-                          </div>
+                            <span class="media-expand" aria-hidden="true">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                            </span>
+                          </button>
                         {:else if media.type === 'video'}
                           <VideoPlayer src={media.src} />
                         {:else if media.type === 'diagram'}
@@ -385,6 +390,13 @@
           </div>
         {/each}
       </div>
+    </div>
+  {/if}
+
+  {#if lightboxSrc}
+    <div class="lightbox" on:click={() => lightboxSrc = null} role="presentation">
+      <button class="lightbox-close" on:click={() => lightboxSrc = null} aria-label="Close">✕</button>
+      <img class="lightbox-img" src={lightboxSrc} alt="" />
     </div>
   {/if}
 
@@ -581,13 +593,32 @@
   .floor-media { flex: 0 0 auto; margin: 14px 0 4px; }
   .floor-media.interactive { height: min(46vh, 340px); }
   .media-card {
-    width: 100%; border-radius: var(--qx-radius-md);
-    border: 1.5px solid var(--qx-border-2);
+    position: relative; width: 100%; padding: 0; display: block;
+    border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border-2);
     background: var(--qx-surface-2); overflow: hidden;
+    cursor: zoom-in; font: inherit;
   }
   .media-img { display: block; width: 100%; height: auto; max-height: 48vh; object-fit: contain; }
+  .media-expand {
+    position: absolute; right: 8px; bottom: 8px; width: 26px; height: 26px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(18,17,24,0.55); color: #fff; pointer-events: none;
+  }
   .media-diagram { width: 100%; height: 100%; }
   .floor-media :global(.video-container) { width: 100%; height: 100%; margin: 0; border: none; }
+
+  /* Tap-to-expand image lightbox (news-app style) */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 300; cursor: zoom-out;
+    background: rgba(8,8,12,0.92);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .lightbox-img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+  .lightbox-close {
+    position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%;
+    border: none; background: rgba(255,255,255,0.14); color: #fff; font-size: 17px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
 
   .nav-arrows { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 14px 14px; flex-shrink: 0; }
   .arrow-btn {
