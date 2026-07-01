@@ -197,3 +197,31 @@ Dimensional analysis cannot find dimensionless numbers. It finds sqrt(L/g) but n
 
 **Floor 3 - A Famous Triumph**
 In 1950, G.I. Taylor matched dimensions of energy (ML^2 T^-2) with fireball radius (L), time (T), and air density (ML^-3) from declassified Trinity test photos. He derived ~20 kilotonnes - still an official secret. Dimensions alone gave it away.
+
+---
+
+## BB 1010 - Finishing the formula: dimensions plus one measurement
+*Physics - Measurement* - live
+
+**Floor 0**
+Dimensional analysis hands us T ~ sqrt(L/g) but not a working formula. We are missing one scaling number out front. One measurement finds it.
+
+**Floor 1 - Locking In the Constant**
+Build a 1.0m pendulum: swing ~2.0s. T = k sqrt(L/g). sqrt(1.0/9.8) ~ 0.32s. k = 2.0/0.32 ~ 6.3 = 2pi. T = 2pi sqrt(L/g) - complete. Predicts every pendulum, anywhere.
+
+**Floor 2 - How Physics is Actually Built**
+Blueprint: (1) Dimensional analysis fixes the geometry - which variables, which powers. (2) One measurement nails the constant. Dimensions build the frame; you supply the final brick.
+
+**Floor 3 - Ultimate Mathematical Leverage**
+Without dimensional analysis: weeks timing hundreds of pendulums, hunting through tables. With it: pattern locked, one measurement finishes it. More variables = bigger savings.
+
+**Floor 4 - The Rule Underneath: Buckingham pi Theorem**
+n variables, k dimensions -> n-k dimensionless groups = exactly how many constants remain. Pendulum: 3 variables, 2 dimensions -> 1 group = one measurement. Dimensional analysis tells you how much homework is left.
+
+---
+
+## BB 1011 - The theorem underneath
+*Physics - Measurement* - live (accepted as-is)
+
+**Floor 0**
+Buckingham pi theorem (1914): n quantities, k dimensions -> n-k dimensionless groups. Explains why scale models work - match the pi groups (Reynolds, Mach, Froude) and a metre-long model mimics a 300-metre ship. A handful of dimensionless numbers run fluid engineering.

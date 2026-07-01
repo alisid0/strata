@@ -214,15 +214,33 @@ He published the exact number while it was still an official government secret. 
 ## BB (new) — Finishing the formula: dimensions plus one measurement
 *Physics · Measurement* · ✓ publishable · *new board, slots after the dimensional-analysis capstone, before the recap*
 
-Dimensions handed us T ∝ √(L/g), but a proportionality isn't a formula yet — it won't tell you a pendulum swings in 2 seconds. The shape is missing one number out front. One measurement supplies it, and the formula is complete.
+Dimensional analysis is incredibly powerful, but it has a limit. It can hand us a proportionality like T ∝ √(L/g), but that isn't a working formula yet. It can't tell you exactly how many seconds a specific clock pendulum will take to swing. The structural shape is there, but we are missing a single scaling number out front. Fortunately, it only takes one real-world measurement to find it.
 
-Build one pendulum, 1.0 m long, and time a swing: about 2.0 s. The shape says T = k√(L/g), and √(1.0/9.8) ≈ 0.32 s, so k = 2.0 ÷ 0.32 ≈ 6.3 — which is 2π. Drop it in: **T = 2π√(L/g)**. That one formula now predicts the swing of every pendulum, any length, anywhere, with no further experiments.
+**Locking In the Constant**
 
-This is how physics actually builds a law. Dimensional analysis fixes the form — which quantities, raised to which powers. The full theory or a single calibration measurement fixes the one constant left over. Form plus constant is a complete, predictive formula: the dimensions do the structural work, and you supply just one number, once.
+Imagine building a simple pendulum exactly 1.0 meter long. If you pull it back and time a full swing, you will get about 2.0 seconds.
 
-The payoff is leverage. Without dimensions, finding T = 2π√(L/g) by trial means timing pendulums of every length and mass and hunting for the pattern in a table. With dimensions, the pattern is locked in advance and a single timing nails the last unknown. The harder the problem, the bigger the saving — a tangled relationship between many variables collapses to one constant waiting to be measured.
+Now look back at our structural shape, rewritten with an unknown constant (k): T = k√(L/g).
 
-There's a theorem underneath this. The **Buckingham π theorem** says a relationship among n quantities, built from k independent dimensions, can always be rewritten with just n − k dimensionless groups — and that number is exactly how many constants you must still pin down by experiment or theory. For the pendulum (T, L, g, built from length and time), n − k = 1: a single group, which is why one measurement was enough. Dimensional analysis doesn't only hint at the shape; it tells you in advance how much work is left.
+If we plug in our length (1.0 m) and gravity (9.8 m/s²), the radical part √(1.0/9.8) gives us roughly 0.32 seconds. To make the equation match reality (2.0 s), our constant must be: k = 2.0 / 0.32 ≈ 6.3.
+
+Anyone who recognizes math constants will spot that 6.3 is almost exactly 2π. Drop that in, and you get the famous physics law: **T = 2π√(L/g)**. With that single experiment, the formula is complete. It will now accurately predict the swing of *any* pendulum, of *any* length, *anywhere* in the universe, without ever needing another test.
+
+**How Physics is Actually Built**
+
+This reveals the standard blueprint for how physical laws are constructed:
+
+1. **Dimensional analysis** fixes the raw geometry of the universe — it dictates which variables matter and what powers they must be raised to.
+2. **A single calibration measurement** (or a deep theoretical derivation) nails down the leftover constant.
+The dimensions do the heavy lifting by building the frame; you just supply the final brick.
+
+**Ultimate Mathematical Leverage**
+
+The real payoff here is efficiency. If you tried to find the relationship T = 2π√(L/g) purely by trial and error, you would have to spend weeks timing hundreds of different pendulums — changing lengths, swapping masses, altering angles — and then hunt blindly through tables of data looking for a pattern. Dimensional analysis locks the pattern in place before you even start. The more complex a physics problem gets, the bigger this shortcut becomes. A tangled web of five or six variables suddenly collapses into a single, lonely constant waiting to be measured.
+
+**The Rule Underneath: Buckingham's π Theorem**
+
+There is a formal mathematical guarantee behind this shortcut called the **Buckingham π Theorem**. It states that if a physical relationship involves n variables built from k fundamental dimensions (like mass, length, or time), the entire problem can be compressed into exactly n − k dimensionless groups. This number tells you precisely how many unknown constants you have to hunt down. For our pendulum, we have 3 variables (T, L, g) built from 2 base dimensions (length and time): n − k = 3 − 2 = 1. Because the answer is 1, the theorem guarantees that a single dimensionless group — and therefore a single measurement — is all it takes to completely solve the system. Dimensional analysis doesn't just guess the shape of physics; it tells you exactly how much homework you have left to do.
 
 ---
 
