@@ -132,6 +132,7 @@
       </button>
 
       <button class="link skip-link" on:click={onSkip}>Continue as guest</button>
+      <div class="legal-note">By continuing you agree to our <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</div>
     </div>
 
   {:else if mode === 'verify'}
@@ -222,6 +223,8 @@
   .g-dot { width: 22px; height: 22px; border-radius: 50%; background: #EEF1F5; color: #4E97BE; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; }
 
   .skip-link { margin-top: 16px; font-size: 14px; color: var(--qx-text-dim); }
+  .legal-note { margin-top: 14px; font-size: 11.5px; color: var(--qx-text-faint); text-align: center; }
+  .legal-note a { color: var(--qx-text-dim); text-decoration: underline; }
 
   h2 { font-weight: 800; font-size: 25px; color: var(--qx-text); margin: 8px 0 6px; letter-spacing: -0.01em; }
   p { font-size: 14px; font-weight: 400; color: var(--qx-text-dim); margin: 0 0 18px; max-width: 28ch; line-height: 1.5; }
