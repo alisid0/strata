@@ -3,7 +3,6 @@
   import { progress } from '../lib/stores/progress.js';
   import { displayName, logOut } from '../lib/stores/auth.js';
   import { theme } from '../lib/stores/theme.js';
-  import QxToggle from '../lib/components/qubix/QxToggle.svelte';
 
   export let onNavigate;
 
@@ -96,8 +95,10 @@
 
   <!-- Settings -->
   <div class="settings-row">
-    <span class="settings-label">Dark mode</span>
-    <QxToggle checked={$theme === 'dark'} onChange={() => theme.toggle()} />
+    <span class="settings-label">Theme</span>
+    <button class="theme-cycle" on:click={() => theme.toggle()}>
+      {$theme === 'dark' ? '🌙 Dark' : $theme === 'light' ? '☀️ Light' : '📄 Paper'}
+    </button>
   </div>
 
   <div class="footer-links">
@@ -153,6 +154,12 @@
     background: var(--qx-surface); margin-bottom: 16px;
   }
   .settings-label { font-size: 15px; font-weight: 700; color: var(--qx-text); }
+  .theme-cycle {
+    font-family: var(--qx-font); font-size: 13px; font-weight: 700;
+    color: var(--qx-accent-text); background: var(--qx-accent-soft);
+    border: 1.5px solid var(--qx-accent); border-radius: var(--qx-radius-pill);
+    padding: 6px 14px; cursor: pointer;
+  }
 
   .footer-links { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--qx-border); padding-top: 14px; }
   .footer-link { background: none; border: none; text-align: left; font-family: var(--qx-font); font-size: 14px; font-weight: 700; color: var(--qx-text-dim); cursor: pointer; padding: 6px 0; }

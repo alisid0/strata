@@ -53,6 +53,47 @@
   --qx-shadow-card: 0 10px 22px -10px rgba(18,17,24,0.18);
 }
 
+/* ── Paper theme — warm, low-strain, book-page feel ── */
+:root[data-qx-theme="paper"] {
+  --qx-bg: #F5F0E8;
+  --qx-bg-radial: #FDF9F2;
+  --qx-surface: #FDFBF7;
+  --qx-surface-2: #F3EDE4;
+  --qx-surface-3: #EDE7DD;
+  --qx-surface-elevated: #2C2416;
+  --qx-border: #D9D0C1;
+  --qx-border-2: #CFC5B4;
+
+  --qx-text: #2C2416;
+  --qx-text-2: #5C5040;
+  --qx-text-dim: #7A6F5F;
+  --qx-text-faint: #A69885;
+  --qx-text-faintest: #B8AD9E;
+
+  --qx-accent: #6B5C3E;
+  --qx-accent-soft: #EDE4D4;
+  --qx-accent-soft-2: #F3EDE2;
+  --qx-accent-text: #5A4C30;
+
+  --qx-yellow: #D4A840;
+  --qx-yellow-soft: #FDF3D0;
+  --qx-yellow-text: #7A5E10;
+
+  --qx-green: #5A8A3C;
+  --qx-green-soft: #E8F0DE;
+  --qx-green-text: #3D6628;
+
+  --qx-pink: #C47A6A;
+  --qx-pink-soft: #F5E4DE;
+  --qx-pink-soft-2: #FAEFEB;
+  --qx-pink-text: #A05A4A;
+
+  --qx-shadow-card: 0 8px 18px -8px rgba(44,36,22,0.15);
+
+  /* Subtle paper grain via SVG noise */
+  --qx-paper-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
 :root[data-qx-theme="dark"] {
   --qx-bg: #0B132B;
   --qx-bg-radial: #16223f;
@@ -93,4 +134,13 @@
   -webkit-font-smoothing: antialiased;
   max-width: 480px;
   margin: 0 auto;
+  position: relative;
+}
+
+/* Paper grain overlay — only active in paper theme */
+[data-qx-theme="paper"] .qx-shell::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: var(--qx-paper-texture);
+  opacity: 0.6;
 }
