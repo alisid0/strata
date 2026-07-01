@@ -1,9 +1,12 @@
 /* ============================================================
-   Qubix — design tokens for the app shell (Auth, Home, Topics,
-   Topic Detail, Stats, Leaderboard, Snippets).
-   Independent of tokens.css (the --chalk- and --board- vars), which
-   Reader.svelte and Quiz.svelte still use. Distinct --qx- prefix means
-   the two systems can coexist on the same root with zero collision.
+   Qubix — design tokens (LOCKED palette: "warm & crafted").
+   One personality across all three themes: warm neutrals + a
+   muted, earthy accent family (bronze / ochre / olive / terracotta).
+   Light = clean warm, Paper = creamier + grain, Dark = warm espresso.
+
+   This is the single source of truth for colour. Components must use
+   these --qx-* vars, never raw hex. Reader.svelte/Quiz.svelte legacy
+   --chalk-/--board- vars are separate and being retired.
    ============================================================ */
 
 :root {
@@ -13,47 +16,57 @@
   --qx-radius-lg: 18px;
   --qx-radius-pill: 999px;
 
-  /* Theme-independent accents */
-  --qx-accent: #454ADE;
-  --qx-yellow: #FFF05A;
-  --qx-green: #69E037;
-  --qx-pink: #FF79AC;
+  /* Warm crafted brand hues (light/paper base; dark tunes them lighter). */
+  --qx-accent: #6E5C36;   /* bronze  — primary / brand */
+  --qx-yellow: #C99A30;   /* ochre   — key emphasis */
+  --qx-green:  #5C8A3E;   /* olive   — success / well-read */
+  --qx-pink:   #BC6E5A;   /* terracotta — mastery / highlight */
+  --qx-danger: #C0503A;   /* warm red — errors / destructive */
+
+  /* Medal tiers (warm, on-brand) */
+  --qx-medal-gold:   #C79A3B;
+  --qx-medal-silver: #A9A28C;
+  --qx-medal-bronze: #B07A4A;
 }
 
+/* ── Light — clean warm neutral, crisp white surfaces ── */
 :root[data-qx-theme="light"] {
-  --qx-bg: #EEEEEE;
-  --qx-bg-radial: #ffffff;
-  --qx-surface: #ffffff;
-  --qx-surface-2: #F1F2F0;
-  --qx-surface-3: #ECEDEA;
-  --qx-surface-elevated: #1b1b22;
-  --qx-border: #E2E0DC;
-  --qx-border-2: #DEDCD8;
+  --qx-bg: #F1EDE4;
+  --qx-bg-radial: #FBF8F1;
+  --qx-surface: #FFFFFF;
+  --qx-surface-2: #F4F0E7;
+  --qx-surface-3: #ECE7DC;
+  --qx-surface-elevated: #2C2416;
+  --qx-border: #E4DDCE;
+  --qx-border-2: #D8D0BE;
 
-  --qx-text: #121118;
-  --qx-text-2: #54505A;
-  --qx-text-dim: #6B6770;
-  --qx-text-faint: #9A95A0;
-  --qx-text-faintest: #A8A4AE;
+  --qx-text: #241F16;
+  --qx-text-2: #57503F;
+  --qx-text-dim: #726A58;
+  --qx-text-faint: #9E947E;
+  --qx-text-faintest: #B4AB97;
 
-  --qx-accent-soft: #E7E9FB;
-  --qx-accent-soft-2: #EEF0FC;
-  --qx-accent-text: #454ADE;
+  --qx-accent-soft: #ECE4D2;
+  --qx-accent-soft-2: #F3EDE0;
+  --qx-accent-text: #5A4A2C;
 
-  --qx-yellow-soft: #FFFBCB;
-  --qx-yellow-text: #7A6A12;
+  --qx-yellow-soft: #F8EFCE;
+  --qx-yellow-text: #6E5410;
 
-  --qx-green-soft: #EAF7E0;
-  --qx-green-text: #3E8C12;
+  --qx-green-soft: #E7EFDC;
+  --qx-green-text: #3C6427;
 
-  --qx-pink-soft: #FCE7F0;
-  --qx-pink-soft-2: #FFEFF6;
-  --qx-pink-text: #FF79AC;
+  --qx-pink-soft: #F4E2DB;
+  --qx-pink-soft-2: #FAEEE9;
+  --qx-pink-text: #97503E;
 
-  --qx-shadow-card: 0 10px 22px -10px rgba(18,17,24,0.18);
+  --qx-danger-soft: #F6E1DA;
+  --qx-danger-text: #A03826;
+
+  --qx-shadow-card: 0 10px 22px -10px rgba(44,36,22,0.16);
 }
 
-/* ── Paper theme — warm, low-strain, book-page feel ── */
+/* ── Paper — warm, low-strain, book-page feel (the reference look) ── */
 :root[data-qx-theme="paper"] {
   --qx-bg: #F5F0E8;
   --qx-bg-radial: #FDF9F2;
@@ -88,43 +101,56 @@
   --qx-pink-soft-2: #FAEFEB;
   --qx-pink-text: #A05A4A;
 
+  --qx-danger: #B85A44;
+  --qx-danger-soft: #F3DFD8;
+  --qx-danger-text: #963A28;
+
   --qx-shadow-card: 0 8px 18px -8px rgba(44,36,22,0.15);
 
   /* Subtle paper grain via SVG noise */
   --qx-paper-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
+/* ── Dark — warm espresso, same crafted family lightened for contrast ── */
 :root[data-qx-theme="dark"] {
-  --qx-bg: #0B132B;
-  --qx-bg-radial: #16223f;
+  --qx-bg: #17140D;
+  --qx-bg-radial: #241E13;
   --qx-surface: rgba(255,255,255,0.05);
   --qx-surface-2: rgba(255,255,255,0.06);
-  --qx-surface-3: rgba(255,255,255,0.06);
-  --qx-surface-elevated: #15141a;
+  --qx-surface-3: rgba(255,255,255,0.07);
+  --qx-surface-elevated: #211B12;
   --qx-border: rgba(255,255,255,0.09);
-  --qx-border-2: rgba(255,255,255,0.13);
+  --qx-border-2: rgba(255,255,255,0.14);
 
-  --qx-text: #f4f1e9;
-  --qx-text-2: #C9C6CD;
-  --qx-text-dim: #97949E;
-  --qx-text-faint: #8E97AB;
-  --qx-text-faintest: #6E7689;
+  --qx-text: #F2EADB;
+  --qx-text-2: #CFC6B4;
+  --qx-text-dim: #A79E8B;
+  --qx-text-faint: #8C8573;
+  --qx-text-faintest: #6F6656;
 
-  --qx-accent-soft: rgba(69,74,222,0.16);
-  --qx-accent-soft-2: rgba(69,74,222,0.12);
-  --qx-accent-text: #9AA0FF;
+  --qx-accent: #B79A66;
+  --qx-accent-soft: rgba(183,154,102,0.16);
+  --qx-accent-soft-2: rgba(183,154,102,0.11);
+  --qx-accent-text: #D8BE8A;
 
-  --qx-yellow-soft: rgba(255,240,90,0.14);
-  --qx-yellow-text: #FFF05A;
+  --qx-yellow: #E0B94E;
+  --qx-yellow-soft: rgba(224,185,78,0.15);
+  --qx-yellow-text: #E8C765;
 
-  --qx-green-soft: rgba(105,224,55,0.16);
-  --qx-green-text: #69E037;
+  --qx-green: #86B863;
+  --qx-green-soft: rgba(134,184,99,0.16);
+  --qx-green-text: #9CC97A;
 
-  --qx-pink-soft: rgba(255,121,172,0.14);
-  --qx-pink-soft-2: rgba(255,121,172,0.12);
-  --qx-pink-text: #FF79AC;
+  --qx-pink: #D28E76;
+  --qx-pink-soft: rgba(210,142,118,0.15);
+  --qx-pink-soft-2: rgba(210,142,118,0.11);
+  --qx-pink-text: #DE9B84;
 
-  --qx-shadow-card: 0 14px 30px -14px rgba(0,0,0,0.5);
+  --qx-danger: #DB7A5E;
+  --qx-danger-soft: rgba(219,122,94,0.16);
+  --qx-danger-text: #E58E72;
+
+  --qx-shadow-card: 0 14px 30px -14px rgba(0,0,0,0.55);
 }
 
 .qx-shell {
