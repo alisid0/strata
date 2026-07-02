@@ -21,11 +21,12 @@
       `;
     }
     if (subject === 'maths') {
-      // 1/√x curve
+      // 1/√x — mathematical notation
       return `
-        <line x1="16" y1="10" x2="16" y2="50" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="16" y1="50" x2="56" y2="50" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M18 14 Q24 22 30 34 Q38 44 54 48" stroke="${accent}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <text x="32" y="23" text-anchor="middle" font-size="20" font-weight="800" fill="currentColor" font-family="system-ui, -apple-system, sans-serif">1</text>
+        <line x1="16" y1="31" x2="48" y2="31" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M18 44 L14 47 L14 52 L26 52" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <text x="34" y="50" text-anchor="middle" font-size="17" font-weight="700" fill="${accent}" font-family="system-ui, -apple-system, sans-serif" font-style="italic">x</text>
       `;
     }
     // chemistry — flask + test tube
