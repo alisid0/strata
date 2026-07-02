@@ -42,6 +42,17 @@
   let lbMoved = false, lbTapTimer = null;
   let lbStartDist = 0, lbStartScale = 1, lbStartX = 0, lbStartY = 0, lbStartPX = 0, lbStartPY = 0;
 
+  // First-time vertical-swipe hint — shows once, then never again.
+  const HINT_KEY = 'qubix-reader-hint-shown';
+  let showSwipeHint = false;
+  if (typeof localStorage !== 'undefined') {
+    showSwipeHint = !localStorage.getItem(HINT_KEY);
+  }
+  function dismissSwipeHint() {
+    showSwipeHint = false;
+    if (typeof localStorage !== 'undefined') localStorage.setItem(HINT_KEY, '1');
+  }
+
   // Checkpoint quiz: after every 3rd BB, a quick tap-quiz before the next group.
   const CHECKPOINT_EVERY = 3;
   let checkpointQuestions = null;   // pre-generated questions when a checkpoint is due
@@ -334,6 +345,22 @@
   <button class="side-nav prev" disabled={idx === 0} on:click={() => move(idx - 1)}><QxIcon name="chevronLeft" size={18} /></button>
   <button class="side-nav next" disabled={idx === totalCards - 1} on:click={() => move(idx + 1)}><QxIcon name="chevronRight" size={18} /></button>
 
+  {#if showSwipeHint}
+    <div class="swipe-hint-toast" in:fly={{ y: 48, duration: 400, easing: cubicOut }}>
+      <div class="swipe-hint-row">
+        <QxIcon name="chevronDown" size={14} />
+        <span>Swipe down to dig deeper</span>
+        <QxIcon name="chevronDown" size={14} />
+      </div>
+      <div class="swipe-hint-row">
+        <QxIcon name="chevronUp" size={14} />
+        <span>Swipe up to surface</span>
+        <QxIcon name="chevronUp" size={14} />
+      </div>
+      <button class="swipe-hint-dismiss" on:click={dismissSwipeHint}>Got it</button>
+    </div>
+  {/if}
+
   <div
     id="rail"
     class:dragging={isDragging}
@@ -365,14 +392,10 @@
                 title={audioUrl ? (playingKey === `${n}-0` ? 'Pause audio' : 'Play audio') : 'Audio coming soon'}
                 on:click|stopPropagation={() => toggleAudio(i, 0)}
               ><QxIcon name="volume" size={16} /></button>
-              <button class="swipe-bottom" on:click={() => goDeeper(i)}>
+              <div class="swipe-bottom" role="button" tabindex="0" on:click={() => goDeeper(i)} on:keydown={(e) => e.key === 'Enter' && goDeeper(i)}>
                 <div class="swipe-kicker">{col.kicker}</div>
                 <div class="swipe-title">{col.title}</div>
-                <div class="dig-hint">
-                  <span class="dig-circle"><QxIcon name="chevronDown" size={16} /></span>
-                  <span>Swipe down to dig in</span>
-                </div>
-              </button>
+              </div>
             </div>
           {:else}
             {@const d = depthOf[i]}
@@ -459,16 +482,7 @@
               </div>
             </div>
 
-            <div class="nav-arrows">
-              {#if d > 0}
-                <button class="arrow-btn" on:click={() => goShallower(i)} title="Back to surface"><QxIcon name="chevronUp" size={18} /></button>
-              {/if}
-              {#if nextDepths[i] !== undefined}
-                <button class="arrow-btn primary" on:click={() => goDeeper(i)} title="Dig deeper"><QxIcon name="chevronDown" size={18} /></button>
-              {:else}
-                <button class="arrow-btn" disabled title="Bedrock reached"><QxIcon name="chevronDown" size={18} /></button>
-              {/if}
-            </div>
+
           {/if}
         </div>
         {:else}
@@ -643,15 +657,6 @@
   }
   .swipe-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: #9AA0FF; margin-bottom: 6px; }
   .swipe-title { font-size: 25px; font-weight: 800; color: #fff; line-height: 1.1; letter-spacing: -0.015em; }
-  .dig-hint { display: flex; align-items: center; gap: 9px; margin-top: 14px; color: #fff; }
-  .dig-circle {
-    display: flex; align-items: center; justify-content: center;
-    width: 32px; height: 32px; border-radius: 50%; background: var(--qx-accent);
-    animation: digbob 1.8s ease-in-out infinite;
-  }
-  .dig-hint span:last-child { font-size: 12.5px; font-weight: 700; }
-  @keyframes digbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
-
   /* ---- Reading floor ---- */
   .card-header {
     display: flex; align-items: center; gap: 10px;
@@ -755,16 +760,6 @@
     display: flex; align-items: center; justify-content: center;
   }
 
-  .nav-arrows { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 14px 14px; flex-shrink: 0; }
-  .arrow-btn {
-    width: 38px; height: 38px; border-radius: 50%;
-    border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
-    color: var(--qx-text-dim); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .arrow-btn.primary { background: var(--qx-accent); border-color: var(--qx-accent); color: #fff; }
-  .arrow-btn:disabled { opacity: 0.35; cursor: default; }
-
   .snippet-btn {
     position: relative;
     width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%;
@@ -799,5 +794,26 @@
   .loading-slab {
     display: flex; align-items: center; justify-content: center;
     font-size: 13px; font-weight: 700; color: var(--qx-text-faint);
+  }
+
+  /* First-time vertical swipe hint */
+  .swipe-hint-toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 25;
+    background: var(--qx-surface); border: 1.5px solid var(--qx-accent);
+    border-radius: var(--qx-radius-lg); box-shadow: var(--qx-shadow-card);
+    padding: 16px 22px; text-align: center;
+    display: flex; flex-direction: column; gap: 8px; align-items: center;
+    max-width: 280px;
+  }
+  .swipe-hint-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; color: var(--qx-text);
+  }
+  .swipe-hint-row :global(svg) { color: var(--qx-accent); flex-shrink: 0; }
+  .swipe-hint-dismiss {
+    margin-top: 6px; padding: 8px 20px;
+    border-radius: var(--qx-radius-pill); border: none;
+    background: var(--qx-accent); color: #fff; font-weight: 800; font-size: 13px;
+    cursor: pointer; font-family: var(--qx-font);
   }
 </style>
