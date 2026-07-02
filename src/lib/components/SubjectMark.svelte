@@ -7,13 +7,17 @@
 
   function getIcon(subject, accent) {
     if (subject === 'physics') {
-      // Catapult — simple lever machine
+      // Prism refracting light + pendulum
       return `
-        <path d="M28 50 L14 30 L50 30 L36 50" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
-        <line x1="32" y1="50" x2="32" y2="30" stroke="currentColor" stroke-width="2.4"/>
-        <circle cx="32" cy="30" r="2.8" fill="${accent}"/>
-        <path d="M38 38 Q58 18 54 12" stroke="${accent}" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-dasharray="3 3"/>
-        <circle cx="54" cy="12" r="3" fill="${accent}" opacity="0.7"/>
+        <line x1="32" y1="4" x2="27" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="27" cy="20" r="5" fill="${accent}"/>
+        <polygon points="16,38 46,38 31,56" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+        <line x1="2" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <polygon points="19,42 22,40 22,44" fill="currentColor"/>
+        <line x1="40" y1="42" x2="58" y2="32" stroke="${accent}" stroke-width="1.8" stroke-linecap="round" opacity="0.9"/>
+        <line x1="40" y1="42" x2="60" y2="40" stroke="${accent}" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
+        <line x1="40" y1="42" x2="57" y2="49" stroke="${accent}" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+        <line x1="40" y1="42" x2="54" y2="54" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
       `;
     }
     if (subject === 'maths') {
