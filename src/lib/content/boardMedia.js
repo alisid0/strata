@@ -38,11 +38,7 @@ export const BOARD_MEDIA = {
   1038: { 0: { type: 'coord-plane', spec: {
     xRange: [-1, 5], yRange: [-1, 5],
     interactive: true,
-    points: [{ x: 3, y: 2, label: '(3, 2)', color: '#2563eb' }],
-    segments: [
-      { x1: 3, y1: 0, x2: 3, y2: 2, color: '#dc2626', dashed: true },
-      { x1: 0, y1: 2, x2: 3, y2: 2, color: '#dc2626', dashed: true }
-    ]
+    points: [{ x: 3, y: 2, color: 'var(--qx-accent)' }]
   } } }
 };
 

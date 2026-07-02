@@ -12,6 +12,7 @@
   import ChalkDiagram from '../lib/components/ChalkDiagram.svelte';
   import ThreeScene from '../lib/components/media/ThreeScene.svelte';
   import CoordinatePlane from '../lib/components/media/CoordinatePlane.svelte';
+  import GeoGebraPlane from '../lib/components/media/GeoGebraPlane.svelte';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
@@ -415,6 +416,8 @@
                               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
                             </button>
                           </div>
+                        {:else if media.type === 'geogebra'}
+                          <div class="media-diagram"><GeoGebraPlane spec={media.spec} /></div>
                         {:else if media.type === 'three'}
                           {#key numbers[i] + '-' + d}
                             <ThreeScene spec={media.spec} />
