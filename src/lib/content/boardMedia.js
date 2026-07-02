@@ -36,9 +36,9 @@ export const BOARD_MEDIA = {
   // ── Maths · Coordinate geometry ──
   // 1038 "Every point has an address: across, then up" — a point on the plane.
   1038: { 0: { type: 'coord-plane', spec: {
-    xRange: [-1, 5], yRange: [-1, 5],
+    xRange: [0, 6], yRange: [0, 2.5],
     interactive: true,
-    points: [{ x: 3, y: 2, color: 'var(--qx-accent)' }]
+    points: [{ x: 3, y: 2, color: '#2563eb' }]
   } } }
 };
 
