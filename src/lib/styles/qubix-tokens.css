@@ -21,6 +21,10 @@
   --qx-radius-md: 14px;
   --qx-radius-lg: 18px;
   --qx-radius-pill: 999px;
+
+  /* Reading-optimised type: larger, book-like body with generous line-height. */
+  --qx-fs-body: 17.5px;
+  --qx-lh-body: 1.72;
 }
 
 /* ── Light — Canvas background, Ink text ── */

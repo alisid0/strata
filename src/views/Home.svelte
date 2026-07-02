@@ -3,8 +3,10 @@
   import { progress } from '../lib/stores/progress.js';
   import { displayName } from '../lib/stores/auth.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
+  import SettingsMenu from '../lib/components/qubix/SettingsMenu.svelte';
 
   export let onNavigate; // (view, args?) => void
+  let settingsOpen = false;
 
   const TOTAL_BOARDS = totalBoards();
 
@@ -39,7 +41,10 @@
     <div class="streak-chip">
       <QxIcon name="flame" size={14} />{streak}
     </div>
+    <button class="menu-btn" on:click={() => settingsOpen = true} aria-label="Settings">⋯</button>
   </div>
+
+  <SettingsMenu open={settingsOpen} onClose={() => settingsOpen = false} onNavigate={onNavigate} />
 
   <!-- Primary CTA: Start learning -->
   <button class="start-cta" on:click={() => onNavigate?.('topics')}>
@@ -104,6 +109,12 @@
   .streak-chip {
     display: flex; align-items: center; gap: 4px; background: var(--qx-yellow-soft); border: 1px solid var(--qx-yellow);
     border-radius: var(--qx-radius-pill); padding: 5px 12px; color: var(--qx-yellow-text); font-size: 14px; font-weight: 800;
+  }
+  .menu-btn {
+    width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface); color: var(--qx-text-dim); font-size: 22px; line-height: 1;
+    cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--qx-font); padding: 0 0 6px;
   }
 
   /* Start CTA */

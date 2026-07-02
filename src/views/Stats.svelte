@@ -1,8 +1,7 @@
 <script>
   import { PATHS, totalBoards } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
-  import { displayName, logOut } from '../lib/stores/auth.js';
-  import { theme } from '../lib/stores/theme.js';
+  import { displayName } from '../lib/stores/auth.js';
 
   export let onNavigate;
 
@@ -24,11 +23,6 @@
   function barH(count) {
     if (!count) return 6;
     return Math.min(100, 30 + count * 20);
-  }
-
-  async function handleLogout() {
-    try { await logOut(); } catch (_) {}
-    onNavigate?.('auth');
   }
 </script>
 
@@ -92,18 +86,6 @@
   {:else}
     <div class="medal-empty">Read a board or take a quiz to earn your first medal.</div>
   {/if}
-
-  <!-- Settings -->
-  <div class="settings-row">
-    <span class="settings-label">Theme</span>
-    <button class="theme-cycle" on:click={() => theme.toggle()}>
-      {$theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
-    </button>
-  </div>
-
-  <div class="footer-links">
-    <button class="footer-link danger" on:click={handleLogout}>Log out</button>
-  </div>
 </div>
 
 <style>

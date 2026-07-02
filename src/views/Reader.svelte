@@ -614,8 +614,8 @@
   }
   .header-mark { width: 28px; height: 28px; border-radius: 50%; background: var(--qx-accent-soft); color: var(--qx-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .header-text { flex: 1; min-width: 0; }
-  .header-title { font-size: 13.5px; font-weight: 800; color: var(--qx-text); line-height: 1.15; }
-  .header-sub { font-size: 10.5px; font-weight: 600; color: var(--qx-text-faint); }
+  .header-title { font-size: 15px; font-weight: 800; color: var(--qx-text); line-height: 1.2; }
+  .header-sub { font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint); }
 
   .reading-body { flex: 1; min-height: 0; display: flex; overflow: hidden; }
 
@@ -643,9 +643,11 @@
 
   .floor-text {
     flex: 0 0 auto;
-    font-size: 14.5px; line-height: 1.58; color: var(--qx-text-2);
+    font-size: var(--qx-fs-body); line-height: var(--qx-lh-body); color: var(--qx-text);
+    letter-spacing: 0.002em;
   }
-  .floor-text :global(p) { margin-bottom: 0.75em; }
+  .floor-text :global(p) { margin-bottom: 1em; }
+  .floor-text :global(p:last-child) { margin-bottom: 0; }
   .floor-text :global(strong) { color: var(--qx-text); font-weight: 800; }
   .floor-text :global(.formula) {
     display: block; margin: 14px 0; text-align: center; border-radius: var(--qx-radius-md);
@@ -653,7 +655,7 @@
     border: 1px solid var(--qx-pink); padding: 16px 12px;
     font-size: 24px; font-weight: 800; color: var(--qx-text);
   }
-  .floor-text :global(.gloss) { display: block; font-size: 11px; font-weight: 600; color: var(--qx-text-dim); margin-top: 6px; }
+  .floor-text :global(.gloss) { display: block; font-size: 12.5px; font-weight: 600; color: var(--qx-text-dim); margin-top: 8px; line-height: 1.5; }
   /* Math typography injected by formatMath (subscripts, superscripts, vectors) */
   .floor-text :global(sub) { font-size: 0.72em; vertical-align: -0.25em; line-height: 0; }
   .floor-text :global(sup) { font-size: 0.72em; vertical-align: 0.5em; line-height: 0; }
