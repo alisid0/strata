@@ -24,7 +24,8 @@
 
   function buildCommands() {
     const cmds = [];
-    const [xMin, yMin, xMax, yMax] = spec.xRange || [-5, -5, 5, 5];
+    const [xMin, xMax] = spec.xRange || [-5, 5];
+    const [yMin, yMax] = spec.yRange || [-5, 5];
 
     // Each point
     for (const p of spec.points || []) {
