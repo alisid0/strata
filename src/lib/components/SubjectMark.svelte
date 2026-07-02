@@ -12,4 +12,4 @@
   $: src = icons[subject] || icons.physics;
 </script>
 
-<img src={src} alt={subject} width={size} height={size} style="display:block;border-radius:6px" />
+<img src={src} alt={subject} width={size} height={size} style="display:block;border-radius:10px;background:#121118" />
