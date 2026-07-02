@@ -11,7 +11,8 @@
   // }
   export let spec = {};
 
-  let svgEl, dragging = null;
+  let svgEl;
+  let dragging = null;
   const PAD = 44, SIZE = 420, plotSize = SIZE - 2 * PAD;
 
   $: xMin = spec.xRange?.[0] ?? -1;
@@ -26,7 +27,8 @@
   function fromX(sx) { return xMin + ((sx - PAD) / plotSize) * (xMax - xMin); }
   function fromY(sy) { return yMin + ((plotSize - (sy - PAD)) / plotSize) * (yMax - yMin); }
 
-  $: axX = toX(0), axY = toY(0);
+  $: axX = toX(0);
+  $: axY = toY(0);
   $: xAxisOn = 0 >= yMin && 0 <= yMax;
   $: yAxisOn = 0 >= xMin && 0 <= xMax;
 
