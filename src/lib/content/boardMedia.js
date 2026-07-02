@@ -34,6 +34,8 @@ export const BOARD_MEDIA = {
   1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } },
 
   // ── Maths · Coordinate geometry ──
+  // 1035 "The simplest thing you can draw" — number line animation.
+  1035: { 0: { type: 'video', src: 'https://xzesbcrlnbesmvxmgotp.supabase.co/storage/v1/object/public/card-audio/bb-1035-number-line.mp4' } },
   // 1038 "Every point has an address: across, then up" — a point on the plane.
   1038: { 0: { type: 'coord-plane', spec: {
     xRange: [0, 6], yRange: [0, 2.5],
