@@ -7,26 +7,32 @@
 
   function getIcon(subject, accent) {
     if (subject === 'physics') {
+      // Catapult — simple lever machine
       return `
-        <ellipse cx="32" cy="32" rx="26" ry="10.5" stroke="currentColor" stroke-width="2.4"/>
-        <ellipse cx="32" cy="32" rx="26" ry="10.5" stroke="currentColor" stroke-width="2.4" transform="rotate(60 32 32)"/>
-        <ellipse cx="32" cy="32" rx="26" ry="10.5" stroke="currentColor" stroke-width="2.4" transform="rotate(120 32 32)"/>
-        <circle cx="32" cy="32" r="4.6" fill="${accent}"/>
+        <path d="M28 50 L14 30 L50 30 L36 50" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+        <line x1="32" y1="50" x2="32" y2="30" stroke="currentColor" stroke-width="2.4"/>
+        <circle cx="32" cy="30" r="2.8" fill="${accent}"/>
+        <path d="M38 38 Q58 18 54 12" stroke="${accent}" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-dasharray="3 3"/>
+        <circle cx="54" cy="12" r="3" fill="${accent}" opacity="0.7"/>
       `;
     }
     if (subject === 'maths') {
+      // 1/√x curve
       return `
-        <path d="M14 11 L14 50 L53 50" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-        <path d="M20 45 Q32 5 44 45" stroke="${accent}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <line x1="16" y1="10" x2="16" y2="50" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="16" y1="50" x2="56" y2="50" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M18 14 Q24 22 30 34 Q38 44 54 48" stroke="${accent}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
       `;
     }
-    // chemistry
+    // chemistry — flask + test tube
     return `
-      <path d="M25 11 L25 27 L13 49 Q12 54 17 54 L47 54 Q52 54 51 49 L39 27 L39 11" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-      <path d="M22 11 L42 11" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-      <path d="M17.5 45 L46.5 45" stroke="${accent}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-      <circle cx="27" cy="49.5" r="2" fill="${accent}"/>
-      <circle cx="35" cy="41" r="1.5" fill="currentColor"/>
+      <path d="M18 14 L18 30 L10 50 Q9 54 14 54 L34 54 Q39 54 38 50 L30 30 L30 14" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <line x1="18" y1="14" x2="30" y2="14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M15 46 L33 46" stroke="${accent}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <circle cx="22" cy="49" r="2" fill="${accent}"/>
+      <circle cx="28" cy="42" r="1.5" fill="currentColor"/>
+      <path d="M48 12 L48 44 Q48 54 44 54 Q40 54 40 44 L40 12" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M43 38 L45 38" stroke="${accent}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
     `;
   }
 </script>
