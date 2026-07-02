@@ -11,6 +11,7 @@
   import VideoPlayer from '../lib/components/VideoPlayer.svelte';
   import ChalkDiagram from '../lib/components/ChalkDiagram.svelte';
   import ThreeScene from '../lib/components/media/ThreeScene.svelte';
+  import CoordinatePlane from '../lib/components/media/CoordinatePlane.svelte';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
@@ -407,6 +408,8 @@
                           <VideoPlayer src={media.src} />
                         {:else if media.type === 'diagram'}
                           <div class="media-diagram"><ChalkDiagram spec={media.spec} /></div>
+                        {:else if media.type === 'coord-plane'}
+                          <div class="media-diagram"><CoordinatePlane spec={media.spec} /></div>
                         {:else if media.type === 'three'}
                           {#key numbers[i] + '-' + d}
                             <ThreeScene spec={media.spec} />

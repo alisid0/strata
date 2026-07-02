@@ -31,7 +31,18 @@ export const BOARD_MEDIA = {
   // 1075 "What is a molecule?" — the most familiar molecule.
   1075: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'H₂O', shape: 'bent', center: 'O', ligand: 'H', count: 2 } } },
   // 1076 "Bond angles and the shape of a molecule" — the pyramidal case.
-  1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } }
+  1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } },
+
+  // ── Maths · Coordinate geometry ──
+  // 1038 "Every point has an address: across, then up" — a point on the plane.
+  1038: { 0: { type: 'coord-plane', spec: {
+    xRange: [-1, 5], yRange: [-1, 5],
+    points: [{ x: 3, y: 2, label: '(3, 2)', color: 'var(--qx-accent)' }],
+    segments: [
+      { x1: 3, y1: 0, x2: 3, y2: 2, stroke: 'var(--qx-pink)', dashed: true },
+      { x1: 0, y1: 2, x2: 3, y2: 2, stroke: 'var(--qx-pink)', dashed: true }
+    ]
+  } } }
 };
 
 /** Media spec for a board number + floor index, or null. */

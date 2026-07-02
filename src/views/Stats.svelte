@@ -129,21 +129,4 @@
   .medal-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
   .medal-chip { font-size: 12px; font-weight: 700; color: var(--qx-yellow-text); background: var(--qx-yellow-soft); border-radius: var(--qx-radius-pill); padding: 7px 13px; }
   .medal-empty { font-size: 13px; color: var(--qx-text-faint); margin-bottom: 20px; }
-
-  .settings-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 16px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border);
-    background: var(--qx-surface); margin-bottom: 16px;
-  }
-  .settings-label { font-size: 15px; font-weight: 700; color: var(--qx-text); }
-  .theme-cycle {
-    font-family: var(--qx-font); font-size: 13px; font-weight: 700;
-    color: var(--qx-accent-text); background: var(--qx-accent-soft);
-    border: 1.5px solid var(--qx-accent); border-radius: var(--qx-radius-pill);
-    padding: 6px 14px; cursor: pointer;
-  }
-
-  .footer-links { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--qx-border); padding-top: 14px; }
-  .footer-link { background: none; border: none; text-align: left; font-family: var(--qx-font); font-size: 14px; font-weight: 700; color: var(--qx-text-dim); cursor: pointer; padding: 6px 0; }
-  .footer-link.danger { color: #e0574d; }
 </style>
