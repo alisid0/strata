@@ -8,6 +8,7 @@
   //   showAxes?: boolean,         // default true
   //   points?: [{x, y, label?, color?, radius?}],
   //   lines?: [{m, c, label?, stroke?, dashed?} | {x1,y1,x2,y2, label?, stroke?, dashed?}],
+  //   curves?: [{fn, domain?, stroke?, dashed?, samples?}],  // fn: "x*x" | "sin(x)" | (x)=>…
   //   segments?: [{x1,y1,x2,y2, stroke?, dashed?, arrow?}],
   //   shade?: [{x1,x2, above, below, fill?}],   // region shading
   //   triangles?: [{x1,y1,x2,y2,x3,y3, fill?, label?, rightAngle?}],  // slope triangles
@@ -21,6 +22,7 @@
   const PAD = 32;      // padding inside SVG
   const SIZE = 400;     // viewBox size
   const plotSize = SIZE - 2 * PAD;
+  const uid = Math.random().toString(36).slice(2, 8);  // unique clipPath id per instance
 
   $: xMin = spec.xRange?.[0] ?? -5;
   $: xMax = spec.xRange?.[1] ?? 5;
@@ -92,6 +94,38 @@
   }
 
   function handlePointerUp() { dragging = null; }
+
+  // Evaluate a function spec: a JS function, or a string expression like
+  // "x*x", "2*x+1", "sin(x)" (Math functions are in scope). Content-authored
+  // only (from boardMedia.js), never user input.
+  function makeFn(fn) {
+    if (typeof fn === 'function') return fn;
+    try {
+      const compiled = new Function('x', 'with (Math) { return (' + fn + '); }');
+      return (x) => compiled(x);
+    } catch (_) {
+      return () => NaN;
+    }
+  }
+
+  // Sample a curve into an SVG path. Breaks the path where the function is
+  // undefined or jumps across an asymptote, so we never draw a false vertical.
+  function curvePath(curve) {
+    const f = makeFn(curve.fn);
+    const [d0, d1] = curve.domain || [xMin, xMax];
+    const N = curve.samples || 200;
+    const span = yMax - yMin;
+    let d = '', pen = false, prevY = null;
+    for (let i = 0; i <= N; i++) {
+      const x = d0 + (d1 - d0) * (i / N);
+      const y = f(x);
+      if (!isFinite(y)) { pen = false; prevY = null; continue; }
+      if (pen && prevY !== null && Math.abs(y - prevY) > span * 4) pen = false;
+      d += (pen ? 'L' : 'M') + toX(x).toFixed(2) + ',' + toY(y).toFixed(2) + ' ';
+      pen = true; prevY = y;
+    }
+    return d.trim();
+  }
 </script>
 
 <svg
@@ -203,12 +237,31 @@
       marker-end={seg.arrow ? 'url(#arrowhead)' : ''} />
   {/each}
 
-  <!-- Arrowhead marker -->
+  <!-- Defs: plot-area clip (for curves) + arrowhead marker -->
   <defs>
+    <clipPath id={`plotClip-${uid}`}>
+      <rect x={PAD} y={PAD} width={plotSize} height={plotSize} />
+    </clipPath>
     <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
       <polygon points="0 0, 8 3, 0 6" fill="var(--qx-accent)" />
     </marker>
   </defs>
+
+  <!-- Function curves (sampled → SVG path, clipped to the plot area) -->
+  <g clip-path={`url(#plotClip-${uid})`}>
+    {#each spec.curves || [] as curve}
+      <path d={curvePath(curve)} fill="none"
+        stroke={curve.stroke || 'var(--qx-accent)'} stroke-width="2.5"
+        stroke-dasharray={curve.dashed ? '6,4' : 'none'}
+        stroke-linejoin="round" stroke-linecap="round" />
+      {#if curve.label}
+        <text x={toX(curve.labelAt ?? (xMax - (xMax - xMin) * 0.12))}
+          y={toY(makeFn(curve.fn)(curve.labelAt ?? (xMax - (xMax - xMin) * 0.12))) - 8}
+          fill={curve.stroke || 'var(--qx-accent)'} font-size="13" font-weight="800"
+          font-style="italic" font-family="var(--qx-font)">{curve.label}</text>
+      {/if}
+    {/each}
+  </g>
 
   <!-- Drop-lines for interactive points (follow the drag, like a textbook) -->
   {#if interactive}
