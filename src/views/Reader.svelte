@@ -15,6 +15,8 @@
   import GeoGebraPlane from '../lib/components/media/GeoGebraPlane.svelte';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
+  import CheckpointQuiz from '../lib/components/qubix/CheckpointQuiz.svelte';
+  import { getPathQuestions } from '../lib/content/questions.js';
 
   // The card numbers this rail spans (static + any dynamic ones the caller
   // already fetched via dynamicBoards.fetchBoardsByNumbers before navigating
@@ -23,6 +25,7 @@
   export let numbers = [];
   export let startNumber = 1;
   export let onBack = null;
+  export let pathId = '';   // the topic id, for checkpoint-quiz question banks
 
   let idx = 0;
   let depthOf = numbers.map(() => 0);
@@ -38,6 +41,12 @@
   let lbMode = null;         // 'pinch' | 'pan'
   let lbMoved = false, lbTapTimer = null;
   let lbStartDist = 0, lbStartScale = 1, lbStartX = 0, lbStartY = 0, lbStartPX = 0, lbStartPY = 0;
+
+  // Checkpoint quiz: after every 3rd BB, a quick tap-quiz before the next group.
+  const CHECKPOINT_EVERY = 3;
+  let checkpointQuestions = null;   // pre-generated questions when a checkpoint is due
+  let pendingAdvanceTo = null;      // the idx to move to once the checkpoint is done
+  let checkpointSeen = new Set();   // boundary indices already shown this session
 
   function availableFloors(i) {
     const card = getBoard(numbers[i]);
@@ -88,9 +97,29 @@
   }
 
   function move(to) {
+    // Checkpoint gate: stepping forward past every 3rd BB pops a quick quiz first.
+    if (pathId && to === idx + 1 && (idx + 1) % CHECKPOINT_EVERY === 0
+        && idx < totalCards - 1 && !checkpointSeen.has(idx)) {
+      const qs = getPathQuestions(pathId, 24)
+        .filter(q => q.type === 'mcq' || q.type === 'truefalse')
+        .slice(0, 3);
+      if (qs.length) {
+        checkpointQuestions = qs;
+        pendingAdvanceTo = to;
+        return; // hold here until the checkpoint resolves
+      }
+    }
     idx = Math.max(0, Math.min(totalCards - 1, to));
     const cardNumber = numbers[idx];
     progress.recordBoardOpen(cardNumber, pathsForCard(cardNumber));
+  }
+
+  function finishCheckpoint(score, total) {
+    if (pathId) progress.recordQuizResult(pathId, score, total);
+    checkpointSeen = new Set(checkpointSeen).add(idx);
+    checkpointQuestions = null;
+    const to = pendingAdvanceTo; pendingAdvanceTo = null;
+    if (to != null) move(to);
   }
 
   // Floor 0 is the swipe card only when there's a top-level image and the
@@ -463,6 +492,10 @@
         {/each}
       </div>
     </div>
+  {/if}
+
+  {#if checkpointQuestions}
+    <CheckpointQuiz questions={checkpointQuestions} onDone={finishCheckpoint} />
   {/if}
 
   {#if lightboxMedia}
