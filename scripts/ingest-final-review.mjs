@@ -64,7 +64,7 @@ let so = REVIEW_BASE;
 const rows = boards.map(b => ({
   sort_order: so++,
   act: 'I',
-  kicker: 'Final draft',
+  kicker: '',
   title: b.title,
   layers: b.layers,
   img_url: null,

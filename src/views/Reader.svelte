@@ -393,7 +393,7 @@
                 on:click|stopPropagation={() => toggleAudio(i, 0)}
               ><QxIcon name="volume" size={16} /></button>
               <div class="swipe-bottom" role="button" tabindex="0" on:click={() => goDeeper(i)} on:keydown={(e) => e.key === 'Enter' && goDeeper(i)}>
-                <div class="swipe-kicker">{col.kicker}</div>
+                {#if col.kicker}<div class="swipe-kicker">{col.kicker}</div>{/if}
                 <div class="swipe-title">{col.title}</div>
               </div>
             </div>
@@ -405,7 +405,7 @@
               <span class="header-mark"><SubjectMark subject={col.tags?.subject} accent="#454ADE" size={18} /></span>
               <div class="header-text">
                 <div class="header-title">{col.title}</div>
-                <div class="header-sub">{col.kicker} · {humanize(col.tags?.subject)}</div>
+                <div class="header-sub">{col.kicker ? col.kicker + ' · ' : ''}{humanize(col.tags?.subject)}</div>
               </div>
               {#if snippetByBoard[n]?.length}
                 <button class="snippet-btn" on:click={() => activeSnippets = snippetByBoard[n]} title="Related snippets" aria-label="View related snippets">
