@@ -21,3 +21,4 @@ audio/
 
 # one-off per-board authoring/upload helper scripts (throwaway)
 scripts/_*.mjs
+media/videos/
