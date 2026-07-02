@@ -34,14 +34,21 @@ export const BOARD_MEDIA = {
   1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } },
 
   // ── Maths · Coordinate geometry ──
-  // 1035 "The simplest thing you can draw" — number line animation (GIF).
-  1035: { 0: { type: 'img', src: 'https://xzesbcrlnbesmvxmgotp.supabase.co/storage/v1/object/public/card-audio/bb-1035-number-line.gif' } },
-  // 1038 "Every point has an address: across, then up" — a point on the plane.
+  // Manim animations served from /videos/ (bundled in public/videos/, offline-capable).
+  // These are the current off-white renders; re-theming + re-rendering them to match the
+  // themed light/dark SVG is the pending follow-up. Placement is floor 0 (the surface card).
+  1035: { 0: { type: 'img', src: '/videos/bb-1035-number-line.gif' } },        // The simplest thing you can draw
+  1036: { 0: { type: 'img', src: '/videos/cg08_theatre_seats.gif' } },         // The second number line (row + seat = an address)
+  // 1038 "Every point has an address" — interactive coordinate plane (SVG, themed).
   1038: { 0: { type: 'coord-plane', spec: {
     xRange: [0, 6], yRange: [0, 2.5],
     interactive: true,
-    points: [{ x: 3, y: 2, color: '#2563eb' }]
-  } } }
+    points: [{ x: 3, y: 2 }]
+  } } },
+  1040: { 0: { type: 'img', src: '/videos/cg21_gradient_sign.gif' } },         // The slanted line: y follows x (+/− gradient)
+  1041: { 0: { type: 'img', src: '/videos/cg18_steepness_sweep.gif' } },       // The slope of a line (steepness)
+  1046: { 0: { type: 'img', src: '/videos/cg15_distance_pythagoras.gif' } },   // Distance between two points
+  1049: { 0: { type: 'img', src: '/videos/cg17_rectangle_proof.gif' } }        // Proving a shape with coordinates
 };
 
 /** Media spec for a board number + floor index, or null. */
