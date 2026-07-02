@@ -41,8 +41,8 @@
 
   const STATE_COLOR = {
     unwandered: 'var(--qx-text-faintest)', wandered: 'var(--qx-text-faint)',
-    checked: 'var(--qx-yellow)', well_read: 'var(--qx-green)',
-    recalled: 'var(--qx-accent)', mastered_1: 'var(--qx-pink)', mastered_2: 'var(--qx-pink)'
+    checked: 'var(--qx-accent)', well_read: 'var(--qx-green)',
+    recalled: 'var(--qx-green)', mastered_1: 'var(--qx-green)', mastered_2: 'var(--qx-green)'
   };
 
   const STATE_BADGE = {

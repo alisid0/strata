@@ -353,7 +353,7 @@
   .opt-btn:hover:not(:disabled) { border-color: var(--qx-accent); }
   .opt-btn.selected { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
   .opt-btn.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
-  .opt-btn.incorrect { border-color: #E5484D; background: rgba(229,72,77,0.12); color: #E5484D; }
+  .opt-btn.incorrect { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
   .opt-btn:disabled { cursor: default; }
 
   .tf-options { display: flex; gap: 12px; }
@@ -386,7 +386,7 @@
     border-top: 1px solid var(--qx-border);
   }
   .feedback.good { color: var(--qx-green-text); }
-  .feedback.bad { color: #E5484D; }
+  .feedback.bad { color: var(--qx-danger-text); }
 
   .q-nav { display: flex; justify-content: flex-end; margin-top: 16px; }
 

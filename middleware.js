@@ -30,17 +30,17 @@ function loginPage(error = '') {
 <title>Qubix — private review</title>
 <style>
   body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(ellipse at 50% 8%,#16223f,#0B132B 80%),#0B132B;color:#f4f1e9;
+    background:radial-gradient(ellipse at 50% 8%,#1D1A15,#141310 80%),#141310;color:#F2EADB;
     font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
   .card{width:min(360px,90vw);text-align:center}
-  .brand{font-size:13px;font-weight:900;letter-spacing:.18em;color:#9AA0FF;margin-bottom:14px}
+  .brand{font-size:13px;font-weight:900;letter-spacing:.18em;color:#D28A5E;margin-bottom:14px}
   h1{font-size:22px;font-weight:800;margin:0 0 6px}
-  p{font-size:14px;color:#C9C6CD;margin:0 0 22px;line-height:1.5}
+  p{font-size:14px;color:#CFC6B4;margin:0 0 22px;line-height:1.5}
   form{display:flex;flex-direction:column;gap:10px}
-  input{padding:13px 14px;border-radius:12px;border:1.5px solid #2a3556;background:#0f1830;color:#fff;font-size:15px;outline:none}
-  input:focus{border-color:#454ADE}
-  button{padding:13px;border-radius:12px;border:none;background:#454ADE;color:#fff;font-size:15px;font-weight:800;cursor:pointer}
-  .err{color:#FF79AC;font-size:13px;min-height:18px;margin-top:2px}
+  input{padding:13px 14px;border-radius:12px;border:1.5px solid #3A342A;background:#211B12;color:#fff;font-size:15px;outline:none}
+  input:focus{border-color:#D28A5E}
+  button{padding:13px;border-radius:12px;border:none;background:#D28A5E;color:#141310;font-size:15px;font-weight:800;cursor:pointer}
+  .err{color:#EC4B31;font-size:13px;min-height:18px;margin-top:2px}
 </style></head>
 <body><div class="card">
   <div class="brand">QUBIX</div>

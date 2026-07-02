@@ -5,10 +5,11 @@ const KEY = 'qubix-theme';
 function loadInitial() {
   try {
     const stored = localStorage.getItem(KEY);
-    if (stored === 'paper' || stored === 'light' || stored === 'dark') return stored;
+    if (stored === 'light' || stored === 'dark') return stored;
+    if (stored === 'paper') return 'light'; // migrate the retired 'paper' theme
   } catch (_) {}
   if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    return 'paper';
+    return 'light';
   }
   return 'dark';
 }
@@ -21,7 +22,7 @@ function createThemeStore() {
     if (typeof document !== 'undefined') document.documentElement.dataset.qxTheme = value;
   }
 
-  const cycle = ['dark', 'light', 'paper'];
+  const cycle = ['dark', 'light'];
 
   return {
     subscribe,

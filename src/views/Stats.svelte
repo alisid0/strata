@@ -97,7 +97,7 @@
   <div class="settings-row">
     <span class="settings-label">Theme</span>
     <button class="theme-cycle" on:click={() => theme.toggle()}>
-      {$theme === 'dark' ? '🌙 Dark' : $theme === 'light' ? '☀️ Light' : '📄 Paper'}
+      {$theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
     </button>
   </div>
 
