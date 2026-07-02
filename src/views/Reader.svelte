@@ -31,7 +31,7 @@
   let playingKey = null;
   let snippetByBoard = {}; // card number → a snippet that relates to it (via the snippet's buildsOn)
   let activeSnippets = null; // the related snippets shown in the overlay (array)
-  let lightboxSrc = null;    // a floor image shown full-screen (tap to expand)
+  let lightboxMedia = null;  // floor media shown full-screen: {type:'img',src} | {type:'coord-plane',spec}
   // Lightbox pinch-zoom + pan state.
   let lbScale = 1, lbX = 0, lbY = 0;
   let lbMode = null;         // 'pinch' | 'pan'
@@ -227,7 +227,7 @@
   }
 
   function handleKeydown(e) {
-    if (lightboxSrc) { if (e.key === 'Escape') lightboxSrc = null; return; }
+    if (lightboxMedia) { if (e.key === 'Escape') closeLightbox(); return; }
     if (e.key === 'ArrowRight') { move(idx + 1); e.preventDefault(); }
     else if (e.key === 'ArrowLeft') { move(idx - 1); e.preventDefault(); }
     else if (e.key === 'ArrowDown') { goDeeper(idx); e.preventDefault(); }
@@ -235,8 +235,8 @@
   }
 
   // ── Lightbox: open/close + pinch-zoom & pan ──
-  function openLightbox(src) { lightboxSrc = src; lbScale = 1; lbX = 0; lbY = 0; }
-  function closeLightbox() { lightboxSrc = null; lbScale = 1; lbX = 0; lbY = 0; }
+  function openLightbox(media) { lightboxMedia = media; lbScale = 1; lbX = 0; lbY = 0; }
+  function closeLightbox() { lightboxMedia = null; lbScale = 1; lbX = 0; lbY = 0; }
 
   const lbDist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
 
@@ -398,7 +398,7 @@
                     {#if media}
                       <div class="floor-media" class:interactive={media.type !== 'img'}>
                         {#if media.type === 'img'}
-                          <button class="media-card" on:click|stopPropagation={() => openLightbox(media.src)} aria-label="Expand image">
+                          <button class="media-card" on:click|stopPropagation={() => openLightbox(media)} aria-label="Expand image">
                             <img class="media-img" src={media.src} alt="Diagram" />
                             <span class="media-expand" aria-hidden="true">
                               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
@@ -409,7 +409,12 @@
                         {:else if media.type === 'diagram'}
                           <div class="media-diagram"><ChalkDiagram spec={media.spec} /></div>
                         {:else if media.type === 'coord-plane'}
-                          <div class="media-diagram"><CoordinatePlane spec={media.spec} /></div>
+                          <div class="media-diagram diagram-wrap" on:touchstart|stopPropagation on:touchmove|stopPropagation>
+                            <CoordinatePlane spec={media.spec} />
+                            <button class="media-expand as-btn" on:click|stopPropagation={() => openLightbox(media)} aria-label="Expand diagram">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                            </button>
+                          </div>
                         {:else if media.type === 'three'}
                           {#key numbers[i] + '-' + d}
                             <ThreeScene spec={media.spec} />
@@ -457,20 +462,23 @@
     </div>
   {/if}
 
-  {#if lightboxSrc}
+  {#if lightboxMedia}
     <div class="lightbox" on:click={closeLightbox} on:wheel|nonpassive={lbWheel} role="presentation">
       <button class="lightbox-close" on:click|stopPropagation={closeLightbox} aria-label="Close">✕</button>
-      <img
-        class="lightbox-img"
-        src={lightboxSrc}
-        alt=""
-        draggable="false"
+      <div
+        class="lightbox-stage"
         style="transform: translate({lbX}px,{lbY}px) scale({lbScale});{lbMode ? '' : ' transition: transform 0.18s ease;'}"
         on:click|stopPropagation={lbImgTap}
         on:touchstart={lbTouchStart}
         on:touchmove={lbTouchMove}
         on:touchend={lbTouchEnd}
-      />
+      >
+        {#if lightboxMedia.type === 'img'}
+          <img class="lightbox-img" src={lightboxMedia.src} alt="" draggable="false" />
+        {:else if lightboxMedia.type === 'coord-plane'}
+          <div class="lightbox-diagram"><CoordinatePlane spec={{ ...lightboxMedia.spec, interactive: false }} /></div>
+        {/if}
+      </div>
       {#if lbScale === 1}<div class="lightbox-hint">Pinch or double-tap to zoom</div>{/if}
     </div>
   {/if}
@@ -682,6 +690,8 @@
     background: rgba(18,17,24,0.55); color: #fff; pointer-events: none;
   }
   .media-diagram { width: 100%; height: 100%; }
+  .diagram-wrap { position: relative; }
+  .media-expand.as-btn { pointer-events: auto; cursor: pointer; border: none; }
   .floor-media :global(.video-container) { width: 100%; height: 100%; margin: 0; border: none; }
 
   /* Tap-to-expand image lightbox (news-app style) */
@@ -690,10 +700,14 @@
     background: rgba(8,8,12,0.92);
     display: flex; align-items: center; justify-content: center; padding: 20px;
   }
-  .lightbox-img {
-    max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;
-    touch-action: none; user-select: none; -webkit-user-drag: none; will-change: transform;
+  .lightbox-stage {
+    display: flex; align-items: center; justify-content: center;
+    max-width: 100%; max-height: 100%; touch-action: none; user-select: none; will-change: transform;
   }
+  .lightbox-img {
+    max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; -webkit-user-drag: none;
+  }
+  .lightbox-diagram { width: min(88vw, 560px); height: min(88vw, 88vh); max-width: 100%; max-height: 88vh; }
   .lightbox-hint {
     position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
     font-family: var(--qx-font); font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6);

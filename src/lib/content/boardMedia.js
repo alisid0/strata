@@ -37,11 +37,8 @@ export const BOARD_MEDIA = {
   // 1038 "Every point has an address: across, then up" — a point on the plane.
   1038: { 0: { type: 'coord-plane', spec: {
     xRange: [-1, 5], yRange: [-1, 5],
-    points: [{ x: 3, y: 2, label: '(3, 2)', color: 'var(--qx-accent)' }],
-    segments: [
-      { x1: 3, y1: 0, x2: 3, y2: 2, stroke: 'var(--qx-pink)', dashed: true },
-      { x1: 0, y1: 2, x2: 3, y2: 2, stroke: 'var(--qx-pink)', dashed: true }
-    ]
+    interactive: true,
+    points: [{ x: 3, y: 2, color: 'var(--qx-accent)' }]
   } } }
 };
 

@@ -122,15 +122,19 @@
   {#if showAxes}
     {#if xAxisVisible}
       <line x1={PAD} y1={axY} x2={SIZE - PAD} y2={axY}
-        stroke="var(--qx-text-faint)" stroke-width="1.5" />
-      <polygon points="{SIZE - PAD},{axY} {SIZE - PAD - 6},{axY - 3} {SIZE - PAD - 6},{axY + 3}"
-        fill="var(--qx-text-faint)" />
+        stroke="var(--qx-text-2)" stroke-width="2" />
+      <polygon points="{SIZE - PAD},{axY} {SIZE - PAD - 9},{axY - 4.5} {SIZE - PAD - 9},{axY + 4.5}"
+        fill="var(--qx-text-2)" />
+      <text x={SIZE - PAD - 2} y={axY - 9} text-anchor="end"
+        fill="var(--qx-text-2)" font-size="14" font-style="italic" font-weight="700" font-family="var(--qx-font)">x</text>
     {/if}
     {#if yAxisVisible}
       <line x1={axX} y1={PAD} x2={axX} y2={SIZE - PAD}
-        stroke="var(--qx-text-faint)" stroke-width="1.5" />
-      <polygon points="{axX},{PAD} {axX - 3},{PAD + 6} {axX + 3},{PAD + 6}"
-        fill="var(--qx-text-faint)" />
+        stroke="var(--qx-text-2)" stroke-width="2" />
+      <polygon points="{axX},{PAD} {axX - 4.5},{PAD + 9} {axX + 4.5},{PAD + 9}"
+        fill="var(--qx-text-2)" />
+      <text x={axX + 10} y={PAD + 6} text-anchor="start"
+        fill="var(--qx-text-2)" font-size="14" font-style="italic" font-weight="700" font-family="var(--qx-font)">y</text>
     {/if}
   {/if}
 
@@ -206,13 +210,27 @@
     </marker>
   </defs>
 
+  <!-- Drop-lines for interactive points (follow the drag, like a textbook) -->
+  {#if interactive}
+    {#each spec.points || [] as pt}
+      <line x1={toX(pt.x)} y1={toY(0)} x2={toX(pt.x)} y2={toY(pt.y)}
+        stroke="var(--qx-text-dim)" stroke-width="1.5" stroke-dasharray="5,4" />
+      <line x1={toX(0)} y1={toY(pt.y)} x2={toX(pt.x)} y2={toY(pt.y)}
+        stroke="var(--qx-text-dim)" stroke-width="1.5" stroke-dasharray="5,4" />
+    {/each}
+  {/if}
+
   <!-- Points -->
   {#each spec.points || [] as pt, i}
     <circle cx={toX(pt.x)} cy={toY(pt.y)} r={pt.radius ?? 4}
       fill={pt.color || 'var(--qx-accent)'}
       class:interactive
       on:pointerdown={(e) => handlePointerDown(e, i)} />
-    {#if pt.label}
+    {#if interactive}
+      <text x={toX(pt.x) + 9} y={toY(pt.y) - 9}
+        fill="var(--qx-text)" font-size="12.5" font-weight="800"
+        font-family="var(--qx-font)">({pt.x}, {pt.y})</text>
+    {:else if pt.label}
       <text x={toX(pt.x) + 8} y={toY(pt.y) - 8}
         fill="var(--qx-text)" font-size="12" font-weight="700"
         font-family="var(--qx-font)">{pt.label}</text>
