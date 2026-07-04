@@ -16,7 +16,9 @@
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
   import CheckpointQuiz from '../lib/components/qubix/CheckpointQuiz.svelte';
+  import Workshop from '../lib/components/assessments/Workshop.svelte';
   import { getPathQuestions } from '../lib/content/questions.js';
+  import { getLineWorkshop } from '../lib/content/workshops.js';
 
   // The card numbers this rail spans (static + any dynamic ones the caller
   // already fetched via dynamicBoards.fetchBoardsByNumbers before navigating
@@ -55,9 +57,11 @@
 
   // Checkpoint quiz: after every 3rd BB, a quick tap-quiz before the next group.
   const CHECKPOINT_EVERY = 3;
-  let checkpointQuestions = null;   // pre-generated questions when a checkpoint is due
-  let pendingAdvanceTo = null;      // the idx to move to once the checkpoint is done
-  let checkpointSeen = new Set();   // boundary indices already shown this session
+  let checkpointWorkshop = null;  // workshop interactions when a checkpoint is due
+  let checkpointLegacy = null;     // fallback MCQ questions for non-LINE paths
+  let pendingAdvanceTo = null;
+  let checkpointSeen = new Set();
+  let checkpointCount = 0;         // which checkpoint this is (0, 1, 2...)
 
   function availableFloors(i) {
     const card = getBoard(numbers[i]);
@@ -108,16 +112,26 @@
   }
 
   function move(to) {
-    // Checkpoint gate: stepping forward past every 3rd BB pops a quick quiz first.
+    // Checkpoint gate: stepping forward past every 3rd BB pops a workshop or quiz.
     if (pathId && to === idx + 1 && (idx + 1) % CHECKPOINT_EVERY === 0
         && idx < totalCards - 1 && !checkpointSeen.has(idx)) {
+      // LINE path uses interactive workshops
+      if (pathId === 'LINE_001') {
+        const workshop = getLineWorkshop(checkpointCount);
+        if (workshop && workshop.length) {
+          checkpointWorkshop = workshop;
+          pendingAdvanceTo = to;
+          return;
+        }
+      }
+      // Fallback: MCQ questions for other paths
       const qs = getPathQuestions(pathId, 24)
         .filter(q => q.type === 'mcq' || q.type === 'truefalse')
         .slice(0, 3);
       if (qs.length) {
-        checkpointQuestions = qs;
+        checkpointLegacy = qs;
         pendingAdvanceTo = to;
-        return; // hold here until the checkpoint resolves
+        return;
       }
     }
     idx = Math.max(0, Math.min(totalCards - 1, to));
@@ -128,7 +142,9 @@
   function finishCheckpoint(score, total) {
     if (pathId) progress.recordQuizResult(pathId, score, total);
     checkpointSeen = new Set(checkpointSeen).add(idx);
-    checkpointQuestions = null;
+    checkpointWorkshop = null;
+    checkpointLegacy = null;
+    checkpointCount++;
     const to = pendingAdvanceTo; pendingAdvanceTo = null;
     if (to != null) move(to);
   }
@@ -508,8 +524,18 @@
     </div>
   {/if}
 
-  {#if checkpointQuestions}
-    <CheckpointQuiz questions={checkpointQuestions} onDone={finishCheckpoint} />
+  {#if checkpointWorkshop}
+    <div class="checkpoint-overlay">
+      <div class="checkpoint-modal">
+        <Workshop interactions={checkpointWorkshop} onDone={finishCheckpoint} />
+      </div>
+    </div>
+  {:else if checkpointLegacy}
+    <div class="checkpoint-overlay">
+      <div class="checkpoint-modal">
+        <CheckpointQuiz questions={checkpointLegacy} onDone={finishCheckpoint} />
+      </div>
+    </div>
   {/if}
 
   {#if lightboxMedia}
@@ -815,5 +841,16 @@
     border-radius: var(--qx-radius-pill); border: none;
     background: var(--qx-accent); color: #fff; font-weight: 800; font-size: 13px;
     cursor: pointer; font-family: var(--qx-font);
+  }
+
+  /* Workshop / checkpoint overlay */
+  .checkpoint-overlay {
+    position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
+    background: rgba(11,19,43,0.7); backdrop-filter: blur(4px); padding: 20px;
+  }
+  .checkpoint-modal {
+    position: relative; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto;
+    background: var(--qx-surface); border: 1.5px solid var(--qx-accent); border-radius: var(--qx-radius-lg);
+    box-shadow: var(--qx-shadow-card); padding: 24px 20px;
   }
 </style>
