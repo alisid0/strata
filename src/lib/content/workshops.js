@@ -1,44 +1,223 @@
 // Workshop interaction data for the four starting points.
-// Each path has checkpoints that fire after every 3rd BB.
+// 48 interactions across 4 checkpoints (12 per checkpoint).
+
+function S(prompt, opts, correctFeedback, incorrectFeedback) {
+  return { type: 'scenario', prompt, options: opts, correctFeedback, incorrectFeedback };
+}
+
+function O(id, label, correct) {
+  return { id, label, correct };
+}
 
 export const LINE_WORKSHOPS = {
-  // After BB 003: Segments, Rays, and Lines
+
+  // After BB 003 — Boundaries: Segments, Rays, Lines (12 interactions)
   checkpoint_a: [
-    {
-      type: 'sorting',
-      boxes: [
-        { id: 'segment', label: 'Segment' },
-        { id: 'ray', label: 'Ray' },
-        { id: 'line', label: 'Line' }
-      ],
-      items: [
-        { id: 'ruler', label: 'A wooden ruler', box: 'segment' },
-        { id: 'laser', label: 'A laser aimed at the night sky', box: 'ray' },
-        { id: 'spaghetti', label: 'A piece of dry spaghetti', box: 'segment' },
-        { id: 'equator', label: 'The equator on a map', box: 'segment' },
-        { id: 'euclid', label: 'A Euclidean line', box: 'line' }
-      ]
-    },
-    {
-      type: 'taperase'
-    },
-    {
-      type: 'scenario',
-      prompt: 'You turn on a flashlight in a perfectly dark room. The beam shoots out of the bulb, travels across the room, and hits the bedroom door. Did you just create a ray, or a segment?',
-      options: [
-        { id: 'ray', label: 'A ray. Light goes on forever.', correct: false },
-        { id: 'segment', label: 'A segment. The door stopped it.', correct: true }
-      ],
-      correctFeedback: 'Spot on. The moment that light hits a wall, it gains a second endpoint. The physical world is full of walls.',
-      incorrectFeedback: 'The door gave the beam a second endpoint. That makes it a segment.'
-    }
+    { type: 'sorting', boxes: [
+      { id: 'segment', label: 'Segment' }, { id: 'ray', label: 'Ray' }
+    ], items: [
+      { id: 'ruler', label: 'A wooden ruler', box: 'segment' }
+    ]},
+    S('Tap the wrong word in this sentence to fix it.\n\nA true Euclidean line has two ends.',
+      [O('one','one',false), O('zero','zero',true), O('infinite','infinite',false)],
+      'Exactly. A true line never stops in either direction.',
+      'Actually, it has zero. A line goes on forever both ways.'),
+    S('You draw a straight line in the sand with a stick. You walk away. What did you just draw?',
+      [O('line','A line',false), O('segment','A segment',true)],
+      'Yep. No matter how long you drew it, it eventually stops. That makes it a segment.',
+      'Not quite. A true line goes on forever. Your stick eventually ran out of sand.'),
+    { type: 'taperase' },
+    S('A laser pointer shining into deep, empty space is a good example of a ray.',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. It starts at your hand, and the light just keeps going.',
+      'Actually, it is true. It starts at the bulb and goes on endlessly in one direction.'),
+    S('You are holding a piece of dry spaghetti. You snap it in half. What do you have now?',
+      [O('rays','Two rays',false), O('segments','Two segments',true)],
+      'Yep. Just two shorter pieces that both have ends.',
+      'Not quite. Both new pieces still have ends, so they are both segments.'),
+    S('Tap the wrong word to fix the sentence.\n\nA ray has an anchor on one side, and goes on forever on neither side.',
+      [O('both','both',false), O('the other','the other',true)],
+      'Got it. Anchored on one end, infinite on the other.',
+      'Not quite. It only goes on forever on the other side.'),
+    S('Can you put a true Euclidean line in your pocket?',
+      [O('yes','Yes',false), O('no','No',true)],
+      'Yep. It goes on forever, so it only really exists in your imagination.',
+      'Not quite. It stretches forever in both directions. It would not fit.'),
+    S('You tap a railroad track onto the ground. It runs from edge to edge of the screen. Is it a true mathematical line?',
+      [O('yes','Yes',false), O('no','No',true)],
+      'Right. At some point, the steel runs out. It is just a very long segment.',
+      'Actually, no. Real railroad tracks eventually end.'),
+    S('Slide to the number of endpoints a true line has.\n\nSlider: 0 to 5',
+      [O('0','0',true), O('1','1',false), O('2','2',false)],
+      'Yep. Zero ends. It just keeps going.',
+      'Not quite. A true line never stops, so it has zero ends.'),
+    S('You slide right to zoom out on a line segment. Huge walls appear on both sides. Does zooming out change the fact that it has ends?',
+      [O('yes','Yes',false), O('no','No',true)],
+      'Got it. A segment is trapped between two points, no matter how far back you stand.',
+      'Actually, no. It is stuck between its two endpoints forever.'),
+    S('You turn on a flashlight in a dark room. The beam hits the bedroom door. Did you just create a ray, or a segment?',
+      [O('ray','A ray. Light goes on forever.',false), O('segment','A segment. The door stopped it.',true)],
+      'Spot on. The moment that light hits a wall, it gains a second endpoint.',
+      'The door gave the beam a second endpoint. That makes it a segment.')
   ],
 
-  // After BB 006: The Number Line Playground (placeholder — build next)
-  checkpoint_b: []
+  // After BB 006 — Walking the Line: Zero, Left, Right (12 interactions)
+  checkpoint_b: [
+    S('We have a blank line. You drop the anchor for Zero. Does it matter where you put it?',
+      [O('yes','Yes',false), O('no','No',true)],
+      'Yep. It does not matter. It is just the starting line before we begin counting.',
+      'Actually, no. You can put the starting line anywhere you want.'),
+    S('You are standing on zero. You take 4 steps to the right. Where are you?',
+      [O('pos4','Positive 4',true), O('neg4','Negative 4',false)],
+      'Exactly. Stepping right is just regular, positive counting.',
+      'Not quite. Taking steps to the right moves you into the positives.'),
+    S('Tap the wrong word to fix the sentence.\n\nTo get to negative numbers, you start at zero and walk to the right.',
+      [O('left','left',true), O('up','up',false)],
+      'Got it. Negatives just mean walking backward to the left.',
+      'Not quite. You have to walk left to get into the negatives.'),
+    S('You are in an elevator on Floor 2. You go down 5 floors. Where do you end up?',
+      [O('neg3','Floor -3',true), O('3','Floor 3',false), O('lobby','Lobby (0)',false)],
+      'Yep. Going down 5 floors from floor 2 drops you 3 floors underground.',
+      'Not quite. Two floors down gets you to zero, and three more puts you at -3.'),
+    S('You have $10. You buy a pizza for $12. Where are you on the number line?',
+      [O('neg2','-2',true), O('2','2',false)],
+      'Exactly. You dropped below zero and owe 2 dollars.',
+      'Actually, spending more than you have drops you into the negatives. You are at -2.'),
+    S('Zero just means empty space on the number line. True or False?',
+      [O('false','False',true), O('true','True',false)],
+      'Yep. Zero is highly important. It is our anchor point.',
+      'Actually, it is false. Zero is not empty space; it is the anchor that tells us where we are starting.'),
+    S('You owe a friend 5 dollars. You hand them a 5 dollar bill. Where does your bank account sit now?',
+      [O('zero','Zero',true), O('pos5','Positive 5',false)],
+      'Yep. You paid off the debt, bringing you exactly back to the starting line.',
+      'Not quite. You used your $5 to erase the debt, which lands you right on zero.'),
+    S('Tap the wrong word to fix the sentence.\n\nA negative number is a completely different distance than a positive number.',
+      [O('direction','direction',true), O('size','size',false)],
+      'Exactly. Negative 5 is the exact same distance as positive 5. It is just the opposite direction.',
+      'Actually, the distance is identical. Only the direction is different.'),
+    S('You keep walking left past -100. Does the left side ever stop?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Yep. The left side is just as infinite as the right side.',
+      'Actually, no. Just like the positive numbers, the negatives go on forever.'),
+    S('You take 3 steps forward, then 3 steps backward. What number are you standing on?',
+      [O('0','0',true), O('3','3',false)],
+      'Exactly. The steps cancel each other out.',
+      'Not quite. The backward steps bring you right back to your anchor point.'),
+    S('Water freezes at 32 degrees. Which side of zero does this temperature sit on?',
+      [O('right','Right of zero (Positive)',true), O('left','Left of zero (Negative)',false)],
+      'Yep. It is above zero, so it sits on the right side.',
+      'Not quite. 32 is above zero, so it goes on the right.'),
+    S('Drag the number -1 to its spot on the line.\n\nLine shows: -2 ... ? ... 0',
+      [O('between','Right between -2 and 0',true), O('left','Left of -2',false), O('right','Right of 0',false)],
+      'Got it. It is exactly one step to the left of zero.',
+      'Not quite. Negative 1 lives right between zero and negative 2.')
+  ],
+
+  // After BB 009 — Stepping Stones: Natural, Whole, Integers (12 interactions)
+  checkpoint_c: [
+    S('A shepherd counts 4 sheep in a field. What box are they using?',
+      [O('natural','Natural Numbers',true), O('integers','Integers',false)],
+      'Yep. Pure, simple counting starts at 1. That is a natural number.',
+      'Not quite. Basic counting (1, 2, 3) belongs in the Natural box.'),
+    S('All the sheep run away. What number do we need now?',
+      [O('zero','Zero',true), O('negative','A negative number',false)],
+      'Got it. We need a way to write down nothing.',
+      'Actually, you just have nothing left. You need zero.'),
+    S('Tap the wrong word.\n\nThe Whole Numbers box is just the counting numbers plus fractions.',
+      [O('zero','zero',true), O('negatives','negatives',false)],
+      'Yep. The only difference between Natural and Whole is just tossing zero in the box.',
+      'Not quite. The Whole Numbers box is just counting numbers plus zero.'),
+    S('A negative number like -3 belongs in the Whole Numbers box. True or False?',
+      [O('false','False',true), O('true','True',false)],
+      'Exactly. Whole numbers do not handle debt or walking backward.',
+      'Actually, that is false. Whole numbers stop at zero. Negatives need a bigger box.'),
+    S('You add negative numbers to the Whole Numbers box. What did we just create?',
+      [O('integers','Integers',true), O('natural','Natural Numbers',false)],
+      'Yep. Positives, zero, and negatives together make the Integers.',
+      'Not quite. Once you add the negatives, you have the Integers.'),
+    S('You borrow 10 bucks. Your balance is -10. Which box does -10 belong in?',
+      [O('integers','Integers',true), O('natural','Natural Numbers',false)],
+      'Exactly. Integers handle the left side of the number line.',
+      'Actually, natural numbers are just for basic counting. -10 is an integer.'),
+    S('Drag the number 0 to its smallest correct box.',
+      [O('whole','Whole Numbers',true), O('natural','Natural Numbers',false)],
+      'Yep. Zero is the only reason the Whole Numbers box even exists.',
+      'Not quite. Natural numbers start at 1. Zero belongs in Whole.'),
+    S('You look at the integers on the line: -2, -1, 0, 1, 2. Are they a solid line or stepping stones?',
+      [O('stones','Stepping stones',true), O('solid','A solid line',false)],
+      'Got it. Integers do not cover the spaces in between.',
+      'Actually, they are just stepping stones. There is empty space between them.'),
+    S('Tap the wrong word.\n\nAn integer is always a fraction.',
+      [O('clean','clean step',true), O('decimal','decimal',false)],
+      'Yep. Integers are clean whole numbers, never fractions.',
+      'Not quite. Integers are clean steps. They are never fractions.'),
+    S('A toddler is counting wooden blocks. 1, 2, 3. Which box are they using?',
+      [O('natural','Natural Numbers',true), O('integers','Integers',false)],
+      'Exactly. Toddlers do not count with zero or negatives.',
+      'Not quite. Toddlers just use basic counting: the natural numbers.'),
+    S('Every single Natural Number also fits inside the Integer box. True or False?',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. Integers cover positives, zero, and negatives. It is a bigger umbrella.',
+      'Actually, it is true. The integer box is big enough to hold all the natural numbers too.'),
+    S('Find the number that is NOT an integer.\n\nLine shows: 1 ... 1.5 ... 2',
+      [O('1.5','1.5',true), O('1','1',false), O('2','2',false)],
+      'Got it. Integers do not do halfway steps.',
+      'Not quite. Integers have to land directly on a clean, whole step.')
+  ],
+
+  // After BB 013 — The In-Between + Full Taxonomy (12 interactions)
+  checkpoint_d: [
+    S('You tap the empty space between 0 and 1. Right in the middle appears 1/2. What box does 1/2 go into?',
+      [O('rational','Rational',true), O('integer','Integer',false)],
+      'Yep. It is a clean fraction, which makes it rational.',
+      'Actually, integers are only whole steps. Fractions go into the Rational box.'),
+    S('Which food belongs in the Rational box?\n\n3 whole apples vs Half a pizza (1/2)',
+      [O('pizza','Half a pizza (1/2)',true), O('apples','3 whole apples',false)],
+      'Got it. A fraction of a pizza is a perfect example of a rational number.',
+      'Not quite. The whole apples are integers. The half pizza belongs in the Rational box.'),
+    S('Tap the wrong word.\n\nThe word "rational" in math means the number is highly intelligent.',
+      [O('ratio','a ratio',true), O('decimal','a decimal',false)],
+      'Yep. It just contains the word "ratio," which means fraction.',
+      'Actually, it has nothing to do with being smart. It just means it is a ratio (a fraction).'),
+    S('You type 1 divided by 2 into a calculator. It says 0.5. Does this decimal belong in the Rational box?',
+      [O('yes_stop','Yes, because it stops',true), O('no_decimal','No, because it is a decimal',false)],
+      'Exactly. Decimals that come to a clean stop are perfectly rational.',
+      'Actually, it belongs. Any decimal that stops cleanly is rational.'),
+    S('A decimal that repeats a simple pattern forever (like 0.3333...) is Rational. True or False?',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. Because it behaves predictably, we can write it as a fraction (1/3).',
+      'Actually, it is true. Because it repeats a simple pattern, it is rational.'),
+    S('You chop the space between 0 and 0.5 exactly in half. You get 0.25. Will you ever run out of spaces to chop in half?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Got it. You can keep zooming in and chopping forever.',
+      'Actually, no. You can chop fractions in half infinitely.'),
+    S('You look at the decimal for Pi (3.14159...). The digits scroll randomly forever. Does it ever stop or repeat a pattern?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Yep. It just spits out random digits forever.',
+      'Not quite. It never stops, and it never repeats. It is totally random.'),
+    S('Pi refuses to behave. Which box does it belong in?',
+      [O('irrational','Irrational',true), O('rational','Rational',false)],
+      'Exactly. Because it refuses to behave, it goes in the Irrational box.',
+      'Not quite. It does not play by the rules, so it is irrational.'),
+    S('An irrational number is perfectly messy. Does it still have a physical spot on the number line?',
+      [O('yes','Yes',true), O('no','No',false)],
+      'Yep. It is wedged in there. It just has a really long, ugly address.',
+      'Actually, yes. It still has an exact location on the line.'),
+    S('Tap the wrong word.\n\nIf you put all the integers, rationals, and irrationals on the line, there are still gaps.',
+      [O('no','no holes left',true), O('empty','empty spaces',false)],
+      'Got it. The line fills up completely.',
+      'Actually, there are no gaps left at all. The line becomes totally solid.'),
+    S('The giant umbrella name for every number on the solid line is The Real Numbers. True or False?',
+      [O('true','True',true), O('false','False',false)],
+      'Exactly. If you can point to it on the line, it is a real number.',
+      'Actually, it is true. Everything on the line together makes the real numbers.'),
+    S('You throw a dart at a number line. It hits a completely random, microscopic spot. What kind of number did you hit?',
+      [O('real','A Real Number',true), O('integer','An Integer',false)],
+      'Yep. No matter where it lands, every single spot is a real number.',
+      'Not quite. It is highly unlikely to hit a clean integer, but whatever you hit is definitely a Real Number.')
+  ]
 };
 
-/** Get workshop interactions for a given path and checkpoint index. */
 export function getLineWorkshop(checkpointIndex) {
   const keys = Object.keys(LINE_WORKSHOPS);
   if (checkpointIndex < keys.length) {
