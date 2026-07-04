@@ -21,7 +21,7 @@ export const PATHS = {
 
   // ── The Line (starting point) ──
   LINE_001: { subject: 'maths', name: 'The Line', icon: 'maths',
-    cards: [1078, 1079, 1080], quizUrls: [] },
+    cards: [1078, 1079, 1080, 1081, 1082, 1083], quizUrls: [] },
   MATH_COORD: { subject: 'maths', name: 'Coordinate geometry', icon: 'maths',
     cards: [1035,1036,1038,1039,1040,1041,1042,1043,1044,1045,1046,1047,1048,1049,1050], quizUrls: ['tier0'] },
 
