@@ -3,7 +3,7 @@
   import { fly, fade } from 'svelte/transition';
   import { initAuth, isAuthenticated } from './lib/stores/auth.js';
   import { theme } from './lib/stores/theme.js';
-  import { PATHS } from './lib/content/paths.js';
+  import { PATHS, PATH_GROUPS } from './lib/content/paths.js';
   import Auth from './views/Auth.svelte';
   import Onboarding from './views/Onboarding.svelte';
   import Home from './views/Home.svelte';
@@ -63,6 +63,17 @@
     currentView = 'home';
   }
 
+  function handleGateway(gateway) {
+    const group = PATH_GROUPS[gateway];
+    if (group && group.firstTopic) {
+      currentView = 'topicDetail';
+      currentPathId = group.firstTopic;
+    } else {
+      // Path not built yet — go to topics
+      currentView = 'topics';
+    }
+  }
+
   function handleAuthed(isNewUser) {
     currentView = isNewUser ? 'onboarding' : 'home';
   }
@@ -102,7 +113,7 @@
 
   {:else if currentView === 'auth'}
     <div class="view-layer scrollable-layer">
-      <Auth onSkip={skipAuth} onAuthed={handleAuthed} />
+      <Auth onSkip={skipAuth} onChoose={handleGateway} onAuthed={handleAuthed} />
     </div>
 
   {:else if currentView === 'onboarding'}

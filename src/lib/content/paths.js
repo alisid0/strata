@@ -53,6 +53,34 @@ export const SUBJECT_ICONS = {
   chemistry: 'chemistry'
 };
 
+/** Four starting-point gateways — each groups related topics into a learning path. */
+export const PATH_GROUPS = {
+  line: {
+    name: 'The Line',
+    subject: 'maths',
+    paths: ['MATH_COORD'],
+    firstTopic: 'MATH_COORD'
+  },
+  atom: {
+    name: 'The Atom',
+    subject: 'chemistry',
+    paths: ['CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH'],
+    firstTopic: 'CHEM_ATOMIC'
+  },
+  bit: {
+    name: 'The Bit',
+    subject: null,
+    paths: [],
+    firstTopic: null
+  },
+  unit: {
+    name: 'The Unit',
+    subject: 'physics',
+    paths: ['PHY_UNITS', 'PHY_SCALE'],
+    firstTopic: 'PHY_UNITS'
+  }
+};
+
 /** Get paths that contain a given board number */
 export function pathsForCard(cardNumber) {
   const ids = [];

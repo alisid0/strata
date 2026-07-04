@@ -1,0 +1,30 @@
+{
+  "boards": [
+    {
+      "kicker": "BB 200",
+      "title": "What a line is",
+      "tags": {
+        "subject": "maths",
+        "topic": "The Line",
+        "concept": "line",
+        "ground": "g0",
+        "buildsOn": []
+      },
+      "floors": [
+        {
+          "content": null
+        },
+        {
+          "content": "<p>Look at the image. What do you see?</p><p>A pencil dragged across paper. The horizon where sea meets sky. A thread pulled tight between two fingers. A crack in dry earth. A beam of light in a dark room.</p><p>Each of these is a line. Not the same <em>kind</em> of line — one is drawn, one is seen, one is held — but they all share something. They are all <strong>straight</strong>. They all have <strong>no thickness</strong>. A thread has width if you look close enough, but the <em>idea</em> of a line does not.</p>"
+        },
+        {
+          "content": "<p>Strip away the pencil lead, the water, the fibre. What is left?</p><p>A line is the shortest path between two points. If you put two dots on a page, there is exactly one straight path that joins them without waste — no curve, no wobble, no extra distance. That path is a line.</p><p>It has <strong>no thickness</strong>. You cannot measure how wide a line is, because width belongs to the physical thing that draws it, not to the line itself. A line is one-dimensional: it has length and nothing else.</p>"
+        },
+        {
+          "content": "<p>Now take away the two points.</p><p>A geometric line does not stop. It extends forever in both directions — no start, no end. This is the Euclidean line, the one mathematicians mean when they say \"line\" without qualification.</p><p>A <strong>segment</strong> is the piece of a line between two endpoints — what you actually draw. A <strong>ray</strong> starts at a point and goes forever in one direction — like light from a bulb. But a <strong>line</strong> goes forever both ways. It is the pure idea, and the other two borrow from it.</p><p>This distinction — line vs segment vs ray — will matter every time we talk about direction, distance, and position from here on.</p>"
+        }
+      ],
+      "image_prompt": "A minimalist illustration of a single straight dark line drawn across a warm off-white textured paper background, like a confident pencil stroke. The line should be slightly imperfect — not ruler-straight — to feel human and hand-drawn. No other elements. Clean, minimal, editorial style."
+    }
+  ]
+}
