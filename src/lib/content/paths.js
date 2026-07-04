@@ -19,7 +19,9 @@ export const PATHS = {
   PHY_FORCES: { subject: 'physics', name: "Forces & Newton's laws", icon: 'physics',
     cards: [1022,1023,1024,1025,1026,1027,1028,1029,1030,1031,1032,1033,1034,1037], quizUrls: ['tier0'] },
 
-  // ── Mathematics ──
+  // ── The Line (starting point) ──
+  LINE_001: { subject: 'maths', name: 'The Line', icon: 'maths',
+    cards: [1078, 1079], quizUrls: [] },
   MATH_COORD: { subject: 'maths', name: 'Coordinate geometry', icon: 'maths',
     cards: [1035,1036,1038,1039,1040,1041,1042,1043,1044,1045,1046,1047,1048,1049,1050], quizUrls: ['tier0'] },
 
@@ -37,7 +39,7 @@ export const PATHS = {
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
   physics: ['PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES'],
-  maths: ['MATH_COORD'],
+  maths: ['LINE_001', 'MATH_COORD'],
   chemistry: ['CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH']
 };
 
@@ -58,8 +60,8 @@ export const PATH_GROUPS = {
   line: {
     name: 'The Line',
     subject: 'maths',
-    paths: ['MATH_COORD'],
-    firstTopic: 'MATH_COORD'
+    paths: ['LINE_001', 'MATH_COORD'],
+    firstTopic: 'LINE_001'
   },
   atom: {
     name: 'The Atom',
