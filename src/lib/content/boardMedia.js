@@ -36,7 +36,8 @@ export const BOARD_MEDIA = {
   // ── The Atom · pixel-art floor animations ──
   1094: {
     0: { type: 'img', src: '/videos/card-1094-floor0.gif?v=944949' },   // floor 0 — foil dividing down to the smallest piece
-    1: { type: 'img', src: '/videos/card-1094-floor1.gif?v=1cdafa' }     // floor 1 — the philosophers' argument (never-ends vs a-limit)
+    1: { type: 'img', src: '/videos/card-1094-floor1.gif?v=1cdafa' },    // floor 1 — the philosophers' argument (never-ends vs a-limit)
+    3: { type: 'img', src: '/videos/card-1094-floor3.png?v=7d7d7b' }     // floor 3 — ATOMOS: the smallest, uncuttable piece
   },
 
   // ── Maths · Coordinate geometry ──
