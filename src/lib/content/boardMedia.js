@@ -34,7 +34,7 @@ export const BOARD_MEDIA = {
   1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } },
 
   // ── The Atom · pixel-art floor animations ──
-  1094: { 0: { type: 'img', src: '/videos/card-1094-floor0.gif?v=2' } },           // The smallest piece — foil dividing to atom
+  1094: { 0: { type: 'img', src: '/videos/card-1094-floor0.gif?v=944949' } },       // The smallest piece — foil dividing to atom (v = new content-hash prefix)
 
   // ── Maths · Coordinate geometry ──
   // Manim GIFs on Supabase. Rendered with STRATA_THEME=light.
