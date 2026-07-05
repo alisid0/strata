@@ -48,8 +48,9 @@ const VOICES = [
   { id: 'qxTFXDYbGcR8GaHSjczg', label: 'Voice 4' }
 ];
 
-/** Voice for a board: consistent per board, cycles round-robin */
+/** Voice for a board: consistent per board, cycles round-robin. If --voice-id is set, uses that for all. */
 function voiceForBoard(boardIdx) {
+  if (VOICE_OVERRIDE) return { id: VOICE_OVERRIDE, label: 'Custom' };
   return VOICES[boardIdx % VOICES.length];
 }
 
@@ -65,6 +66,10 @@ const SUBJECT_FILTER = (() => {
   return i >= 0 ? args[i + 1] : null;
 })();
 const INCLUDE_P3 = args.includes('--all');
+const VOICE_OVERRIDE = (() => {
+  const i = args.indexOf('--voice-id');
+  return i >= 0 ? args[i + 1] : null;
+})();
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
