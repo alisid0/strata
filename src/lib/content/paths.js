@@ -25,7 +25,9 @@ export const PATHS = {
   MATH_COORD: { subject: 'maths', name: 'Coordinate geometry', icon: 'maths',
     cards: [1035,1036,1038,1039,1040,1041,1042,1043,1044,1045,1046,1047,1048,1049,1050], quizUrls: ['tier0'] },
 
-  // ── Chemistry ──
+  // ── The Atom (starting point) ──
+  ATOM_001: { subject: 'chemistry', name: 'The Atom', icon: 'chemistry',
+    cards: [1094,1095,1096,1097,1098,1099,1100,1101,1102,1103,1051,1052,1053,1054,1055,1056,1057,1058,1059,1060,1061,1062,1063,1064,1065,1066,1067,1068,1069,1070,1071,1072,1073,1074,1075,1076,1077], quizUrls: ['tier0'] },
   CHEM_ATOMIC: { subject: 'chemistry', name: 'Atomic structure', icon: 'chemistry',
     cards: [1051,1052,1053,1054,1055,1056,1057,1058,1059,1060], quizUrls: ['tier0'] },
   CHEM_BONDING: { subject: 'chemistry', name: 'Chemical bonding', icon: 'chemistry',
@@ -40,7 +42,7 @@ export const PATHS = {
 export const SUBJECT_PATHS = {
   physics: ['PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES'],
   maths: ['LINE_001', 'MATH_COORD'],
-  chemistry: ['CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH']
+  chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH']
 };
 
 export const SUBJECT_LABELS = {
@@ -66,8 +68,8 @@ export const PATH_GROUPS = {
   atom: {
     name: 'The Atom',
     subject: 'chemistry',
-    paths: ['CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH'],
-    firstTopic: 'CHEM_ATOMIC'
+    paths: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH'],
+    firstTopic: 'ATOM_001'
   },
   bit: {
     name: 'The Bit',

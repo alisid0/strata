@@ -18,7 +18,7 @@
   import CheckpointQuiz from '../lib/components/qubix/CheckpointQuiz.svelte';
   import Workshop from '../lib/components/assessments/Workshop.svelte';
   import { getPathQuestions } from '../lib/content/questions.js';
-  import { getLineWorkshop } from '../lib/content/workshops.js';
+  import { getLineWorkshop, getAtomWorkshop } from '../lib/content/workshops.js';
 
   // The card numbers this rail spans (static + any dynamic ones the caller
   // already fetched via dynamicBoards.fetchBoardsByNumbers before navigating
@@ -115,10 +115,19 @@
     // Checkpoint gate: stepping forward past every 3rd BB pops a workshop or quiz.
     if (pathId && to === idx + 1 && (idx + 1) % CHECKPOINT_EVERY === 0
         && idx < totalCards - 1 && !checkpointSeen.has(idx)) {
-      // LINE path uses interactive workshops
+      // LINE and ATOM paths use interactive workshops
       if (pathId === 'LINE_001') {
         const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
         const workshop = getLineWorkshop(checkpointIndex);
+        if (workshop && workshop.length) {
+          checkpointWorkshop = workshop;
+          pendingAdvanceTo = to;
+          return;
+        }
+      }
+      if (pathId === 'ATOM_001') {
+        const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
+        const workshop = getAtomWorkshop(checkpointIndex);
         if (workshop && workshop.length) {
           checkpointWorkshop = workshop;
           pendingAdvanceTo = to;

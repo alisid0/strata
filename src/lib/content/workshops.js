@@ -272,6 +272,180 @@ export const LINE_WORKSHOPS = {
   ]
 };
 
+// ── The Atom workshops ──
+
+export const ATOM_WORKSHOPS = {
+
+  // After BB 003 — The Bottom of the Pile (12 interactions)
+  checkpoint_a: [
+    S('You have cut the aluminum foil down to a single, solitary atom. Can you cut this final piece in half and still have aluminum?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Yep. Once you smash that final piece, it loses its identity completely.',
+      'Not quite. If you cut it one more time, it stops being aluminum. It just becomes a pile of raw parts.'),
+    S('We only know atoms exist because of math and theories. No one has ever actually seen one.',
+      [O('false','False',true), O('true','True',false)],
+      'Exactly. With modern electron microscopes, we can look at a screen and literally see them stacked up.',
+      'Actually, that is false. We have microscopes powerful enough to see them now. It is a physical fact.'),
+    { type: 'sorting', boxes: [
+      { id: 'center', label: 'The center' },
+      { id: 'outside', label: 'Zipping around the outside' }
+    ], items: [
+      { id: 'nucleus', label: 'The heavy nucleus', box: 'center' },
+      { id: 'electrons', label: 'The tiny electrons', box: 'outside' }
+    ]},
+    S('You take an electron out of a gold atom. You take an electron out of an aluminum atom. You put them on a table. Can you tell which is which?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Yep. The raw parts are totally identical. They only create gold or aluminum when put together into a whole atom.',
+      'Actually, no. An electron is an electron. They are exactly identical.'),
+    S('If you smash a gold atom apart, do you get microscopic pieces of gold?',
+      [O('no','No — just raw parts',true), O('yes','Yes — tiny gold dust',false)],
+      'Exactly. Once the atom breaks, the identity is gone. You just have generic subatomic parts.',
+      'Not quite. Smashing the atom destroys the gold. You just get electrons and a nucleus.'),
+    S('Is a single aluminum atom visible to the naked eye?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Yep. Atoms are far too small. You need an electron microscope to see them.',
+      'Actually, no. Atoms are impossibly small — way below what your eyes can resolve.'),
+    S('Tap the wrong word to fix the sentence.\n\nThe ancient Romans called the smallest piece of matter atomos.',
+      [O('Greeks','Greeks',true), O('Egyptians','Egyptians',false)],
+      'Got it. It was the ancient Greeks who coined the word atomos.',
+      'Not quite. Atomos is a Greek word, not a Roman one.'),
+    S('You keep cutting a gold ring into smaller and smaller pieces. At what point does it stop being gold?',
+      [O('atom','When you split a single gold atom',true), O('dust','When it becomes dust',false)],
+      'Exactly. The atom is the last piece that still behaves like gold.',
+      'Not quite. Gold dust is still gold. It only stops being gold when you split the atom itself.'),
+    S('Before electron microscopes, was the atom a proven fact or a working hypothesis?',
+      [O('hypothesis','A working hypothesis',true), O('fact','A proven fact',false)],
+      'Yep. For thousands of years it was a very good guess, but not directly observed.',
+      'Actually, it was just a hypothesis until we built tools powerful enough to see them.'),
+    S('You look through an electron microscope at a piece of metal. What do the atoms look like?',
+      [O('balls','Fuzzy balls stacked in rows',true), O('cubes','Perfect tiny cubes',false)],
+      'Got it. They appear as millions of fuzzy little spheres packed neatly together.',
+      'Not quite. They look like fuzzy tennis balls arranged in orderly rows.'),
+    S('An atom of aluminum and an atom of gold — which one has a heavier center?',
+      [O('gold','Gold',true), O('aluminum','Aluminum',false), O('same','They are the same',false)],
+      'Yep. Gold atoms have a much heavier nucleus than aluminum atoms.',
+      'Actually, gold has the heavier center. That is partly why gold feels so much heavier.'),
+    S('Is the atom the absolute smallest thing that exists?',
+      [O('no','No — it has smaller pieces inside',true), O('yes','Yes — nothing is smaller',false)],
+      'Exactly. The atom has internal parts: a nucleus and electrons. It is the smallest piece that keeps its identity, not the smallest thing period.',
+      'Not quite. The atom is made of even smaller things: protons, neutrons, and electrons.')
+  ],
+
+  // After BB 006 — The Inventory (12 interactions)
+  checkpoint_b: [
+    S('Tap the wrong word to fix the sentence.\n\nA solid block of pure iron is made of a mix of different atoms.',
+      [O('identical','exactly identical',true), O('broken','broken',false)],
+      'Yep. If it is pure iron, every single atom is exactly the same element.',
+      'Not quite. Pure iron is made of exactly identical iron atoms.'),
+    S('You add exactly one proton to the center of a Hydrogen atom. Did it just become a heavier Hydrogen atom?',
+      [O('no','No — it became Helium',true), O('yes','Yes — heavier Hydrogen',false)],
+      'Exactly. Changing the number of protons completely changes the identity. It is now Helium.',
+      'Actually, no. If you change the proton count, it instantly becomes a different element entirely.'),
+    S('You find an atom with 8 protons in its center. A chemist tells you it is Oxygen. If you find another atom on Mars with 8 protons, what is it?',
+      [O('oxygen','Oxygen',true), O('martian','A Martian element',false)],
+      'Got it. Identity is just a headcount. 8 protons is always Oxygen, anywhere in the universe.',
+      'Actually, 8 protons is Oxygen anywhere. Identity is just about counting the protons.'),
+    S('The Periodic Table is a list of millions of different atoms that make up the world.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep. There are only about 100 on the list. Everything is built from just those.',
+      'Actually, false. There are only about 100 elements. The table is just a short inventory.'),
+    S('Why does aluminum feel light and gold feel heavy?',
+      [O('atoms','Gold atoms are heavier',true), O('density','Gold is more tightly packed',false)],
+      'Yep. Each individual gold atom weighs more than each aluminum atom.',
+      'Not quite. The gold atoms themselves are simply heavier than aluminum atoms.'),
+    S('Tap the wrong word to fix the sentence.\n\nThe Periodic Table sorts atoms by how many electrons they have.',
+      [O('protons','protons',true), O('neutrons','neutrons',false)],
+      'Exactly. The table is ordered by proton count — that is the identity badge.',
+      'Not quite. The table is sorted by the number of protons in the nucleus.'),
+    S('How many different elements exist in nature?',
+      [O('100','About 100',true), O('1000','Thousands',false), O('millions','Millions',false)],
+      'Yep. Nature only provides roughly 100 building blocks.',
+      'Actually, there are only about 100 naturally occurring elements.'),
+    S('You hold a bar of pure gold. How many different types of atoms are inside it?',
+      [O('1','Exactly one',true), O('few','A few different metals',false)],
+      'Got it. Pure gold means every atom in the bar is a gold atom.',
+      'Not quite. Pure gold contains only gold atoms — one single type.'),
+    S('If you could magically change the proton count of an atom, what would happen?',
+      [O('change','It becomes a different element',true), O('heavier','It just gets heavier',false)],
+      'Exactly. Proton count IS identity. Change it, and the element changes.',
+      'Not quite. Changing protons does not just change weight — it changes what the element is.'),
+    S('Does the Periodic Table include water?',
+      [O('no','No — water is a molecule, not an element',true), O('yes','Yes — it is listed',false)],
+      'Yep. The table lists elements only. Water is a molecule built from hydrogen and oxygen.',
+      'Actually, no. Water is not an element. It is a molecule made from two different elements.'),
+    S('You discover a new material on an asteroid. How do you figure out what elements it contains?',
+      [O('protons','Count the protons in each atom',true), O('color','Look at its color',false)],
+      'Exactly. Count the protons and you know exactly which elements you are dealing with.',
+      'Not quite. You identify elements by the number of protons in each atom.'),
+    S('An atom has 79 protons. What element is it?',
+      [O('gold','Gold',true), O('lead','Lead',false), O('mercury','Mercury',false)],
+      'Yep. 79 protons means gold, every single time.',
+      'Actually, 79 protons is gold. The number never lies.')
+  ],
+
+  // After BB 009 — Molecules & Bonds (12 interactions)
+  checkpoint_c: [
+    S('Human beings have a special life particle in them that is not found in rocks or dirt.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep. We are built from the exact same carbon and oxygen atoms found in dirt and coal. We are just arranged differently.',
+      'Actually, false. There is no life particle. We are made of the exact same atoms as a lump of coal.'),
+    S('Tap the wrong word to fix the sentence.\n\nA glass of water is full of billions of water atoms.',
+      [O('molecules','molecules',true), O('elements','elements',false)],
+      'Got it. There is no water atom. Water is a molecule made by snapping hydrogen and oxygen together.',
+      'Not quite. Water is not an atom; it is a molecule made of hydrogen and oxygen.'),
+    S('Do atoms have physical hooks or velcro that lock them together?',
+      [O('no','No — they share electrons',true), O('yes','Yes — they have hooks',false)],
+      'Exactly. They do not have hooks. They share a moving electron, tethering them with electricity.',
+      'Actually, no. They share an electron that zips around both of them.'),
+    { type: 'sorting', boxes: [
+      { id: 'destroyed', label: 'The atoms are destroyed' },
+      { id: 'rearrange', label: 'The atoms rearrange' }
+    ], items: [
+      { id: 'log', label: 'A log turning into ash and smoke', box: 'rearrange' }
+    ]},
+    S('When wood burns, where do the atoms go?',
+      [O('rearrange','They bond with oxygen and float away',true), O('vanish','They vanish into nothing',false)],
+      'Yep. Matter is never destroyed. The atoms just find new partners in the air.',
+      'Not quite. The atoms do not vanish. They bond with oxygen and drift away as smoke and gas.'),
+    S('A carbon atom inside a lump of coal is different from a carbon atom inside your body.',
+      [O('false','False — they are identical',true), O('true','True — body carbon is special',false)],
+      'Exactly. A carbon atom is a carbon atom, whether it sits in coal or in your cells.',
+      'Actually, false. The carbon atom is exactly the same. Only the arrangement differs.'),
+    S('How many hydrogen atoms bond with one oxygen atom to make a water molecule?',
+      [O('2','Two',true), O('1','One',false), O('3','Three',false)],
+      'Yep. H₂O: two hydrogens, one oxygen.',
+      'Not quite. Water is two hydrogen atoms attached to one oxygen atom.'),
+    S('Tap the wrong word to fix the sentence.\n\nIn chemistry, matter is sometimes destroyed when you burn it.',
+      [O('never','never',true), O('always','always',false)],
+      'Got it. Matter is never destroyed. It only ever rearranges into new combinations.',
+      'Not quite. Chemistry never destroys matter. The atoms always survive, just in new arrangements.'),
+    S('Hydrogen and oxygen are both invisible gases. Why is water a liquid you can drink?',
+      [O('bond','The bond changes their properties',true), O('cold','Water is colder',false)],
+      'Exactly. When they bond, the molecule has completely different properties from the bare atoms.',
+      'Not quite. The chemical bond transforms their behavior entirely.'),
+    S('An electron zips around two atoms in a figure-eight. What do chemists call this?',
+      [O('bond','A chemical bond',true), O('orbit','An orbit',false)],
+      'Yep. That shared electron IS the chemical bond.',
+      'Actually, it is called a chemical bond. The shared electron tethers the atoms together.'),
+    S('You burn a log completely. The ashes weigh less than the log. Where did the missing mass go?',
+      [O('air','It floated away as gas',true), O('destroyed','It was destroyed',false)],
+      'Exactly. The missing mass bonded with oxygen and drifted into the air as invisible gas.',
+      'Not quite. The mass did not vanish. It combined with oxygen and floated away.'),
+    S('Does a molecule have the same properties as the atoms it is made of?',
+      [O('no','No — the properties change',true), O('yes','Yes — they stay the same',false)],
+      'Got it. The molecule behaves completely differently from its individual atoms.',
+      'Actually, no. The bond changes everything. Hydrogen and oxygen are gases; together they make liquid water.')
+  ]
+};
+
+export function getAtomWorkshop(checkpointIndex) {
+  const keys = Object.keys(ATOM_WORKSHOPS);
+  if (checkpointIndex < keys.length) {
+    return ATOM_WORKSHOPS[keys[checkpointIndex]];
+  }
+  return null;
+}
+
 export function getLineWorkshop(checkpointIndex) {
   const keys = Object.keys(LINE_WORKSHOPS);
   if (checkpointIndex < keys.length) {
