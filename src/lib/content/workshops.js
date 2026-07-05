@@ -677,6 +677,77 @@ export function getBitWorkshop(checkpointIndex) {
   return null;
 }
 
+// ── Physics workshops ──
+
+export const PHYS_WORKSHOPS = {
+
+  // After BB 003 — Building the Universe (12 interactions)
+  checkpoint_a: [
+    { type: 'sorting', boxes: [
+      { id: 'base', label: 'Base Unit (A raw brick)' },
+      { id: 'derived', label: 'Derived Unit (Bricks snapped together)' }
+    ], items: [
+      { id: 'meter', label: 'The Meter', box: 'base' },
+      { id: 'speed', label: 'Speed (meters per second)', box: 'derived' }
+    ]},
+    S('Tap the trench coat to pull the mask off a "Newton." The word Newton vanishes, revealing kg·m/s². Does a Newton use completely new math?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Exactly. It is just the standard kilograms, meters, and seconds hiding under a shorter name.',
+      'Actually, no. There is no new math. It is just a messy combination of the big three base units, given a nickname.'),
+    S('You are taking a physics test. You do a massive calculation to figure out how far a car traveled. Your final answer is "45 kilograms." Do you need to double-check your math?',
+      [O('yes','Yes, immediately',true), O('no','No, that makes sense',false)],
+      'Got it. This is the built-in lie detector. Distance is measured in meters, so if you end up with kilograms, your math is definitely wrong.',
+      'Actually, yes. Distance cannot be measured in kilograms (weight). The units instantly tell you the math is wrong.'),
+    S('Tap the wrong word to fix the sentence.\n\nWhen you multiply speed (meters/second) by time (seconds), the seconds cancel out, leaving you with just kilograms.',
+      [O('meters','meters',true), O('scalar','a scalar',false)],
+      'Yep. The seconds on the top and bottom cancel out perfectly, leaving just the distance (meters).',
+      'Not quite. If you cancel out the seconds, the only word left is meters.'),
+    S('The prefix "Kilo" (like in kilometer) is a brand new base unit.',
+      [O('false','False',true), O('true','True',false)],
+      'Exactly, that is false. Kilo isn\'t a unit at all. It is just a quick shorthand command that means "multiply by 1,000."',
+      'Actually, that is false. Kilo is just a prefix. It just tells you to slide the decimal point.'),
+    S('You are looking at a 1-meter dog. You slide the bar to jump exactly one order of magnitude larger — from 1 to 10. In physics, does an order of magnitude just mean "a little bit bigger"?',
+      [O('no','No, it means exactly 10 times bigger',true), O('yes','Yes, it is just an estimate',false)],
+      'Yep. Physics scales the universe in clean jumps of 10.',
+      'Not quite. An order of magnitude is a very specific jump. It means multiplying by 10.'),
+    S('I blindfold you and tell you there is a million dollars exactly 10 meters away from where you are standing. Can you walk straight to it?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Exactly. You have the amount (10) and the unit (meters), but you are missing the direction.',
+      'Actually, you can\'t. You know exactly how far it is, but you don\'t know which way to walk.'),
+    { type: 'sorting', boxes: [
+      { id: 'scalar', label: 'Scalar (Amount only)' },
+      { id: 'vector', label: 'Vector (Amount + Direction)' }
+    ], items: [
+      { id: 'temp', label: '70 degrees Fahrenheit', box: 'scalar' },
+      { id: 'car', label: '60 miles per hour, heading North', box: 'vector' }
+    ]},
+    S('Tap the police officer\'s radar gun to see what it measures. A screen pops up: "85 MPH". Does a standard radar gun measure your velocity?',
+      [O('no','No, it only measures speed',true), O('yes','Yes, it measures velocity',false)],
+      'Yep. It doesn\'t care if you are driving toward New York or Miami. Because it doesn\'t track direction, it only measures speed (a scalar).',
+      'Actually, no. Velocity requires a direction. The radar gun just gives a raw number, which is speed.'),
+    S('Tap the wrong word to fix the sentence.\n\nBecause mass has no direction, your weight in kilograms is classified as a vector.',
+      [O('scalar','scalar',true), O('derived','derived unit',false)],
+      'Exactly. Whether you face up, down, or sideways, your mass doesn\'t change. It is just an amount (a scalar).',
+      'Not quite. Mass has no direction, which makes it a scalar.'),
+    S('You are driving a car in a perfect, continuous circle at exactly 60 miles per hour. Your velocity is constantly changing.',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. Even though your speed is locked at 60, your steering wheel is turning. If direction changes, velocity changes.',
+      'Actually, it is true. Because velocity is an amount plus a direction, constantly turning the wheel means your velocity is constantly changing.'),
+    S('You are programming a self-driving car. If you only program the car to understand scalars, will it be able to safely navigate a city?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Got it. It would know how fast to go, but it wouldn\'t know when to turn or which way to steer. Physics requires vectors to navigate reality.',
+      'Actually, no. A scalar only tells you amounts (like speed). To navigate, the car must understand direction (vectors).')
+  ]
+};
+
+export function getPhysWorkshop(checkpointIndex) {
+  const keys = Object.keys(PHYS_WORKSHOPS);
+  if (checkpointIndex < keys.length) {
+    return PHYS_WORKSHOPS[keys[checkpointIndex]];
+  }
+  return null;
+}
+
 export function getAtomWorkshop(checkpointIndex) {
   const keys = Object.keys(ATOM_WORKSHOPS);
   if (checkpointIndex < keys.length) {
