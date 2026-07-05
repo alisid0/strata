@@ -31,9 +31,13 @@ export const PATHS = {
   // Phase 3: Bonding types (1117-1120)
   // Phase 4: The mole (1121-1124)
   // Phase 5: Molecular architecture (existing 1068-1077, curated)
-  // Redeploy trigger 2026-07-05
   ATOM_001: { subject: 'chemistry', name: 'The Atom', icon: 'chemistry',
     cards: [1094,1095,1096,1097,1098,1099,1100,1101,1102,1103,1104,1109,1110,1111,1112,1113,1114,1115,1116,1117,1118,1119,1120,1121,1122,1123,1124,1125,1126,1127,1128,1129,1068,1069,1070,1071,1072,1073,1074,1076,1077], quizUrls: ['tier0'] },
+
+  // ── The Bit (starting point) ──
+  BIT_001: { subject: 'computing', name: 'The Bit', icon: 'computing',
+    cards: [1130,1131,1132,1133,1134,1135,1136,1137,1138], quizUrls: [] },
+
   CHEM_ATOMIC: { subject: 'chemistry', name: 'Atomic structure', icon: 'chemistry',
     cards: [1051,1052,1053,1054,1055,1056,1057,1058,1059,1060], quizUrls: ['tier0'] },
   CHEM_BONDING: { subject: 'chemistry', name: 'Chemical bonding', icon: 'chemistry',
@@ -48,19 +52,22 @@ export const PATHS = {
 export const SUBJECT_PATHS = {
   physics: ['PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES'],
   maths: ['LINE_001', 'MATH_COORD'],
-  chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH']
+  chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH'],
+  computing: ['BIT_001']
 };
 
 export const SUBJECT_LABELS = {
   physics: 'Physics',
   maths: 'Mathematics',
-  chemistry: 'Chemistry'
+  chemistry: 'Chemistry',
+  computing: 'Computing'
 };
 
 export const SUBJECT_ICONS = {
   physics: 'physics',
   maths: 'maths',
-  chemistry: 'chemistry'
+  chemistry: 'chemistry',
+  computing: 'computing'
 };
 
 /** Four starting-point gateways — each groups related topics into a learning path. */
@@ -79,9 +86,9 @@ export const PATH_GROUPS = {
   },
   bit: {
     name: 'The Bit',
-    subject: null,
-    paths: [],
-    firstTopic: null
+    subject: 'computing',
+    paths: ['BIT_001'],
+    firstTopic: 'BIT_001'
   },
   unit: {
     name: 'The Unit',

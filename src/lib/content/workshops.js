@@ -552,6 +552,131 @@ export const ATOM_WORKSHOPS = {
   ]
 };
 
+// ── The Bit workshops ──
+
+export const BIT_WORKSHOPS = {
+
+  // After BB 003 — Switches and Pipes (12 interactions)
+  checkpoint_a: [
+    S('The guard on the Great Wall looks up and sees a perfectly clear, empty blue sky. In the language of computing, what did he just receive?',
+      [O('zero','A zero',true), O('nothing','Nothing at all',false)],
+      'Yep. An empty sky is a specific state. It means zero.',
+      'Not quite. An empty sky isn\'t just "nothing." It\'s a specific message that means zero.'),
+    S('Tap the wrong word in this sentence to fix it.\n\nA bit is a piece of complex math that a computer calculates.',
+      [O('choice','a simple choice',true), O('equation','a difficult equation',false)],
+      'Exactly. A bit isn\'t math. It\'s just a choice between on and off.',
+      'Actually, a bit isn\'t math at all. It\'s just a choice between yes and no.'),
+    { type: 'sorting', boxes: [
+      { id: 'one', label: '1' },
+      { id: 'zero', label: '0' }
+    ], items: [
+      { id: 'closed', label: 'A closed switch with electricity flowing through it', box: 'one' }
+    ]},
+    S('Tap the name "George Boole" to look inside his algebra system. The words TRUE and FALSE appear. Do you need to know how to multiply or divide to use Boolean logic?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Yep. It\'s entirely built on simple Yes or No decisions. No math required.',
+      'Actually, no. It doesn\'t use numbers like that. It just uses True and False.'),
+    S('You are wiring an AND gate. The first switch is ON. You slide the second switch to ON and the light bulb lights up. What happens if you slide it back to OFF?',
+      [O('out','The light goes out',true), O('on','The light stays on',false)],
+      'Exactly. In an AND gate, both switches must be ON, or the whole path is broken.',
+      'Not quite. If you turn one off in an AND gate, the physical path breaks and the light goes out.'),
+    S('In an OR gate, if you turn on the top switch AND the bottom switch at the same time, the machine breaks.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. If both are on, the electricity just flows through both paths to the bulb. It still turns on.',
+      'Actually, that\'s false. If both are on, the electricity just has two paths it can take. The light still turns on.'),
+    { type: 'sorting', boxes: [
+      { id: 'switch', label: 'An electrical switch' },
+      { id: 'wire', label: 'A copper wire' }
+    ], items: [
+      { id: 'valve', label: 'A physical plumbing valve', box: 'switch' }
+    ]},
+    S('You tap to open the first valve on a straight, single water pipe. Water flows past the first valve and slams into the second closed valve. Which logic gate did we just build out of pipes?',
+      [O('and','An AND gate',true), O('or','An OR gate',false)],
+      'Yep. Because they are on the exact same pipe, you need the first AND the second valve open.',
+      'Not quite. Because it\'s one straight pipe, the first AND the second must be open. It\'s an AND gate.'),
+    S('Tap the wrong word to fix the sentence.\n\nTo build an OR gate out of plumbing, you need to put two valves on a straight pipe.',
+      [O('Y-shaped','Y-shaped',true), O('broken','broken',false)],
+      'Exactly. You have to split the pipe so the water has two different paths it can take.',
+      'Actually, a straight pipe makes an AND gate. To make an OR gate, you need a Y-shaped pipe.'),
+    S('You have a Y-shaped pipe with a top valve and a bottom valve. You shut the top valve completely. You open the bottom valve. Does water come out the faucet?',
+      [O('yes','Yes',true), O('no','No',false)],
+      'Yep. As long as the bottom OR the top is open, the water finds a way around.',
+      'Not quite. Because the pipe is split, the water just ignores the top, takes the bottom path, and comes out the faucet.'),
+    S('A computer microchip is basically just billions of microscopic plumbing valves routing electricity instead of water.',
+      [O('true','True',true), O('false','False',false)],
+      'Exactly. It\'s just millions of microscopic paths opening and closing to make decisions.',
+      'Actually, that\'s perfectly true. A chip is just billions of tiny switches routing electricity exactly like pipes and valves.'),
+    S('Imagine you build a water pipe with no valves on it at all. The water just flows constantly, forever. Can you use this pipe to send a message to someone?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Got it. If it can\'t change states (on and off), it\'s just a pipe. You need at least two states to carry a signal.',
+      'Actually, no. If the water never stops, you can\'t use it to signal anything. You need to be able to turn it on and off.')
+  ],
+
+  // After BB 006 — Logic and Gates (Textbook Edition) (12 interactions)
+  checkpoint_b: [
+    S('Tap the term "Bit" to reveal what the word actually stands for. The words "Binary Digit" appear. What does the word "Binary" mean in this context?',
+      [O('two','Exactly two options',true), O('complex','A complex math equation',false)],
+      'Yep. Binary simply means two. On or Off. 1 or 0.',
+      'Not quite. Binary just means two. A bit only ever has two possible states.'),
+    { type: 'sorting', boxes: [
+      { id: 'one', label: '1' },
+      { id: 'zero', label: '0' }
+    ], items: [
+      { id: 'true', label: 'The logic state of "True"', box: 'one' }
+    ]},
+    S('If a computer encounters a 1 and a 0, it adds them together mathematically to get a 1.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. At this level, it isn\'t doing math. It is just comparing True and False states.',
+      'Actually, that\'s false. The computer isn\'t adding numbers here. It is just looking at logic states (Yes and No).'),
+    S('In an AND gate, Input A is 1. You slide Input B. To get the Output to be 1, what must Input B be?',
+      [O('1','1',true), O('0','0',false)],
+      'Got it. In an AND gate, Input A and Input B must both be 1 to get a 1 out.',
+      'Not quite. To get a 1 out of an AND gate, both inputs must be 1.'),
+    S('Tap the wrong word to fix the sentence.\n\nIn Boolean algebra, if an AND gate receives a 1 and a 0, the final output will be True.',
+      [O('False','False',true), O('1','1',false)],
+      'Exactly. If even one input is 0 (False), an AND gate instantly outputs a 0 (False).',
+      'Actually, because one of the inputs is a 0, the AND gate outputs a 0 (False).'),
+    S('An OR gate receives two inputs. Input A is 0. Input B is 1. What does the gate output?',
+      [O('1','1',true), O('0','0',false)],
+      'Yep. As long as A or B is a 1, an OR gate will output a 1.',
+      'Not quite. Because Input B is a 1, the OR gate is satisfied and outputs a 1.'),
+    { type: 'sorting', boxes: [
+      { id: 'zero', label: 'Output is 0' },
+      { id: 'one', label: 'Output is 1' }
+    ], items: [
+      { id: 'or00', label: 'An OR gate receiving a 0 and a 0', box: 'zero' }
+    ]},
+    S('You tap the text to see how engineers draw an AND gate on a circuit blueprint. The D-shaped symbol appears, with two lines going in and one coming out. Why are there two lines going in, but only one line coming out?',
+      [O('compare','Because it compares two inputs to make one final decision',true), O('half','Because the electricity is cut in half',false)],
+      'Exactly. The gate looks at both inputs, compares them, and spits out a single True or False answer.',
+      'Not quite. It takes two signals, compares them based on its rules, and outputs one final decision.'),
+    S('If an OR gate receives a 1 and a 1, it gets confused and outputs a 0.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. An OR gate just needs at least one True signal. If it gets two, it happily outputs a 1.',
+      'Actually, that\'s false. If it receives two 1s, the "OR" condition is easily met, and it outputs a 1.'),
+    S('You need a security system that only unlocks the door if a person scans a keycard (1) AND enters a PIN code (1). Which gate should you wire into the lock?',
+      [O('and','An AND gate',true), O('or','An OR gate',false)],
+      'Yep. An AND gate guarantees the door stays locked if they only do one of the two things.',
+      'Not quite. If you used an OR gate, they could just scan the card without knowing the PIN, and the door would open. You need an AND gate.'),
+    S('Tap the wrong word to fix the sentence.\n\nA modern computer processor is made of gears that physically turn to calculate Boolean logic.',
+      [O('switches','microscopic switches',true), O('wire','a single wire',false)],
+      'Exactly. There are no moving physical parts. It is just billions of microscopic switches routing electricity.',
+      'Actually, modern computers have no moving parts like gears. They use microscopic electrical switches.'),
+    S('You have an AND gate. The first input is 0. Do you even need to look at the second input to know what the output will be?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Got it. The second a 0 hits an AND gate, the whole thing fails. The output will be 0 no matter what the other input is.',
+      'Actually, you don\'t. Because an AND gate requires both to be 1, a single 0 means the output is guaranteed to be 0.')
+  ]
+};
+
+export function getBitWorkshop(checkpointIndex) {
+  const keys = Object.keys(BIT_WORKSHOPS);
+  if (checkpointIndex < keys.length) {
+    return BIT_WORKSHOPS[keys[checkpointIndex]];
+  }
+  return null;
+}
+
 export function getAtomWorkshop(checkpointIndex) {
   const keys = Object.keys(ATOM_WORKSHOPS);
   if (checkpointIndex < keys.length) {

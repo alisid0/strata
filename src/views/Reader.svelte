@@ -18,7 +18,7 @@
   import CheckpointQuiz from '../lib/components/qubix/CheckpointQuiz.svelte';
   import Workshop from '../lib/components/assessments/Workshop.svelte';
   import { getPathQuestions } from '../lib/content/questions.js';
-  import { getLineWorkshop, getAtomWorkshop } from '../lib/content/workshops.js';
+  import { getLineWorkshop, getAtomWorkshop, getBitWorkshop } from '../lib/content/workshops.js';
 
   // The card numbers this rail spans (static + any dynamic ones the caller
   // already fetched via dynamicBoards.fetchBoardsByNumbers before navigating
@@ -128,6 +128,15 @@
       if (pathId === 'ATOM_001') {
         const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
         const workshop = getAtomWorkshop(checkpointIndex);
+        if (workshop && workshop.length) {
+          checkpointWorkshop = workshop;
+          pendingAdvanceTo = to;
+          return;
+        }
+      }
+      if (pathId === 'BIT_001') {
+        const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
+        const workshop = getBitWorkshop(checkpointIndex);
         if (workshop && workshop.length) {
           checkpointWorkshop = workshop;
           pendingAdvanceTo = to;
