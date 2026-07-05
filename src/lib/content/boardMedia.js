@@ -34,7 +34,10 @@ export const BOARD_MEDIA = {
   1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } },
 
   // ── The Atom · pixel-art floor animations ──
-  1094: { 0: { type: 'img', src: '/videos/card-1094-floor0.gif?v=944949' } },       // The smallest piece — foil dividing to atom (v = new content-hash prefix)
+  1094: {
+    0: { type: 'img', src: '/videos/card-1094-floor0.gif?v=944949' },   // floor 0 — foil dividing down to the smallest piece
+    1: { type: 'img', src: '/videos/card-1094-floor1.gif?v=1cdafa' }     // floor 1 — the philosophers' argument (never-ends vs a-limit)
+  },
 
   // ── Maths · Coordinate geometry ──
   // Manim GIFs on Supabase. Rendered with STRATA_THEME=light.
