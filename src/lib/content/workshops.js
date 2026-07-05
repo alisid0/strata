@@ -435,6 +435,63 @@ export const ATOM_WORKSHOPS = {
       [O('no','No — the properties change',true), O('yes','Yes — they stay the same',false)],
       'Got it. The molecule behaves completely differently from its individual atoms.',
       'Actually, no. The bond changes everything. Hydrogen and oxygen are gases; together they make liquid water.')
+  ],
+
+  // After BB 015 (1109-1113) — The Engine of the Atom (12 interactions)
+  checkpoint_d: [
+    { type: 'sorting', boxes: [
+      { id: 'center', label: 'Dead center on the 50-yard line' },
+      { id: 'stands', label: 'The upper deck seats' }
+    ], items: [
+      { id: 'nucleus', label: 'A glass marble (The Nucleus)', box: 'center' },
+      { id: 'electron', label: 'A gnat (An Electron)', box: 'stands' }
+    ]},
+    S('Tap the wrong word to fix the sentence.\n\nIn an atom, the space between the heavy nucleus and the moving electrons is filled with air.',
+      [O('empty','empty space',true), O('water','water',false)],
+      'Exactly. It is just pure, empty vacuum. You are mostly made of nothing.',
+      'Actually, there is no air inside an atom. The space is completely empty.'),
+    S('Tap the screen to put a positive proton and a negative electron next to each other. They instantly snap together. In the physics of an atom, what do opposite charges do?',
+      [O('attract','They attract',true), O('repel','They repel',false)],
+      'Got it. Opposites attract. That invisible pull is what holds the whole atom together.',
+      'Not quite. Positive and negative are opposites, so they pull toward each other.'),
+    S('Those electrons are flying around the outside of the atom at unimaginable speeds. Why don\'t they just fly away into deep space?',
+      [O('protons','The protons pull on them',true), O('shell','They are trapped in a physical shell',false)],
+      'Yep. The positive protons act like an anchor, using their magnetic pull to keep the electrons on a leash.',
+      'Actually, there is no physical shell. The magnetic pull of the positive protons keeps them from flying away.'),
+    S('You are looking at a Hydrogen atom. It has exactly 1 proton. You jam a second proton into the center. The label changes from Hydrogen to Helium. Did adding a proton just make it a heavier Hydrogen atom?',
+      [O('new','No, it is a totally new element',true), O('heavier','Yes, it is just heavier',false)],
+      'Exactly. Identity is just a headcount. The second you change the number of protons, the element changes.',
+      'Not quite. The number of protons is its absolute identity. If you add one, it instantly becomes a completely different element.'),
+    S('If an Oxygen atom loses one of its outside electrons, it stops being Oxygen.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that is false. Electrons come and go all the time — that is just chemistry. Only protons dictate identity.',
+      'Actually, that is false. An atom can trade electrons all day long and still be Oxygen. Only the protons matter.'),
+    { type: 'sorting', boxes: [
+      { id: 'repel', label: 'They violently repel' },
+      { id: 'lock', label: 'They lock together' }
+    ], items: [
+      { id: 'protons', label: 'Two positive protons pushed together', box: 'repel' }
+    ]},
+    S('A Gold atom has 79 positive protons crammed perfectly together inside a microscopic nucleus. Based on the rules of magnets, what should happen?',
+      [O('explode','It should explode',true), O('freeze','It should freeze',false)],
+      'Yep. 79 positive charges packed together should violently repel each other and blow the atom to pieces.',
+      'Actually, it should explode. The repulsive force between that many positive protons should blow the nucleus apart.'),
+    S('Tap the wrong word to fix the sentence.\n\nTo keep the atom from exploding, the nucleus uses neutrons, which have a highly negative charge.',
+      [O('neutral','neutral',true), O('positive','positive',false)],
+      'Exactly. Neutrons have absolutely zero charge. They are totally neutral.',
+      'Not quite. Neutrons don\'t have a charge at all. They are completely neutral.'),
+    S('You drop a neutron between two angry, repelling protons. The protons stop vibrating and stabilize. What is the neutron actually doing here?',
+      [O('wedge','Acting as a physical wedge',true), O('glue','Gluing them with electricity',false)],
+      'Got it. It just acts as a heavy peacekeeper, spacing the protons out so they don\'t blow the center apart.',
+      'Actually, it is just acting as a wedge. Because it has no charge, it just spaces the protons out to keep the peace.'),
+    S('Because neutrons are in the center of the atom, they pull on the outside electrons just like protons do.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that is false. Because they have zero charge, they have zero magnetic pull.',
+      'Actually, that is false. Neutrons have no electrical charge, so they can\'t pull on electrons at all.'),
+    S('You are trying to build a stable atom from scratch. Which piece do you need to act as the heavy peacekeeper so your atom doesn\'t destroy itself?',
+      [O('neutron','The neutron',true), O('electron','The electron',false)],
+      'Exactly. You need neutrons to wedge between the protons and hold the center together.',
+      'Not quite. The electron flies around the outside. You need the neutron to keep the peace inside the center.')
   ]
 };
 
