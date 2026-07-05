@@ -117,7 +117,8 @@
         && idx < totalCards - 1 && !checkpointSeen.has(idx)) {
       // LINE path uses interactive workshops
       if (pathId === 'LINE_001') {
-        const workshop = getLineWorkshop(checkpointCount);
+        const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
+        const workshop = getLineWorkshop(checkpointIndex);
         if (workshop && workshop.length) {
           checkpointWorkshop = workshop;
           pendingAdvanceTo = to;
