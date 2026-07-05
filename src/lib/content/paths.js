@@ -10,6 +10,10 @@
  */
 export const PATHS = {
   // ── Physics ──
+  // ── Physics (starting point) ──
+  PHYS_001: { subject: 'physics', name: 'Physics', icon: 'physics',
+    cards: [1139,1140,1141,1142,1143,1144,1145,1146,1147,1148,1149,1150,1151,1152,1153,1154,1155,1156,1157,1158,1159,1160], quizUrls: [] },
+
   PHY_UNITS: { subject: 'physics', name: 'Units & dimensions', icon: 'physics',
     cards: [1000,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012], quizUrls: ['tier0'] },
   PHY_SCALE: { subject: 'physics', name: 'Scale, estimation & errors', icon: 'physics',
@@ -50,7 +54,7 @@ export const PATHS = {
 
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
-  physics: ['PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES'],
+  physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES'],
   maths: ['LINE_001', 'MATH_COORD'],
   chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH'],
   computing: ['BIT_001']
@@ -100,10 +104,10 @@ export const PATH_GROUPS = {
     firstTopic: 'BIT_001'
   },
   unit: {
-    name: 'The Unit',
+    name: 'Physics',
     subject: 'physics',
-    paths: ['PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_INTRO'],
-    firstTopic: 'PHY_UNITS'
+    paths: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_INTRO'],
+    firstTopic: 'PHYS_001'
   }
 };
 

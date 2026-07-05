@@ -143,6 +143,9 @@
           return;
         }
       }
+      if (pathId === 'PHYS_001') {
+        // Workshops for Physics not yet authored — falls through to MCQ below
+      }
       // Fallback: MCQ questions for other paths
       const qs = getPathQuestions(pathId, 24)
         .filter(q => q.type === 'mcq' || q.type === 'truefalse')
