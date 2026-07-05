@@ -29,8 +29,7 @@
 <div class="qx-shell stats-view">
   <div class="top-row">
     <div class="top-left">
-      <button class="back-chev" on:click={() => onNavigate?.('home')} aria-label="Back">‹</button>
-      <h1>Your stats</h1>
+      <h1>W Score</h1>
     </div>
     <div class="avatar">{$displayName.charAt(0).toUpperCase()}</div>
   </div>
@@ -92,10 +91,6 @@
   .stats-view { height: 100%; overflow-y: auto; padding: 16px 18px 24px; box-sizing: border-box; }
   .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
   .top-left { display: flex; align-items: center; gap: 10px; }
-  .back-chev {
-    width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--qx-border-2); background: var(--qx-surface);
-    color: var(--qx-text-dim); font-size: 19px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  }
   h1 { font-size: 23px; font-weight: 800; color: var(--qx-text); margin: 0; }
   .avatar {
     width: 36px; height: 36px; border-radius: 50%; background: var(--qx-accent); color: #fff;

@@ -7,10 +7,9 @@
   import Auth from './views/Auth.svelte';
   import Onboarding from './views/Onboarding.svelte';
   import Home from './views/Home.svelte';
-  import Topics from './views/Topics.svelte';
+  import Path from './views/Path.svelte';
   import PathView from './views/PathView.svelte';
-  import Stats from './views/Stats.svelte';
-  import Map from './views/Map.svelte';
+  import WScore from './views/WScore.svelte';
   import Leaderboard from './views/Leaderboard.svelte';
   import OtherUserStats from './views/OtherUserStats.svelte';
   import Snippets from './views/Snippets.svelte';
@@ -27,9 +26,11 @@
   let readerStart = 1;
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
 
-  const TAB_VIEWS = ['home', 'topics', 'map', 'snippets'];
-  const TAB_ORDER = ['home', 'topics', 'map', 'snippets'];
-  const PUSH_VIEWS = ['topicDetail', 'stats', 'leaderboard', 'otherUserStats', 'reader', 'quiz', 'author', 'snippetMode'];
+  const TAB_VIEWS = ['home', 'path', 'wscore'];
+  const TAB_ORDER = ['home', 'path', 'wscore'];
+  const PUSH_VIEWS = ['topicDetail', 'leaderboard', 'otherUserStats', 'reader', 'quiz', 'author', 'snippetMode'];
+  // Old view ids still used by callers/deep-links → their streamlined homes.
+  const LEGACY_VIEWS = { topics: 'path', stats: 'wscore', map: 'path', snippets: 'snippetMode' };
 
   // Honour reduced-motion: Svelte's fly is JS-driven, so the CSS media query
   // can't stop it — zero the distance/duration instead.
@@ -79,6 +80,7 @@
   }
 
   function navigate(view, arg) {
+    view = LEGACY_VIEWS[view] || view;
     // Slide direction: push views slide in from the right; back-to-tab slides
     // from the left; tab→tab follows the tab order.
     if (PUSH_VIEWS.includes(view)) {
@@ -126,12 +128,10 @@
       <div class="tab-content">
         {#if currentView === 'home'}
           <Home onNavigate={navigate} />
-        {:else if currentView === 'topics'}
-          <Topics onNavigate={navigate} />
-        {:else if currentView === 'map'}
-          <Map onNavigate={navigate} />
-        {:else if currentView === 'snippets'}
-          <Snippets onNavigate={navigate} />
+        {:else if currentView === 'path'}
+          <Path onNavigate={navigate} />
+        {:else if currentView === 'wscore'}
+          <WScore onNavigate={navigate} />
         {/if}
       </div>
       <BottomNav active={currentView} onNavigate={navigate} />
@@ -140,11 +140,6 @@
   {:else if currentView === 'topicDetail'}
     <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
       <PathView pathId={currentPathId} onNavigate={navigate} />
-    </div>
-
-  {:else if currentView === 'stats'}
-    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
-      <Stats onNavigate={navigate} />
     </div>
 
   {:else if currentView === 'leaderboard'}

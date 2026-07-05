@@ -70,6 +70,15 @@ export const SUBJECT_ICONS = {
   computing: 'computing'
 };
 
+/** Future topics per gateway — shown greyed with a "Soon" chip on the Path tab.
+ *  Names only, never a board count (no empty "0/N" promises). */
+export const ROADMAP = {
+  line: ['Quadratics & polynomials', 'Limits & continuity', 'Probability', 'Statistics', 'Matrices'],
+  atom: ['Periodic table & periodicity', 'Organic basics', 'Biomolecules'],
+  bit: ['Binary & number systems', 'Logic gates & Boolean', 'Networks: packets, IP, DNS'],
+  unit: ['1D Kinematics', 'Work, energy & power', 'Thermodynamics & heat', 'Current electricity']
+};
+
 /** Four starting-point gateways — each groups related topics into a learning path. */
 export const PATH_GROUPS = {
   line: {

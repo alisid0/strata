@@ -1,5 +1,5 @@
 <script>
-  import { PATHS, totalBoards } from '../lib/content/paths.js';
+  import { PATHS, PATH_GROUPS, totalBoards } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { displayName } from '../lib/stores/auth.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
@@ -10,10 +10,16 @@
 
   const TOTAL_BOARDS = totalBoards();
 
+  const GATEWAY_META = {
+    line: { icon: '📏', tagline: 'Space & abstraction' },
+    atom: { icon: '⚛️', tagline: 'Matter & charge' },
+    bit:  { icon: '◉',  tagline: 'Information & logic' },
+    unit: { icon: '⚖️', tagline: 'Measurement & scale' }
+  };
+
   $: overall = ($progress, progress.getOverall());
   $: streak = ($progress, progress.getStreak());
   $: level = 1 + Math.floor(overall.read / 5);
-  $: earnedMedals = ($progress, progress.getMedals().filter(m => m.earned).length);
 
   $: continuePath = ($progress, Object.entries(PATHS)
     .map(([id, manifest]) => ({ id, manifest, state: progress.getPathState(id, manifest) }))
@@ -22,16 +28,25 @@
 
   $: continuePct = continuePath ? Math.round((continuePath.state.boardsRead / continuePath.state.boardsTotal) * 100) : 0;
 
-  $: EXPLORE_ITEMS = [
-    { id: 'stats', label: 'Your stats', sub: earnedMedals === 1 ? '1 medal' : `${earnedMedals} medals`, icon: 'stats' },
-    { id: 'snippets', label: 'Snippets', sub: 'no pressure', icon: 'snippets' }
-  ];
+  // The four doors: per-gateway progress; an untouched gateway opens its
+  // first topic directly, a started one opens the Path tab.
+  $: doors = ($progress, Object.entries(PATH_GROUPS).map(([gid, g]) => {
+    const states = g.paths.filter(id => PATHS[id]).map(id => progress.getPathState(id, PATHS[id]));
+    const read = states.reduce((a, s) => a + (s.boardsRead || 0), 0);
+    const total = states.reduce((a, s) => a + (s.boardsTotal || 0), 0);
+    return { gid, name: g.name, firstTopic: g.firstTopic, ...GATEWAY_META[gid], read, total };
+  }));
+
+  function openDoor(door) {
+    if (door.read > 0) onNavigate?.('path');
+    else onNavigate?.('topicDetail', door.firstTopic);
+  }
 </script>
 
 <div class="qx-shell home-view">
   <!-- Header: greeting + avatar + streak -->
   <div class="header">
-    <button class="avatar" on:click={() => onNavigate?.('stats')} aria-label="Your stats">{$displayName.charAt(0).toUpperCase()}</button>
+    <button class="avatar" on:click={() => onNavigate?.('wscore')} aria-label="Your W Score">{$displayName.charAt(0).toUpperCase()}</button>
     <div class="greeting">
       <div class="hi">Hi, {$displayName}</div>
       <div class="level">
@@ -49,16 +64,7 @@
 
   <SettingsMenu open={settingsOpen} onClose={() => settingsOpen = false} onNavigate={onNavigate} />
 
-  <!-- Primary CTA: Start learning -->
-  <button class="start-cta" on:click={() => onNavigate?.('topics')}>
-    <span class="start-icon">✦</span>
-    <div>
-      <div class="start-label">Start learning</div>
-      <div class="start-sub">Open the topic map &amp; pick a new track</div>
-    </div>
-  </button>
-
-  <!-- Continue card -->
+  <!-- Continue card (only once something is in progress) -->
   {#if continuePath}
     <div class="continue-card">
       <div class="continue-ring" style="background:conic-gradient(var(--qx-accent) {continuePct * 3.6}deg, var(--qx-surface-2) 0)">
@@ -67,29 +73,20 @@
       <div class="continue-info">
         <div class="continue-label">CONTINUE</div>
         <div class="continue-title">{continuePath.manifest.name}</div>
-        <div class="continue-meta">{continuePath.state.boardsRead} / {continuePath.state.boardsTotal} boards &middot; {continuePath.manifest.subject === 'physics' ? 'Physics' : continuePath.manifest.subject === 'maths' ? 'Maths' : 'Chemistry'}</div>
+        <div class="continue-meta">{continuePath.state.boardsRead} / {continuePath.state.boardsTotal} boards</div>
       </div>
       <button class="continue-chev" on:click={() => onNavigate?.('topicDetail', continuePath.id)}>&rsaquo;</button>
     </div>
-  {:else}
-    <button class="start-cta secondary" on:click={() => onNavigate?.('topics')}>
-      <span class="start-icon">+</span>
-      <div>
-        <div class="start-label">Start a new topic</div>
-        <div class="start-sub">Browse the full topic map</div>
-      </div>
-    </button>
   {/if}
 
-  <!-- Explore section -->
-  <div class="explore-label">Explore</div>
-  <div class="explore-list">
-    {#each EXPLORE_ITEMS as item}
-      <button class="explore-row" on:click={() => onNavigate?.(item.id)}>
-        <span class="explore-icon"><QxIcon name={item.icon} size={16} /></span>
-        <span class="explore-name">{item.label}</span>
-        <span class="explore-sub">{item.sub}</span>
-        <span class="explore-chev">&rsaquo;</span>
+  <!-- The four doors -->
+  <div class="doors-label">{continuePath ? 'Or start somewhere new' : 'Where would you like to start?'}</div>
+  <div class="doors-grid">
+    {#each doors as door (door.gid)}
+      <button class="door" on:click={() => openDoor(door)}>
+        <span class="door-icon">{door.icon}</span>
+        <span class="door-name">{door.name}</span>
+        <span class="door-sub">{door.read > 0 ? `${door.read}/${door.total} boards` : door.tagline}</span>
       </button>
     {/each}
   </div>
@@ -121,23 +118,6 @@
   }
   .menu-btn.icon-btn { padding: 0; }
 
-  /* Start CTA */
-  .start-cta {
-    width: 100%; display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: var(--qx-radius-lg);
-    border: 1.5px solid var(--qx-accent); background: var(--qx-accent-soft); cursor: pointer;
-    text-align: left; font-family: var(--qx-font); margin-bottom: 12px; transition: background 0.15s;
-  }
-  .start-cta:hover { background: var(--qx-accent-soft-2); }
-  .start-cta.secondary { border-color: var(--qx-border-2); background: var(--qx-surface); }
-  .start-cta.secondary:hover { background: var(--qx-surface-2); }
-  .start-icon {
-    width: 40px; height: 40px; border-radius: 50%; background: var(--qx-accent); color: #fff;
-    font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .start-cta.secondary .start-icon { background: var(--qx-surface-2); color: var(--qx-text-dim); }
-  .start-label { font-size: 16px; font-weight: 800; color: var(--qx-text); }
-  .start-sub { font-size: 12px; font-weight: 500; color: var(--qx-text-dim); margin-top: 2px; }
-
   /* Continue card */
   .continue-card {
     display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: var(--qx-radius-lg);
@@ -159,20 +139,17 @@
     background: none; border: none; font-size: 24px; color: var(--qx-text-faint); cursor: pointer; padding: 4px;
   }
 
-  /* Explore */
-  .explore-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); letter-spacing: 0.05em; margin-bottom: 8px; text-transform: uppercase; }
-  .explore-list { display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px; }
-  .explore-row {
-    display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--qx-radius-md);
-    border: none; background: transparent; cursor: pointer; text-align: left; font-family: var(--qx-font);
-    transition: background 0.1s;
+  /* The four doors */
+  .doors-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); letter-spacing: 0.05em; margin-bottom: 10px; text-transform: uppercase; }
+  .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 16px; }
+  .door {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    padding: 20px 12px; border-radius: var(--qx-radius-lg); border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface); cursor: pointer; font-family: var(--qx-font);
+    transition: border-color 0.15s, transform 0.15s;
   }
-  .explore-row:hover { background: var(--qx-surface); }
-  .explore-icon {
-    width: 34px; height: 34px; border-radius: 9px; background: var(--qx-surface-2);
-    display: flex; align-items: center; justify-content: center; color: var(--qx-text-dim);
-  }
-  .explore-name { font-size: 15px; font-weight: 700; color: var(--qx-text); flex: 1; }
-  .explore-sub { font-size: 13px; font-weight: 600; color: var(--qx-text-faint); }
-  .explore-chev { font-size: 18px; color: var(--qx-text-faintest); }
+  .door:hover { border-color: var(--qx-accent); transform: translateY(-2px); }
+  .door-icon { font-size: 30px; line-height: 1; }
+  .door-name { font-size: 15px; font-weight: 800; color: var(--qx-text); }
+  .door-sub { font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint); }
 </style>
