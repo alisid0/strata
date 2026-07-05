@@ -33,6 +33,9 @@ export const BOARD_MEDIA = {
   // 1076 "Bond angles and the shape of a molecule" — the pyramidal case.
   1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } },
 
+  // ── The Atom · pixel-art floor animations ──
+  1094: { 0: { type: 'img', src: '/videos/card-1094-floor0.gif' } },           // The smallest piece — foil dividing to atom
+
   // ── Maths · Coordinate geometry ──
   // Manim GIFs on Supabase. Rendered with STRATA_THEME=light.
   1035: { 0: { type: 'img', src: 'https://xzesbcrlnbesmvxmgotp.supabase.co/storage/v1/object/public/card-audio/bb-1035-number-line.gif' } },
