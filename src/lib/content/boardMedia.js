@@ -41,6 +41,11 @@ export const BOARD_MEDIA = {
     3: { type: 'img', src: '/videos/card-1094-floor3.gif?v=77f695' }     // layer 3 — Jean Perrin: atoms are real (Brownian motion)
   },
 
+  // ── The Bit · pixel-art floor animations ──
+  1130: {
+    0: { type: 'img', src: '/videos/card-1130-floor0.gif?v=c92a55' }     // layer 0 — Great Wall smoke signal relaying tower to tower
+  },
+
   // ── Maths · Coordinate geometry ──
   // Manim GIFs on Supabase. Rendered with STRATA_THEME=light.
   1035: { 0: { type: 'img', src: 'https://xzesbcrlnbesmvxmgotp.supabase.co/storage/v1/object/public/card-audio/bb-1035-number-line.gif' } },
