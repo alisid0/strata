@@ -85,42 +85,6 @@
       <div class="brand">QUB<span class="acc">I</span>X</div>
       <div class="tagline">Learn in Bytes. Grow by Leaps.</div>
 
-      <div class="path-prompt">Where would you like to start?</div>
-
-      <div class="gateways">
-        <button class="gateway line" on:click={() => onChoose('line')}>
-          <span class="gw-icon">📏</span>
-          <span class="gw-title">The Line</span>
-          <span class="gw-sub">Space &amp; abstraction</span>
-        </button>
-        <button class="gateway atom" on:click={() => onChoose('atom')}>
-          <span class="gw-icon">⚛️</span>
-          <span class="gw-title">The Atom</span>
-          <span class="gw-sub">Matter &amp; charge</span>
-        </button>
-        <button class="gateway bit" on:click={() => onChoose('bit')}>
-          <span class="gw-icon">◉</span>
-          <span class="gw-title">The Bit</span>
-          <span class="gw-sub">Information &amp; logic</span>
-        </button>
-        <button class="gateway unit" on:click={() => onChoose('unit')}>
-          <span class="gw-icon">⚖️</span>
-          <span class="gw-title">The Unit</span>
-          <span class="gw-sub">Measurement &amp; scale</span>
-        </button>
-      </div>
-
-      <button class="link has-account" on:click={() => { mode = 'login'; error = ''; }}>
-        Already have an account? <strong>Log in</strong>
-      </button>
-      <button class="link skip-link" on:click={onSkip}>Continue as guest</button>
-    </div>
-
-  {:else if mode === 'login'}
-    <div class="screen form-screen">
-      <button class="back-chev" on:click={() => { mode = 'welcome'; error = ''; }}>‹</button>
-      <div class="brand small">QUB<span class="acc">I</span>X</div>
-
       <div class="tab-row">
         <button class="tab" class:active={authTab === 'login'} on:click={() => { authTab = 'login'; error = ''; }}>Log in</button>
         <button class="tab" class:active={authTab === 'signup'} on:click={() => { authTab = 'signup'; error = ''; }}>Sign up</button>
@@ -195,39 +159,7 @@
   }
   .screen { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; max-width: 320px; margin: auto 0; }
 
-  .gateways {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-bottom: 28px;
-  }
-  .gateway {
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-    padding: 22px 12px; border-radius: 16px; border: 2px solid var(--qx-border-2);
-    background: var(--qx-surface); cursor: pointer;
-    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
-  }
-  .gateway:hover {
-    border-color: var(--qx-accent); transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(69,74,222,0.12);
-  }
-  .gateway.line:hover { border-color: #D28A5E; box-shadow: 0 6px 20px rgba(210,138,94,0.15); }
-  .gateway.atom:hover { border-color: var(--qx-accent); }
-  .gateway.bit:hover { border-color: var(--qx-pink); box-shadow: 0 6px 20px rgba(236,72,153,0.12); }
-  .gateway.unit:hover { border-color: var(--qx-green); box-shadow: 0 6px 20px rgba(22,163,74,0.12); }
-  .gw-icon { font-size: 32px; line-height: 1; }
-  .gw-title { font-size: 15px; font-weight: 800; color: var(--qx-text); }
-  .gw-sub { font-size: 11px; font-weight: 600; color: var(--qx-text-faint); }
-
-  .path-prompt {
-    font-size: 16px; font-weight: 700; color: var(--qx-text-dim);
-    margin-bottom: 16px;
-  }
-
-  .has-account {
-    margin-top: 8px; font-size: 13px; color: var(--qx-text-dim);
-  }
-  .has-account strong { color: var(--qx-accent); }
-
   .brand { font-size: 23px; font-weight: 900; letter-spacing: 0.13em; color: var(--qx-text); margin-bottom: 4px; }
-  .brand.small { font-size: 18px; margin-bottom: 20px; }
   .acc { color: var(--qx-accent); }
   .tagline { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); margin-bottom: 28px; }
 
