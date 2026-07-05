@@ -35,9 +35,10 @@ export const BOARD_MEDIA = {
 
   // ── The Atom · pixel-art floor animations ──
   1094: {
-    0: { type: 'img', src: '/videos/card-1094-floor0.gif?v=944949' },   // floor 0 — foil dividing down to the smallest piece
-    1: { type: 'img', src: '/videos/card-1094-floor1.gif?v=1cdafa' },    // floor 1 — the philosophers' argument (never-ends vs a-limit)
-    3: { type: 'img', src: '/videos/card-1094-floor3.png?v=7d7d7b' }     // floor 3 — ATOMOS: the smallest, uncuttable piece
+    0: { type: 'img', src: '/videos/card-1094-floor0.gif?v=944949' },   // layer 0 — foil dividing down to the smallest piece
+    1: { type: 'img', src: '/videos/card-1094-floor1.gif?v=1cdafa' },    // layer 1 — the philosophers' argument (never-ends vs a-limit)
+    2: { type: 'img', src: '/videos/card-1094-floor2.png?v=7d7d7b' },    // layer 2 — ATOMOS: the smallest, uncuttable piece
+    3: { type: 'img', src: '/videos/card-1094-floor3.gif?v=77f695' }     // layer 3 — Jean Perrin: atoms are real (Brownian motion)
   },
 
   // ── Maths · Coordinate geometry ──
