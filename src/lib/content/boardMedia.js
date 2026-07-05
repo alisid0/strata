@@ -42,12 +42,19 @@ export const BOARD_MEDIA = {
   },
 
   // ── The Bit · pixel-art floor animations ──
-  1130: { 0: { type: 'img', src: '/videos/card-1130-floor0.gif' } },           // The agreement — smoke signals jumping towers
-  1131: { 0: { type: 'img', src: '/videos/card-1130-floor0.gif' } },           // Smoke and empty sky — same GIF for both
-
-  // ── The Bit · pixel-art floor animations ──
   1130: {
-    0: { type: 'img', src: '/videos/card-1130-floor0.gif?v=c92a55' }     // layer 0 — Great Wall smoke signal relaying tower to tower
+    0: { type: 'img', src: '/videos/card-1130-floor0.gif' },
+    1: { type: 'img', src: '/videos/card-1130-floor0.gif' },
+    2: { type: 'img', src: '/videos/card-1130-floor0.gif' },
+    3: { type: 'img', src: '/videos/card-1130-floor0.gif' }
+  },
+  1131: {
+    0: { type: 'img', src: '/videos/card-1130-floor0.gif' },
+    1: { type: 'img', src: '/videos/card-1130-floor0.gif' },
+    2: { type: 'img', src: '/videos/card-1130-floor0.gif' },
+    3: { type: 'img', src: '/videos/card-1130-floor0.gif' },
+    4: { type: 'img', src: '/videos/card-1130-floor0.gif' }
+  },
   },
 
   // ── Maths · Coordinate geometry ──
