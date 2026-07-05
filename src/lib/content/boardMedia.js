@@ -42,19 +42,21 @@ export const BOARD_MEDIA = {
   },
 
   // ── The Bit · pixel-art floor animations ──
+  // Same smoke-signal relay GIF reused on every floor of the first two BBs
+  // (founder decision). ?v= is the file's md5 prefix — bump it whenever the
+  // GIF is rebuilt, or the cache-first SW keeps serving the old frames.
   1130: {
-    0: { type: 'img', src: '/videos/card-1130-floor0.gif' },
-    1: { type: 'img', src: '/videos/card-1130-floor0.gif' },
-    2: { type: 'img', src: '/videos/card-1130-floor0.gif' },
-    3: { type: 'img', src: '/videos/card-1130-floor0.gif' }
+    0: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' },
+    1: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' },
+    2: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' },
+    3: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' }
   },
   1131: {
-    0: { type: 'img', src: '/videos/card-1130-floor0.gif' },
-    1: { type: 'img', src: '/videos/card-1130-floor0.gif' },
-    2: { type: 'img', src: '/videos/card-1130-floor0.gif' },
-    3: { type: 'img', src: '/videos/card-1130-floor0.gif' },
-    4: { type: 'img', src: '/videos/card-1130-floor0.gif' }
-  },
+    0: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' },
+    1: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' },
+    2: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' },
+    3: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' },
+    4: { type: 'img', src: '/videos/card-1130-floor0.gif?v=515d99' }
   },
 
   // ── Maths · Coordinate geometry ──

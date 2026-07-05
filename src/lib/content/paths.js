@@ -93,7 +93,7 @@ export const PATH_GROUPS = {
   unit: {
     name: 'The Unit',
     subject: 'physics',
-    paths: ['PHY_UNITS', 'PHY_SCALE'],
+    paths: ['PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_INTRO'],
     firstTopic: 'PHY_UNITS'
   }
 };

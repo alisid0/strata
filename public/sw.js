@@ -1,4 +1,4 @@
-const CACHE = 'strata-v2';
+const CACHE = 'strata-v3';
 
 const CORE = [
   './',
@@ -82,6 +82,14 @@ self.addEventListener('fetch', (e) => {
   }
 
   if (req.mode === 'navigate') {
+    e.respondWith(networkFirst(req));
+    return;
+  }
+
+  // Floor media (GIFs/PNGs/audio in /videos/) iterates frequently under the
+  // same filename — network-first so a rebuilt asset shows up on next load,
+  // with the cached copy as the offline fallback.
+  if (url.pathname.startsWith('/videos/')) {
     e.respondWith(networkFirst(req));
     return;
   }
