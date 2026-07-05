@@ -437,7 +437,7 @@
             {@const media = floorMedia(i, d)}
             {@const audioUrl = floorAudio(i, d)}
             <div class="card-header">
-              <span class="header-mark"><SubjectMark subject={col.tags?.subject} accent="#454ADE" size={18} /></span>
+              <span class="header-mark"><SubjectMark subject={col.tags?.subject} accent="var(--qx-accent)" size={18} /></span>
               <div class="header-text">
                 <div class="header-title">{col.title}</div>
                 <div class="header-sub">{col.kicker ? col.kicker + ' · ' : ''}{humanize(col.tags?.subject)}</div>
