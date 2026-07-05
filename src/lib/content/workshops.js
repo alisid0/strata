@@ -492,6 +492,63 @@ export const ATOM_WORKSHOPS = {
       [O('neutron','The neutron',true), O('electron','The electron',false)],
       'Exactly. You need neutrons to wedge between the protons and hold the center together.',
       'Not quite. The electron flies around the outside. You need the neutron to keep the peace inside the center.')
+  ],
+
+  // After BB 020 — Weight and Twins (12 interactions)
+  checkpoint_e: [
+    S('Tap the wrong word to fix the sentence.\n\nIf you add an extra neutron to an atom, it instantly becomes a completely new element.',
+      [O('weight','weight',true), O('electron','electron',false)],
+      'Yep. Identity is tied strictly to protons. Neutrons just add weight.',
+      'Actually, neutrons just change the weight. The element stays exactly the same.'),
+    S('You are looking at a Carbon atom with 6 protons and 6 neutrons. You add another neutron to the nucleus. The label stays Carbon. Did adding that neutron change how the atom acts in a chemical reaction?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Exactly. The electrons handle the chemistry. The extra neutron is just dead weight in the center.',
+      'Not quite. Neutrons have no charge, so they don\'t change the chemistry at all. It just gets heavier.'),
+    { type: 'sorting', boxes: [
+      { id: 'skin', label: 'Builds human skin' },
+      { id: 'different', label: 'Builds a completely different material' }
+    ], items: [
+      { id: 'c12', label: 'A normal Carbon atom', box: 'skin' },
+      { id: 'c14', label: 'A heavier Carbon isotope', box: 'skin' }
+    ]},
+    S('You tap the number 35.5 under Chlorine on the Periodic Table. A pile of different-sized Chlorine atoms appears. Is there a single Chlorine atom anywhere in the universe that actually weighs 35.5?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Yep. You can\'t have half a neutron. 35.5 is just the average of the whole pile.',
+      'Not quite. Atoms can only have whole numbers of neutrons. 35.5 is just the average of a mixed handful.'),
+    S('Isotopes are just two atoms with the same number of protons, but a different number of neutrons.',
+      [O('true','True',true), O('false','False',false)],
+      'Exactly. Same identity, different weight. That is the definition of an isotope.',
+      'Actually, that is perfectly true. Same protons (identity), different neutrons (weight).'),
+    S('You scoop up a handful of pure carbon from the ground. Are all the atoms in your hand going to weigh the exact same amount?',
+      [O('no','No, it will be a mix of heavy and light twins',true), O('yes','Yes, they are all Carbon',false)],
+      'Got it. In nature, most elements are a mix of light and heavy isotopes jumbled together.',
+      'Not quite. In nature, elements exist as a mix of different isotopes. Some will be heavier than others.'),
+    S('Tap the wrong word to fix the sentence.\n\nA heavy isotope of Oxygen breathes and acts totally differently than a normal Oxygen atom.',
+      [O('identically','identically',true), O('unpredictably','unpredictably',false)],
+      'Yep. An isotope is just wearing a heavier backpack. It still acts exactly like normal Oxygen.',
+      'Actually, it acts identically. The extra neutrons don\'t change how it chemically behaves.'),
+    { type: 'sorting', boxes: [
+      { id: 'bench', label: 'The lab bench' }
+    ], items: [
+      { id: 'scale', label: 'A glass weighing scale', box: 'bench' },
+      { id: 'tweezers', label: 'A pair of tweezers', box: null }
+    ]},
+    S('You have a sealed jar full of pennies. You know one penny weighs 2.5 grams. If you weigh the whole jar and it weighs 250 grams, do you need to open it to count them?',
+      [O('no','No, I know there are 100 pennies',true), O('yes','Yes, I have to physically count them',false)],
+      'Yep. By dividing the total weight by the weight of one piece, the scale counts them for you.',
+      'Actually, you don\'t. The math does it for you. 250 divided by 2.5 means there are exactly 100 pennies in there.'),
+    S('You crack open the nucleus. Protons and neutrons spill out. Which of these particles is completely responsible for making an isotope heavier?',
+      [O('neutrons','The neutrons',true), O('protons','The protons',false)],
+      'Got it. Changing the protons would change the element. Only the neutrons can change the weight safely.',
+      'Not quite. If you added protons, you\'d make a new element. Isotopes are made heavier by extra neutrons.'),
+    S('The weight listed on the Periodic Table is just a population average, like the average weight of dogs at a park.',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. It just averages out all the heavy and light isotopes floating around in nature.',
+      'Actually, it is true. The decimal weight is just an average of all the different isotopes in a handful.'),
+    S('You take a Carbon-12 atom (6 neutrons) and a Carbon-14 atom (8 neutrons). You drop them both into a chemical reaction. Will one react differently than the other?',
+      [O('no','No, they are chemically identical',true), O('yes','Yes, the heavier one reacts differently',false)],
+      'Exactly. The electrons dictate the reaction. The neutrons in the center are just sitting there doing nothing.',
+      'Actually, no. Neutrons have no charge, so they don\'t affect chemistry. Both atoms will react the exact same way.')
   ]
 };
 

@@ -32,7 +32,7 @@ export const PATHS = {
   // Phase 4: The mole (1121-1124)
   // Phase 5: Molecular architecture (existing 1068-1077, curated)
   ATOM_001: { subject: 'chemistry', name: 'The Atom', icon: 'chemistry',
-    cards: [1094,1095,1096,1097,1098,1099,1100,1101,1102,1103,1104,1109,1110,1111,1112,1113,1114,1115,1116,1117,1118,1119,1120,1121,1122,1123,1124,1068,1069,1070,1071,1072,1073,1074,1076,1077], quizUrls: ['tier0'] },
+    cards: [1094,1095,1096,1097,1098,1099,1100,1101,1102,1103,1104,1109,1110,1111,1112,1113,1114,1115,1116,1117,1118,1119,1120,1121,1122,1123,1124,1125,1126,1127,1128,1129,1068,1069,1070,1071,1072,1073,1074,1076,1077], quizUrls: ['tier0'] },
   CHEM_ATOMIC: { subject: 'chemistry', name: 'Atomic structure', icon: 'chemistry',
     cards: [1051,1052,1053,1054,1055,1056,1057,1058,1059,1060], quizUrls: ['tier0'] },
   CHEM_BONDING: { subject: 'chemistry', name: 'Chemical bonding', icon: 'chemistry',
