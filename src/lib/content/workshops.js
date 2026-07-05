@@ -215,6 +215,60 @@ export const LINE_WORKSHOPS = {
       [O('real','A Real Number',true), O('integer','An Integer',false)],
       'Yep. No matter where it lands, every single spot is a real number.',
       'Not quite. It is highly unlikely to hit a clean integer, but whatever you hit is definitely a Real Number.')
+  ],
+
+  // After BB 016 — The Shorthand: N, W, Z, Q, R (12 interactions)
+  checkpoint_e: [
+    S('Tap the strange-looking \u2115 to see what it really is. Does the extra stripe mean anything complicated?',
+      [O('no','No, it is just a font style',true), O('yes','Yes, it is a math formula',false)],
+      'Yep. It is just shorthand. The extra stripe just tells you it is a category of numbers.',
+      'Not quite. It is literally just a font style called blackboard bold to make it stand out.'),
+    { type: 'sorting', boxes: [
+      { id: 'natural', label: 'Natural Numbers' }, { id: 'whole', label: 'Whole Numbers' }
+    ], items: [
+      { id: 'n', label: '\u2115', box: 'natural' }, { id: 'w', label: 'W', box: 'whole' }
+    ]},
+    S('You walk into a classroom and see \u2124 written on the board. What are they talking about?',
+      [O('integers','Integers',true), O('fractions','Fractions',false)],
+      'Exactly. The Z is for Zahlen, the German word for numbers. It is the integers.',
+      'Actually, Z is for integers. Fractions get a different letter.'),
+    S('Tap the wrong word to fix the sentence.\n\nIntegers get a Z because the letter I was already taken, and Z stands for the German word for zero.',
+      [O('numbers','numbers',true), O('zebras','zebras',false)],
+      'Yep. Zahlen just means numbers.',
+      'Not quite. Zahlen is just the German word for numbers.'),
+    S('The Rational numbers (the clean fractions) get the letter R. True or False?',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that is false. R was taken by the Real numbers, so Rationals get a Q.',
+      'Actually, false. Rationals get a Q.'),
+    S('Tap the \u211A to reveal the hidden word behind it. What does quotient mean?',
+      [O('division','The answer to a division problem',true), O('decimal','A repeating decimal',false)],
+      'Exactly. Since a fraction is just division, Quotient makes sense for the fraction box.',
+      'Not quite. A quotient is just the answer you get when you divide things (like in a fraction).'),
+    S('Which letter holds every single number on the line? \u2115 \u2192 \u2124 \u2192 \u211D',
+      [O('R','\u211D',true), O('Z','\u2124',false)],
+      'Yep. The R stands for Real Numbers, which covers the entire solid line.',
+      'Actually, R holds everything. Z only holds the clean stepping stones.'),
+    S('A test asks you to pick a number that belongs in \u211A but NOT in \u2124. What should you pick?',
+      [O('half','1/2',true), O('neg5','-5',false)],
+      'Got it. Q holds the fractions. Z only holds the whole stepping stones.',
+      'Not quite. -5 is a clean step, so it belongs in Z. 1/2 is a fraction, so it goes in Q.'),
+    { type: 'sorting', boxes: [
+      { id: 'n', label: '\u2115' }, { id: 'z', label: '\u2124' }
+    ], items: [
+      { id: 'three', label: '3', box: 'n' }, { id: 'neg7', label: '-7', box: 'z' }
+    ]},
+    S('Tap the wrong word.\n\nIf you see an \u211D in a textbook, it means the number has to be a fraction.',
+      [O('anything','literally anything on the line',true), O('counting','a counting number',false)],
+      'Exactly. R means Real. It can be a fraction, a negative, or a messy decimal.',
+      'Actually, R stands for Real numbers. It can be anything on the solid line.'),
+    S('Pi (3.14159...) belongs inside the big \u211D umbrella. True or False?',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. Even though it is messy and irrational, it is still a Real number on the line.',
+      'Actually, it is true. R holds the clean numbers AND the messy rule-breakers.'),
+    S('You are trying to write down that you have zero sheep. Which shorthand letter do you need to use?',
+      [O('W','W',true), O('N','\u2115',false)],
+      'Got it. The W (Whole numbers) is the first box that includes zero.',
+      'Not quite. \u2115 starts at 1. You need the W for Whole numbers to get zero.')
   ]
 };
 
