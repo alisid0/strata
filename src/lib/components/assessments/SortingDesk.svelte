@@ -135,8 +135,8 @@
     background: var(--qx-surface-2); border-radius: 6px;
     display: flex; justify-content: space-between; align-items: center;
   }
-  .placed-item.right { background: #e6f7e6; color: #166534; }
-  .placed-item.wrong { background: #fde8e8; color: #991b1b; }
+  .placed-item.right { background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .placed-item.wrong { background: var(--qx-danger-soft); color: var(--qx-danger-text); }
   .check { font-size: 13px; }
   .item-pile {
     display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;

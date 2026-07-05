@@ -66,7 +66,7 @@
       <div class="metric-value">{pace}</div>
     </div>
     <div class="metric">
-      <div class="metric-label">Quizzes</div>
+      <div class="metric-label">Checks</div>
       <div class="metric-value">{quizzesTaken}</div>
     </div>
     <div class="metric">
@@ -84,7 +84,7 @@
       {/each}
     </div>
   {:else}
-    <div class="medal-empty">Read a board or take a quiz to earn your first medal.</div>
+    <div class="medal-empty">Read a board or pass a check to earn your first medal.</div>
   {/if}
 </div>
 

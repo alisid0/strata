@@ -109,15 +109,15 @@
   }
   .scenario-opt:hover { border-color: var(--qx-accent); }
   .scenario-opt.selected { pointer-events: none; }
-  .scenario-opt.correct { border-color: #166534; background: #e6f7e6; }
-  .scenario-opt.incorrect { border-color: #991b1b; background: #fde8e8; }
+  .scenario-opt.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .scenario-opt.incorrect { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
   .check { float: right; }
   .scenario-feedback {
     font-size: 13px; font-weight: 600; padding: 12px; border-radius: 8px;
     text-align: center; line-height: 1.5; width: 100%; box-sizing: border-box;
   }
-  .scenario-feedback.correct { background: #e6f7e6; color: #166534; }
-  .scenario-feedback.incorrect { background: #fde8e8; color: #991b1b; }
+  .scenario-feedback.correct { background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .scenario-feedback.incorrect { background: var(--qx-danger-soft); color: var(--qx-danger-text); }
   .continue-btn {
     padding: 12px 32px; border-radius: 24px; border: none;
     background: var(--qx-accent); color: #fff;

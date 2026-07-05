@@ -177,13 +177,13 @@
   <div class="quiz-header">
     <div class="head-top">
       <button class="back-chev" on:click={onBack} aria-label="Back">‹</button>
-      <h1>{manifest?.name || 'Quiz'}</h1>
+      <h1>{manifest?.name || 'Topic check'}</h1>
     </div>
-    <p class="quiz-sub">{questions.length} questions · randomized every time</p>
+    <p class="quiz-sub">Topic check · {questions.length} questions · randomized every time</p>
   </div>
 
   {#if questions.length === 0}
-    <div class="empty-quiz">No quiz for this topic yet.</div>
+    <div class="empty-quiz">No check for this topic yet.</div>
   {:else if !finished}
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" style="width:{progressPct}%"></div>

@@ -75,6 +75,17 @@ migration `supabase/migrations/0003_bbid.sql` exists but is **not yet applied**
 
 ## 4. The learning loop (settles the previously-parked assessment question)
 
+**Vocabulary (LOCKED 2026-07-05).** The user-facing word family is **Check**:
+in-flow = **"Quick check"**, end-of-topic = **"Topic check"**, spaced =
+**"Recall"**; interactive checkpoints stay **"Workshop"**. Never "test" or
+"exam" anywhere user-facing; "quiz" survives only in internal code/storage
+keys (`quizzes`, `recordQuizResult`), never in UI copy. The **Topic check is
+always available** from a topic's detail screen — zero boards read required
+(copy: "No reading required — jump in"). **Explanations are universal:** every
+answer, right or wrong, shows the why (fluke-guess insurance); the only
+exception is the first miss of a two-attempt question, which withholds the
+answer until the retry is spent.
+
 ```
 Wander (swipe BBs) → Dig (descend floors)
   → Checkpoint (in-flow quiz every 3rd BB — LIVE)

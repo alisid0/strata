@@ -113,6 +113,7 @@
       <button class="link has-account" on:click={() => { mode = 'login'; error = ''; }}>
         Already have an account? <strong>Log in</strong>
       </button>
+      <button class="link skip-link" on:click={onSkip}>Continue as guest</button>
     </div>
 
   {:else if mode === 'login'}

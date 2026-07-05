@@ -206,10 +206,10 @@ function createProgressStore() {
       const topicComplete = Object.values(PATHS).some(m => m.cards.every(n => data.boards[n] && data.boards[n].firstOpenedAt));
       return [
         { key: 'first_board', label: 'First board', earned: boardCount >= 1 },
-        { key: 'first_quiz', label: 'First quiz', earned: quizCount >= 1 },
+        { key: 'first_quiz', label: 'First check', earned: quizCount >= 1 },
         { key: 'streak_7', label: '7-day streak', earned: computeStreak(data.activity || {}) >= 7 },
         { key: 'topic_complete', label: 'Topic complete', earned: topicComplete },
-        { key: 'perfect_quiz', label: 'Perfect quiz', earned: perfect }
+        { key: 'perfect_quiz', label: 'Perfect check', earned: perfect }
       ];
     },
 

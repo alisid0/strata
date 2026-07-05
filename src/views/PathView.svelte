@@ -89,7 +89,7 @@
     </div>
 
     {#if state.bestScore != null}
-      <div class="best-score">Best quiz: {state.bestScore}/{state.bestTotal}</div>
+      <div class="best-score">Best check: {state.bestScore}/{state.bestTotal}</div>
     {/if}
 
     {#if loading}
@@ -128,8 +128,9 @@
         </button>
         {#if hasQuiz}
           <button class="cta-secondary" on:click={() => onNavigate?.('quiz', pathId)}>
-            Take the quiz
-            {#if state.bestScore != null}<span class="cta-score">Best {state.bestScore}/{state.bestTotal}</span>{/if}
+            Topic check
+            {#if state.bestScore != null}<span class="cta-score">Best {state.bestScore}/{state.bestTotal}</span>
+            {:else}<span class="cta-score">No reading required — jump in</span>{/if}
           </button>
         {/if}
       </div>

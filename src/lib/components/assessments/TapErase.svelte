@@ -37,25 +37,25 @@
   <svg viewBox="0 0 300 120" class="stage">
     <!-- Segment line -->
     {#if !leftGone && !rightGone}
-      <line x1="60" y1="60" x2="240" y2="60" stroke="var(--qx-accent, #454ADE)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="60" y1="60" x2="240" y2="60" stroke="var(--qx-accent)" stroke-width="3" stroke-linecap="round"/>
     {:else if rightGone}
       <!-- Left anchor gone → line going right forever -->
-      <line x1="60" y1="60" x2="300" y2="60" stroke="var(--qx-accent, #454ADE)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="290" y1="55" x2="300" y2="60" stroke="var(--qx-accent, #454ADE)" stroke-width="2"/>
-      <line x1="290" y1="65" x2="300" y2="60" stroke="var(--qx-accent, #454ADE)" stroke-width="2"/>
+      <line x1="60" y1="60" x2="300" y2="60" stroke="var(--qx-accent)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="290" y1="55" x2="300" y2="60" stroke="var(--qx-accent)" stroke-width="2"/>
+      <line x1="290" y1="65" x2="300" y2="60" stroke="var(--qx-accent)" stroke-width="2"/>
     {:else if leftGone}
       <!-- Right anchor gone → line going left forever -->
-      <line x1="0" y1="60" x2="240" y2="60" stroke="var(--qx-accent, #454ADE)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="10" y1="55" x2="0" y2="60" stroke="var(--qx-accent, #454ADE)" stroke-width="2"/>
-      <line x1="10" y1="65" x2="0" y2="60" stroke="var(--qx-accent, #454ADE)" stroke-width="2"/>
+      <line x1="0" y1="60" x2="240" y2="60" stroke="var(--qx-accent)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="10" y1="55" x2="0" y2="60" stroke="var(--qx-accent)" stroke-width="2"/>
+      <line x1="10" y1="65" x2="0" y2="60" stroke="var(--qx-accent)" stroke-width="2"/>
     {/if}
 
     <!-- Anchor dots -->
     {#if !leftGone}
-      <circle cx="60" cy="60" r="8" fill="#fff" stroke="var(--qx-accent, #454ADE)" stroke-width="2.5" class="anchor" on:click={tapLeft}/>
+      <circle cx="60" cy="60" r="8" fill="var(--qx-surface)" stroke="var(--qx-accent)" stroke-width="2.5" class="anchor" on:click={tapLeft}/>
     {/if}
     {#if !rightGone}
-      <circle cx="240" cy="60" r="8" fill="#fff" stroke="var(--qx-accent, #454ADE)" stroke-width="2.5" class="anchor" on:click={tapRight}/>
+      <circle cx="240" cy="60" r="8" fill="var(--qx-surface)" stroke="var(--qx-accent)" stroke-width="2.5" class="anchor" on:click={tapRight}/>
     {/if}
   </svg>
 
@@ -106,8 +106,8 @@
     font-size: 13px; font-weight: 600; padding: 12px; border-radius: 8px;
     text-align: center; line-height: 1.5;
   }
-  .feedback.correct { background: #e6f7e6; color: #166534; }
-  .feedback.incorrect { background: #fde8e8; color: #991b1b; }
+  .feedback.correct { background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .feedback.incorrect { background: var(--qx-danger-soft); color: var(--qx-danger-text); }
   .continue-btn {
     padding: 12px 32px; border-radius: 24px; border: none;
     background: var(--qx-accent); color: #fff;
