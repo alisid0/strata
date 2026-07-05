@@ -29,7 +29,7 @@
 
   const TAB_VIEWS = ['home', 'topics', 'map', 'snippets'];
   const TAB_ORDER = ['home', 'topics', 'map', 'snippets'];
-  const PUSH_VIEWS = ['topicDetail', 'stats', 'leaderboard', 'otherUserStats', 'reader', 'quiz', 'author'];
+  const PUSH_VIEWS = ['topicDetail', 'stats', 'leaderboard', 'otherUserStats', 'reader', 'quiz', 'author', 'snippetMode'];
 
   // Honour reduced-motion: Svelte's fly is JS-driven, so the CSS media query
   // can't stop it — zero the distance/duration instead.
@@ -179,6 +179,11 @@
   {:else if currentView === 'author'}
     <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
       <Author onNavigate={navigate} />
+    </div>
+
+  {:else if currentView === 'snippetMode'}
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <Snippets onClose={() => navigate('home')} />
     </div>
   {/if}
 </div>

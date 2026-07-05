@@ -41,6 +41,9 @@
     <div class="streak-chip">
       <QxIcon name="flame" size={14} />{streak}
     </div>
+    <button class="menu-btn icon-btn" on:click={() => onNavigate?.('snippetMode')} aria-label="Snippet mode" title="Snippet mode">
+      <QxIcon name="snippets" size={15} />
+    </button>
     <button class="menu-btn" on:click={() => settingsOpen = true} aria-label="Settings">⋯</button>
   </div>
 
@@ -116,6 +119,7 @@
     cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
     font-family: var(--qx-font); padding: 0 0 6px;
   }
+  .menu-btn.icon-btn { padding: 0; }
 
   /* Start CTA */
   .start-cta {

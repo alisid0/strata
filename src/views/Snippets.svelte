@@ -6,6 +6,7 @@
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
   export const onNavigate = undefined;
+  export let onClose = null;   // set when opened as full-screen Snippet Mode (✕ returns Home)
 
   function shuffleArray(arr) {
     const a = [...arr];
@@ -104,8 +105,11 @@
   <div class="snippets-header">
     <div>
       <h1>Snippets</h1>
-      <p class="header-sub">No learning, just vibes</p>
+      <p class="header-sub">Browse, no score — just vibes</p>
     </div>
+    {#if onClose}
+      <button class="mode-close" on:click={onClose} aria-label="Exit snippet mode">✕</button>
+    {/if}
   </div>
 
   <!-- Mode toggle -->
@@ -181,7 +185,12 @@
 <style>
   .snippets-view { height: 100%; overflow-y: auto; padding: 16px 18px 24px; box-sizing: border-box; }
 
-  .snippets-header { margin-bottom: 14px; }
+  .snippets-header { margin-bottom: 14px; display: flex; align-items: flex-start; justify-content: space-between; }
+  .mode-close {
+    width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--qx-border-2);
+    background: var(--qx-surface); color: var(--qx-text-dim); font-size: 15px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
   h1 { font-size: 23px; font-weight: 800; color: var(--qx-text); margin: 0; }
   .header-sub { font-size: 13px; color: var(--qx-text-dim); margin: 2px 0 0; }
 
