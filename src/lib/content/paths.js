@@ -40,7 +40,7 @@ export const PATHS = {
 
   // ── The Bit (starting point) ──
   BIT_001: { subject: 'computing', name: 'The Bit', icon: 'computing',
-    cards: [1130,1131,1132,1133,1134,1135,1136,1137,1138,1229,1230,1231,1232,1233], quizUrls: [] },
+    cards: [1130,1131,1132,1133,1134,1135,1136,1137,1138,1229,1230,1231,1232,1233,1234,1235,1236,1237,1238], quizUrls: [] },
 
   CHEM_ATOMIC: { subject: 'chemistry', name: 'Atomic structure', icon: 'chemistry',
     cards: [1051,1052,1053,1054,1055,1056,1057,1058,1059,1060], quizUrls: ['tier0'] },
