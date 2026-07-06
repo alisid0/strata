@@ -11,10 +11,10 @@
   const TOTAL_BOARDS = totalBoards();
 
   const GATEWAY_META = {
-    line: { icon: '📏', tagline: 'Space & abstraction' },
-    atom: { icon: '⚛️', tagline: 'Matter & charge' },
-    bit:  { icon: '◉',  tagline: 'Information & logic' },
-    unit: { icon: '⚖️', tagline: 'Measurement & scale' }
+    line: { icon: '/icons/gateways/line.png', tagline: 'Space & abstraction' },
+    atom: { icon: '/icons/gateways/atom.png', tagline: 'Matter & charge' },
+    bit:  { icon: '/icons/gateways/bit.png',  tagline: 'Information & logic' },
+    unit: { icon: '/icons/gateways/unit.png', tagline: 'Measurement & scale' }
   };
 
   $: overall = ($progress, progress.getOverall());
@@ -84,7 +84,7 @@
   <div class="doors-grid">
     {#each doors as door (door.gid)}
       <button class="door" on:click={() => openDoor(door)}>
-        <span class="door-icon">{door.icon}</span>
+        <img class="door-icon" src={door.icon} alt={door.name} />
         <span class="door-name">{door.name}</span>
         <span class="door-sub">{door.read > 0 ? `${door.read}/${door.total} boards` : door.tagline}</span>
       </button>
@@ -149,7 +149,7 @@
     transition: border-color 0.15s, transform 0.15s;
   }
   .door:hover { border-color: var(--qx-accent); transform: translateY(-2px); }
-  .door-icon { font-size: 30px; line-height: 1; }
+  .door-icon { width: 56px; height: 56px; object-fit: contain; display: block; }
   .door-name { font-size: 15px; font-weight: 800; color: var(--qx-text); }
   .door-sub { font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint); }
 </style>

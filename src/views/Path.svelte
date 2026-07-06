@@ -8,10 +8,10 @@
   export let onNavigate;
 
   const GATEWAY_META = {
-    line: { icon: '📏', tagline: 'Space & abstraction' },
-    atom: { icon: '⚛️', tagline: 'Matter & charge' },
-    bit:  { icon: '◉',  tagline: 'Information & logic' },
-    unit: { icon: '⚖️', tagline: 'Measurement & scale' }
+    line: { icon: '/icons/gateways/line.png', tagline: 'Space & abstraction' },
+    atom: { icon: '/icons/gateways/atom.png', tagline: 'Matter & charge' },
+    bit:  { icon: '/icons/gateways/bit.png',  tagline: 'Information & logic' },
+    unit: { icon: '/icons/gateways/unit.png', tagline: 'Measurement & scale' }
   };
 
   $: gateways = ($progress, Object.entries(PATH_GROUPS).map(([gid, g]) => {
@@ -39,7 +39,7 @@
   {#each gateways as g (g.gid)}
     <section class="gateway-block">
       <div class="gw-head">
-        <span class="gw-icon">{g.icon}</span>
+        <img class="gw-icon" src={g.icon} alt={g.name} />
         <div class="gw-info">
           <div class="gw-name">{g.name}</div>
           <div class="gw-tagline">{g.tagline}</div>
@@ -84,7 +84,7 @@
 
   .gateway-block { margin-bottom: 26px; }
   .gw-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-  .gw-icon { font-size: 26px; line-height: 1; width: 34px; text-align: center; flex-shrink: 0; }
+  .gw-icon { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; display: block; }
   .gw-info { flex: 1; min-width: 0; }
   .gw-name { font-size: 17px; font-weight: 800; color: var(--qx-text); line-height: 1.2; }
   .gw-tagline { font-size: 12px; font-weight: 600; color: var(--qx-text-faint); margin-top: 1px; }
