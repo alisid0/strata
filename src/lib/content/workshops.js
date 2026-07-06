@@ -758,6 +758,99 @@ export const ATOM_WORKSHOPS = {
       { id: 'transferred', label: 'Electrons are completely transferred', box: 'ionic_box' },
       { id: 'shared', label: 'Electrons are shared in pairs', box: 'covalent_box' }
     ]}
+  ],
+
+  // The Subatomic Blueprint
+  checkpoint_l: [
+    S('Tap the wrong word to fix the sentence.\n\nThe nucleus at the center of an atom is incredibly light and takes up the majority of the atom\'s total space.',
+      [O('a microscopic fraction','a microscopic fraction',true), O('none','none',false)],
+      'Yep. The nucleus is incredibly heavy, but it is unimaginably tiny. An atom is 99.999% pure, empty vacuum.',
+      'Actually, the nucleus is incredibly dense but microscopic. The vast majority of an atom is just empty space.'),
+    { type: 'sorting', boxes: [
+      { id: 'pos', label: 'Positive (+)' },
+      { id: 'neg', label: 'Negative (−)' },
+      { id: 'neut', label: 'Neutral (0)' }
+    ], items: [
+      { id: 'proto', label: 'Proton', box: 'pos' },
+      { id: 'elec', label: 'Electron', box: 'neg' },
+      { id: 'neutro', label: 'Neutron', box: 'neut' }
+    ]},
+    S('If an atom loses one of its outside electrons, it instantly becomes a completely different element.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. Electrons are traded all the time — that\'s just chemistry. Identity is dictated entirely by the number of protons.',
+      'Actually, that\'s false. An atom can lose electrons and still be the exact same element. Only changing the number of protons changes the element.'),
+    S('The nucleus of a Gold atom is tapped — it contains 79 positive protons packed tightly together. The nucleus vibrates violently, then stabilizes. Because like-charges repel, why doesn\'t this nucleus explode?',
+      [O('neutrons','Neutrons act as physical peacekeepers',true), O('electrons','The electrons hold it together',false)],
+      'Got it. Neutrons have no charge. They wedge themselves between the angry protons to keep the center from blowing apart.',
+      'Not quite. Neutrons sit in the center. Because they are neutral, they act as buffers, spacing the positive protons out so they don\'t repel each other.'),
+    S('A Carbon atom has 6 protons and 6 neutrons. A 7th neutron is jammed into the center. Did this change how the atom chemically reacts?',
+      [O('no','No, it just got heavier',true), O('yes','Yes, it is a new element',false)],
+      'Exactly. Neutrons have no electrical charge. They don\'t affect the electrons or the chemistry. They are just dead weight.',
+      'Actually, no. Neutrons do not affect chemistry because they have no charge. Adding one simply makes the exact same atom slightly heavier.'),
+    S('A Carbon-12 atom and a Carbon-14 atom are weighed. The Carbon-14 tips the scale slightly heavier. What is the scientific term for atoms of the same element that have different weights?',
+      [O('isotopes','Isotopes',true), O('ions','Ions',false)],
+      'Yep. Isotopes are just identical twins where one is carrying a heavier backpack of neutrons.',
+      'Not quite. They are called Isotopes. They have the exact same identity (protons), but a different weight (neutrons).')
+  ],
+
+  // The Periodic Map & The Octet
+  checkpoint_m: [
+    S('The Periodic Table lists the weight of Chlorine as 35.5. But a half-neutron cannot physically exist. Why is there a decimal?',
+      [O('average','It is a population average of different isotopes',true), O('broken','The scale is broken',false)],
+      'Exactly. In nature, Chlorine is a mix of heavy and light twins. The 35.5 is just the weighted average of a handful.',
+      'Not quite. The decimal exists because the number is a population average of all the heavy and light isotopes mixed together in nature.'),
+    S('Tap the wrong word to fix the sentence.\n\nElectrons sit in highly specific layers around the nucleus, and the inner shell dictates almost everything about how the atom behaves.',
+      [O('outermost (valence)','outermost (valence)',true), O('heaviest','heaviest',false)],
+      'Got it. The inner shells are buried and satisfied. The outermost shell (the valence shell) does all the interacting with the world.',
+      'Actually, it is the outermost shell (the valence shell). The inner electrons are trapped; the outer ones do all the chemical bonding.'),
+    S('The valence shell of a highly reactive atom is tapped. The atom violently steals an electron from a neighbor and locks into a stable state. How many electrons does an atom usually need in its outer shell to become perfectly stable?',
+      [O('8','8',true), O('10','10',false)],
+      'Yep. The Octet Rule. Almost every chemical reaction in the universe is just an atom chasing exactly 8 outer electrons.',
+      'Not quite. The magic number is 8. This is called the Octet Rule.'),
+    S('The Periodic Table is shaped randomly to fit on a standard piece of paper.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. It is a highly specific map. Elements in the same vertical column share the exact same number of outer electrons.',
+      'Actually, that\'s false. It is a map of electron shells. Every element in a vertical column has the exact same number of valence electrons.'),
+    { type: 'sorting', boxes: [
+      { id: 'inert2', label: 'Completely inert and unreactive' },
+      { id: 'explo', label: 'Highly explosive in water' }
+    ], items: [
+      { id: 'noble', label: 'The Noble Gases', box: 'inert2' }
+    ]},
+    S('A neutral atom has 11 positive protons and 11 negative electrons. One electron is thrown away — the total electron count drops to 10. Because the positive protons now outnumber the negative electrons, what has the atom become?',
+      [O('ion','A positive Ion (+1)',true), O('element','A completely new element',false)],
+      'Yep. An Ion is simply an atom carrying a net electrical charge because it lost or gained electrons.',
+      'Actually, it becomes a positive Ion. By losing a negative charge, the atom is left with a positive imbalance.')
+  ],
+
+  // The Mechanics of Bonding
+  checkpoint_n: [
+    { type: 'sorting', boxes: [
+      { id: 'static', label: 'The electrostatic grip' },
+      { id: 'overlap', label: 'The atoms overlap' }
+    ], items: [
+      { id: 'na_cl', label: 'Sodium completely transfers its electron to Chlorine', box: 'static' }
+    ]},
+    S('A crystal of table salt (Sodium Chloride) is tapped. A massive, repeating 3D lattice of alternating positive and negative charges appears. Does an Ionic bond form small, separate molecules?',
+      [O('no','No, it forms a continuous 3D grid',true), O('yes','Yes, billions of them',false)],
+      'Exactly. There are no individual "salt molecules." The electrical forces pull in every direction, building a massive, rigid crystal.',
+      'Actually, no. Ionic bonds build massive, continuous 3D grids called Lattices. They do not form small, discrete molecules.'),
+    S('Two non-metal atoms drift together. Both need electrons to reach 8, but neither is willing to give one away. How do they solve this?',
+      [O('share','They overlap and share pairs of electrons',true), O('repel','They repel each other',false)],
+      'Yep. Both nuclei pull hard on the shared electrons sitting between them, gluing the atoms together.',
+      'Not quite. They compromise by sharing. This shared pool of electrons acts as a glue, creating a Covalent Bond.'),
+    S('Tap the wrong word to fix the sentence.\n\nUnlike salt, a glass of water is made of billions of continuous molecules tumbling past each other.',
+      [O('individual, separate','individual, separate',true), O('metallic','metallic',false)],
+      'Got it. Covalent bonds form discrete, finite packages. The H₂O molecules are separate, which is why water is a liquid.',
+      'Actually, water molecules are individual and separate. Covalent bonds form discrete packages, unlike the continuous grid of salt.'),
+    S('In a block of solid copper, the atoms share electrons in neat, isolated pairs.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. Metals unleash their outer electrons completely, letting them flow freely between the atoms like a liquid sea.',
+      'Actually, that\'s false. Metals release their electrons into a massive, shared communal pool called a "sea of electrons."'),
+    S('A piece of metal is struck with a hammer. The top layer of atoms shifts, but the blue liquid electrons flow smoothly around them to keep the bond intact. Why does metal bend instead of shattering?',
+      [O('sea','The sea of electrons acts as a fluid lubricant',true), O('melt','The metal is melting',false)],
+      'Exactly. Because the atoms are not locked to specific partners, the layers can slide past each other without breaking the electrostatic grip.',
+      'Not quite. The fluid sea of electrons allows the rigid atoms to slide past each other without breaking the bond. That is why metal bends.')
   ]
 };
 
@@ -905,6 +998,159 @@ export const BIT_WORKSHOPS = {
       [O('no','No, it is just Boolean logic',true), O('yes','Yes, it must weigh the options',false)],
       'Yep. It is purely mathematical. If the password matches, the electricity goes one way. If it doesn\'t, it goes the other.',
       'Not quite. An If/Then statement is just simple Boolean logic. The electricity is just physically routed based on a True or False check.')
+  ],
+
+  // The Network Scale (LAN vs. WAN)
+  checkpoint_d: [
+    S('A smartphone and a television are connected to the same wireless router inside a house. A storm knocks down the main internet cable outside. Does the phone lose its ability to send a video to the television?',
+      [O('no','No, internal traffic still works',true), O('yes','Yes, the internet is down',false)],
+      'Exactly. The router is still managing the Local Area Network (LAN). Internal devices do not need the global internet to talk to each other.',
+      'Not quite. They are communicating on a private Local Area Network (LAN). The global internet cable is not required for them to trade data locally.'),
+    { type: 'sorting', boxes: [
+      { id: 'wifi', label: 'Pushing high-speed data through solid drywall' },
+      { id: 'bt', label: 'Connecting a wireless mouse using almost zero battery' }
+    ], items: [
+      { id: 'wifip', label: 'Wi-Fi', box: 'wifi' },
+      { id: 'btp', label: 'Bluetooth', box: 'bt' }
+    ]},
+    S('Tap the wrong word to fix the sentence.\n\nTo connect a private office network in New York to a private office network in London, the data must travel across a LAN.',
+      [O('WAN','WAN',true), O('Bluetooth connection','Bluetooth connection',false)],
+      'Got it. Wide Area Networks (WAN) cover massive geographical distances, bridging local networks together.',
+      'Not quite. A Local Area Network (LAN) only covers one building. To cross an ocean, a Wide Area Network (WAN) is required.'),
+    S('The global internet is simply the largest Wide Area Network (WAN) in existence, bridging billions of private networks together.',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. It is just a massive, chaotic web of physical cables connecting local rooms together.',
+      'Actually, that is true. The internet is just the ultimate Wide Area Network, tying all the smaller local networks into one system.'),
+    S('A tiny wireless earbud is tapped. A small battery icon appears. Why does an earbud use Bluetooth instead of a standard Wi-Fi connection?',
+      [O('battery','Wi-Fi would drain the battery in minutes',true), O('faster','Bluetooth is significantly faster',false)],
+      'Exactly. Wi-Fi requires too much electrical power. Bluetooth limits its range to just a few meters to keep the device alive.',
+      'Not quite. Wi-Fi is faster, but it requires massive electrical power. Bluetooth is used because it barely drains the battery.'),
+    S('A laptop is sending a file via Bluetooth. The laptop slides away from the receiver — the signal snaps after just a few meters. Why?',
+      [O('range','Bluetooth is strictly a personal area network, sacrificing distance for battery',true), O('broken','The laptop is broken',false)],
+      'Yep. Bluetooth is strictly a "personal area network." It sacrifices distance for battery efficiency.',
+      'Actually, the signal breaks very quickly. Bluetooth is only designed to cover a few meters of space.')
+  ],
+
+  // The Cloud & The Post Office
+  checkpoint_e: [
+    S('The "Cloud Computing" icon is tapped. The cloud icon vanishes, revealing a massive, air-conditioned warehouse filled with server racks. Is Cloud Computing an invisible storage space?',
+      [O('no','No, it is just renting physical hardware',true), O('yes','Yes, it has no physical location',false)],
+      'Got it. "The Cloud" is a marketing term. The data sits on a physical server inside a warehouse hundreds of miles away.',
+      'Actually, no. It is just a rented server. The data sits on physical hard drives inside massive, heavily guarded warehouses.'),
+    S('When a large video file is sent across the internet, it travels down the fiber-optic cable as one massive, heavy chunk of data.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. The file is chopped up into thousands of microscopic pieces called Packets to prevent traffic jams.',
+      'Actually, that\'s false. Sending one massive file would clog the network. It is chopped into thousands of tiny Packets.'),
+    { type: 'sorting', boxes: [
+      { id: 'router', label: 'The microscopic post office' }
+    ], items: [
+      { id: 'r', label: 'A Router', box: 'router' },
+      { id: 'bt_ant', label: 'A Bluetooth antenna', box: null }
+    ]},
+    S('Tap the wrong word to fix the sentence.\n\nWhen a smartphone translates a spoken language in real-time, the complex math is calculated locally on the phone.',
+      [O('in a massive Cloud server','in a massive Cloud server',true), O('using Bluetooth','using Bluetooth',false)],
+      'Got it. A phone does not have the processing power. It just sends the audio to a server, and the server sends the answer back.',
+      'Actually, the phone lacks the processing power. The math is calculated in a Cloud server, and the answer is sent back as a text file.'),
+    S('A small business launches a website. On day one, ten million people try to visit it at the exact same second. If the website is hosted on a single local computer, what happens?',
+      [O('crash','The computer runs out of processing power and crashes',true), O('upgrade','The computer automatically upgrades itself',false)],
+      'Yep. A single machine hits a hard physical limit. This is exactly why companies rent Cloud servers — to handle massive, sudden spikes.',
+      'Not quite. Hardware cannot upgrade itself. A single machine will run out of memory and instantly crash under the load.'),
+    S('A photograph is ready to be sent across the network. It breaks into thousands of identical numbered squares. What are these individual squares called?',
+      [O('packets','Packets',true), O('frequencies','Frequencies',false)],
+      'Exactly. Packets allow millions of different files to share the exact same physical cable without crashing into each other.',
+      'Actually, they are called Packets. Chopping the file into uniform packets allows data to flow smoothly through the routers.')
+  ],
+
+  // Firewalls & Secrets (Cybersecurity)
+  checkpoint_f: [
+    { type: 'sorting', boxes: [
+      { id: 'bouncer', label: 'The Digital Bouncer' }
+    ], items: [
+      { id: 'fw', label: 'A Firewall', box: 'bouncer' },
+      { id: 'usb', label: 'A USB cable', box: null }
+    ]},
+    S('If a malicious command bypasses the firewall, the computer processor will refuse to execute it because it knows the code is dangerous.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. A processor is completely blind. It executes destructive malware with the exact same flawless efficiency as a normal program.',
+      'Actually, that\'s false. A processor has no intelligence. It will blindly execute a command to delete its own hard drive without hesitation.'),
+    S('The Wi-Fi signal floating through a public coffee shop is tapped. A plain-text credit card number appears in the air. Can anyone with an antenna read this data?',
+      [O('yes','Yes, radio waves are public',true), O('no','No, Wi-Fi is invisible',false)],
+      'Exactly. Wi-Fi is just radio waves. Anyone can pull them out of the air. This is why raw data must never be sent over a network.',
+      'Actually, yes. Wi-Fi ripples through the open air. Anyone with a basic antenna can intercept and read the packets.'),
+    S('Tap the wrong word to fix the sentence.\n\nEncryption protects data by translating the 1s and 0s into Spanish.',
+      [O('a chaotic, unreadable mess','a chaotic, unreadable mess',true), O('binary','binary',false)],
+      'Got it. It scrambles the data mathematically. Without the exact key, it just looks like random garbage characters.',
+      'Not quite. Encryption uses a mathematical algorithm to scramble the data into complete, unreadable chaos.'),
+    S('An online store needs to securely receive credit card numbers, but it has never met the customers before. How does it share the encryption key without a hacker stealing it?',
+      [O('public','It gives the public a key that only locks data, and keeps the unlocking key private',true), O('email','It sends the key through a separate email',false)],
+      'Yep. Public Key Cryptography. Anyone can scramble the data using the public lock, but only the store holds the private key required to unscramble it.',
+      'Actually, it uses Public Key Cryptography. The store broadcasts a "Public Key" that can only scramble data, while heavily guarding the "Private Key" needed to unlock it.'),
+    S('An encrypted packet arrives at a secure server. A key is slid to unscramble the data — a wall of garbage characters snaps into a readable password. Without this key, how long would it take a supercomputer to guess the original message?',
+      [O('millions','Millions of years',true), O('minutes','A few minutes',false)],
+      'Exactly. Modern encryption is mathematically airtight. Brute-forcing the answer without the key is physically impossible in a human lifetime.',
+      'Not quite. Without the mathematical key, checking every possible combination would take a supercomputer millions of years.')
+  ],
+
+  // The Human Element & Zero-Days
+  checkpoint_g: [
+    S('Tap the wrong word to fix the sentence.\n\nThe vast majority of secure networks are broken by hackers using supercomputers.',
+      [O('social engineering','social engineering',true), O('brute force','brute force',false)],
+      'Yep. Technical systems are mathematically solid. The easiest way in is just tricking a human into handing over the password.',
+      'Actually, they are broken by social engineering. It is much easier to trick a human than it is to outsmart a firewall.'),
+    S('A hacker calls a company employee, claims to be from the IT department, and demands their login credentials to "fix a server issue." What is this tactic called?',
+      [O('social','Social Engineering',true), O('zeroday','A Zero-Day Exploit',false)],
+      'Exactly. It relies entirely on human psychology — authority and urgency — to bypass the digital locks completely.',
+      'Not quite. This is Social Engineering. It uses human psychology to bypass the software defenses.'),
+    S('Modern operating systems are written so perfectly that they contain absolutely zero structural flaws.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. An operating system has 50 million lines of code. It is a mathematical certainty that human programmers made logical mistakes.',
+      'Actually, that\'s false. With tens of millions of lines of code, human errors and hidden logic bugs are a mathematical certainty.'),
+    S('The locked vault representing a software company\'s database is tapped. A hacker slips through a microscopic crack in the back wall. If a hacker finds a bug before the software creators know it exists, what is it called?',
+      [O('zeroday','A Zero-Day Vulnerability',true), O('phish','A Phishing Attack',false)],
+      'Got it. The creators have had "zero days" to fix it. These undiscovered flaws are the most highly prized weapons in cybersecurity.',
+      'Actually, it is a Zero-Day Vulnerability. The software creators don\'t know it exists, meaning they have had zero days to patch it.'),
+    { type: 'sorting', boxes: [
+      { id: 'enc', label: 'Encryption' },
+      { id: 'fwall', label: 'A Firewall' }
+    ], items: [
+      { id: 'eaves', label: 'Eavesdropping on Wi-Fi', box: 'enc' },
+      { id: 'malpkt', label: 'A malicious packet arriving at a port', box: 'fwall' }
+    ]},
+    S('A piece of malware tricks an employee and successfully enters the computer\'s RAM. What will the processor (ALU) do when it receives the malicious 1s and 0s?',
+      [O('execute','Execute the math perfectly',true), O('quarantine','Quarantine the virus',false)],
+      'Exactly. The processor is just a machine routing electricity. It executes a command to destroy the system just as flawlessly as a command to save a file.',
+      'Not quite. The processor will execute the math perfectly. It has no intelligence and cannot recognize malicious intent.')
+  ],
+
+  // The Architecture & The Bottleneck
+  checkpoint_h: [
+    S('Tap the wrong word to fix the sentence.\n\nIn a modern computer, software is installed by manually rerouting physical cables.',
+      [O('1s and 0s','1s and 0s',true), O('processors','processors',false)],
+      'Yep. The Von Neumann Architecture turned software into pure data, stored as 1s and 0s in the exact same memory bank as the numbers being calculated.',
+      'Actually, early computers used cables. Modern computers treat software as pure data (1s and 0s) stored in the memory bank.'),
+    S('The RAM (Random Access Memory) grid is tapped, cutting the power supply. The entire grid goes black instantly. Does RAM permanently store data like a hard drive?',
+      [O('no','No, it is highly volatile',true), O('yes','Yes, it is a permanent vault',false)],
+      'Exactly. The microscopic capacitors must be constantly refreshed. If power drops, the data is instantly and permanently destroyed.',
+      'Not quite. RAM is highly volatile. The instant the electrical power stops, the capacitors empty and all data is lost.'),
+    { type: 'sorting', boxes: [
+      { id: 'addr', label: 'Sends the coordinate location to the RAM' },
+      { id: 'data', label: 'Carries the actual payload of 1s and 0s back' }
+    ], items: [
+      { id: 'ab', label: 'The Address Bus', box: 'addr' },
+      { id: 'db', label: 'The Data Bus', box: 'data' }
+    ]},
+    S('The RAM operates at the exact same blistering speed as the CPU, feeding it data instantly.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. The CPU is exponentially faster. It often sits completely idle, wasting billions of clock cycles waiting for data to travel from the slow RAM.',
+      'Actually, that\'s false. This is the Von Neumann Bottleneck. The RAM is significantly slower, forcing the CPU to sit idle and wait for data to arrive.'),
+    S('To fix the bottleneck, engineers placed a tiny amount of extremely fast, expensive memory directly onto the CPU silicon itself. What is this called?',
+      [O('cache','Cache Memory',true), O('hdd','A Hard Drive',false)],
+      'Exactly. Cache predicts what data the processor will need next and stages it right next to the logic gates, completely bypassing the slow RAM.',
+      'Not quite. It is called Cache Memory. It holds data just millimeters away from the logic gates so the processor doesn\'t have to wait.'),
+    S('The quartz crystal frequency is slid to 3 Gigahertz (3 GHz). The Fetch-Decode-Execute cycle spins into a blur. How many instructions is the CPU fetching, decoding, and executing at this speed?',
+      [O('billion','Three billion per second',true), O('thousand','Three thousand per second',false)],
+      'Yep. The crystal pulses three billion times a second, driving the mechanical heartbeat of the entire machine.',
+      'Actually, 3 GHz means exactly three billion pulses per second. The machine executes three billion instructions every second.')
   ]
 };
 
@@ -1147,6 +1393,95 @@ export const PHYS_WORKSHOPS = {
       [O('diagonal','Diagonally downstream',true), O('straight','Straight across',false)],
       'Exactly. The boat\'s forward velocity and the river\'s sideways velocity combine, pushing the boat on a diagonal path.',
       'Not quite. The river\'s current pushes the boat sideways while it drives forward, resulting in a diagonal path downstream.')
+  ],
+
+  // The Invention of Rulers
+  checkpoint_h: [
+    S('Waking up on an alien planet. Someone hands over a rock and asks how heavy it is. There are no scales, and the word "pound" does not exist. Can the question be answered?',
+      [O('no','No, without a standard unit, the weight cannot be communicated',true), O('yes','Yes, just guess',false)],
+      'Exactly. Without an agreed-upon standard reference, numbers mean absolutely nothing.',
+      'Not quite. A guess can be made, but without a standard unit of measurement to compare against, the number has no actual meaning.'),
+    { type: 'sorting', boxes: [
+      { id: 'agree', label: 'The fundamental agreement' }
+    ], items: [
+      { id: 'stick', label: 'Declare that everything else will be compared to this exact stick', box: 'agree' }
+    ]},
+    S('Tap the wrong word to fix the sentence.\n\nTo describe the entire physical universe, scientists had to invent thousands of fundamental base units.',
+      [O('exactly seven','exactly seven',true), O('zero','zero',false)],
+      'Got it. They stripped the chaos away and agreed on exactly 7 fundamental tools (like the Meter, Kilogram, and Second).',
+      'Not quite. The scientific community stripped away the chaos and agreed on exactly seven fundamental base units.'),
+    S('Speed requires a brand new, independent measuring tool because it is not one of the 7 base units.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. Speed is just Distance divided by Time. It is a "Derived Unit," built entirely out of the original base units.',
+      'Actually, that\'s false. Speed is derived by simply dividing a Meter by a Second. It doesn\'t need a new tool.'),
+    S('The word "Newton" (a unit of force) is tapped to pull its mask off. The word changes to kg·m/s². Is a Newton using brand new math?',
+      [O('no','No, it is just base units stacked together',true), O('yes','Yes, it is a new dimension',false)],
+      'Exactly. Physicists just got tired of writing the messy fraction, so they disguised it with a shorter name.',
+      'Actually, no. A Newton is just Kilograms, Meters, and Seconds stacked together and given a nickname.'),
+    S('In 1889, the world defined a "Kilogram" using a solid metal cylinder locked in a vault in Paris. A hundred years pass — the cylinder loses 50 micrograms of dust. Because the cylinder was the definition of a kilogram, what happened to the math of the universe?',
+      [O('shift','The definition of mass silently shifted to match the fluctuating metal',true), O('nothing','Nothing changed',false)],
+      'Yep. This is the fatal flaw of using physical objects. If the object changes, the entire global math system changes with it.',
+      'Not quite. Because the object defined the unit, its weight loss meant the definition of a Kilogram silently shifted across the entire planet.')
+  ],
+
+  // Constants & Scale
+  checkpoint_i: [
+    S('To stop the definition of a Meter from fluctuating, scientists threw the physical metal bar in the garbage. What did they tie the definition of the Meter to instead?',
+      [O('light','The speed of light in a vacuum',true), O('earth','The circumference of the Earth',false)],
+      'Exactly. Because the speed of light is a universal constant that never changes, the measurement is now permanently woven into reality.',
+      'Not quite. They tied it to the speed of light. Because light speed is an unbreakable universal constant, the definition can never fluctuate again.'),
+    { type: 'sorting', boxes: [
+      { id: 'time', label: 'The modern definition of Time' }
+    ], items: [
+      { id: 'cesium', label: 'The exact vibration of a Cesium atom', box: 'time' }
+    ]},
+    S('Tap the wrong word to fix the sentence.\n\nIn physics, it is perfectly acceptable to add a unit of mass to a unit of length.',
+      [O('physically impossible','physically impossible',true), O('mathematically illegal','mathematically illegal',false)],
+      'Yep. 5 kilograms cannot be added to 5 meters. Every piece of an equation must share the exact same underlying dimensions.',
+      'Not quite. It is physically impossible. The Homogeneity Principle states that only dimensions that are exactly the same can be added.'),
+    S('A massive calculation is done to find distance, and the final answer is labeled in "Kilograms." This instantly reveals the math is wrong.',
+      [O('true','True',true), O('false','False',false)],
+      'Exactly. Distance is measured in meters. The dimensions act as a built-in lie detector before the numbers are even checked.',
+      'Actually, that\'s true. The dimensions act as a lie detector. If the units don\'t match the physical reality, the math is guaranteed to be wrong.'),
+    S('The prefix "Kilo" in the word Kilometer is tapped. The word "Kilo" changes to "Multiply by 1,000." Is Kilo a brand new unit of measurement?',
+      [O('no','No, it is just shorthand for sliding the decimal point',true), O('yes','Yes, it is a new base unit',false)],
+      'Got it. The base unit (the meter) never changes. The prefix just zooms the camera in or out.',
+      'Actually, no. It is just shorthand. It tells the decimal point to slide without changing the underlying unit.'),
+    S('A 1-meter dog is observed. The bar slides to jump exactly one "Order of Magnitude" larger — the animal instantly becomes a 10-meter whale. In physics, does an order of magnitude mean multiplying by 2?',
+      [O('no','No, it means multiplying by exactly 10',true), O('yes','Yes, it just means "bigger"',false)],
+      'Yep. Physics scales the universe in clean, strict jumps of 10.',
+      'Not quite. An order of magnitude is a strict mathematical jump. It means multiplying by exactly 10.')
+  ],
+
+  // The Blindfold & The Arrow (Vectors)
+  checkpoint_j: [
+    S('A blindfold is on. There is a million dollars exactly 10 meters away. The unit (meters) and the scale (10) are known. Can the money be walked to directly?',
+      [O('no','No, the direction is missing',true), O('yes','Yes, the distance is known',false)],
+      'Exactly. A number and a unit are not enough to map reality. The final puzzle piece — direction — is missing.',
+      'Not quite. The exact distance is known, but which way to walk is unknown. The direction is missing.'),
+    { type: 'sorting', boxes: [
+      { id: 'scal', label: 'Scalar (Amount only)' },
+      { id: 'vec', label: 'Vector (Amount + Direction)' }
+    ], items: [
+      { id: 'tempf', label: '70 degrees Fahrenheit', box: 'scal' },
+      { id: 'carv', label: '60 miles per hour, heading North', box: 'vec' }
+    ]},
+    S('Tap the wrong word to fix the sentence.\n\nA police radar gun measures the exact velocity as a car drives past.',
+      [O('speed','speed',true), O('weight','weight',false)],
+      'Yep. The radar gun doesn\'t care if the car is driving toward New York or Miami. It only tracks the raw number (Speed).',
+      'Not quite. A radar gun only measures Speed. To measure Velocity, it would have to track the exact compass direction as well.'),
+    S('A car drives in a perfect circle at exactly 60 mph. The velocity never changes.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. Velocity requires direction. Because the steering wheel is turning, the direction is changing every second, meaning the velocity is constantly changing.',
+      'Actually, that\'s false. Because the car is constantly turning, the direction is changing. Therefore, the velocity is constantly changing.'),
+    S('A plain 10-meter line segment drawn on a map is tapped. An arrowhead appears on one end, turning it into a Vector Arrow. Why did physicists hack geometry by painting an arrowhead on a segment?',
+      [O('capture','Because it perfectly captures the amount AND the direction in one drawing',true), O('clean','Because it looks cleaner',false)],
+      'Exactly. The length of the stick is the scalar (how much). The arrowhead is the direction. It is a completely self-contained map.',
+      'Not quite. By adding an arrowhead, the drawing now captures both the amount (the length) and the direction. It becomes a Vector.'),
+    S('In standard math, 1 + 1 always equals 2. But walking 1 meter North, then walking 1 meter South, results in being right back where one started (0). Why did the math break?',
+      [O('direction','Because Vectors have direction that changes how they add together',true), O('slow','Because the walk was too slow',false)],
+      'Got it. Vectors cannot be added like a pile of apples. Their directions must be combined, which can cancel the numbers out entirely.',
+      'Actually, it is because Vectors have direction. Walking backward cancels out walking forward, meaning Vector addition does not follow normal arithmetic rules.')
   ]
 };
 
