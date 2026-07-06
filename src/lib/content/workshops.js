@@ -1056,6 +1056,97 @@ export const PHYS_WORKSHOPS = {
       { id: 'mercury', label: 'Mercury', box: 'broken' },
       { id: 'neptune', label: 'Neptune', box: null }
     ]}
+  ],
+
+  // The Illusion of Stillness (Equilibrium)
+  checkpoint_e: [
+    S('A cargo ship sits motionless on a calm ocean. Massive red and blue arrows appear: Gravity pulls down, Buoyancy pushes up. Does "motionless" mean there are no forces acting on the ship?',
+      [O('no','No, the forces are perfectly balanced',true), O('yes','Yes, forces only exist when things move',false)],
+      'Exactly. "At rest" is just a disguise. It means the forces are in a dead heat, canceling each other out entirely.',
+      'Actually, no. Massive forces are acting on the ship at all times. It doesn\'t move because those forces are perfectly balanced.'),
+    S('Tap the wrong word to fix the sentence.\n\nIf you push a car on a sheet of frictionless ice in a vacuum, the car will eventually stop on its own.',
+      [O('coast forever','coast forever',true), O('explode','explode',false)],
+      'Yep. Without friction to bleed the energy away, motion simply persists. Things do not stop unless forced to.',
+      'Actually, it would coast forever. Things do not naturally stop. They only stop because a force (like friction) pushes back against them.'),
+    S('The ship\'s engine is off. Gravity and Buoyancy are perfectly matched. The throttle is pushed forward — a massive forward arrow appears and the ship begins to move. What caused the motion to finally change?',
+      [O('unbalanced','An unbalanced force was added',true), O('gravity','Gravity disappeared',false)],
+      'Got it. Motion only changes the instant the balance breaks. The engine provided a force that wasn\'t canceled out.',
+      'Not quite. Motion changes because a new, unbalanced force was added by the engine, breaking the perfect equilibrium.'),
+    S('If a car is cruising down the highway at a perfectly steady 60 miles per hour, the net force on the car is zero.',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. Because the speed isn\'t changing (accelerating or braking), the engine\'s push is perfectly matched by the air\'s drag.',
+      'Actually, that\'s true. If velocity isn\'t changing, acceleration is zero. And if acceleration is zero, the net force must be perfectly balanced at zero.'),
+    { type: 'sorting', boxes: [
+      { id: 'cause', label: 'A force causes...' }
+    ], items: [
+      { id: 'change', label: 'a change in motion', box: 'cause' }
+    ]},
+    S('A steel block sits under a hydraulic press. The press pushes down with ten tonnes of force. The block doesn\'t move a millimeter. Why?',
+      [O('table','The table underneath pushes up with exactly ten tonnes',true), O('off','The press isn\'t turned on',false)],
+      'Yep. Action and reaction. The table pushes back exactly as hard as the press pushes down, keeping the block perfectly balanced.',
+      'Actually, the table underneath is pushing back up with the exact same ten tonnes of force, perfectly balancing the equation.')
+  ],
+
+  // The Invisible Anchor (Mass vs. Weight)
+  checkpoint_f: [
+    S('Tap the wrong word to fix the sentence.\n\nIf an astronaut takes their bathroom scale to the Moon, it will show a smaller number because they have lost mass.',
+      [O('weight','weight',true), O('gravity','gravity',false)],
+      'Exactly. Mass is the amount of physical stuff in a body. It never changes. The scale just reads less weight because the Moon\'s gravity is weaker.',
+      'Actually, mass never changes. The scale reads less because the weight (the pull of gravity) is weaker on the Moon.'),
+    { type: 'sorting', boxes: [
+      { id: 'stuff', label: 'An amount of stuff' },
+      { id: 'force', label: 'A physical force' }
+    ], items: [
+      { id: 'mass', label: 'Mass (Kilograms)', box: 'stuff' },
+      { id: 'weight', label: 'Weight (Newtons)', box: 'force' }
+    ]},
+    S('An astronaut floats in deep, empty space, far from any gravity. Does the astronaut weigh anything? Does the astronaut have mass?',
+      [O('zeromass','Weight is zero, but Mass remains the same',true), O('bothzero','Both are zero',false)],
+      'Yep. With no gravity, weight hits zero. But if you try to push the astronaut, they will still resist moving. That resistance is their mass.',
+      'Actually, weight drops to zero because there is no gravity. But mass (the amount of stuff) remains exactly the same.'),
+    S('A hammer and a feather are dropped in a vacuum chamber with no air resistance. Both objects fall perfectly side-by-side. Why do they hit the ground at the exact same instant?',
+      [O('rate','Gravity accelerates all masses at the exact same rate',true), O('heavier','The feather got heavier',false)],
+      'Exactly. In the equation W = mg, the mass cancels out. Every single object falls at the exact same rate of acceleration.',
+      'Not quite. In a vacuum, gravity accelerates every single object at the exact same rate, regardless of how heavy it is.'),
+    S('A heavy bowling ball hits the ground with more force than a golf ball because gravity accelerates it faster.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. They both accelerate at the exact same speed. The bowling ball hits harder purely because it has more mass behind that speed.',
+      'Actually, that\'s false. Gravity accelerates both balls at the exact same speed. The bowling ball just hits harder because it has more mass.'),
+    S('Why is it harder to push a broken-down truck than a broken-down motorcycle?',
+      [O('mass','The truck has more mass, requiring more force to accelerate it',true), O('gravity','The truck has more gravity',false)],
+      'Got it. F = ma. If mass is huge, an enormous amount of force is needed to achieve even a tiny bit of acceleration.',
+      'Not quite. It is harder to push because the truck has more mass, meaning it requires exponentially more force to accelerate.')
+  ],
+
+  // The Moving Baseline (Relative Velocity)
+  checkpoint_g: [
+    S('A person walks 2 miles per hour toward the front of a train. The train moves 50 miles per hour forward. How fast is the person moving relative to the tracks outside?',
+      [O('52','52 miles per hour',true), O('50','50 miles per hour',false)],
+      'Exactly. The velocities simply add together.',
+      'Not quite. The walking speed simply adds to the train\'s speed, making the velocity 52 mph relative to the ground.'),
+    S('A car drives 60 miles per hour through a windless rainstorm. The rain appears to streak aggressively backward across the window. Did the rain suddenly change direction?',
+      [O('no','No, the car\'s forward motion makes the rain look slanted',true), O('yes','Yes, the wind picked up',false)],
+      'Yep. The vertical fall of the rain and the forward motion of the car combine into a single, diagonal relative velocity.',
+      'Actually, no. The rain is still falling straight down. The combination of the rain falling and the car rushing forward creates a slanted visual streak.'),
+    S('There is a secret, hidden point in the center of the universe that is absolutely, perfectly still.',
+      [O('false','False',true), O('true','True',false)],
+      'Exactly, that\'s false. Everything is moving relative to something else. There is no absolute stillness in physics.',
+      'Actually, that\'s false. "At rest" only means not moving compared to a chosen baseline. Nothing in the universe is absolutely still.'),
+    S('Tap the wrong word to fix the sentence.\n\nA head-on collision between two cars moving 30 mph is identical to hitting a parked car at 30 mph.',
+      [O('60 mph','60 mph',true), O('0 mph','0 mph',false)],
+      'Got it. Because they are moving toward each other, their closing speed is the sum of both (60 mph).',
+      'Actually, because they are moving toward each other, their speeds combine. The impact is the equivalent of 60 mph.'),
+    { type: 'sorting', boxes: [
+      { id: 'passengers', label: 'Velocity relative to the passengers' },
+      { id: 'ground', label: 'Velocity relative to the ground' }
+    ], items: [
+      { id: 'slow', label: '2 mph', box: 'passengers' },
+      { id: 'fast', label: '502 mph', box: 'ground' }
+    ]},
+    S('A boat is aimed straight across a river. The water flows fast to the right. Where will the boat actually land on the opposite shore?',
+      [O('diagonal','Diagonally downstream',true), O('straight','Straight across',false)],
+      'Exactly. The boat\'s forward velocity and the river\'s sideways velocity combine, pushing the boat on a diagonal path.',
+      'Not quite. The river\'s current pushes the boat sideways while it drives forward, resulting in a diagonal path downstream.')
   ]
 };
 
