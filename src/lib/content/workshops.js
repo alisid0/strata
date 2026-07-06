@@ -665,6 +665,99 @@ export const ATOM_WORKSHOPS = {
       [O('shape','geometric shape',true), O('liquid','chemical liquid',false)],
       'Exactly. They are both made of 100% pure Carbon. The only difference is the 3D geometry of how the atoms connect.',
       'Actually, they are both pure Carbon. Graphite is soft because it forms flat, sliding sheets instead of a rigid 3D pyramid.')
+  ],
+
+  // The Electron Ladder (Shells & The Octet)
+  checkpoint_i: [
+    S('An atom is tapped to reveal its electron arrangement. Rings appear: 2 electrons fill the innermost shell, then 8 fill the next, then 8 fill the outermost. Do electrons orbit randomly like a swarm of bees?',
+      [O('no','No, they sit in strict layers',true), O('yes','Yes, they fly everywhere',false)],
+      'Yep. They are forced into specific shells, filling up from the inside out.',
+      'Actually, no. They sit in highly structured layers, or shells, completely dictated by strict capacities.'),
+    S('Tap the wrong word to fix the sentence.\n\nThe inner electrons completely dictate how an atom will react, while the outer electrons do nothing.',
+      [O('valence','valence (outer)',true), O('heaviest','heaviest',false)],
+      'Exactly. The outermost layer (the valence shell) is the only layer that matters for chemical reactions.',
+      'Not quite. The outer electrons (valence shell) do all the work. The inner ones are buried and mostly ignore the outside world.'),
+    S('An atom has 6 electrons in its valence shell. What is the exact number it wants to reach to become stable?',
+      [O('8','8',true), O('6','6',false), O('10','10',false)],
+      'Got it. Atoms constantly hunt for a completely full outer shell, which for most elements means exactly 8 electrons.',
+      'Actually, the magic number is 8. The Octet Rule dictates that an atom is only stable when its outer shell holds exactly 8 electrons.'),
+    S('Elements sitting in the exact same vertical column on the Periodic Table behave completely differently from each other.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. Because they share the exact same number of outer electrons, they behave almost identically.',
+      'Actually, that\'s false. Elements in the same column have the exact same number of valence electrons, meaning they react in the exact same way.'),
+    { type: 'sorting', boxes: [
+      { id: 'reactive', label: 'Violently reactive' },
+      { id: 'inert', label: 'Completely inert' }
+    ], items: [
+      { id: 'neon', label: 'Neon (8 outer electrons)', box: 'inert' }
+    ]},
+    S('Sodium has 1 outer electron. Chlorine has 7. What is the fundamental reason these two atoms react with each other?',
+      [O('octet','To reach a full shell of 8',true), O('heavy','To become a heavier element',false)],
+      'Exactly. Sodium dumps its 1 electron to empty its shell, and Chlorine grabs it to hit 8. Both achieve stability.',
+      'Actually, it is purely to satisfy the Octet Rule. They trade an electron so both can end up with a perfectly full outer shell.')
+  ],
+
+  // The Charged Grid (Ions & Salt)
+  checkpoint_j: [
+    S('Tap the wrong word to fix the sentence.\n\nIf a neutral atom throws away a negative electron, the atom becomes a neutral ion.',
+      [O('positive','positive',true), O('negative','negative',false)],
+      'Got it. It lost a negative charge, meaning the positive protons now outnumber the electrons.',
+      'Not quite. By losing a negative piece, the atom is left with more positive protons than negative electrons. It becomes positive.'),
+    S('A positive Sodium ion (+1) sits next to a negative Chlorine ion (−1). The two ions slam together violently. What physical force holds these two atoms together?',
+      [O('electrostatic','Electrostatic attraction',true), O('hooks','Physical hooks',false)],
+      'Yep. Opposite charges attract. That powerful electrostatic grip is an Ionic Bond.',
+      'Actually, it is purely electrostatic. Opposite electrical charges pull toward each other like powerful magnets.'),
+    S('A grain of salt is made of billions of tiny, separate "NaCl" molecules tumbling past each other.',
+      [O('false','False',true), O('true','True',false)],
+      'Exactly, that\'s false. There are no separate molecules in salt. It is one massive, continuous grid of alternating ions.',
+      'Actually, that\'s false. Ionic bonds do not form discrete molecules. They form massive, continuous 3D grids called lattices.'),
+    { type: 'sorting', boxes: [
+      { id: 'harmless', label: 'Harmless table salt' },
+      { id: 'deadly', label: 'A deadly, explosive mixture' }
+    ], items: [
+      { id: 'nacl', label: 'Sodium Chloride (NaCl)', box: 'harmless' }
+    ]},
+    S('A hammer strikes a salt crystal. The grid shifts slightly, forcing positive Sodium ions to sit directly next to other positive Sodium ions. What happens?',
+      [O('shatter','The crystal shatters',true), O('bend','The crystal bends',false)],
+      'Exactly. Like-charges repel. The instant the positive ions align, they violently push each other apart, snapping the crystal cleanly.',
+      'Actually, it shatters. When the grid shifts, like-charges align. Because like-charges repel, the crystal physically rips itself apart.'),
+    S('An ionic lattice is held together by immense electrical forces pulling in every direction. What temperature is required to melt it?',
+      [O('high','Extremely high heat (~800°C)',true), O('low','Moderate warmth (~100°C)',false)],
+      'Got it. Because the grid is so tightly locked by electrostatic attraction, it requires massive thermal energy to break the bonds.',
+      'Not quite. It requires extreme heat. Ionic lattices have incredibly high melting points because the electrical grip is so strong.')
+  ],
+
+  // Sharing & Swirling (Covalent & Metallic)
+  checkpoint_k: [
+    { type: 'sorting', boxes: [
+      { id: 'covalent', label: 'Covalent Bonding (overlap and share)' },
+      { id: 'ionic', label: 'Ionic Bonding (one steals an electron)' }
+    ], items: [
+      { id: 'oxygen', label: 'Two Oxygen atoms — both need 2 electrons', box: 'covalent' }
+    ]},
+    S('A glass of water sits on a table. How is the water structurally different from a crystal of salt?',
+      [O('discrete','It is made of discrete, separate molecules',true), O('grid','It is an endless 3D grid',false)],
+      'Exactly. Covalent bonds form finite packages (molecules). The H₂O molecules tumble past each other, which is why water is a liquid.',
+      'Actually, water is made of billions of individual, separated H₂O molecules. Salt is an endless grid.'),
+    S('A block of solid copper is tapped to reveal how the atoms are bonded. A grid of positive cores appears, surrounded by a swirling blue liquid. Do metal atoms share electrons in neat, isolated pairs?',
+      [O('no','No, they pool them communally',true), O('yes','Yes, just like water',false)],
+      'Got it. The outer electrons are completely unleashed, flowing freely between the atoms like a liquid sea.',
+      'Not quite. Metals release their outer electrons into a massive, shared communal pool called a "sea of electrons."'),
+    S('If a voltage is applied to a copper wire, the "sea of electrons" instantly drifts down the wire, creating an electric current.',
+      [O('true','True',true), O('false','False',false)],
+      'Yep. Because the outer electrons are completely free to roam, metals conduct electricity effortlessly.',
+      'Actually, that\'s true. The free-roaming electrons are easily pushed by voltage, which is exactly how electrical currents flow.'),
+    S('Tap the wrong word to fix the sentence.\n\nA piece of metal bends when struck by a hammer because its atoms are locked into a brittle grid.',
+      [O('fluid','fluid',true), O('fragile','fragile',false)],
+      'Exactly. Because the atoms sit in a fluid sea of electrons, the layers can slide past each other without breaking the bond.',
+      'Actually, the bond is fluid. The sea of electrons acts like a lubricant, allowing the heavy atoms to slide without shattering.'),
+    { type: 'sorting', boxes: [
+      { id: 'covalent_box', label: 'Covalent Bond' },
+      { id: 'ionic_box', label: 'Ionic Bond' }
+    ], items: [
+      { id: 'transferred', label: 'Electrons are completely transferred', box: 'ionic_box' },
+      { id: 'shared', label: 'Electrons are shared in pairs', box: 'covalent_box' }
+    ]}
   ]
 };
 
