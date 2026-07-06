@@ -549,6 +549,36 @@ export const ATOM_WORKSHOPS = {
       [O('no','No, they are chemically identical',true), O('yes','Yes, the heavier one reacts differently',false)],
       'Exactly. The electrons dictate the reaction. The neutrons in the center are just sitting there doing nothing.',
       'Actually, no. Neutrons have no charge, so they don\'t affect chemistry. Both atoms will react the exact same way.')
+  ],
+
+  // The Chemical Engine (Shells, Ions & Bonds)
+  checkpoint_f: [
+    S('A Chlorine atom has 7 electrons in its outer shell. One more electron is added and the shell reaches 8, locking into a stable, glowing state. Why do atoms constantly trade and share electrons?',
+      [O('shell','To reach a perfectly full outer shell',true), O('heavier','To become heavier',false)],
+      'Yep. Almost every chemical reaction is just an atom chasing the stability of 8 outer electrons.',
+      'Not quite. Chemistry is driven by the Octet Rule. Atoms bond specifically to fill their outer shells.'),
+    { type: 'sorting', boxes: [
+      { id: 'positive', label: 'Becomes a positive Ion (+1)' },
+      { id: 'negative', label: 'Becomes a negative Ion (-1)' }
+    ], items: [
+      { id: 'na', label: 'The Sodium atom', box: 'positive' }
+    ]},
+    S('A grain of table salt is examined at the atomic level. A massive, repeating 3D grid of alternating positive and negative ions appears. Are there individual, discrete "salt molecules" floating around inside this crystal?',
+      [O('no','No, it is one endless continuous lattice',true), O('yes','Yes, billions of them',false)],
+      'Got it. Ionic bonds do not form small, closed loops. They form massive, rigid, continuous grids.',
+      'Actually, no. Ionic bonds create an endless, repeating grid of alternating charges, not individual molecules.'),
+    S('Two non-metal atoms drift together. Both need more electrons to fill their shells, but neither is willing to give one away. What happens?',
+      [O('share','They overlap and share an electron pair',true), O('repel','They repel and fly apart',false)],
+      'Yep. The shared electrons act as glue holding both nuclei together. This is a Covalent bond.',
+      'Not quite. They compromise. By sharing a pair of electrons between them, they lock together in a Covalent bond.'),
+    S('Tap the wrong word to fix the sentence.\n\nA piece of copper wire bends instead of shattering because its atoms are locked into a rigid partnership.',
+      [O('fluid','fluid, communal',true), O('brittle','brittle',false)],
+      'Exactly. The positive atoms sit in a liquid "sea" of free-roaming electrons, allowing the layers to slide past each other without breaking.',
+      'Actually, the atoms are in a fluid, communal partnership. The "sea of electrons" allows the metal to bend.'),
+    S('Neon and Argon are highly reactive gases because their outer shells are completely empty.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. They react with absolutely nothing because their outer shells are already perfectly full.',
+      'Actually, that\'s false. They are completely unreactive (Noble Gases) because they already have 8 electrons. They have nothing to gain or lose.')
   ]
 };
 
@@ -737,6 +767,64 @@ export const PHYS_WORKSHOPS = {
       [O('no','No',true), O('yes','Yes',false)],
       'Got it. It would know how fast to go, but it wouldn\'t know when to turn or which way to steer. Physics requires vectors to navigate reality.',
       'Actually, no. A scalar only tells you amounts (like speed). To navigate, the car must understand direction (vectors).')
+  ],
+
+  // The Laws of Motion (Newton & Kinematics)
+  checkpoint_b: [
+    S('A mountain-sized asteroid is falling toward Earth. Its speed is 20 kilometers per second. Why is this specifically a velocity and not just a speed?',
+      [O('aimed','Because it is aimed dead at the ground',true), O('fast','Because it is moving very fast',false)],
+      'Exactly. Speed is just the raw number. Velocity is that number paired with a specific direction.',
+      'Not quite. Extreme speed is still just a scalar. It becomes a velocity because it has a specific direction (toward the ground).'),
+    S('Tap the wrong word to fix the sentence.\n\nAccording to Newton\'s First Law, an object in motion will naturally fade to a halt unless a force keeps it moving.',
+      [O('coast','coast forever',true), O('explode','explode',false)],
+      'Yep. Motion doesn\'t fade on its own. It requires friction or an obstacle to physically stop it.',
+      'Actually, an object in motion will coast forever in a straight line. It only stops because friction or air resistance forces it to.'),
+    { type: 'sorting', boxes: [
+      { id: 'cancel', label: 'Cancel each other out' },
+      { id: 'unbalanced', label: 'Create an unbalanced force' }
+    ], items: [
+      { id: 'gravity', label: 'Gravity pulling down', box: 'cancel' },
+      { id: 'table', label: 'The table pushing up', box: 'cancel' }
+    ]},
+    S('A cart is being pushed with a steady force. The cart is filled with heavy bricks and visually slows down. According to the equation F = ma, what happens to acceleration when mass increases but the force stays the same?',
+      [O('drops','Acceleration drops',true), O('rises','Acceleration rises',false)],
+      'Yep. The heavier the object, the more force is required to move it. If the force doesn\'t change, the acceleration must drop.',
+      'Actually, acceleration drops. If a mass gets heavier, the exact same push will move it much slower.'),
+    S('When a rifle fires, the bullet is pushed forward with much more force than the rifle is pushed backward.',
+      [O('false','False',true), O('true','True',false)],
+      'Exactly, that\'s false. The force is identical on both sides. The bullet just moves faster because it has a tiny mass.',
+      'Actually, that\'s false. The force is exactly equal in both directions. The bullet just accelerates faster because it is incredibly light.'),
+    S('A rocket engine fires in the empty vacuum of space. Exhaust shoots backward; the rocket moves forward. Since there is no air in space, what is the rocket pushing against?',
+      [O('exhaust','Its own exhaust',true), O('space','The fabric of space',false)],
+      'Got it. By throwing mass backward, it credits itself with forward momentum to balance the ledger.',
+      'Not quite. A rocket pushes against its own fuel. It throws exhaust backward, which forces the ship forward.')
+  ],
+
+  // Relativity & Measurement (Frames & Errors)
+  checkpoint_c: [
+    S('A train travels East at 10 meters per second. A passenger walks toward the back of the train at 2 meters per second. How fast is the passenger moving relative to the ground outside?',
+      [O('8','8 meters per second, East',true), O('12','12 meters per second, East',false)],
+      'Yep. The backward walking speed simply subtracts from the forward train speed.',
+      'Not quite. Because they are walking backward against the direction of the train, their speed relative to the ground drops to 8 meters per second.'),
+    { type: 'sorting', boxes: [
+      { id: 'vertical', label: 'Sees rain falling vertically' },
+      { id: 'slant', label: 'Sees rain hitting at an aggressive slant' }
+    ], items: [
+      { id: 'person', label: 'A stationary person on the sidewalk', box: 'vertical' },
+      { id: 'driver', label: 'A driver in a car moving 60 mph', box: 'slant' }
+    ]},
+    S('Tap the wrong word to fix the sentence.\n\nIf a digital scale is broken and constantly reads 5 grams too heavy, taking the average of a thousand trials will fix the error.',
+      [O('fail','fail to change',true), O('randomize','randomize',false)],
+      'Got it. A systematic error bakes a bias into the math. Averaging only fixes random, scattered noise.',
+      'Actually, averaging will fail to fix it. Averaging a thousand biased readings just results in an average that is 5 grams too heavy.'),
+    S('To cut the uncertainty of a measurement in half, an instrument must be tested exactly twice as many times.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. It requires four times as many tests. The math has a strict law of diminishing returns.',
+      'Actually, that\'s false. Because of the law of diminishing returns, cutting the error in half requires four times as many trials.'),
+    S('A single atom of oxygen floats in a vacuum. Does this single atom have a temperature?',
+      [O('no','No',true), O('yes','Yes',false)],
+      'Exactly. Temperature is the average speed of billions of atoms bouncing off each other. A single particle cannot be hot or cold.',
+      'Not quite. Temperature is an emergent property. It only exists when billions of atoms interact. A single atom has no temperature.')
   ]
 };
 
