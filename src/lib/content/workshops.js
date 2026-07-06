@@ -269,6 +269,36 @@ export const LINE_WORKSHOPS = {
       [O('W','W',true), O('N','\u2115',false)],
       'Got it. The W (Whole numbers) is the first box that includes zero.',
       'Not quite. \u2115 starts at 1. You need the W for Whole numbers to get zero.')
+  ],
+
+  // The Mathematical Machine (Functions & Growth)
+  checkpoint_f: [
+    S('Tap the wrong word to fix the rule of a mathematical function.\n\nA working function can take a single specific input and produce multiple different outputs.',
+      [O('one','exactly one',true), O('randomized','a randomized',false)],
+      'Yep. Predictability is the absolute rule. One specific input can only ever lead to exactly one specific output.',
+      'Actually, a single input can only produce exactly one output. If it produces multiple different outputs, the machine is broken.'),
+    S('Tap the vending machine slot where the coins go in. The word DOMAIN appears over the coin slot. What does the Domain of a function represent?',
+      [O('inputs','All acceptable inputs',true), O('outputs','All possible outputs',false)],
+      'Exactly. The Domain is the strictly defined list of inputs the machine is allowed to accept without breaking.',
+      'Not quite. The outputs are the Range. The Domain is the complete list of all acceptable inputs.'),
+    S('A single bacterial cell divides into two. Those two divide into four. Four become eight. What mathematical curve tracks this growth?',
+      [O('exponential','An Exponential function',true), O('linear','A Linear function',false)],
+      'Got it. It isn\'t growing by a steady, fixed amount. It is multiplying its previous output, bending the line violently upward.',
+      'Actually, a linear function grows by a steady, flat amount. Because the bacteria are multiplying, it is an Exponential function.'),
+    S('A dot traces the path of a baseball thrown high into the air. The dot perfectly traces an upside-down U-shape. What is the name of this specific mathematical curve?',
+      [O('parabola','A parabola (Quadratic)',true), O('linear','A straight line (Linear)',false)],
+      'Yep. Every object falling under gravity traces this exact quadratic curve.',
+      'Not quite. A thrown object goes up, peaks, and falls in a symmetrical U-shape. That is a quadratic parabola.'),
+    S('To successfully run a function backward (an Inverse Function), the original machine must have a strictly one-to-one relationship between inputs and outputs.',
+      [O('true','True',true), O('false','False',false)],
+      'Exactly. If two different buttons drop the exact same soda, running it backward is impossible because the math doesn\'t know which button was pressed.',
+      'Actually, that\'s true. If the relationship isn\'t perfectly one-to-one, you can\'t trace the output back to the original input.'),
+    { type: 'sorting', boxes: [
+      { id: 'plug', label: 'Plug directly into' }
+    ], items: [
+      { id: 'output', label: 'The output of the first machine', box: 'plug' },
+      { id: 'input', label: 'The input slot of the second machine', box: null }
+    ]}
   ]
 };
 
@@ -579,6 +609,62 @@ export const ATOM_WORKSHOPS = {
       [O('false','False',true), O('true','True',false)],
       'Yep, that\'s false. They react with absolutely nothing because their outer shells are already perfectly full.',
       'Actually, that\'s false. They are completely unreactive (Noble Gases) because they already have 8 electrons. They have nothing to gain or lose.')
+  ],
+
+  // Counting the Invisible (Moles & Formulas)
+  checkpoint_g: [
+    S('Tap the wrong word to fix the sentence.\n\nA mole is a magical chemical particle that weighs exactly 12 grams.',
+      [O('counting','a massive counting number',true), O('atom','an invisible atom',false)],
+      'Yep. A mole isn\'t a physical object. It is just a massive number (like a dozen), used to group tiny things together.',
+      'Actually, a mole is just a number. It is exactly like saying "a dozen," just massively scaled up.'),
+    { type: 'sorting', boxes: [
+      { id: 'bench', label: 'The lab bench' }
+    ], items: [
+      { id: 'scale', label: 'A laboratory scale', box: 'bench' },
+      { id: 'tweezers', label: 'A pair of tweezers', box: null }
+    ]},
+    S('The physical weight of a powder (80 grams) is pushed through the n = m / M bridge equation. The weight is divided by the Molar Mass, and outputs "2 Moles". Why do chemists convert grams into moles before running an experiment?',
+      [O('ratio','Because chemical recipes only run on mole ratios',true), O('heavy','Because grams are too heavy',false)],
+      'Got it. A chemical equation (like 2H₂ + O₂) dictates the exact ratio of atoms needed. It doesn\'t care how much they weigh.',
+      'Actually, it is because chemical equations are recipes. They dictate the exact ratio of moles needed to make the reaction work.'),
+    S('If a machine tells you a powder is 40% Carbon by mass, you instantly know the exact chemical formula.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. Mass percentages don\'t reveal the structure. You have to convert the masses into moles to find the actual ratio of atoms.',
+      'Actually, that\'s false. Mass alone doesn\'t tell you the atomic structure. You have to convert to moles to find the ratio.'),
+    S('An Empirical Formula is found with a simple 1:2:1 ratio (CH₂O). It weighs 30 grams. But lab tests prove the real molecule weighs 180 grams. What do you do?',
+      [O('multiply','Multiply the entire formula by 6',true), O('add','Add 150 grams to the formula',false)],
+      'Exactly. 180 divided by 30 is 6. You just multiply the simplest ratio by 6 to find the true, massive size of the molecule (C₆H₁₂O₆).',
+      'Not quite. You find the multiplier by dividing the total weight by the simple weight (180 / 30 = 6). Then you multiply the formula by 6.')
+  ],
+
+  // Geometry of Matter (Shapes, Polarity & Networks)
+  checkpoint_h: [
+    S('A molecule is built with four electron pairs around a central atom. The pairs push to the corners of a tetrahedron. Why do the electron pairs push away from each other?',
+      [O('repel','Because like-charges (negative) repel',true), O('heavy','Because they are too heavy',false)],
+      'Yep. The negative electrons constantly push against one another, forcing the molecule into a highly specific 3D shape.',
+      'Actually, it\'s because electrons carry a negative charge. In physics, like-charges violently repel each other.'),
+    { type: 'sorting', boxes: [
+      { id: 'o', label: 'The Oxygen atom' }
+    ], items: [
+      { id: 'neg', label: 'A slightly negative charge', box: 'o' },
+      { id: 'pos', label: 'A slightly positive charge', box: null }
+    ]},
+    S('Carbon Dioxide (CO₂) has highly polar bonds. But it is perfectly straight (linear). Does the entire molecule carry a lopsided electrical charge?',
+      [O('no','No, the pulls perfectly cancel out',true), O('yes','Yes, it is highly polar',false)],
+      'Exactly. Because the oxygens pull in exact opposite directions, the tug-of-war is a tie. The molecule is neutral overall.',
+      'Actually, no. Because the molecule is perfectly straight, the electrical pulls cancel each other out entirely.'),
+    S('The two strands of DNA are held together by unbreakable, permanent covalent bonds.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. They are held together by weak Intermolecular forces (Hydrogen bonds) so they can easily unzip to be copied.',
+      'Actually, that\'s false. They are held by weak Hydrogen bonds, acting like a zipper that can easily open and close.'),
+    S('A carbon atom in a piece of Diamond is tapped. The atom is locked to 4 neighbors, who are locked to 4 neighbors, in an endless 3D grid. Are there individual, discrete molecules inside a diamond?',
+      [O('no','No, the whole crystal is one continuous network',true), O('yes','Yes, millions of them',false)],
+      'Got it. There are no separate molecules. The entire physical crystal is locked together as one giant structure.',
+      'Actually, no. In a giant covalent network, the bonds never stop. The entire crystal is essentially one massive molecule.'),
+    S('Tap the wrong word to fix the sentence.\n\nGraphite is much softer than Diamond because it is built out of an entirely different element.',
+      [O('shape','geometric shape',true), O('liquid','chemical liquid',false)],
+      'Exactly. They are both made of 100% pure Carbon. The only difference is the 3D geometry of how the atoms connect.',
+      'Actually, they are both pure Carbon. Graphite is soft because it forms flat, sliding sheets instead of a rigid 3D pyramid.')
   ]
 };
 
@@ -696,6 +782,36 @@ export const BIT_WORKSHOPS = {
       [O('no','No',true), O('yes','Yes',false)],
       'Got it. The second a 0 hits an AND gate, the whole thing fails. The output will be 0 no matter what the other input is.',
       'Actually, you don\'t. Because an AND gate requires both to be 1, a single 0 means the output is guaranteed to be 0.')
+  ],
+
+  // The Physical Switch (Hardware & Software)
+  checkpoint_c: [
+    S('If an Adder circuit is handed electrical signals representing a 2 and a 3, it outputs a 5. Does the computer actually "know" what a 5 is?',
+      [O('no','No, it just routed electricity through logic gates',true), O('yes','Yes, it calculated the math in its brain',false)],
+      'Yep. The physical architecture of the gates just forces the electricity down a specific path. It is purely mechanical.',
+      'Actually, no. The computer has no brain. The physical wiring of the AND and OR gates just guarantees the electricity exits on the correct wire.'),
+    S('An English code instruction is tapped. A "Compiler" instantly translates the text into a massive wall of 1s and 0s. Why is a compiler necessary?',
+      [O('binary','The processor only understands On and Off',true), O('fast','The processor is too fast for English',false)],
+      'Exactly. The hardware only understands raw electricity. The compiler does the heavy lifting of translating human logic into electrical switches.',
+      'Not quite. A processor cannot read words at all. It only understands physical electricity turning on and off (1s and 0s).'),
+    S('If the steps of an algorithm are executed out of order, the computer will automatically fix the sequence.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. A computer is blind. It will execute the steps exactly as written, even if it completely ruins the task.',
+      'Actually, that\'s false. A computer has no intelligence. If the recipe is written out of order, the machine will blindly execute it and fail.'),
+    { type: 'sorting', boxes: [
+      { id: 'board', label: 'The circuit board' }
+    ], items: [
+      { id: 'diode', label: 'A Diode', box: 'board' },
+      { id: 'wire', label: 'A Copper Wire', box: null }
+    ]},
+    S('Tap the wrong word to fix the sentence.\n\nA transistor is able to flip on and off billions of times a second because it uses microscopic moving parts.',
+      [O('solid','solid, motionless',true), O('mechanical','heavy, mechanical',false)],
+      'Exactly. The transistor was a revolution because it has absolutely no moving parts to break or wear out.',
+      'Actually, the transistor has zero moving parts. It is just a solid block of chemicals that changes how it conducts electricity.'),
+    S('An "If/Then" branch is written. The logic path slides to the "False" outcome, routing to the "Error Screen" wire. Does this branch require the computer to make a complex moral decision?',
+      [O('no','No, it is just Boolean logic',true), O('yes','Yes, it must weigh the options',false)],
+      'Yep. It is purely mathematical. If the password matches, the electricity goes one way. If it doesn\'t, it goes the other.',
+      'Not quite. An If/Then statement is just simple Boolean logic. The electricity is just physically routed based on a True or False check.')
   ]
 };
 
@@ -825,6 +941,28 @@ export const PHYS_WORKSHOPS = {
       [O('no','No',true), O('yes','Yes',false)],
       'Exactly. Temperature is the average speed of billions of atoms bouncing off each other. A single particle cannot be hot or cold.',
       'Not quite. Temperature is an emergent property. It only exists when billions of atoms interact. A single atom has no temperature.')
+  ],
+
+  // The Edge of Physics (Dimensions & Newton)
+  checkpoint_d: [
+    S('Tap the equals sign on this equation: Force = mass + velocity. The equation flashes RED and breaks apart. Why did the equation fail before numbers were even plugged in?',
+      [O('dimensions','The dimensional units do not match',true), O('fast','Velocity is too fast to add',false)],
+      'Yep. The Homogeneity Principle dictates that you cannot add different dimensions together. You can\'t add mass to speed.',
+      'Not quite. According to the Homogeneity Principle, every piece of an equation must share the exact same underlying dimensional units.'),
+    S('How did physicist G.I. Taylor deduce the highly classified energy yield of the first atomic bomb just by looking at a photograph of the fireball?',
+      [O('dimensions','He mathematically balanced the visible dimensions (Length and Time) against the dimensions of Energy',true), O('stole','He stole the blueprints',false)],
+      'Exactly. By forcing the dimensions on both sides of the equation to match, he mathematically cornered the exact explosive yield.',
+      'Actually, he used Dimensional Analysis. By perfectly balancing the visible units (Length, Time, Mass), the math revealed the secret.'),
+    S('In coordinate geometry, a computer proves a shape is a rectangle by looking at a picture of it.',
+      [O('false','False',true), O('true','True',false)],
+      'Yep, that\'s false. A computer proves it by running the Distance and Slope formulas to verify the math is perfect.',
+      'Actually, that\'s false. A visual image can be deceptive. The computer calculates the exact length and angle of every line to prove it.'),
+    { type: 'sorting', boxes: [
+      { id: 'broken', label: 'The broken orbit' }
+    ], items: [
+      { id: 'mercury', label: 'Mercury', box: 'broken' },
+      { id: 'neptune', label: 'Neptune', box: null }
+    ]}
   ]
 };
 
