@@ -319,6 +319,85 @@
     else if (e.key === 'ArrowUp') { goShallower(idx); e.preventDefault(); }
   }
 
+  // ── Mouse drag — mirrors touch handler for desktop/web ───────────────────
+  let mouseDown = false;
+  let mStartX = 0, mStartY = 0, mdx = 0, mdy = 0, mVScroller = null;
+
+  function handleMouseDown(e) {
+    if (e.button !== 0 || lightboxMedia) return;
+    mouseDown = true;
+    mStartX = e.clientX; mStartY = e.clientY;
+    mdx = 0; mdy = 0; axis = null;
+    dragOffset = 0; isDragging = false;
+    dragOffsetY = 0; isVDragging = false; vEngaged = false;
+    mVScroller = e.target.closest?.('.card')?.querySelector('.floor-anim') || null;
+  }
+
+  function handleMouseMove(e) {
+    if (!mouseDown) return;
+    mdx = e.clientX - mStartX;
+    mdy = e.clientY - mStartY;
+    if (!axis && (Math.abs(mdx) > 8 || Math.abs(mdy) > 8)) {
+      axis = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+    }
+    if (axis === 'x') {
+      isDragging = true;
+      const atEdge = (idx === 0 && mdx > 0) || (idx === totalCards - 1 && mdx < 0);
+      dragOffset = atEdge ? mdx * 0.3 : mdx;
+    } else if (axis === 'y') {
+      const atTop    = !mVScroller || mVScroller.scrollTop <= 0;
+      const atBottom = !mVScroller || mVScroller.scrollTop + mVScroller.clientHeight >= mVScroller.scrollHeight - 1;
+      if ((mdy > 0 && atTop) || (mdy < 0 && atBottom)) {
+        vEngaged = true; isVDragging = true;
+        const maxB = (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.015;
+        dragOffsetY = maxB * Math.tanh(mdy / (maxB * 3));
+      } else {
+        isVDragging = false; dragOffsetY = 0;
+      }
+    }
+  }
+
+  function handleMouseUp() {
+    if (!mouseDown) return;
+    mouseDown = false;
+    if (axis === 'x') {
+      const threshold = Math.min(80, (typeof window !== 'undefined' ? window.innerWidth : 360) * 0.22);
+      if (mdx < -threshold) move(idx + 1);
+      else if (mdx > threshold) move(idx - 1);
+    } else if (axis === 'y' && vEngaged) {
+      if (mdy < 0) goDeeper(idx); else goShallower(idx);
+    }
+    axis = null;
+    dragOffset = 0; isDragging = false;
+    dragOffsetY = 0; isVDragging = false; vEngaged = false;
+  }
+
+  // ── Mouse wheel — dig/surface on desktop, respects in-floor text scroll ──
+  let wheelLocked = false;
+
+  function handleWheel(e) {
+    if (lightboxMedia) return; // lightbox handles its own wheel
+    // If the text is mid-scroll, let it scroll — only navigate at the boundary
+    const scroller = e.target.closest('.floor-anim');
+    if (scroller) {
+      const atTop    = scroller.scrollTop <= 0;
+      const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1;
+      if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBottom)) return;
+    }
+    e.preventDefault();
+    if (wheelLocked) return;
+    wheelLocked = true;
+    setTimeout(() => { wheelLocked = false; }, 650);
+
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      if (e.deltaX > 20) move(idx + 1);
+      else if (e.deltaX < -20) move(idx - 1);
+    } else {
+      if (e.deltaY > 0) goDeeper(idx);
+      else if (e.deltaY < 0) goShallower(idx);
+    }
+  }
+
   // ── Lightbox: open/close + pinch-zoom & pan ──
   function openLightbox(media) { lightboxMedia = media; lbScale = 1; lbX = 0; lbY = 0; }
   function closeLightbox() { lightboxMedia = null; lbScale = 1; lbX = 0; lbY = 0; }
@@ -408,10 +487,16 @@
   <div
     id="rail"
     class:dragging={isDragging}
+    class:mouse-dragging={mouseDown}
     style="transform:translateX({-idx * 100}%) translateX({dragOffset}px)"
     on:touchstart={handleTouchStart}
     on:touchmove={handleTouchMove}
     on:touchend={handleTouchEnd}
+    on:mousedown={handleMouseDown}
+    on:mousemove={handleMouseMove}
+    on:mouseup={handleMouseUp}
+    on:mouseleave={handleMouseUp}
+    on:wheel|nonpassive={handleWheel}
   >
     {#each numbers as n, i}
       {@const col = getBoard(n)}
@@ -638,8 +723,11 @@
     transition: transform 0.62s cubic-bezier(0.16, 0.84, 0.24, 1);
     will-change: transform;
     touch-action: pan-y; /* we own horizontal swipes; vertical still scrolls/digs */
+    cursor: grab;
+    user-select: none;
   }
-  #rail.dragging { transition: none; } /* follow the finger 1:1 while dragging */
+  #rail.dragging  { transition: none; } /* follow the finger 1:1 while dragging */
+  #rail.mouse-dragging { cursor: grabbing; }
   .card {
     position: relative; flex: 0 0 100%;
     width: 100%; height: 100%;
