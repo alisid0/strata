@@ -45,6 +45,11 @@ function parseMd(src) {
     const sortOrder = parseInt(head[1], 10);
     const title = head[2].trim();
 
+    const tagLine = block.match(/\*\*Subject:\*\*\s*(.+?)\s*\|\s*\*\*Topic:\*\*\s*(.*?)\s*\|\s*\*\*Concept:\*\*\s*(.*?)\s*$/m);
+    const subject = tagLine ? tagLine[1].trim() : null;
+    const topic   = tagLine ? tagLine[2].trim() : null;
+    const concept = tagLine ? tagLine[3].trim() : null;
+
     const floors = {};
     const floorRe = /\*\*Floor (\d+):\*\* ([\s\S]*?)(?=\n\*\*Floor \d+:\*\*|\n---|\n*$)/g;
     let m;
@@ -52,7 +57,7 @@ function parseMd(src) {
       floors[parseInt(m[1], 10)] = m[2].trim().replace(/\s+/g, ' ');
     }
 
-    bbs.push({ sortOrder, title, floors });
+    bbs.push({ sortOrder, title, subject, topic, concept, floors });
   }
   return bbs;
 }
@@ -86,10 +91,37 @@ const dbBySort = new Map(dbRows.map(r => [r.sort_order, r]));
 
 let changedCount = 0, heldBack = 0;
 const toApply = [];
+const toInsert = [];
 
 for (const bb of mdBbs) {
   const db = dbBySort.get(bb.sortOrder);
-  if (!db) { console.log(`⚠  BB ${bb.sortOrder} — not found in Supabase, skipping`); continue; }
+
+  if (!db) {
+    const floorIdxs = Object.keys(bb.floors).map(Number).sort((a, b) => a - b);
+    if (floorIdxs.length === 0 || !floorIdxs.every((n, i) => n === i)) {
+      console.log(`⚠  BB ${bb.sortOrder} — new BB but floors not contiguous from 0, skipping`);
+      continue;
+    }
+    if (!bb.subject) {
+      console.log(`⚠  BB ${bb.sortOrder} — new BB but missing **Subject:**/**Topic:**/**Concept:** line, skipping`);
+      continue;
+    }
+    changedCount++;
+    console.log(`\n➕ BB ${bb.sortOrder} — ${bb.title} (NEW — ${floorIdxs.length} floors, subject:${bb.subject} topic:${bb.topic})`);
+    toInsert.push({
+      sort_order: bb.sortOrder,
+      act: 'I',
+      kicker: '',
+      title: bb.title,
+      layers: floorIdxs.map(i => htmlify(bb.floors[i])),
+      img_url: null,
+      tags: {
+        subject: bb.subject, topic: bb.topic, concept: bb.concept,
+        ground: 'g0', source: 'publishable-review', buildsOn: [], reviewStatus: 'P',
+      },
+    });
+    continue;
+  }
 
   const titleChanged = bb.title && bb.title !== db.title;
 
@@ -163,16 +195,24 @@ for (const bb of mdBbs) {
 
 console.log(`\n${'─'.repeat(50)}`);
 console.log(`${changedCount} BB(s) with changes${heldBack ? `, ${heldBack} held back (use --force)` : ''}`);
-console.log(`${toApply.length} ready to ${APPLY ? 'apply' : 'apply (dry-run — use --apply to push)'}`);
+console.log(`${toApply.length} update(s), ${toInsert.length} new insert(s) — ${APPLY ? 'applying' : 'dry-run, use --apply to push'}`);
 
-if (APPLY && toApply.length > 0) {
-  console.log('\nApplying...');
-  for (const { sortOrder, newLayers, newTitle } of toApply) {
-    const update = { layers: newLayers, updated_at: new Date().toISOString() };
-    if (newTitle) update.title = newTitle;
-    const { error: upErr } = await sb.from('cards')
-      .update(update)
-      .eq('sort_order', sortOrder);
-    console.log(upErr ? `  ✗ BB ${sortOrder}: ${upErr.message}` : `  ✓ BB ${sortOrder} updated${newTitle ? ' (title + floors)' : ''}`);
+if (APPLY) {
+  if (toInsert.length > 0) {
+    console.log('\nInserting new BBs...');
+    const { error: insErr } = await sb.from('cards').insert(toInsert);
+    if (insErr) console.log(`  ✗ Insert failed: ${insErr.message}`);
+    else toInsert.forEach(r => console.log(`  ✓ BB ${r.sort_order} inserted`));
+  }
+  if (toApply.length > 0) {
+    console.log('\nApplying updates...');
+    for (const { sortOrder, newLayers, newTitle } of toApply) {
+      const update = { layers: newLayers, updated_at: new Date().toISOString() };
+      if (newTitle) update.title = newTitle;
+      const { error: upErr } = await sb.from('cards')
+        .update(update)
+        .eq('sort_order', sortOrder);
+      console.log(upErr ? `  ✗ BB ${sortOrder}: ${upErr.message}` : `  ✓ BB ${sortOrder} updated${newTitle ? ' (title + floors)' : ''}`);
+    }
   }
 }
