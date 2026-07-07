@@ -22,3 +22,12 @@ audio/
 # one-off per-board authoring/upload helper scripts (throwaway)
 scripts/_*.mjs
 media/videos/
+
+# Playwright browser session (local only)
+.playwright-session/
+
+# Debug screenshots (one-off inspection)
+el-screenshot.png
+
+# Work mode (local state)
+.mode
