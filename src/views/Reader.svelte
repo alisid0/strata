@@ -111,57 +111,10 @@
     rebuildDerived();
   }
 
+  // Checkpoint gate is disabled — was interrupting straight-through content
+  // review every 3rd BB. Workshop/quiz content (below) is untouched for when
+  // it's re-enabled; only the trigger in move() is gone.
   function move(to) {
-    // Checkpoint gate: stepping forward past every 3rd BB pops a workshop or quiz.
-    if (pathId && to === idx + 1 && (idx + 1) % CHECKPOINT_EVERY === 0
-        && idx < totalCards - 1 && !checkpointSeen.has(idx)) {
-      // LINE and ATOM paths use interactive workshops
-      if (pathId === 'LINE_001') {
-        const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
-        const workshop = getLineWorkshop(checkpointIndex);
-        if (workshop && workshop.length) {
-          checkpointWorkshop = workshop;
-          pendingAdvanceTo = to;
-          return;
-        }
-      }
-      if (pathId === 'ATOM_001') {
-        const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
-        const workshop = getAtomWorkshop(checkpointIndex);
-        if (workshop && workshop.length) {
-          checkpointWorkshop = workshop;
-          pendingAdvanceTo = to;
-          return;
-        }
-      }
-      if (pathId === 'BIT_001') {
-        const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
-        const workshop = getBitWorkshop(checkpointIndex);
-        if (workshop && workshop.length) {
-          checkpointWorkshop = workshop;
-          pendingAdvanceTo = to;
-          return;
-        }
-      }
-      if (pathId === 'PHYS_001') {
-        const checkpointIndex = Math.floor(idx / CHECKPOINT_EVERY);
-        const workshop = getPhysWorkshop(checkpointIndex);
-        if (workshop && workshop.length) {
-          checkpointWorkshop = workshop;
-          pendingAdvanceTo = to;
-          return;
-        }
-      }
-      // Fallback: MCQ questions for other paths
-      const qs = getPathQuestions(pathId, 24)
-        .filter(q => q.type === 'mcq' || q.type === 'truefalse')
-        .slice(0, 3);
-      if (qs.length) {
-        checkpointLegacy = qs;
-        pendingAdvanceTo = to;
-        return;
-      }
-    }
     idx = Math.max(0, Math.min(totalCards - 1, to));
     const cardNumber = numbers[idx];
     progress.recordBoardOpen(cardNumber, pathsForCard(cardNumber));
