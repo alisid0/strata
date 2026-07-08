@@ -7,6 +7,8 @@
   import PixelGrid from './PixelGrid.svelte';
   import ForceBalance from './ForceBalance.svelte';
   import WaveTuner from './WaveTuner.svelte';
+  import AtomBuilder from './AtomBuilder.svelte';
+  import MoleculeBuilder from './MoleculeBuilder.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -81,6 +83,26 @@
           prompt={current.prompt}
           targetAmplitude={current.targetAmplitude}
           targetFrequency={current.targetFrequency}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'atombuilder'}
+        <AtomBuilder
+          prompt={current.prompt}
+          targetName={current.targetName}
+          targetProtons={current.targetProtons}
+          targetNeutrons={current.targetNeutrons}
+          targetElectrons={current.targetElectrons}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'moleculebuilder'}
+        <MoleculeBuilder
+          prompt={current.prompt}
+          targetFormula={current.targetFormula}
+          targetAtoms={current.targetAtoms}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
           onDone={handleInteractionDone}

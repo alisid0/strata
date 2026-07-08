@@ -1,6 +1,6 @@
 <script>
   import Workshop from '../lib/components/assessments/Workshop.svelte';
-  import { getBitDataWorkshop, getPhysicsCoreWorkshop } from '../lib/content/workshops.js';
+  import { getBitDataWorkshop, getPhysicsCoreWorkshop, getChemistryCoreWorkshop } from '../lib/content/workshops.js';
 
   export let onNavigate;
 
@@ -26,6 +26,14 @@
       icon: '/icons/gateways/unit.png',
       pathId: 'PHYS_001',
       getWorkshop: getPhysicsCoreWorkshop
+    },
+    chemistry: {
+      label: 'Chemistry',
+      title: 'Atom and molecule builder',
+      sub: 'Build atoms, ions, isotopes, water, and carbon dioxide.',
+      icon: '/icons/gateways/atom.png',
+      pathId: 'ATOM_001',
+      getWorkshop: getChemistryCoreWorkshop
     }
   };
 
@@ -150,7 +158,7 @@
 
   .track-tabs {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     margin-bottom: 12px;
   }
@@ -283,6 +291,10 @@
   }
 
   @media (max-width: 380px) {
+    .track-tabs {
+      grid-template-columns: 1fr;
+    }
+
     .spotlight {
       align-items: flex-start;
       flex-direction: column;

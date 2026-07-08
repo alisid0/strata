@@ -1280,6 +1280,70 @@ export function getPhysicsCoreWorkshop() {
   return PHYSICS_CORE_WORKSHOP;
 }
 
+export const CHEMISTRY_CORE_WORKSHOP = [
+  {
+    type: 'atombuilder',
+    prompt: 'Build neutral oxygen. Protons set the element; electrons set the charge.',
+    targetName: 'Oxygen',
+    targetProtons: 8,
+    targetNeutrons: 8,
+    targetElectrons: 8,
+    correctFeedback: 'Clean build. Eight protons makes oxygen, and eight electrons keeps it neutral.',
+    incorrectFeedback: 'Oxygen needs 8 protons. Neutral oxygen also needs 8 electrons.'
+  },
+  S('An atom has 6 protons. A neutron is added. What changes?',
+    [O('mass','Its mass changes, but it stays carbon',true), O('element','It becomes a new element',false)],
+    'Exactly. Neutrons change mass, not element identity.',
+    'Not quite. Element identity is set by protons. Neutrons make isotopes.'),
+  {
+    type: 'atombuilder',
+    prompt: 'Make a positive lithium ion. Same element, one electron missing.',
+    targetName: 'Lithium ion',
+    targetProtons: 3,
+    targetNeutrons: 4,
+    targetElectrons: 2,
+    correctFeedback: 'Yes. Three protons still means lithium. Two electrons leaves a +1 charge.',
+    incorrectFeedback: 'Keep lithium at 3 protons, then remove one electron so the charge becomes positive.'
+  },
+  { type: 'sorting', boxes: [
+    { id: 'identity', label: 'Changes element identity' },
+    { id: 'charge', label: 'Changes charge' },
+    { id: 'mass', label: 'Changes isotope mass' }
+  ], items: [
+    { id: 'protons', label: 'Add or remove protons', box: 'identity' },
+    { id: 'electrons', label: 'Add or remove electrons', box: 'charge' },
+    { id: 'neutrons', label: 'Add or remove neutrons', box: 'mass' }
+  ]},
+  {
+    type: 'moleculebuilder',
+    prompt: 'Build water from the formula H2O.',
+    targetFormula: 'H2O',
+    targetAtoms: { H: 2, O: 1 },
+    correctFeedback: 'Correct. H2O means two hydrogen atoms and one oxygen atom.',
+    incorrectFeedback: 'Read the small number as a count. H2O needs 2 H and 1 O.'
+  },
+  {
+    type: 'moleculebuilder',
+    prompt: 'Build carbon dioxide from the formula CO2.',
+    targetFormula: 'CO2',
+    targetAtoms: { C: 1, O: 2 },
+    correctFeedback: 'Correct. CO2 means one carbon atom with two oxygen atoms.',
+    incorrectFeedback: 'CO2 needs 1 C and 2 O. The 2 only belongs to oxygen.'
+  },
+  S('A molecule behaves differently from the atoms it contains. What is the main reason?',
+    [O('bonds','The atoms are bonded into a new structure',true), O('heavier','The atoms simply became heavier',false)],
+    'Exactly. Bonds and structure create new behavior.',
+    'Not quite. The same atoms can behave differently once bonds arrange them into a molecule.'),
+  S('A learner can look at H2O and immediately say "two hydrogens, one oxygen." What has clicked?',
+    [O('formula','They can read a chemical formula as atom counts',true), O('mass','They know the exact mass of the sample',false)],
+    'Yes. That is real formula fluency: symbols become counts, not decoration.',
+    'Not quite. Formula fluency means reading the symbols and subscripts as atom counts.')
+];
+
+export function getChemistryCoreWorkshop() {
+  return CHEMISTRY_CORE_WORKSHOP;
+}
+
 // ── Physics workshops ──
 
 export const PHYS_WORKSHOPS = {
