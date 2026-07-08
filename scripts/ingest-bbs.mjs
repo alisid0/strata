@@ -92,7 +92,11 @@ function saveLedger(ledger) {
 
 function pad2(n) { return n < 10 ? '0' + n : '' + n; }
 
-/** Resolve a "Builds on" reference ("BB 01" / "Card 21" / "BB-NEW-08") to a "Card NN" string. */
+// Subject prefix for topic-based kicker generation: maths→1, chemistry→2, physics→3, computing→4
+const SUBJECT_PREFIX = { maths: '1', chemistry: '2', physics: '3', computing: '4' };
+
+/** Resolve a "Builds on" reference to the canonical topic-based kicker string.
+ *  Accepts: "BB 01", "Card 21", "BB-NEW-08", or already-topic-based "Mechanics 3.4". */
 function resolveRef(ref, ledger) {
   const placeholder = ref.match(/^BB-NEW-\d+$/i);
   if (placeholder) {
@@ -101,9 +105,12 @@ function resolveRef(ref, ledger) {
     if (!num) throw new Error(`unresolved placeholder reference "${ref}" — not yet assigned a real number (ingest the batch that defines it first)`);
     return `Card ${pad2(num)}`;
   }
+  // Already topic-based (e.g. "Mechanics 3.4", "Coordinate Geometry 1.2") — pass through
+  if (/^[A-Z]/.test(ref) && /\d+\.\d+/.test(ref)) return ref;
+  // Old "BB NN" format — normalize to "Card NN"
   const bb = ref.match(/^BB\s*(\d+)$/i);
   if (bb) return `Card ${pad2(parseInt(bb[1], 10))}`;
-  return ref; // already "Card NN" or some other free-text reference
+  return ref; // "Card NN" or free-text, pass through
 }
 
 /** Parse the BB-NEW-NN Markdown drafting format into the same shape a JSON batch uses. */
@@ -156,6 +163,9 @@ function parseMarkdownBatch(content, ledger, startNextOrder) {
       const num = placeholder.match(/\d+/)[0];
       kicker = `BB ${parseInt(num, 10)}`;
     }
+    // Note: topic-based kickers (e.g. "Coordinate Geometry 1.5") are not auto-generated
+    // for Markdown batches — they stay as "BB NN" and can be migrated later via
+    // scripts/migrate-dynamic-kickers.mjs.
 
     boards.push({ kicker, title, imagePrompt, tags: { subject: subject.trim(), topic: topic.trim(), concept: concept.trim(), ground: ground.trim(), buildsOn }, floors: floors.map(f => ({ content: f })) });
   }
@@ -272,6 +282,8 @@ async function main() {
     console.log('Auto-assigned (no number in kicker) — copy these into your JSON before any later re-run:');
     autoAssigned.forEach(a => console.log('  -', a));
   }
+  console.log('Note: dynamic card kickers use "BB NN" format. To convert to topic-based names,');
+  console.log('run: node scripts/migrate-dynamic-kickers.mjs');
   if (failures.length > 0) {
     console.log('Failures:');
     failures.forEach(f => console.log('  -', f));

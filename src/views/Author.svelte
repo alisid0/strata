@@ -90,7 +90,7 @@
       </div>
 
       <ChalkInput bind:value={concept} label="Concepts (semicolons)" placeholder="inertia; newtons-first-law" />
-      <ChalkInput bind:value={buildsOn} label="buildsOn (comma-separated card numbers)" placeholder="Card 06, Card 21" />
+      <ChalkInput bind:value={buildsOn} label="buildsOn (comma-separated kicker names)" placeholder="Mechanics 3.5, Vectors 3.0" />
 
       <div class="floors-section">
         <label class="lbl">Floors (depth layers)</label>
