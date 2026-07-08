@@ -11,6 +11,7 @@
   import MoleculeBuilder from './MoleculeBuilder.svelte';
   import MatrixCellFinder from './MatrixCellFinder.svelte';
   import MatrixTransform from './MatrixTransform.svelte';
+  import CoordinateDrill from './CoordinateDrill.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -142,6 +143,25 @@
           matrix={current.matrix}
           inputPoint={current.inputPoint}
           options={current.options}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'coorddrill'}
+        <CoordinateDrill
+          mode={current.mode}
+          prompt={current.prompt}
+          targetX={current.targetX}
+          targetY={current.targetY}
+          targetM={current.targetM}
+          targetC={current.targetC}
+          fixedPoint={current.fixedPoint}
+          targetDistance={current.targetDistance}
+          distanceTolerance={current.distanceTolerance}
+          pointA={current.pointA}
+          pointB={current.pointB}
+          xRange={current.xRange}
+          yRange={current.yRange}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
           onDone={handleInteractionDone}

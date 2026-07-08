@@ -75,7 +75,7 @@
     return d.trim();
   }
 
-  function handleDown(e, i) { if (!interactive) return; e.preventDefault(); dragging = i; svgEl.setPointerCapture(e.pointerId); }
+  function handleDown(e, i) { if (!interactive || spec.points[i]?.locked) return; e.preventDefault(); dragging = i; svgEl.setPointerCapture(e.pointerId); }
   function handleMove(e) {
     if (dragging === null || !svgEl) return;
     const rect = svgEl.getBoundingClientRect();
@@ -189,10 +189,10 @@
 
   <!-- Points -->
   {#each spec.points || [] as pt, i}
-    <circle cx={toX(pt.x)} cy={toY(pt.y)} r={interactive ? 6 : 4.5}
+    <circle cx={toX(pt.x)} cy={toY(pt.y)} r={interactive && !pt.locked ? 6 : 4.5}
       fill={pt.color || 'var(--qx-accent)'} stroke="var(--qx-surface-2)" stroke-width="2"
-      class:interactive on:pointerdown={(e) => handleDown(e, i)} />
-    {#if interactive}
+      class:interactive={interactive && !pt.locked} on:pointerdown={(e) => handleDown(e, i)} />
+    {#if interactive && !pt.locked}
       <text x={toX(pt.x) + 9} y={toY(pt.y) - 9} fill="var(--qx-text)" font-size="12" font-weight="700" font-family="var(--qx-font)">({pt.x}, {pt.y})</text>
     {:else if pt.label}
       <text x={toX(pt.x) + 9} y={toY(pt.y) - 9} fill="var(--qx-text)" font-size="12" font-weight="700" font-family="var(--qx-font)">{pt.label}</text>

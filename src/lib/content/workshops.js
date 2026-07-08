@@ -1685,6 +1685,84 @@ export function getMathsMatricesWorkshop() {
   return MATHS_MATRICES_WORKSHOP;
 }
 
+// ── Coordinate geometry (The Line) workshop — drag-based drills on a live plane ──
+
+export const LINE_CORE_WORKSHOP = [
+  {
+    type: 'coorddrill', mode: 'plotPoint',
+    prompt: 'Every point has an address: across, then up. Plot it.',
+    targetX: 4, targetY: 3,
+    correctFeedback: 'Correct. 4 across, then 3 up — that address is (4, 3).',
+    incorrectFeedback: 'Across first, then up. Drag the point to 4 on x, 3 on y.'
+  },
+  S('You read a coordinate as (5, -2). Which number tells you how far up or down?',
+    [O('second','The second number',true), O('first','The first number',false)],
+    'Right. The first number is across, the second is up or down.',
+    'Not quite. The first number is always across (x); the second is up/down (y).'),
+  {
+    type: 'coorddrill', mode: 'plotPoint',
+    prompt: 'Negative coordinates work the same way, just in the other direction.',
+    targetX: -3, targetY: -2,
+    correctFeedback: 'Yes. Negative x is left, negative y is down.',
+    incorrectFeedback: 'Negative means the opposite direction on that axis. Try left and down.'
+  },
+  {
+    type: 'coorddrill', mode: 'buildLine',
+    prompt: 'A line is a rule connecting x and y: y = mx + c. Match the dashed target line.',
+    targetM: 2, targetC: -1,
+    correctFeedback: 'Correct. Slope 2 means the line climbs 2 for every 1 across; -1 is where it crosses the y-axis.',
+    incorrectFeedback: 'Slope controls the steepness, intercept controls where it crosses the y-axis. Adjust both.'
+  },
+  S('A line has a slope of 0. What does that mean?',
+    [O('flat','It is perfectly flat/horizontal',true), O('vertical','It is perfectly vertical',false)],
+    'Exactly. Zero slope means y never changes as x changes — a flat line.',
+    'Not quite. A slope of 0 means no rise at all — the line is flat, not vertical.'),
+  {
+    type: 'coorddrill', mode: 'buildLine',
+    prompt: 'A steeper line has a bigger slope. Match this one.',
+    targetM: -3, targetC: 2,
+    correctFeedback: 'Correct. Negative slope means the line falls as it moves right.',
+    incorrectFeedback: 'Negative slope falls left-to-right. Push the slope below zero.'
+  },
+  {
+    type: 'coorddrill', mode: 'distance',
+    prompt: 'Distance between two points is just the straight line between them. Drag B to match.',
+    fixedPoint: { x: -2, y: -2 }, targetDistance: 5, distanceTolerance: 0.4,
+    correctFeedback: 'Correct. A 3-4-5 triangle hides inside that distance.',
+    incorrectFeedback: 'Watch the live readout as you drag B — get it within range of the target.'
+  },
+  S('To find the distance between two points, what shape do you secretly build?',
+    [O('triangle','A right-angled triangle',true), O('circle','A circle',false)],
+    'Yes. The horizontal and vertical gaps become the two legs, and Pythagoras gives you the distance.',
+    'Not quite. The two gaps (horizontal and vertical) form a right triangle — distance is its hypotenuse.'),
+  {
+    type: 'coorddrill', mode: 'midpoint',
+    prompt: 'The midpoint sits exactly between two points. Drag M into place.',
+    pointA: { x: -4, y: 1 }, pointB: { x: 2, y: 5 },
+    correctFeedback: 'Correct. Average the x values, average the y values — that lands you exactly halfway.',
+    incorrectFeedback: 'The midpoint is the average of both x-coordinates and both y-coordinates.'
+  },
+  S('Points A(0, 0) and B(6, 0) sit on the x-axis. Where is the midpoint?',
+    [O('3,0','(3, 0)',true), O('6,0','(6, 0)',false)],
+    'Right. Halfway across 0 to 6 is 3, and both y-values are already 0.',
+    'Not quite. Average the x-coordinates: (0 + 6) / 2 = 3. The midpoint is (3, 0).'),
+  {
+    type: 'coorddrill', mode: 'distance',
+    prompt: 'One more distance check — this time starting from the origin.',
+    fixedPoint: { x: 0, y: 0 }, targetDistance: 5, distanceTolerance: 0.4,
+    correctFeedback: 'Correct. That is another 3-4-5 right triangle, just anchored at the origin.',
+    incorrectFeedback: 'Try B at (3, 4) or (4, 3) — both are exactly 5 units from the origin.'
+  },
+  S('A line climbs 4 units for every 2 units it moves right. What is its slope?',
+    [O('2','2',true), O('4','4',false)],
+    'Correct. Slope is rise over run: 4 over 2 simplifies to 2.',
+    'Not quite. Slope is rise divided by run: 4 ÷ 2 = 2.')
+];
+
+export function getLineCoreWorkshop() {
+  return LINE_CORE_WORKSHOP;
+}
+
 // ── Physics workshops ──
 
 export const PHYS_WORKSHOPS = {

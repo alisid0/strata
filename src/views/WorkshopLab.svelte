@@ -5,6 +5,7 @@
     getChemistryCoreWorkshop,
     getComputerWorkshopModule,
     getComputerWorkshopModules,
+    getLineCoreWorkshop,
     getMathsMatricesWorkshop,
     getPhysicsCoreWorkshop
   } from '../lib/content/workshops.js';
@@ -52,6 +53,14 @@
       icon: '/icons/gateways/line.png',
       pathId: 'MATH_MATRICES',
       getWorkshop: getMathsMatricesWorkshop
+    },
+    line: {
+      label: 'The Line',
+      title: 'Plot, build, and measure',
+      sub: 'Drag real points and lines on a live coordinate plane.',
+      icon: '/icons/gateways/line.png',
+      pathId: 'LINE_001',
+      getWorkshop: getLineCoreWorkshop
     }
   };
 
