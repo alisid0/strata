@@ -856,6 +856,62 @@ export const ATOM_WORKSHOPS = {
 
 // ── The Bit workshops ──
 
+export const BIT_DATA_WORKSHOP = [
+  {
+    type: 'bitpattern',
+    prompt: 'Beat 1: flip the switches into 1011.',
+    bits: 4,
+    target: '1011',
+    labels: ['8', '4', '2', '1'],
+    correctFeedback: 'Correct. In four-bit binary, 1011 means 8 + 0 + 2 + 1.',
+    incorrectFeedback: 'Check each place from left to right: 8, 4, 2, 1. The target is 1011.'
+  },
+  S('Same bits, different meaning. What tells the computer how to read a pattern?',
+    [O('rule','The rule used to read it',true), O('shape','The visual shape of the 1s and 0s',false)],
+    'Exactly. The same bits only become useful when a system knows how to interpret them.',
+    'Not quite. Bits need a reading rule. Without that rule, a pattern is just a row of 1s and 0s.'),
+  S('Eight bits snap together into one byte. Why is that useful?',
+    [O('chunk','It gives computers a useful standard chunk of storage',true), O('speed','It makes electricity travel faster',false)],
+    'Yes. A byte is a practical block that computers can count, move, and store.',
+    'Not quite. A byte does not make electricity faster. It gives computers a standard-sized block to work with.'),
+  {
+    type: 'bitpattern',
+    prompt: 'Make the byte 01000001. In common text encoding, this becomes capital A.',
+    bits: 8,
+    target: '01000001',
+    labels: ['128', '64', '32', '16', '8', '4', '2', '1'],
+    correctFeedback: 'Correct. The pattern 01000001 is read as capital A in common text encoding.',
+    incorrectFeedback: 'Look carefully at the target. Only the 64 place and the 1 place should be switched on.'
+  },
+  { type: 'sorting', boxes: [
+    { id: 'bit', label: 'Bit' },
+    { id: 'byte', label: 'Byte' }
+  ], items: [
+    { id: 'single', label: 'One on/off state', box: 'bit' },
+    { id: 'eight', label: 'Eight bits grouped together', box: 'byte' }
+  ]},
+  {
+    type: 'pixelgrid',
+    prompt: 'Paint the target. Each square is just one bit: off or on.',
+    target: ['0110', '1001', '1001', '0110'],
+    correctFeedback: 'Nice. A tiny picture can start as a grid of on/off pixel states.',
+    incorrectFeedback: 'Compare row by row. A 1 is a filled square; a 0 is empty.'
+  },
+  {
+    type: 'bitpattern',
+    prompt: 'Color mix: red on, green off, blue on.',
+    bits: 3,
+    target: '101',
+    labels: ['red', 'green', 'blue'],
+    correctFeedback: 'Correct. Red and blue are on, green is off.',
+    incorrectFeedback: 'The target is red on, green off, blue on: 101.'
+  },
+  S('A sound wave enters the computer. What gets stored?',
+    [O('samples','Many measured samples of the wave',true), O('air','Tiny pockets of air pressure',false)],
+    'Yes. The computer stores measurements, then rebuilds the sound from those measurements during playback.',
+    'Not quite. The computer stores measured numbers called samples, not actual air pressure.')
+];
+
 export const BIT_WORKSHOPS = {
 
   // After BB 003 — Switches and Pipes (12 interactions)
@@ -1154,12 +1210,479 @@ export const BIT_WORKSHOPS = {
   ]
 };
 
+export const COMPUTER_WORKSHOP_MODULES = [
+  {
+    id: 'binary-data',
+    label: 'Data',
+    title: 'Binary and data lab',
+    sub: 'Switch bits into numbers, letters, pixels, colour, and sound.',
+    interactions: [
+      ...BIT_DATA_WORKSHOP,
+      S('A sensor stores 00000000 for darkness and 11111111 for full brightness. What is the computer really storing?',
+        [O('measurements','Measurements written as bits',true), O('light','Actual light trapped inside memory',false)],
+        'Correct. The machine stores measured values, not the physical light itself.',
+        'Not quite. It stores numbers that represent brightness levels.'),
+      S('A file opens correctly on one app and looks broken in another. What probably changed?',
+        [O('decoder','The rule used to decode the bits',true), O('electricity','The electricity became weaker',false)],
+        'Yes. Same bits, different interpretation rule, different meaning.',
+        'The bits need a decoding rule. Without the right rule, the pattern looks meaningless.'),
+      {
+        type: 'pixelgrid',
+        prompt: 'Paint a diagonal. Each 1 is a filled pixel; each 0 is empty.',
+        target: ['1000', '0100', '0010', '0001'],
+        correctFeedback: 'Nice. A picture can be built from nothing but positions and on/off states.',
+        incorrectFeedback: 'Read each row left to right. The 1 should step down one column each row.'
+      },
+      {
+        type: 'bitpattern',
+        prompt: 'Make the tiny colour code: red off, green on, blue on.',
+        bits: 3,
+        target: '011',
+        labels: ['red', 'green', 'blue'],
+        correctFeedback: 'Locked. Green and blue are on; red is off.',
+        incorrectFeedback: 'The target is red off, green on, blue on: 011.'
+      }
+    ]
+  },
+  {
+    id: 'logic-gates',
+    label: 'Logic',
+    title: 'Logic gate trainer',
+    sub: 'Build confidence with AND, OR, NOT, and gate behaviour.',
+    interactions: [
+      S('A bit can only hold one yes/no state. Which pair matches that idea?',
+        [O('onezero','1 and 0',true), O('onetwo','1 and 2',false)],
+        'Exactly. A bit is one binary state.',
+        'A bit is binary. It needs exactly two states: 1 and 0.'),
+      { type: 'sorting', boxes: [
+        { id: 'one', label: '1 / True' },
+        { id: 'zero', label: '0 / False' }
+      ], items: [
+        { id: 'closed', label: 'Closed switch with current flowing', box: 'one' },
+        { id: 'open', label: 'Open switch with no current', box: 'zero' }
+      ]},
+      S('An AND gate receives A = 1 and B = 0. What is the output?',
+        [O('0','0',true), O('1','1',false)],
+        'Correct. AND needs both inputs to be 1.',
+        'AND fails if even one input is 0.'),
+      S('An OR gate receives A = 0 and B = 1. What is the output?',
+        [O('1','1',true), O('0','0',false)],
+        'Yes. OR only needs at least one 1.',
+        'OR is satisfied as soon as one input is 1.'),
+      { type: 'sorting', boxes: [
+        { id: 'and', label: 'AND gate' },
+        { id: 'or', label: 'OR gate' }
+      ], items: [
+        { id: 'keypin', label: 'Keycard and PIN both required', box: 'and' },
+        { id: 'frontback', label: 'Front door or back door can open', box: 'or' }
+      ]},
+      S('A NOT gate receives 1. What does it output?',
+        [O('0','0',true), O('1','1',false)],
+        'Exactly. NOT flips the state.',
+        'NOT is an inverter. It turns 1 into 0 and 0 into 1.'),
+      S('A security lock says: keycard AND PIN. The keycard works, but the PIN is wrong. Does the lock open?',
+        [O('no','No',true), O('yes','Yes',false)],
+        'Right. One missing requirement breaks the AND condition.',
+        'For AND, both requirements must pass.'),
+      S('Why are logic gates powerful?',
+        [O('combine','They combine simple yes/no signals into decisions',true), O('english','They understand English instructions directly',false)],
+        'Correct. Huge systems are built from simple signal rules.',
+        'Gates do not read English. They combine electrical yes/no states.')
+    ]
+  },
+  {
+    id: 'code-algorithms',
+    label: 'Code',
+    title: 'Code and algorithm lab',
+    sub: 'Turn instructions into exact steps, branches, and machine actions.',
+    interactions: [
+      S('An algorithm is best described as:',
+        [O('steps','Ordered steps for solving a task',true), O('guess','A lucky guess from the computer',false)],
+        'Yes. The order is part of the algorithm.',
+        'An algorithm is a clear sequence of steps.'),
+      S('A recipe says bake first, mix later. What happens if a computer follows that algorithm?',
+        [O('fails','It follows the bad order and fails',true), O('fixes','It quietly fixes the order',false)],
+        'Exactly. Computers follow instructions as written.',
+        'Computers do not automatically repair bad instructions.'),
+      { type: 'sorting', boxes: [
+        { id: 'human', label: 'Human-friendly' },
+        { id: 'machine', label: 'Machine-friendly' }
+      ], items: [
+        { id: 'python', label: 'print("hello")', box: 'human' },
+        { id: 'binary', label: '01001000 01101001', box: 'machine' }
+      ]},
+      S('Why does compiled code eventually become machine code?',
+        [O('processor','The processor only acts on electrical patterns',true), O('grammar','The processor prefers shorter English grammar',false)],
+        'Correct. The chip responds to encoded electrical instructions.',
+        'The processor does not understand English. It receives machine instructions.'),
+      S('An if-statement checks: password matches? The answer is false. Which path runs?',
+        [O('else','The false / else path',true), O('then','The true / then path',false)],
+        'Right. A branch routes the program based on a yes/no result.',
+        'A false condition does not run the true branch.'),
+      S('A loop is useful because it:',
+        [O('repeat','Repeats a step without rewriting it many times',true), O('delete','Deletes the algorithm after one run',false)],
+        'Exactly. Loops make repeated work manageable.',
+        'Loops repeat instructions while a condition says to continue.'),
+      S('A bug is not always a crash. Sometimes it is:',
+        [O('wrong','A program doing the wrong thing perfectly',true), O('battery','A battery problem inside the screen',false)],
+        'Yes. A machine can execute a mistaken instruction flawlessly.',
+        'A bug is often flawed logic being executed exactly.'),
+      S('What builds confidence in coding fastest?',
+        [O('trace','Tracing what each step actually does',true), O('memorise','Memorising every keyword at once',false)],
+        'Correct. Tracing turns code from mystery into cause and effect.',
+        'Keywords matter, but tracing the flow is the real confidence builder.')
+    ]
+  },
+  {
+    id: 'hardware-memory',
+    label: 'Hardware',
+    title: 'Hardware and memory lab',
+    sub: 'See transistors, CPU work, RAM, cache, and storage as one machine.',
+    interactions: [
+      S('A transistor is useful because it behaves like:',
+        [O('switch','A tiny controllable switch',true), O('wheel','A tiny spinning wheel',false)],
+        'Correct. Switching is the core idea.',
+        'A transistor has no spinning parts. It controls current.'),
+      { type: 'sorting', boxes: [
+        { id: 'cpu', label: 'CPU' },
+        { id: 'ram', label: 'RAM' }
+      ], items: [
+        { id: 'execute', label: 'Runs instructions', box: 'cpu' },
+        { id: 'working', label: 'Holds active working data', box: 'ram' }
+      ]},
+      S('RAM loses its contents when power is cut. What word describes that?',
+        [O('volatile','Volatile',true), O('permanent','Permanent',false)],
+        'Yes. RAM is fast working memory, not long-term storage.',
+        'RAM is volatile: power off, contents gone.'),
+      S('A hard drive or SSD is different from RAM because it:',
+        [O('keeps','Keeps data after power is off',true), O('thinks','Thinks through instructions',false)],
+        'Correct. Storage is for keeping data.',
+        'Storage keeps data. The CPU executes instructions.'),
+      { type: 'sorting', boxes: [
+        { id: 'address', label: 'Address bus' },
+        { id: 'data', label: 'Data bus' }
+      ], items: [
+        { id: 'where', label: 'Which memory location?', box: 'address' },
+        { id: 'what', label: 'What bits are being carried?', box: 'data' }
+      ]},
+      S('Why does cache memory sit close to the CPU?',
+        [O('speed','To keep likely-needed data very fast to reach',true), O('backup','To permanently back up photos',false)],
+        'Exactly. Cache reduces waiting.',
+        'Cache is speed memory, not permanent backup.'),
+      S('A CPU running at 3 GHz is pulsing about:',
+        [O('billion','Three billion times per second',true), O('thousand','Three thousand times per second',false)],
+        'Correct. Giga means billion.',
+        '3 GHz means roughly three billion cycles each second.'),
+      S('The bottleneck happens when:',
+        [O('wait','The CPU waits for slower memory/data movement',true), O('paint','The screen colour is too bright',false)],
+        'Yes. Fast computation can still be limited by data movement.',
+        'The bottleneck is about waiting for data to arrive.')
+    ]
+  },
+  {
+    id: 'networks-cloud',
+    label: 'Networks',
+    title: 'Networks and cloud lab',
+    sub: 'Route packets through LANs, WANs, Wi-Fi, Bluetooth, and servers.',
+    interactions: [
+      S('Two devices in the same home talk through the router. That is mainly a:',
+        [O('lan','LAN',true), O('wan','WAN',false)],
+        'Correct. A Local Area Network covers a small local space.',
+        'A home network is a LAN. WANs connect across large distances.'),
+      S('The internet is best understood as:',
+        [O('networks','Many networks connected together',true), O('onebox','One giant computer in one building',false)],
+        'Yes. The internet is a network of networks.',
+        'It is not one computer. It is many networks linked together.'),
+      { type: 'sorting', boxes: [
+        { id: 'wifi', label: 'Wi-Fi' },
+        { id: 'bluetooth', label: 'Bluetooth' }
+      ], items: [
+        { id: 'stream', label: 'Higher data around a room or building', box: 'wifi' },
+        { id: 'mouse', label: 'Low-power nearby accessories', box: 'bluetooth' }
+      ]},
+      S('Why are big files split into packets?',
+        [O('share','So many messages can share the network and be reassembled',true), O('weight','Because files become physically heavy',false)],
+        'Correct. Packets keep traffic manageable.',
+        'Packets are about routing and sharing network capacity.'),
+      S('A router is like a:',
+        [O('post','Post office choosing where packets go next',true), O('battery','Battery making packets stronger',false)],
+        'Exactly. It forwards packets toward their destination.',
+        'A router chooses paths. It does not just add power.'),
+      S('The cloud is:',
+        [O('servers','Someone else’s physical servers rented over the internet',true), O('sky','Invisible storage with no machines',false)],
+        'Right. Cloud still means real machines in real data centers.',
+        'Cloud is physical hardware accessed remotely.'),
+      S('A website crashes when traffic spikes because:',
+        [O('limits','Servers have real limits on CPU, memory, and bandwidth',true), O('name','The domain name gets tired',false)],
+        'Yes. Scaling is about handling real resource limits.',
+        'Traffic pressure hits hardware and network limits.'),
+      S('What does latency measure?',
+        [O('delay','Delay between request and response',true), O('colour','How colourful the website is',false)],
+        'Correct. Low latency feels instant; high latency feels slow.',
+        'Latency is delay.')
+    ]
+  },
+  {
+    id: 'security-architecture',
+    label: 'Security',
+    title: 'Security and architecture lab',
+    sub: 'Practice firewalls, encryption, social engineering, zero-days, and system design.',
+    interactions: [
+      S('A firewall mainly decides:',
+        [O('allow','Which network traffic to allow or block',true), O('charge','How much battery the CPU has',false)],
+        'Correct. A firewall is a traffic gatekeeper.',
+        'Firewalls inspect and filter network traffic.'),
+      S('Encryption protects a message by:',
+        [O('scramble','Scrambling it so only the right key can read it',true), O('hide','Changing the font size to zero',false)],
+        'Yes. Without the key, the data should look useless.',
+        'Encryption is mathematical scrambling, not visual hiding.'),
+      S('Public key cryptography works because:',
+        [O('pair','One key can lock, while a different private key unlocks',true), O('same','Everyone shares the same secret key openly',false)],
+        'Exactly. The public key can be shared; the private key is guarded.',
+        'The private key must not be shared.'),
+      { type: 'sorting', boxes: [
+        { id: 'firewall', label: 'Firewall helps' },
+        { id: 'encryption', label: 'Encryption helps' }
+      ], items: [
+        { id: 'port', label: 'Suspicious traffic hitting a port', box: 'firewall' },
+        { id: 'wifi', label: 'Someone listening to public Wi-Fi packets', box: 'encryption' }
+      ]},
+      S('Social engineering attacks the:',
+        [O('human','Human decision-maker',true), O('clock','Quartz clock inside the CPU',false)],
+        'Correct. It tries to trick people, not beat the math directly.',
+        'Social engineering targets people.'),
+      S('A zero-day is dangerous because:',
+        [O('unknown','The defender does not know the flaw exists yet',true), O('old','It is a very old password',false)],
+        'Yes. Zero days means zero days to patch.',
+        'A zero-day is an unknown/unpatched vulnerability.'),
+      S('In stored-program architecture, software is stored as:',
+        [O('data','Data in memory, just like other bits',true), O('cables','A new physical cable layout every time',false)],
+        'Right. Programs become data the machine can fetch.',
+        'Modern machines do not rewire cables for every program.'),
+      S('A strong system is usually built from:',
+        [O('layers','Several layers: code, network, identity, monitoring, backups',true), O('onewall','One perfect wall that never fails',false)],
+        'Exactly. Real security and system design use layers.',
+        'One perfect wall is brittle. Layers give resilience.')
+    ]
+  }
+];
+
+function cloneInteractions(interactions) {
+  return interactions.map((interaction) => ({
+    ...interaction,
+    boxes: interaction.boxes?.map((box) => ({ ...box })),
+    items: interaction.items?.map((item) => ({ ...item })),
+    options: interaction.options?.map((option) => ({ ...option })),
+    target: Array.isArray(interaction.target) ? [...interaction.target] : interaction.target,
+    labels: interaction.labels ? [...interaction.labels] : interaction.labels,
+    matrix: interaction.matrix?.map((row) => [...row]),
+    inputPoint: interaction.inputPoint ? [...interaction.inputPoint] : interaction.inputPoint
+  }));
+}
+
+export function getComputerWorkshopModules() {
+  return COMPUTER_WORKSHOP_MODULES.map(({ id, label, title, sub }) => ({ id, label, title, sub }));
+}
+
+export function getComputerWorkshopModule(id = 'binary-data') {
+  const module = COMPUTER_WORKSHOP_MODULES.find((item) => item.id === id) || COMPUTER_WORKSHOP_MODULES[0];
+  return {
+    ...module,
+    interactions: cloneInteractions(module.interactions)
+  };
+}
+
 export function getBitWorkshop(checkpointIndex) {
   const keys = Object.keys(BIT_WORKSHOPS);
   if (checkpointIndex < keys.length) {
     return BIT_WORKSHOPS[keys[checkpointIndex]];
   }
   return null;
+}
+
+export function getBitDataWorkshop() {
+  return getComputerWorkshopModule('binary-data').interactions;
+}
+
+export const PHYSICS_CORE_WORKSHOP = [
+  { type: 'sorting', boxes: [
+    { id: 'base', label: 'Base unit' },
+    { id: 'derived', label: 'Built from other units' }
+  ], items: [
+    { id: 'meter', label: 'Meter', box: 'base' },
+    { id: 'second', label: 'Second', box: 'base' },
+    { id: 'speed', label: 'Meters per second', box: 'derived' },
+    { id: 'newton', label: 'Newton', box: 'derived' }
+  ]},
+  {
+    type: 'forcebalance',
+    prompt: 'Make the cart stay still. Equal pushes cancel each other.',
+    target: 'balanced',
+    startLeft: 1,
+    startRight: 3,
+    correctFeedback: 'Locked. Equal force on both sides gives zero net force, so the cart does not accelerate.',
+    incorrectFeedback: 'The pushes need to match. If one side is stronger, the cart accelerates that way.'
+  },
+  S('A skater is already gliding forward on smooth ice. No one pushes. What keeps changing?',
+    [O('nothing','Nothing; the motion continues steadily',true), O('speed','The speed increases by itself',false)],
+    'Exactly. Without a net force, motion does not need to keep being fed. It keeps going steadily.',
+    'Not quite. A steady glide can continue without a new push. A net force is needed to change the motion.'),
+  {
+    type: 'forcebalance',
+    prompt: 'Now make the cart accelerate to the right.',
+    target: 'right',
+    startLeft: 2,
+    startRight: 2,
+    correctFeedback: 'Yes. A stronger right-side push makes the net force point right.',
+    incorrectFeedback: 'The right push must be stronger than the left push.'
+  },
+  S('Two identical pushes act on two carts. One cart is empty; one is loaded with bricks. Which cart accelerates more?',
+    [O('empty','The empty cart',true), O('loaded','The loaded cart',false)],
+    'Correct. The same force changes lighter mass more easily.',
+    'Not quite. More mass resists acceleration. The empty cart responds more.'),
+  {
+    type: 'wavetuner',
+    prompt: 'Tune the wave: make it tall and tightly packed.',
+    targetAmplitude: 4,
+    targetFrequency: 4,
+    correctFeedback: 'Good. Taller means higher amplitude. More packed means higher frequency.',
+    incorrectFeedback: 'Match both controls: height 4 and crowding 4.'
+  },
+  S('A ball rolls down a ramp. Stored height energy turns mostly into what?',
+    [O('motion','Motion energy',true), O('mass','Extra mass',false)],
+    'Exactly. The ball is not gaining mass; stored energy is turning into motion.',
+    'Not quite. The ball keeps the same mass. Its stored height energy becomes motion.'),
+  S('A student can explain the answer without using the app hints. What does that usually mean?',
+    [O('grasped','They have grasped the idea',true), O('lucky','They only got lucky',false)],
+    'Yes. Being able to explain the rule is a stronger sign than tapping the right option once.',
+    'Not quite. A clear explanation is a good sign that the idea is becoming usable.')
+];
+
+export function getPhysicsCoreWorkshop() {
+  return PHYSICS_CORE_WORKSHOP;
+}
+
+export const CHEMISTRY_CORE_WORKSHOP = [
+  {
+    type: 'atombuilder',
+    prompt: 'Build neutral oxygen. Protons set the element; electrons set the charge.',
+    targetName: 'Oxygen',
+    targetProtons: 8,
+    targetNeutrons: 8,
+    targetElectrons: 8,
+    correctFeedback: 'Clean build. Eight protons makes oxygen, and eight electrons keeps it neutral.',
+    incorrectFeedback: 'Oxygen needs 8 protons. Neutral oxygen also needs 8 electrons.'
+  },
+  S('An atom has 6 protons. A neutron is added. What changes?',
+    [O('mass','Its mass changes, but it stays carbon',true), O('element','It becomes a new element',false)],
+    'Exactly. Neutrons change mass, not element identity.',
+    'Not quite. Element identity is set by protons. Neutrons make isotopes.'),
+  {
+    type: 'atombuilder',
+    prompt: 'Make a positive lithium ion. Same element, one electron missing.',
+    targetName: 'Lithium ion',
+    targetProtons: 3,
+    targetNeutrons: 4,
+    targetElectrons: 2,
+    correctFeedback: 'Yes. Three protons still means lithium. Two electrons leaves a +1 charge.',
+    incorrectFeedback: 'Keep lithium at 3 protons, then remove one electron so the charge becomes positive.'
+  },
+  { type: 'sorting', boxes: [
+    { id: 'identity', label: 'Changes element identity' },
+    { id: 'charge', label: 'Changes charge' },
+    { id: 'mass', label: 'Changes isotope mass' }
+  ], items: [
+    { id: 'protons', label: 'Add or remove protons', box: 'identity' },
+    { id: 'electrons', label: 'Add or remove electrons', box: 'charge' },
+    { id: 'neutrons', label: 'Add or remove neutrons', box: 'mass' }
+  ]},
+  {
+    type: 'moleculebuilder',
+    prompt: 'Build water from the formula H2O.',
+    targetFormula: 'H2O',
+    targetAtoms: { H: 2, O: 1 },
+    correctFeedback: 'Correct. H2O means two hydrogen atoms and one oxygen atom.',
+    incorrectFeedback: 'Read the small number as a count. H2O needs 2 H and 1 O.'
+  },
+  {
+    type: 'moleculebuilder',
+    prompt: 'Build carbon dioxide from the formula CO2.',
+    targetFormula: 'CO2',
+    targetAtoms: { C: 1, O: 2 },
+    correctFeedback: 'Correct. CO2 means one carbon atom with two oxygen atoms.',
+    incorrectFeedback: 'CO2 needs 1 C and 2 O. The 2 only belongs to oxygen.'
+  },
+  S('A molecule behaves differently from the atoms it contains. What is the main reason?',
+    [O('bonds','The atoms are bonded into a new structure',true), O('heavier','The atoms simply became heavier',false)],
+    'Exactly. Bonds and structure create new behavior.',
+    'Not quite. The same atoms can behave differently once bonds arrange them into a molecule.'),
+  S('A learner can look at H2O and immediately say "two hydrogens, one oxygen." What has clicked?',
+    [O('formula','They can read a chemical formula as atom counts',true), O('mass','They know the exact mass of the sample',false)],
+    'Yes. That is real formula fluency: symbols become counts, not decoration.',
+    'Not quite. Formula fluency means reading the symbols and subscripts as atom counts.')
+];
+
+export function getChemistryCoreWorkshop() {
+  return CHEMISTRY_CORE_WORKSHOP;
+}
+
+export const MATHS_MATRICES_WORKSHOP = [
+  {
+    type: 'matrixcell',
+    prompt: 'A matrix starts like a spreadsheet: rows, columns, cells. Tap the requested cell.',
+    matrix: [[12, 5, 9], [3, 8, 14], [6, 1, 10]],
+    targetRow: 2,
+    targetCol: 3,
+    correctFeedback: 'Correct. Row 2, column 3 holds 14. A matrix cell is just an address with a value.',
+    incorrectFeedback: 'Find the row first, then move across to the column.'
+  },
+  S('A spreadsheet cell like B7 has a fixed address. What is the matrix version of that idea?',
+    [O('rowcol','Row and column position',true), O('total','The total of every number',false)],
+    'Exactly. A matrix is a grid where position matters.',
+    'Not quite. The address of an entry is its row and column position.'),
+  {
+    type: 'matrixcell',
+    prompt: 'A small data table is also a matrix. Tap row 3, column 1.',
+    matrix: [[70, 72], [68, 71], [75, 73]],
+    targetRow: 3,
+    targetCol: 1,
+    correctFeedback: 'Yes. The cell is 75. Matrices can store measurements cleanly.',
+    incorrectFeedback: 'Rows go across. Columns go down. Start at row 3, then column 1.'
+  },
+  S('Why are matrices useful for computers?',
+    [O('grid','They store many related numbers in a fixed grid',true), O('words','They turn every number into a word',false)],
+    'Right. A computer can loop through a matrix because every number has a predictable position.',
+    'Not quite. Matrices are powerful because numbers sit in fixed, ordered positions.'),
+  {
+    type: 'matrixtransform',
+    prompt: 'This matrix doubles x and leaves y alone. Where does point (2, 3) land?',
+    matrix: [[2, 0], [0, 1]],
+    inputPoint: [2, 3],
+    options: [[4, 3], [2, 6], [4, 6]],
+    correctFeedback: 'Correct. The x value doubled from 2 to 4, while y stayed 3.',
+    incorrectFeedback: 'This matrix changes x only: (2, 3) becomes (4, 3).'
+  },
+  {
+    type: 'matrixtransform',
+    prompt: 'This matrix flips x across the vertical axis. Where does point (3, 2) land?',
+    matrix: [[-1, 0], [0, 1]],
+    inputPoint: [3, 2],
+    options: [[-3, 2], [3, -2], [-3, -2]],
+    correctFeedback: 'Correct. The x sign flipped, so the point moved to the other side.',
+    incorrectFeedback: 'Only x changes sign here. y stays the same.'
+  },
+  S('What changed between the spreadsheet idea and the transformation idea?',
+    [O('active','The grid stopped just storing numbers and started acting on a point',true), O('random','The numbers became random decoration',false)],
+    'Exactly. A matrix can be a table of data, or it can be a machine that transforms space.',
+    'Not quite. The same grid structure can store data or act as a transformation rule.'),
+  S('A learner sees [[2,0],[0,1]] and says, "that stretches x." What has clicked?',
+    [O('meaning','They can read the matrix as an action',true), O('memory','They memorised one symbol only',false)],
+    'Yes. That is the real step: matrix notation becomes a visible action.',
+    'Not quite. The goal is not memorising brackets. It is seeing the action encoded by the numbers.')
+];
+
+export function getMathsMatricesWorkshop() {
+  return MATHS_MATRICES_WORKSHOP;
 }
 
 // ── Physics workshops ──

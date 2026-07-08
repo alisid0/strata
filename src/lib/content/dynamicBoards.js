@@ -1,6 +1,7 @@
 import { writable, get } from 'svelte/store';
 import { supabase } from '../supabase.js';
 import { DECK } from './deck.js';
+import { MATRIX_BOARDS } from './matrixBoards.js';
 
 const KEY = 'strata-dynamic-boards-v2';
 
@@ -22,11 +23,20 @@ const dynamicBoards = writable(loadCache());
 
 /** Normalize a `cards` table row into deck.js's C()-produced shape. */
 function normalize(row) {
+  const layers = (row.layers || []).map(layer => {
+    if (!layer || typeof layer !== 'object') return layer;
+    return {
+      text: layer.text ?? layer.content ?? '',
+      img: layer.img ?? layer.image ?? null,
+      audio: layer.audio ?? null
+    };
+  });
+
   return {
     act: row.act,
     kicker: row.kicker,
     title: row.title,
-    layers: row.layers,
+    layers,
     img: row.img_url || null,
     tags: row.tags || null
   };
@@ -68,6 +78,7 @@ export async function fetchBoardsByNumbers(numbers) {
   for (const n of numbers) {
     if (n <= DECK.length) result[n] = DECK[n - 1];
     else if (merged[n]) result[n] = merged[n];
+    else if (MATRIX_BOARDS[n]) result[n] = MATRIX_BOARDS[n];
   }
   return result;
 }
@@ -98,13 +109,14 @@ export async function fetchSnippets() {
 /** Resolve a single board by number: static DECK first, then the dynamic cache. */
 export function getBoard(number) {
   if (number <= DECK.length) return DECK[number - 1];
-  return get(dynamicBoards)[number] || null;
+  return get(dynamicBoards)[number] || MATRIX_BOARDS[number] || null;
 }
 
 /** Numbers currently resolvable without a fetch (static + already-cached dynamic). */
 export function loadedNumbers() {
   const merged = get(dynamicBoards);
   const dynamicNums = Object.keys(merged).map(Number);
+  const matrixNums = Object.keys(MATRIX_BOARDS).map(Number);
   const staticNums = Array.from({ length: DECK.length }, (_, i) => i + 1);
-  return [...staticNums, ...dynamicNums].sort((a, b) => a - b);
+  return [...staticNums, ...dynamicNums, ...matrixNums].sort((a, b) => a - b);
 }

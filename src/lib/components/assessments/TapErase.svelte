@@ -15,6 +15,16 @@
     { id: 'broken', label: 'A broken segment' },
     { id: 'line', label: 'A true line' }
   ];
+  const shuffledOptions = shuffle(options);
+
+  function shuffle(list = []) {
+    const shuffled = [...list];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
 
   function tapLeft() { if (!erased) { leftGone = true; leftGone = leftGone; } }
   function tapRight() { if (!erased) { rightGone = true; rightGone = rightGone; } }
@@ -62,7 +72,7 @@
   {#if erased && !answered}
     <div class="question">What did you just create?</div>
     <div class="options">
-      {#each options as opt}
+      {#each shuffledOptions as opt}
         <button class="opt-btn" on:click={() => choose(opt.id)}>{opt.label}</button>
       {/each}
     </div>
