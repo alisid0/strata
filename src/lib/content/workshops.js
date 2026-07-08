@@ -1344,6 +1344,65 @@ export function getChemistryCoreWorkshop() {
   return CHEMISTRY_CORE_WORKSHOP;
 }
 
+export const MATHS_MATRICES_WORKSHOP = [
+  {
+    type: 'matrixcell',
+    prompt: 'A matrix starts like a spreadsheet: rows, columns, cells. Tap the requested cell.',
+    matrix: [[12, 5, 9], [3, 8, 14], [6, 1, 10]],
+    targetRow: 2,
+    targetCol: 3,
+    correctFeedback: 'Correct. Row 2, column 3 holds 14. A matrix cell is just an address with a value.',
+    incorrectFeedback: 'Find the row first, then move across to the column.'
+  },
+  S('A spreadsheet cell like B7 has a fixed address. What is the matrix version of that idea?',
+    [O('rowcol','Row and column position',true), O('total','The total of every number',false)],
+    'Exactly. A matrix is a grid where position matters.',
+    'Not quite. The address of an entry is its row and column position.'),
+  {
+    type: 'matrixcell',
+    prompt: 'A small data table is also a matrix. Tap row 3, column 1.',
+    matrix: [[70, 72], [68, 71], [75, 73]],
+    targetRow: 3,
+    targetCol: 1,
+    correctFeedback: 'Yes. The cell is 75. Matrices can store measurements cleanly.',
+    incorrectFeedback: 'Rows go across. Columns go down. Start at row 3, then column 1.'
+  },
+  S('Why are matrices useful for computers?',
+    [O('grid','They store many related numbers in a fixed grid',true), O('words','They turn every number into a word',false)],
+    'Right. A computer can loop through a matrix because every number has a predictable position.',
+    'Not quite. Matrices are powerful because numbers sit in fixed, ordered positions.'),
+  {
+    type: 'matrixtransform',
+    prompt: 'This matrix doubles x and leaves y alone. Where does point (2, 3) land?',
+    matrix: [[2, 0], [0, 1]],
+    inputPoint: [2, 3],
+    options: [[4, 3], [2, 6], [4, 6]],
+    correctFeedback: 'Correct. The x value doubled from 2 to 4, while y stayed 3.',
+    incorrectFeedback: 'This matrix changes x only: (2, 3) becomes (4, 3).'
+  },
+  {
+    type: 'matrixtransform',
+    prompt: 'This matrix flips x across the vertical axis. Where does point (3, 2) land?',
+    matrix: [[-1, 0], [0, 1]],
+    inputPoint: [3, 2],
+    options: [[-3, 2], [3, -2], [-3, -2]],
+    correctFeedback: 'Correct. The x sign flipped, so the point moved to the other side.',
+    incorrectFeedback: 'Only x changes sign here. y stays the same.'
+  },
+  S('What changed between the spreadsheet idea and the transformation idea?',
+    [O('active','The grid stopped just storing numbers and started acting on a point',true), O('random','The numbers became random decoration',false)],
+    'Exactly. A matrix can be a table of data, or it can be a machine that transforms space.',
+    'Not quite. The same grid structure can store data or act as a transformation rule.'),
+  S('A learner sees [[2,0],[0,1]] and says, "that stretches x." What has clicked?',
+    [O('meaning','They can read the matrix as an action',true), O('memory','They memorised one symbol only',false)],
+    'Yes. That is the real step: matrix notation becomes a visible action.',
+    'Not quite. The goal is not memorising brackets. It is seeing the action encoded by the numbers.')
+];
+
+export function getMathsMatricesWorkshop() {
+  return MATHS_MATRICES_WORKSHOP;
+}
+
 // ── Physics workshops ──
 
 export const PHYS_WORKSHOPS = {

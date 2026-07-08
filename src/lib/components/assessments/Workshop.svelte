@@ -9,6 +9,8 @@
   import WaveTuner from './WaveTuner.svelte';
   import AtomBuilder from './AtomBuilder.svelte';
   import MoleculeBuilder from './MoleculeBuilder.svelte';
+  import MatrixCellFinder from './MatrixCellFinder.svelte';
+  import MatrixTransform from './MatrixTransform.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -103,6 +105,26 @@
           prompt={current.prompt}
           targetFormula={current.targetFormula}
           targetAtoms={current.targetAtoms}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'matrixcell'}
+        <MatrixCellFinder
+          prompt={current.prompt}
+          matrix={current.matrix}
+          targetRow={current.targetRow}
+          targetCol={current.targetCol}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'matrixtransform'}
+        <MatrixTransform
+          prompt={current.prompt}
+          matrix={current.matrix}
+          inputPoint={current.inputPoint}
+          options={current.options}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
           onDone={handleInteractionDone}

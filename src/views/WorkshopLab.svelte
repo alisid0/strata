@@ -1,6 +1,6 @@
 <script>
   import Workshop from '../lib/components/assessments/Workshop.svelte';
-  import { getBitDataWorkshop, getPhysicsCoreWorkshop, getChemistryCoreWorkshop } from '../lib/content/workshops.js';
+  import { getBitDataWorkshop, getPhysicsCoreWorkshop, getChemistryCoreWorkshop, getMathsMatricesWorkshop } from '../lib/content/workshops.js';
 
   export let onNavigate;
 
@@ -34,6 +34,14 @@
       icon: '/icons/gateways/atom.png',
       pathId: 'ATOM_001',
       getWorkshop: getChemistryCoreWorkshop
+    },
+    matrices: {
+      label: 'Matrices',
+      title: 'Spreadsheet to space machine',
+      sub: 'Read cells, store data, and transform points.',
+      icon: '/icons/gateways/line.png',
+      pathId: 'MATH_COORD',
+      getWorkshop: getMathsMatricesWorkshop
     }
   };
 
@@ -158,7 +166,7 @@
 
   .track-tabs {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin-bottom: 12px;
   }
@@ -177,6 +185,18 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+  }
+
+  .track-tabs span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 520px) {
+    .track-tabs {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .track-tabs button.active {
