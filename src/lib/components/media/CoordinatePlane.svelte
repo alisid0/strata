@@ -28,8 +28,14 @@
   function fromX(sx) { return xMin + ((sx - PAD) / plotSize) * (xMax - xMin); }
   function fromY(sy) { return yMin + ((plotSize - (sy - PAD)) / plotSize) * (yMax - yMin); }
 
-  $: axX = toX(0);
-  $: axY = toY(0);
+  // Inlined rather than `toX(0)`/`toY(0)` — Svelte's reactive-statement dependency
+  // tracking is based on identifiers referenced directly in the statement's own
+  // text, not on what a called function closures over. A plain `toX(0)` call
+  // doesn't register xMin/xMax as dependencies, so axX/axY could go stale (or
+  // NaN, before spec's first real value lands) and never recompute once a
+  // consumer starts changing spec.xRange/yRange after mount (e.g. via bind:spec).
+  $: axX = PAD + ((0 - xMin) / (xMax - xMin)) * plotSize;
+  $: axY = PAD + plotSize - ((0 - yMin) / (yMax - yMin)) * plotSize;
   $: xAxisOn = 0 >= yMin && 0 <= yMax;
   $: yAxisOn = 0 >= xMin && 0 <= xMax;
 
