@@ -1,6 +1,13 @@
 <script>
   import Workshop from '../lib/components/assessments/Workshop.svelte';
-  import { getBitDataWorkshop, getPhysicsCoreWorkshop, getChemistryCoreWorkshop, getMathsMatricesWorkshop } from '../lib/content/workshops.js';
+  import {
+    getBitDataWorkshop,
+    getChemistryCoreWorkshop,
+    getComputerWorkshopModule,
+    getComputerWorkshopModules,
+    getMathsMatricesWorkshop,
+    getPhysicsCoreWorkshop
+  } from '../lib/content/workshops.js';
 
   export let onNavigate;
 
@@ -9,12 +16,15 @@
   let score = 0;
   let total = 0;
   let activeTrack = 'bit';
+  let activeComputerModule = 'binary-data';
+
+  const COMPUTER_MODULES = getComputerWorkshopModules();
 
   const TRACKS = {
     bit: {
       label: 'The Bit',
-      title: 'Binary/Data micro-drill',
-      sub: 'Bits, bytes, pixels, text, and sound.',
+      title: 'Computer workshops',
+      sub: 'Binary, logic, code, hardware, networks, security, and architecture.',
       icon: '/icons/gateways/bit.png',
       pathId: 'BIT_001',
       getWorkshop: getBitDataWorkshop
@@ -46,7 +56,10 @@
   };
 
   $: track = TRACKS[activeTrack];
-  $: interactions = track.getWorkshop();
+  $: computerModule = activeTrack === 'bit' ? getComputerWorkshopModule(activeComputerModule) : null;
+  $: workshopTitle = computerModule?.title || track.title;
+  $: workshopSub = computerModule?.sub || track.sub;
+  $: interactions = computerModule?.interactions || track.getWorkshop();
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
 
   function finishWorkshop(finalScore, finalTotal) {
@@ -65,6 +78,12 @@
   function chooseTrack(id) {
     if (activeTrack === id) return;
     activeTrack = id;
+    replay();
+  }
+
+  function chooseComputerModule(id) {
+    if (activeComputerModule === id) return;
+    activeComputerModule = id;
     replay();
   }
 </script>
@@ -96,11 +115,26 @@
   <section class="spotlight">
     <div class="spotlight-copy">
       <span>{track.label}</span>
-      <strong>{track.title}</strong>
-      <small>{track.sub}</small>
+      <strong>{workshopTitle}</strong>
+      <small>{workshopSub}</small>
     </div>
     <button on:click={() => onNavigate?.('topicDetail', track.pathId)}>Open path</button>
   </section>
+
+  {#if activeTrack === 'bit'}
+    <div class="module-tabs" role="tablist" aria-label="Computer workshop modules">
+      {#each COMPUTER_MODULES as item}
+        <button
+          class:active={activeComputerModule === item.id}
+          on:click={() => chooseComputerModule(item.id)}
+          role="tab"
+          aria-selected={activeComputerModule === item.id}
+        >
+          {item.label}
+        </button>
+      {/each}
+    </div>
+  {/if}
 
   <div class="workshop-card">
     {#if finished}
@@ -263,6 +297,36 @@
     min-height: 38px;
     padding: 0 15px;
     flex-shrink: 0;
+  }
+
+  .module-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 0 0 10px;
+    margin: -2px 0 4px;
+    scrollbar-width: thin;
+  }
+
+  .module-tabs button {
+    border: 1.5px solid var(--qx-border);
+    border-radius: 999px;
+    background: var(--qx-surface);
+    color: var(--qx-text-dim);
+    font-family: var(--qx-font);
+    font-size: 12px;
+    font-weight: 850;
+    cursor: pointer;
+    min-height: 34px;
+    padding: 0 13px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  .module-tabs button.active {
+    border-color: var(--qx-accent);
+    background: var(--qx-accent-soft);
+    color: var(--qx-accent-text);
   }
 
   .workshop-card {

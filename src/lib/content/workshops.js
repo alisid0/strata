@@ -1210,6 +1210,288 @@ export const BIT_WORKSHOPS = {
   ]
 };
 
+export const COMPUTER_WORKSHOP_MODULES = [
+  {
+    id: 'binary-data',
+    label: 'Data',
+    title: 'Binary and data lab',
+    sub: 'Switch bits into numbers, letters, pixels, colour, and sound.',
+    interactions: [
+      ...BIT_DATA_WORKSHOP,
+      S('A sensor stores 00000000 for darkness and 11111111 for full brightness. What is the computer really storing?',
+        [O('measurements','Measurements written as bits',true), O('light','Actual light trapped inside memory',false)],
+        'Correct. The machine stores measured values, not the physical light itself.',
+        'Not quite. It stores numbers that represent brightness levels.'),
+      S('A file opens correctly on one app and looks broken in another. What probably changed?',
+        [O('decoder','The rule used to decode the bits',true), O('electricity','The electricity became weaker',false)],
+        'Yes. Same bits, different interpretation rule, different meaning.',
+        'The bits need a decoding rule. Without the right rule, the pattern looks meaningless.'),
+      {
+        type: 'pixelgrid',
+        prompt: 'Paint a diagonal. Each 1 is a filled pixel; each 0 is empty.',
+        target: ['1000', '0100', '0010', '0001'],
+        correctFeedback: 'Nice. A picture can be built from nothing but positions and on/off states.',
+        incorrectFeedback: 'Read each row left to right. The 1 should step down one column each row.'
+      },
+      {
+        type: 'bitpattern',
+        prompt: 'Make the tiny colour code: red off, green on, blue on.',
+        bits: 3,
+        target: '011',
+        labels: ['red', 'green', 'blue'],
+        correctFeedback: 'Locked. Green and blue are on; red is off.',
+        incorrectFeedback: 'The target is red off, green on, blue on: 011.'
+      }
+    ]
+  },
+  {
+    id: 'logic-gates',
+    label: 'Logic',
+    title: 'Logic gate trainer',
+    sub: 'Build confidence with AND, OR, NOT, and gate behaviour.',
+    interactions: [
+      S('A bit can only hold one yes/no state. Which pair matches that idea?',
+        [O('onezero','1 and 0',true), O('onetwo','1 and 2',false)],
+        'Exactly. A bit is one binary state.',
+        'A bit is binary. It needs exactly two states: 1 and 0.'),
+      { type: 'sorting', boxes: [
+        { id: 'one', label: '1 / True' },
+        { id: 'zero', label: '0 / False' }
+      ], items: [
+        { id: 'closed', label: 'Closed switch with current flowing', box: 'one' },
+        { id: 'open', label: 'Open switch with no current', box: 'zero' }
+      ]},
+      S('An AND gate receives A = 1 and B = 0. What is the output?',
+        [O('0','0',true), O('1','1',false)],
+        'Correct. AND needs both inputs to be 1.',
+        'AND fails if even one input is 0.'),
+      S('An OR gate receives A = 0 and B = 1. What is the output?',
+        [O('1','1',true), O('0','0',false)],
+        'Yes. OR only needs at least one 1.',
+        'OR is satisfied as soon as one input is 1.'),
+      { type: 'sorting', boxes: [
+        { id: 'and', label: 'AND gate' },
+        { id: 'or', label: 'OR gate' }
+      ], items: [
+        { id: 'keypin', label: 'Keycard and PIN both required', box: 'and' },
+        { id: 'frontback', label: 'Front door or back door can open', box: 'or' }
+      ]},
+      S('A NOT gate receives 1. What does it output?',
+        [O('0','0',true), O('1','1',false)],
+        'Exactly. NOT flips the state.',
+        'NOT is an inverter. It turns 1 into 0 and 0 into 1.'),
+      S('A security lock says: keycard AND PIN. The keycard works, but the PIN is wrong. Does the lock open?',
+        [O('no','No',true), O('yes','Yes',false)],
+        'Right. One missing requirement breaks the AND condition.',
+        'For AND, both requirements must pass.'),
+      S('Why are logic gates powerful?',
+        [O('combine','They combine simple yes/no signals into decisions',true), O('english','They understand English instructions directly',false)],
+        'Correct. Huge systems are built from simple signal rules.',
+        'Gates do not read English. They combine electrical yes/no states.')
+    ]
+  },
+  {
+    id: 'code-algorithms',
+    label: 'Code',
+    title: 'Code and algorithm lab',
+    sub: 'Turn instructions into exact steps, branches, and machine actions.',
+    interactions: [
+      S('An algorithm is best described as:',
+        [O('steps','Ordered steps for solving a task',true), O('guess','A lucky guess from the computer',false)],
+        'Yes. The order is part of the algorithm.',
+        'An algorithm is a clear sequence of steps.'),
+      S('A recipe says bake first, mix later. What happens if a computer follows that algorithm?',
+        [O('fails','It follows the bad order and fails',true), O('fixes','It quietly fixes the order',false)],
+        'Exactly. Computers follow instructions as written.',
+        'Computers do not automatically repair bad instructions.'),
+      { type: 'sorting', boxes: [
+        { id: 'human', label: 'Human-friendly' },
+        { id: 'machine', label: 'Machine-friendly' }
+      ], items: [
+        { id: 'python', label: 'print("hello")', box: 'human' },
+        { id: 'binary', label: '01001000 01101001', box: 'machine' }
+      ]},
+      S('Why does compiled code eventually become machine code?',
+        [O('processor','The processor only acts on electrical patterns',true), O('grammar','The processor prefers shorter English grammar',false)],
+        'Correct. The chip responds to encoded electrical instructions.',
+        'The processor does not understand English. It receives machine instructions.'),
+      S('An if-statement checks: password matches? The answer is false. Which path runs?',
+        [O('else','The false / else path',true), O('then','The true / then path',false)],
+        'Right. A branch routes the program based on a yes/no result.',
+        'A false condition does not run the true branch.'),
+      S('A loop is useful because it:',
+        [O('repeat','Repeats a step without rewriting it many times',true), O('delete','Deletes the algorithm after one run',false)],
+        'Exactly. Loops make repeated work manageable.',
+        'Loops repeat instructions while a condition says to continue.'),
+      S('A bug is not always a crash. Sometimes it is:',
+        [O('wrong','A program doing the wrong thing perfectly',true), O('battery','A battery problem inside the screen',false)],
+        'Yes. A machine can execute a mistaken instruction flawlessly.',
+        'A bug is often flawed logic being executed exactly.'),
+      S('What builds confidence in coding fastest?',
+        [O('trace','Tracing what each step actually does',true), O('memorise','Memorising every keyword at once',false)],
+        'Correct. Tracing turns code from mystery into cause and effect.',
+        'Keywords matter, but tracing the flow is the real confidence builder.')
+    ]
+  },
+  {
+    id: 'hardware-memory',
+    label: 'Hardware',
+    title: 'Hardware and memory lab',
+    sub: 'See transistors, CPU work, RAM, cache, and storage as one machine.',
+    interactions: [
+      S('A transistor is useful because it behaves like:',
+        [O('switch','A tiny controllable switch',true), O('wheel','A tiny spinning wheel',false)],
+        'Correct. Switching is the core idea.',
+        'A transistor has no spinning parts. It controls current.'),
+      { type: 'sorting', boxes: [
+        { id: 'cpu', label: 'CPU' },
+        { id: 'ram', label: 'RAM' }
+      ], items: [
+        { id: 'execute', label: 'Runs instructions', box: 'cpu' },
+        { id: 'working', label: 'Holds active working data', box: 'ram' }
+      ]},
+      S('RAM loses its contents when power is cut. What word describes that?',
+        [O('volatile','Volatile',true), O('permanent','Permanent',false)],
+        'Yes. RAM is fast working memory, not long-term storage.',
+        'RAM is volatile: power off, contents gone.'),
+      S('A hard drive or SSD is different from RAM because it:',
+        [O('keeps','Keeps data after power is off',true), O('thinks','Thinks through instructions',false)],
+        'Correct. Storage is for keeping data.',
+        'Storage keeps data. The CPU executes instructions.'),
+      { type: 'sorting', boxes: [
+        { id: 'address', label: 'Address bus' },
+        { id: 'data', label: 'Data bus' }
+      ], items: [
+        { id: 'where', label: 'Which memory location?', box: 'address' },
+        { id: 'what', label: 'What bits are being carried?', box: 'data' }
+      ]},
+      S('Why does cache memory sit close to the CPU?',
+        [O('speed','To keep likely-needed data very fast to reach',true), O('backup','To permanently back up photos',false)],
+        'Exactly. Cache reduces waiting.',
+        'Cache is speed memory, not permanent backup.'),
+      S('A CPU running at 3 GHz is pulsing about:',
+        [O('billion','Three billion times per second',true), O('thousand','Three thousand times per second',false)],
+        'Correct. Giga means billion.',
+        '3 GHz means roughly three billion cycles each second.'),
+      S('The bottleneck happens when:',
+        [O('wait','The CPU waits for slower memory/data movement',true), O('paint','The screen colour is too bright',false)],
+        'Yes. Fast computation can still be limited by data movement.',
+        'The bottleneck is about waiting for data to arrive.')
+    ]
+  },
+  {
+    id: 'networks-cloud',
+    label: 'Networks',
+    title: 'Networks and cloud lab',
+    sub: 'Route packets through LANs, WANs, Wi-Fi, Bluetooth, and servers.',
+    interactions: [
+      S('Two devices in the same home talk through the router. That is mainly a:',
+        [O('lan','LAN',true), O('wan','WAN',false)],
+        'Correct. A Local Area Network covers a small local space.',
+        'A home network is a LAN. WANs connect across large distances.'),
+      S('The internet is best understood as:',
+        [O('networks','Many networks connected together',true), O('onebox','One giant computer in one building',false)],
+        'Yes. The internet is a network of networks.',
+        'It is not one computer. It is many networks linked together.'),
+      { type: 'sorting', boxes: [
+        { id: 'wifi', label: 'Wi-Fi' },
+        { id: 'bluetooth', label: 'Bluetooth' }
+      ], items: [
+        { id: 'stream', label: 'Higher data around a room or building', box: 'wifi' },
+        { id: 'mouse', label: 'Low-power nearby accessories', box: 'bluetooth' }
+      ]},
+      S('Why are big files split into packets?',
+        [O('share','So many messages can share the network and be reassembled',true), O('weight','Because files become physically heavy',false)],
+        'Correct. Packets keep traffic manageable.',
+        'Packets are about routing and sharing network capacity.'),
+      S('A router is like a:',
+        [O('post','Post office choosing where packets go next',true), O('battery','Battery making packets stronger',false)],
+        'Exactly. It forwards packets toward their destination.',
+        'A router chooses paths. It does not just add power.'),
+      S('The cloud is:',
+        [O('servers','Someone else’s physical servers rented over the internet',true), O('sky','Invisible storage with no machines',false)],
+        'Right. Cloud still means real machines in real data centers.',
+        'Cloud is physical hardware accessed remotely.'),
+      S('A website crashes when traffic spikes because:',
+        [O('limits','Servers have real limits on CPU, memory, and bandwidth',true), O('name','The domain name gets tired',false)],
+        'Yes. Scaling is about handling real resource limits.',
+        'Traffic pressure hits hardware and network limits.'),
+      S('What does latency measure?',
+        [O('delay','Delay between request and response',true), O('colour','How colourful the website is',false)],
+        'Correct. Low latency feels instant; high latency feels slow.',
+        'Latency is delay.')
+    ]
+  },
+  {
+    id: 'security-architecture',
+    label: 'Security',
+    title: 'Security and architecture lab',
+    sub: 'Practice firewalls, encryption, social engineering, zero-days, and system design.',
+    interactions: [
+      S('A firewall mainly decides:',
+        [O('allow','Which network traffic to allow or block',true), O('charge','How much battery the CPU has',false)],
+        'Correct. A firewall is a traffic gatekeeper.',
+        'Firewalls inspect and filter network traffic.'),
+      S('Encryption protects a message by:',
+        [O('scramble','Scrambling it so only the right key can read it',true), O('hide','Changing the font size to zero',false)],
+        'Yes. Without the key, the data should look useless.',
+        'Encryption is mathematical scrambling, not visual hiding.'),
+      S('Public key cryptography works because:',
+        [O('pair','One key can lock, while a different private key unlocks',true), O('same','Everyone shares the same secret key openly',false)],
+        'Exactly. The public key can be shared; the private key is guarded.',
+        'The private key must not be shared.'),
+      { type: 'sorting', boxes: [
+        { id: 'firewall', label: 'Firewall helps' },
+        { id: 'encryption', label: 'Encryption helps' }
+      ], items: [
+        { id: 'port', label: 'Suspicious traffic hitting a port', box: 'firewall' },
+        { id: 'wifi', label: 'Someone listening to public Wi-Fi packets', box: 'encryption' }
+      ]},
+      S('Social engineering attacks the:',
+        [O('human','Human decision-maker',true), O('clock','Quartz clock inside the CPU',false)],
+        'Correct. It tries to trick people, not beat the math directly.',
+        'Social engineering targets people.'),
+      S('A zero-day is dangerous because:',
+        [O('unknown','The defender does not know the flaw exists yet',true), O('old','It is a very old password',false)],
+        'Yes. Zero days means zero days to patch.',
+        'A zero-day is an unknown/unpatched vulnerability.'),
+      S('In stored-program architecture, software is stored as:',
+        [O('data','Data in memory, just like other bits',true), O('cables','A new physical cable layout every time',false)],
+        'Right. Programs become data the machine can fetch.',
+        'Modern machines do not rewire cables for every program.'),
+      S('A strong system is usually built from:',
+        [O('layers','Several layers: code, network, identity, monitoring, backups',true), O('onewall','One perfect wall that never fails',false)],
+        'Exactly. Real security and system design use layers.',
+        'One perfect wall is brittle. Layers give resilience.')
+    ]
+  }
+];
+
+function cloneInteractions(interactions) {
+  return interactions.map((interaction) => ({
+    ...interaction,
+    boxes: interaction.boxes?.map((box) => ({ ...box })),
+    items: interaction.items?.map((item) => ({ ...item })),
+    options: interaction.options?.map((option) => ({ ...option })),
+    target: Array.isArray(interaction.target) ? [...interaction.target] : interaction.target,
+    labels: interaction.labels ? [...interaction.labels] : interaction.labels,
+    matrix: interaction.matrix?.map((row) => [...row]),
+    inputPoint: interaction.inputPoint ? [...interaction.inputPoint] : interaction.inputPoint
+  }));
+}
+
+export function getComputerWorkshopModules() {
+  return COMPUTER_WORKSHOP_MODULES.map(({ id, label, title, sub }) => ({ id, label, title, sub }));
+}
+
+export function getComputerWorkshopModule(id = 'binary-data') {
+  const module = COMPUTER_WORKSHOP_MODULES.find((item) => item.id === id) || COMPUTER_WORKSHOP_MODULES[0];
+  return {
+    ...module,
+    interactions: cloneInteractions(module.interactions)
+  };
+}
+
 export function getBitWorkshop(checkpointIndex) {
   const keys = Object.keys(BIT_WORKSHOPS);
   if (checkpointIndex < keys.length) {
@@ -1219,7 +1501,7 @@ export function getBitWorkshop(checkpointIndex) {
 }
 
 export function getBitDataWorkshop() {
-  return BIT_DATA_WORKSHOP;
+  return getComputerWorkshopModule('binary-data').interactions;
 }
 
 export const PHYSICS_CORE_WORKSHOP = [
