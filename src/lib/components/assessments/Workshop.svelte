@@ -20,6 +20,22 @@
   let totalScore = 0;
   let totalMax = 0;
 
+  function shuffle(items = []) {
+    const shuffled = [...items];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  function shuffledOptions(interaction) {
+    if (!interaction?._shuffledOptions) {
+      interaction._shuffledOptions = shuffle(interaction.options || []);
+    }
+    return interaction._shuffledOptions;
+  }
+
   function handleInteractionDone(score, max) {
     totalScore += score;
     totalMax += max;
@@ -32,6 +48,7 @@
 
   $: current = interactions[step];
   $: progressPct = interactions.length ? ((step + 1) / interactions.length) * 100 : 0;
+  $: scenarioOptions = current?.type === 'scenario' ? shuffledOptions(current) : [];
 </script>
 
 <div class="workshop">
@@ -136,7 +153,7 @@
             <div class="scenario-image">{current.image}</div>
           {/if}
           <div class="scenario-options">
-            {#each current.options as opt}
+            {#each scenarioOptions as opt}
               <button
                 class="scenario-opt"
                 class:selected={current._answered}

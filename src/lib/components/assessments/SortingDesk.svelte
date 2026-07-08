@@ -14,6 +14,28 @@
   let selected = null;     // itemId picked by tap, waiting for a box tap
   let submitted = false;
   let score = 0;
+  let shuffledBoxes = [];
+  let shuffledItems = [];
+  let shuffleKey = '';
+
+  function shuffle(list = []) {
+    const shuffled = [...list];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  function resetForPrompt() {
+    placed = {};
+    dragging = null;
+    selected = null;
+    submitted = false;
+    score = 0;
+    shuffledBoxes = shuffle(boxes);
+    shuffledItems = shuffle(items);
+  }
 
   function handleDragStart(e, itemId) {
     dragging = itemId;
@@ -71,6 +93,13 @@
     onDone(score, items.length);
   }
 
+  $: {
+    const nextKey = `${boxes.map((box) => box.id).join('|')}::${items.map((item) => item.id).join('|')}`;
+    if (nextKey !== shuffleKey) {
+      shuffleKey = nextKey;
+      resetForPrompt();
+    }
+  }
   $: allPlaced = items.every(i => placed[i.id]);
 </script>
 
@@ -81,7 +110,7 @@
   {/if}
 
   <div class="boxes">
-    {#each boxes as box}
+    {#each shuffledBoxes as box}
       <div
         class="box"
         class:over={dragging !== null || selected !== null}
@@ -95,7 +124,7 @@
       >
         <div class="box-label">{box.label}</div>
         <div class="box-items">
-          {#each items.filter(i => placed[i.id] === box.id) as item (item.id)}
+          {#each shuffledItems.filter(i => placed[i.id] === box.id) as item (item.id)}
             <button
               class="placed-item"
               class:right={submitted && item.box === box.id}
@@ -110,7 +139,7 @@
               {/if}
             </button>
           {/each}
-          {#if !items.some(i => placed[i.id] === box.id)}
+          {#if !shuffledItems.some(i => placed[i.id] === box.id)}
             <div class="box-empty">{selected ? 'Tap to place here' : 'Drop here'}</div>
           {/if}
         </div>
@@ -119,7 +148,7 @@
   </div>
 
   <div class="item-pile">
-    {#each items.filter(i => !placed[i.id]) as item (item.id)}
+    {#each shuffledItems.filter(i => !placed[i.id]) as item (item.id)}
       <button
         class="draggable-item"
         class:picked={selected === item.id}

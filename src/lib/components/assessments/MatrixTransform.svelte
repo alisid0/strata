@@ -10,6 +10,17 @@
   let selected = null;
   let submitted = false;
   let correct = false;
+  let shuffledOptions = [];
+  let optionsKey = '';
+
+  function shuffle(list = []) {
+    const shuffled = [...list];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
 
   $: outputPoint = [
     matrix[0][0] * inputPoint[0] + matrix[0][1] * inputPoint[1],
@@ -27,6 +38,17 @@
 
   function finish() {
     onDone(correct ? 1 : 0, 1);
+  }
+
+  $: {
+    const nextKey = options.map((option) => option.join(',')).join('|');
+    if (nextKey !== optionsKey) {
+      optionsKey = nextKey;
+      shuffledOptions = shuffle(options);
+      selected = null;
+      submitted = false;
+      correct = false;
+    }
   }
 </script>
 
@@ -51,7 +73,7 @@
   </div>
 
   <div class="options">
-    {#each options as opt}
+    {#each shuffledOptions as opt}
       <button
         class:selected={samePoint(selected, opt)}
         class:right={submitted && samePoint(outputPoint, opt)}
