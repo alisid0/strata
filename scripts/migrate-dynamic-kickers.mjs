@@ -66,16 +66,27 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
 async function main() {
-  // Fetch all dynamic cards (sort_order > 84)
-  const { data: cards, error } = await supabase
-    .from('cards')
-    .select('id, sort_order, kicker, title, tags')
-    .gt('sort_order', 84)
-    .order('sort_order');
+  // Fetch all dynamic cards (sort_order > 84). PostgREST caps rows at 1000
+  // per request regardless of client-side .limit(), so page through with
+  // .range() to get everything.
+  let cards = [];
+  let from = 0;
+  const pageSize = 1000;
+  while (true) {
+    const { data, error } = await supabase
+      .from('cards')
+      .select('id, sort_order, kicker, title, tags')
+      .gt('sort_order', 84)
+      .order('sort_order')
+      .range(from, from + pageSize - 1);
 
-  if (error) {
-    console.error('ERROR fetching cards:', error.message);
-    process.exit(1);
+    if (error) {
+      console.error('ERROR fetching cards:', error.message);
+      process.exit(1);
+    }
+    cards = cards.concat(data);
+    if (data.length < pageSize) break;
+    from += pageSize;
   }
 
   console.log(`Found ${cards.length} dynamic cards.`);

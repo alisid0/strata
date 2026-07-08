@@ -38,12 +38,25 @@ async function supabaseStats() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return { text: '?', images: '?', audio: '?' };
   try {
-    const res  = await fetch(
-      `${url}/rest/v1/cards?select=sort_order,img_url,layers&limit=2000`,
-      { headers: { apikey: key, Authorization: `Bearer ${key}` } }
-    );
-    const rows = await res.json();
-    if (!Array.isArray(rows)) return { text: '?', images: '?', audio: '?' };
+    // PostgREST caps rows at 1000 per request regardless of ?limit= — page
+    // through with the Range header to get everything.
+    let rows = [];
+    let from = 0;
+    const pageSize = 1000;
+    while (true) {
+      const res = await fetch(
+        `${url}/rest/v1/cards?select=sort_order,img_url,layers`,
+        { headers: {
+            apikey: key, Authorization: `Bearer ${key}`,
+            Range: `${from}-${from + pageSize - 1}`,
+        } }
+      );
+      const page = await res.json();
+      if (!Array.isArray(page)) break;
+      rows = rows.concat(page);
+      if (page.length < pageSize) break;
+      from += pageSize;
+    }
     let images = 0, audio = 0;
     for (const r of rows) {
       if (r.img_url) images++;
