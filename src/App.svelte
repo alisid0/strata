@@ -8,6 +8,7 @@
   import Onboarding from './views/Onboarding.svelte';
   import Home from './views/Home.svelte';
   import Path from './views/Path.svelte';
+  import WorkshopLab from './views/WorkshopLab.svelte';
   import PathView from './views/PathView.svelte';
   import WScore from './views/WScore.svelte';
   import Leaderboard from './views/Leaderboard.svelte';
@@ -26,8 +27,8 @@
   let readerStart = 1;
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
 
-  const TAB_VIEWS = ['home', 'path', 'wscore'];
-  const TAB_ORDER = ['home', 'path', 'wscore'];
+  const TAB_VIEWS = ['home', 'path', 'workshop', 'wscore'];
+  const TAB_ORDER = ['home', 'path', 'workshop', 'wscore'];
   const PUSH_VIEWS = ['topicDetail', 'leaderboard', 'otherUserStats', 'reader', 'quiz', 'author', 'snippetMode'];
   // Old view ids still used by callers/deep-links → their streamlined homes.
   const LEGACY_VIEWS = { topics: 'path', stats: 'wscore', map: 'path', snippets: 'snippetMode' };
@@ -130,6 +131,8 @@
           <Home onNavigate={navigate} />
         {:else if currentView === 'path'}
           <Path onNavigate={navigate} />
+        {:else if currentView === 'workshop'}
+          <WorkshopLab onNavigate={navigate} />
         {:else if currentView === 'wscore'}
           <WScore onNavigate={navigate} />
         {/if}

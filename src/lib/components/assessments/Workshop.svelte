@@ -1,8 +1,10 @@
 <script>
   // Workshop — steps through interactive assessment interactions
-  import { fade, fly } from 'svelte/transition';
+  import { fly } from 'svelte/transition';
   import SortingDesk from './SortingDesk.svelte';
   import TapErase from './TapErase.svelte';
+  import BitPattern from './BitPattern.svelte';
+  import PixelGrid from './PixelGrid.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -23,20 +25,45 @@
   }
 
   $: current = interactions[step];
+  $: progressPct = interactions.length ? ((step + 1) / interactions.length) * 100 : 0;
 </script>
 
 <div class="workshop">
   <div class="workshop-header">
-    <span class="workshop-title">Workshop</span>
-    <span class="workshop-progress">{step + 1} / {interactions.length}</span>
+    <div>
+      <span class="workshop-kicker">Micro drill</span>
+      <span class="workshop-title">Workshop</span>
+    </div>
+    <span class="workshop-progress">{step + 1}/{interactions.length}</span>
+  </div>
+  <div class="progress-track" aria-hidden="true">
+    <span style={`width:${progressPct}%`}></span>
   </div>
 
-  <div class="workshop-body" in:fly={{ x: 40, duration: 280 }} out:fly={{ x: -40, duration: 200 }}>
+  <div class="workshop-body" in:fly={{ x: 40, duration: 220 }} out:fly={{ x: -40, duration: 160 }}>
     {#if current}
       {#if current.type === 'sorting'}
         <SortingDesk boxes={current.boxes} items={current.items} onDone={handleInteractionDone} />
       {:else if current.type === 'taperase'}
         <TapErase onDone={handleInteractionDone} />
+      {:else if current.type === 'bitpattern'}
+        <BitPattern
+          prompt={current.prompt}
+          bits={current.bits}
+          target={current.target}
+          labels={current.labels || []}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'pixelgrid'}
+        <PixelGrid
+          prompt={current.prompt}
+          target={current.target}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
       {:else if current.type === 'scenario'}
         <div class="scenario">
           <div class="scenario-prompt">{current.prompt}</div>
@@ -83,15 +110,46 @@
   }
   .workshop-header {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 20px;
+    gap: 14px; margin-bottom: 8px;
+  }
+  .workshop-kicker {
+    display: block;
+    font-size: 10px;
+    line-height: 1.1;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--qx-accent);
+    margin-bottom: 3px;
   }
   .workshop-title {
-    font-size: 18px; font-weight: 800; color: var(--qx-text);
+    display: block;
+    font-size: 18px; font-weight: 850; color: var(--qx-text);
   }
   .workshop-progress {
-    font-size: 13px; font-weight: 700; color: var(--qx-text-faint);
+    font-size: 12px; font-weight: 850; color: var(--qx-text-faint);
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--qx-border);
+    border-radius: 999px;
+    padding: 5px 9px;
+    background: var(--qx-surface-2);
   }
-  .workshop-body { flex: 1; }
+  .progress-track {
+    height: 5px;
+    width: 100%;
+    border-radius: 999px;
+    background: var(--qx-surface-2);
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .progress-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--qx-accent);
+    transition: width 0.22s ease;
+  }
+  .workshop-body { flex: 1; min-height: 360px; }
   .scenario {
     display: flex; flex-direction: column; gap: 16px; align-items: center;
     width: 100%; max-width: 360px; margin: 0 auto;

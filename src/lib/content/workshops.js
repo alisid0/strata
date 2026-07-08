@@ -856,6 +856,62 @@ export const ATOM_WORKSHOPS = {
 
 // ── The Bit workshops ──
 
+export const BIT_DATA_WORKSHOP = [
+  {
+    type: 'bitpattern',
+    prompt: 'Beat 1: flip the switches into 1011.',
+    bits: 4,
+    target: '1011',
+    labels: ['8', '4', '2', '1'],
+    correctFeedback: 'Correct. In four-bit binary, 1011 means 8 + 0 + 2 + 1.',
+    incorrectFeedback: 'Check each place from left to right: 8, 4, 2, 1. The target is 1011.'
+  },
+  S('Same bits, different meaning. What tells the computer how to read a pattern?',
+    [O('rule','The rule used to read it',true), O('shape','The visual shape of the 1s and 0s',false)],
+    'Exactly. The same bits only become useful when a system knows how to interpret them.',
+    'Not quite. Bits need a reading rule. Without that rule, a pattern is just a row of 1s and 0s.'),
+  S('Eight bits snap together into one byte. Why is that useful?',
+    [O('chunk','It gives computers a useful standard chunk of storage',true), O('speed','It makes electricity travel faster',false)],
+    'Yes. A byte is a practical block that computers can count, move, and store.',
+    'Not quite. A byte does not make electricity faster. It gives computers a standard-sized block to work with.'),
+  {
+    type: 'bitpattern',
+    prompt: 'Make the byte 01000001. In common text encoding, this becomes capital A.',
+    bits: 8,
+    target: '01000001',
+    labels: ['128', '64', '32', '16', '8', '4', '2', '1'],
+    correctFeedback: 'Correct. The pattern 01000001 is read as capital A in common text encoding.',
+    incorrectFeedback: 'Look carefully at the target. Only the 64 place and the 1 place should be switched on.'
+  },
+  { type: 'sorting', boxes: [
+    { id: 'bit', label: 'Bit' },
+    { id: 'byte', label: 'Byte' }
+  ], items: [
+    { id: 'single', label: 'One on/off state', box: 'bit' },
+    { id: 'eight', label: 'Eight bits grouped together', box: 'byte' }
+  ]},
+  {
+    type: 'pixelgrid',
+    prompt: 'Paint the target. Each square is just one bit: off or on.',
+    target: ['0110', '1001', '1001', '0110'],
+    correctFeedback: 'Nice. A tiny picture can start as a grid of on/off pixel states.',
+    incorrectFeedback: 'Compare row by row. A 1 is a filled square; a 0 is empty.'
+  },
+  {
+    type: 'bitpattern',
+    prompt: 'Color mix: red on, green off, blue on.',
+    bits: 3,
+    target: '101',
+    labels: ['red', 'green', 'blue'],
+    correctFeedback: 'Correct. Red and blue are on, green is off.',
+    incorrectFeedback: 'The target is red on, green off, blue on: 101.'
+  },
+  S('A sound wave enters the computer. What gets stored?',
+    [O('samples','Many measured samples of the wave',true), O('air','Tiny pockets of air pressure',false)],
+    'Yes. The computer stores measurements, then rebuilds the sound from those measurements during playback.',
+    'Not quite. The computer stores measured numbers called samples, not actual air pressure.')
+];
+
 export const BIT_WORKSHOPS = {
 
   // After BB 003 — Switches and Pipes (12 interactions)
@@ -1160,6 +1216,10 @@ export function getBitWorkshop(checkpointIndex) {
     return BIT_WORKSHOPS[keys[checkpointIndex]];
   }
   return null;
+}
+
+export function getBitDataWorkshop() {
+  return BIT_DATA_WORKSHOP;
 }
 
 // ── Physics workshops ──
