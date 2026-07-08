@@ -40,7 +40,7 @@
       title: 'Spreadsheet to space machine',
       sub: 'Read cells, store data, and transform points.',
       icon: '/icons/gateways/line.png',
-      pathId: 'MATH_COORD',
+      pathId: 'MATH_MATRICES',
       getWorkshop: getMathsMatricesWorkshop
     }
   };
