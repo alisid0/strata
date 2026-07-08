@@ -1,6 +1,6 @@
 <script>
   import Workshop from '../lib/components/assessments/Workshop.svelte';
-  import { getBitDataWorkshop } from '../lib/content/workshops.js';
+  import { getBitDataWorkshop, getPhysicsCoreWorkshop } from '../lib/content/workshops.js';
 
   export let onNavigate;
 
@@ -8,8 +8,29 @@
   let finished = false;
   let score = 0;
   let total = 0;
+  let activeTrack = 'bit';
 
-  $: interactions = getBitDataWorkshop();
+  const TRACKS = {
+    bit: {
+      label: 'The Bit',
+      title: 'Binary/Data micro-drill',
+      sub: 'Bits, bytes, pixels, text, and sound.',
+      icon: '/icons/gateways/bit.png',
+      pathId: 'BIT_001',
+      getWorkshop: getBitDataWorkshop
+    },
+    physics: {
+      label: 'Physics',
+      title: 'Forces, waves, and energy',
+      sub: 'Balance pushes, tune waves, and read motion.',
+      icon: '/icons/gateways/unit.png',
+      pathId: 'PHYS_001',
+      getWorkshop: getPhysicsCoreWorkshop
+    }
+  };
+
+  $: track = TRACKS[activeTrack];
+  $: interactions = track.getWorkshop();
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
 
   function finishWorkshop(finalScore, finalTotal) {
@@ -24,6 +45,12 @@
     total = 0;
     finished = false;
   }
+
+  function chooseTrack(id) {
+    if (activeTrack === id) return;
+    activeTrack = id;
+    replay();
+  }
 </script>
 
 <div class="qx-shell workshop-lab">
@@ -33,16 +60,30 @@
       <h1>Workshop</h1>
       <p>Fast hands-on drills for turning ideas into working understanding.</p>
     </div>
-    <img src="/icons/gateways/bit.png" alt="The Bit" />
+    <img src={track.icon} alt={track.label} />
+  </div>
+
+  <div class="track-tabs" role="tablist" aria-label="Workshop tracks">
+    {#each Object.entries(TRACKS) as [id, item]}
+      <button
+        class:active={activeTrack === id}
+        on:click={() => chooseTrack(id)}
+        role="tab"
+        aria-selected={activeTrack === id}
+      >
+        <img src={item.icon} alt="" />
+        <span>{item.label}</span>
+      </button>
+    {/each}
   </div>
 
   <section class="spotlight">
     <div class="spotlight-copy">
-      <span>The Bit</span>
-      <strong>Binary/Data micro-drill</strong>
-      <small>Bits, bytes, pixels, text, and sound.</small>
+      <span>{track.label}</span>
+      <strong>{track.title}</strong>
+      <small>{track.sub}</small>
     </div>
-    <button on:click={() => onNavigate?.('topicDetail', 'BIT_001')}>Open path</button>
+    <button on:click={() => onNavigate?.('topicDetail', track.pathId)}>Open path</button>
   </section>
 
   <div class="workshop-card">
@@ -50,7 +91,7 @@
       <div class="done-state">
         <div class="score-ring">{scorePct}%</div>
         <h2>{score}/{total} locked in</h2>
-        <p>Replay once and aim for a cleaner run. Short repetition is where these patterns start to feel automatic.</p>
+        <p>{scorePct >= 80 ? 'Strong grasp. This is the confidence zone: the idea is usable, not just familiar.' : 'Replay once and aim for a cleaner run. Short repetition is where the pattern starts to feel automatic.'}</p>
         <button class="primary-btn" on:click={replay}>Replay drill</button>
       </div>
     {:else}
@@ -105,6 +146,41 @@
     height: 50px;
     object-fit: contain;
     flex-shrink: 0;
+  }
+
+  .track-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .track-tabs button {
+    min-height: 48px;
+    border-radius: 8px;
+    border: 1.5px solid var(--qx-border);
+    background: var(--qx-surface);
+    color: var(--qx-text-dim);
+    font-family: var(--qx-font);
+    font-size: 13px;
+    font-weight: 850;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .track-tabs button.active {
+    border-color: var(--qx-accent);
+    background: var(--qx-accent-soft);
+    color: var(--qx-accent-text);
+  }
+
+  .track-tabs img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
   }
 
   .spotlight {

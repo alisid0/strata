@@ -5,6 +5,8 @@
   import TapErase from './TapErase.svelte';
   import BitPattern from './BitPattern.svelte';
   import PixelGrid from './PixelGrid.svelte';
+  import ForceBalance from './ForceBalance.svelte';
+  import WaveTuner from './WaveTuner.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -60,6 +62,25 @@
         <PixelGrid
           prompt={current.prompt}
           target={current.target}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'forcebalance'}
+        <ForceBalance
+          prompt={current.prompt}
+          target={current.target}
+          startLeft={current.startLeft}
+          startRight={current.startRight}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'wavetuner'}
+        <WaveTuner
+          prompt={current.prompt}
+          targetAmplitude={current.targetAmplitude}
+          targetFrequency={current.targetFrequency}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
           onDone={handleInteractionDone}

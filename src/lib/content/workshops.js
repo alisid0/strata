@@ -1222,6 +1222,64 @@ export function getBitDataWorkshop() {
   return BIT_DATA_WORKSHOP;
 }
 
+export const PHYSICS_CORE_WORKSHOP = [
+  { type: 'sorting', boxes: [
+    { id: 'base', label: 'Base unit' },
+    { id: 'derived', label: 'Built from other units' }
+  ], items: [
+    { id: 'meter', label: 'Meter', box: 'base' },
+    { id: 'second', label: 'Second', box: 'base' },
+    { id: 'speed', label: 'Meters per second', box: 'derived' },
+    { id: 'newton', label: 'Newton', box: 'derived' }
+  ]},
+  {
+    type: 'forcebalance',
+    prompt: 'Make the cart stay still. Equal pushes cancel each other.',
+    target: 'balanced',
+    startLeft: 1,
+    startRight: 3,
+    correctFeedback: 'Locked. Equal force on both sides gives zero net force, so the cart does not accelerate.',
+    incorrectFeedback: 'The pushes need to match. If one side is stronger, the cart accelerates that way.'
+  },
+  S('A skater is already gliding forward on smooth ice. No one pushes. What keeps changing?',
+    [O('nothing','Nothing; the motion continues steadily',true), O('speed','The speed increases by itself',false)],
+    'Exactly. Without a net force, motion does not need to keep being fed. It keeps going steadily.',
+    'Not quite. A steady glide can continue without a new push. A net force is needed to change the motion.'),
+  {
+    type: 'forcebalance',
+    prompt: 'Now make the cart accelerate to the right.',
+    target: 'right',
+    startLeft: 2,
+    startRight: 2,
+    correctFeedback: 'Yes. A stronger right-side push makes the net force point right.',
+    incorrectFeedback: 'The right push must be stronger than the left push.'
+  },
+  S('Two identical pushes act on two carts. One cart is empty; one is loaded with bricks. Which cart accelerates more?',
+    [O('empty','The empty cart',true), O('loaded','The loaded cart',false)],
+    'Correct. The same force changes lighter mass more easily.',
+    'Not quite. More mass resists acceleration. The empty cart responds more.'),
+  {
+    type: 'wavetuner',
+    prompt: 'Tune the wave: make it tall and tightly packed.',
+    targetAmplitude: 4,
+    targetFrequency: 4,
+    correctFeedback: 'Good. Taller means higher amplitude. More packed means higher frequency.',
+    incorrectFeedback: 'Match both controls: height 4 and crowding 4.'
+  },
+  S('A ball rolls down a ramp. Stored height energy turns mostly into what?',
+    [O('motion','Motion energy',true), O('mass','Extra mass',false)],
+    'Exactly. The ball is not gaining mass; stored energy is turning into motion.',
+    'Not quite. The ball keeps the same mass. Its stored height energy becomes motion.'),
+  S('A student can explain the answer without using the app hints. What does that usually mean?',
+    [O('grasped','They have grasped the idea',true), O('lucky','They only got lucky',false)],
+    'Yes. Being able to explain the rule is a stronger sign than tapping the right option once.',
+    'Not quite. A clear explanation is a good sign that the idea is becoming usable.')
+];
+
+export function getPhysicsCoreWorkshop() {
+  return PHYSICS_CORE_WORKSHOP;
+}
+
 // ── Physics workshops ──
 
 export const PHYS_WORKSHOPS = {
