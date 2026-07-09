@@ -7,7 +7,9 @@
     getComputerWorkshopModules,
     getLineCoreWorkshop,
     getMathsMatricesWorkshop,
-    getPhysicsCoreWorkshop
+    getPhysicsCoreWorkshop,
+    getPhysicsWorkshopModule,
+    getPhysicsWorkshopModules
   } from '../lib/content/workshops.js';
 
   export let onNavigate;
@@ -18,8 +20,10 @@
   let total = 0;
   let activeTrack = 'bit';
   let activeComputerModule = 'binary-data';
+  let activePhysicsModule = 'units-dimensions';
 
   const COMPUTER_MODULES = getComputerWorkshopModules();
+  const PHYSICS_MODULES = getPhysicsWorkshopModules();
 
   const TRACKS = {
     bit: {
@@ -32,8 +36,8 @@
     },
     physics: {
       label: 'Physics',
-      title: 'Forces, waves, and energy',
-      sub: 'Balance pushes, tune waves, and read motion.',
+      title: 'Physics workshops',
+      sub: 'Units, forces, waves, and energy.',
       icon: '/icons/gateways/unit.png',
       pathId: 'PHYS_001',
       getWorkshop: getPhysicsCoreWorkshop
@@ -66,9 +70,13 @@
 
   $: track = TRACKS[activeTrack];
   $: computerModule = activeTrack === 'bit' ? getComputerWorkshopModule(activeComputerModule) : null;
-  $: workshopTitle = computerModule?.title || track.title;
-  $: workshopSub = computerModule?.sub || track.sub;
-  $: interactions = computerModule?.interactions || track.getWorkshop();
+  $: physicsModule = activeTrack === 'physics' ? getPhysicsWorkshopModule(activePhysicsModule) : null;
+  $: activeModule = computerModule || physicsModule;
+  $: moduleTabs = activeTrack === 'bit' ? COMPUTER_MODULES : activeTrack === 'physics' ? PHYSICS_MODULES : [];
+  $: activeModuleId = activeTrack === 'bit' ? activeComputerModule : activeTrack === 'physics' ? activePhysicsModule : '';
+  $: workshopTitle = activeModule?.title || track.title;
+  $: workshopSub = activeModule?.sub || track.sub;
+  $: interactions = activeModule?.interactions || track.getWorkshop();
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
 
   function finishWorkshop(finalScore, finalTotal) {
@@ -94,6 +102,18 @@
     if (activeComputerModule === id) return;
     activeComputerModule = id;
     replay();
+  }
+
+  function chooseModule(id) {
+    if (activeTrack === 'bit') {
+      chooseComputerModule(id);
+      return;
+    }
+    if (activeTrack === 'physics') {
+      if (activePhysicsModule === id) return;
+      activePhysicsModule = id;
+      replay();
+    }
   }
 </script>
 
@@ -130,14 +150,14 @@
     <button on:click={() => onNavigate?.('topicDetail', track.pathId)}>Open path</button>
   </section>
 
-  {#if activeTrack === 'bit'}
-    <div class="module-tabs" role="tablist" aria-label="Computer workshop modules">
-      {#each COMPUTER_MODULES as item}
+  {#if moduleTabs.length}
+    <div class="module-tabs" role="tablist" aria-label={`${track.label} workshop modules`}>
+      {#each moduleTabs as item}
         <button
-          class:active={activeComputerModule === item.id}
-          on:click={() => chooseComputerModule(item.id)}
+          class:active={activeModuleId === item.id}
+          on:click={() => chooseModule(item.id)}
           role="tab"
-          aria-selected={activeComputerModule === item.id}
+          aria-selected={activeModuleId === item.id}
         >
           {item.label}
         </button>

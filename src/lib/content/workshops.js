@@ -1504,6 +1504,99 @@ export function getBitDataWorkshop() {
   return getComputerWorkshopModule('binary-data').interactions;
 }
 
+export const PHYSICS_UNITS_WORKSHOP = [
+  { type: 'sorting', boxes: [
+    { id: 'base', label: 'Base unit' },
+    { id: 'derived', label: 'Derived unit' }
+  ], items: [
+    { id: 'meter', label: 'Meter', box: 'base' },
+    { id: 'second', label: 'Second', box: 'base' },
+    { id: 'speed', label: 'Meter per second', box: 'derived' },
+    { id: 'newton', label: 'Newton', box: 'derived' }
+  ]},
+  S('A number without a unit says very little in physics. A measurement needs:',
+    [O('valueunit','A value and a unit',true), O('name','Only a famous scientist name',false)],
+    'Correct. 10 is incomplete; 10 meters, 10 seconds, and 10 kilograms mean different things.',
+    'Not quite. Physics needs both the number and what kind of thing was measured.'),
+  {
+    type: 'unitcheck',
+    prompt: 'Cancel the units. What does speed multiplied by time become?',
+    expression: '(m/s) x s',
+    target: 'A car moves at speed for a certain time.',
+    options: [
+      { id: 'm', label: 'm', note: 'distance' },
+      { id: 's', label: 's', note: 'time' },
+      { id: 'kg', label: 'kg', note: 'mass' }
+    ],
+    correctOption: 'm',
+    correctFeedback: 'Yes. The seconds cancel, leaving meters. That is distance.',
+    incorrectFeedback: 'Cancel s in the denominator with s in the multiplier. The unit left behind is meters.'
+  },
+  {
+    type: 'unitcheck',
+    prompt: 'Check the equation before using numbers. What unit does force have?',
+    expression: 'kg x m/s^2',
+    target: 'Newton’s second law: F = ma',
+    options: [
+      { id: 'n', label: 'N', note: 'newton' },
+      { id: 'j', label: 'J', note: 'joule' },
+      { id: 'w', label: 'W', note: 'watt' }
+    ],
+    correctOption: 'n',
+    correctFeedback: 'Locked. A newton is kg x m/s^2 wearing a shorter name.',
+    incorrectFeedback: 'Force is mass times acceleration: kg x m/s^2. That derived unit is called a newton.'
+  },
+  S('A calculation is supposed to find distance, but the answer comes out in kilograms. What should happen next?',
+    [O('stop','Stop and check the work',true), O('accept','Accept it if the number looks nice',false)],
+    'Exactly. Units act like a built-in lie detector.',
+    'Distance cannot come out in kilograms. The unit mismatch is a warning sign.'),
+  {
+    type: 'unitcheck',
+    prompt: 'Which result has the dimensions of energy?',
+    expression: 'force x distance',
+    target: 'Work done = force applied across a distance.',
+    options: [
+      { id: 'j', label: 'N x m = J', note: 'joule' },
+      { id: 'pa', label: 'N/m^2 = Pa', note: 'pressure' },
+      { id: 'hz', label: '1/s = Hz', note: 'frequency' }
+    ],
+    correctOption: 'j',
+    correctFeedback: 'Correct. Work and energy use joules: force times distance.',
+    incorrectFeedback: 'Energy appears when a force acts across a distance. That gives N x m, called a joule.'
+  },
+  { type: 'sorting', boxes: [
+    { id: 'scalar', label: 'Scalar' },
+    { id: 'vector', label: 'Vector' }
+  ], items: [
+    { id: 'mass', label: '5 kg', box: 'scalar' },
+    { id: 'temp', label: '20 C', box: 'scalar' },
+    { id: 'velocity', label: '12 m/s east', box: 'vector' },
+    { id: 'force', label: '30 N downward', box: 'vector' }
+  ]},
+  S('The prefix kilo means:',
+    [O('thousand','Multiply by 1000',true), O('newunit','A completely new base unit',false)],
+    'Yes. Kilo changes the scale, not the kind of quantity.',
+    'Kilo is a prefix. It means one thousand of the base unit.'),
+  {
+    type: 'unitcheck',
+    prompt: 'A wave has frequency measured in hertz. What is a hertz underneath?',
+    expression: '1/s',
+    target: 'Frequency counts how many cycles happen each second.',
+    options: [
+      { id: 'hz', label: 'Hz', note: 'per second' },
+      { id: 'n', label: 'N', note: 'force' },
+      { id: 'm', label: 'm', note: 'distance' }
+    ],
+    correctOption: 'hz',
+    correctFeedback: 'Correct. Hertz means per second: cycles each second.',
+    incorrectFeedback: 'Frequency counts repetitions per second, so the hidden unit is 1/s, called hertz.'
+  },
+  S('Why do dimensions catch mistakes before the final number is checked?',
+    [O('meaning','They track the physical meaning of each quantity',true), O('font','They make the equation look more official',false)],
+    'Exactly. Units carry meaning through the calculation.',
+    'Not quite. Dimensions are not decoration; they track what kind of physical thing the equation produces.')
+];
+
 export const PHYSICS_CORE_WORKSHOP = [
   { type: 'sorting', boxes: [
     { id: 'base', label: 'Base unit' },
@@ -1558,8 +1651,37 @@ export const PHYSICS_CORE_WORKSHOP = [
     'Not quite. A clear explanation is a good sign that the idea is becoming usable.')
 ];
 
+export const PHYSICS_WORKSHOP_MODULES = [
+  {
+    id: 'units-dimensions',
+    label: 'Units',
+    title: 'Units and dimensions lab',
+    sub: 'Use units as a physics lie detector before trusting the numbers.',
+    interactions: PHYSICS_UNITS_WORKSHOP
+  },
+  {
+    id: 'forces-waves',
+    label: 'Forces',
+    title: 'Forces, waves, and energy',
+    sub: 'Balance pushes, tune waves, and read motion.',
+    interactions: PHYSICS_CORE_WORKSHOP
+  }
+];
+
+export function getPhysicsWorkshopModules() {
+  return PHYSICS_WORKSHOP_MODULES.map(({ id, label, title, sub }) => ({ id, label, title, sub }));
+}
+
+export function getPhysicsWorkshopModule(id = 'units-dimensions') {
+  const module = PHYSICS_WORKSHOP_MODULES.find((item) => item.id === id) || PHYSICS_WORKSHOP_MODULES[0];
+  return {
+    ...module,
+    interactions: cloneInteractions(module.interactions)
+  };
+}
+
 export function getPhysicsCoreWorkshop() {
-  return PHYSICS_CORE_WORKSHOP;
+  return getPhysicsWorkshopModule('units-dimensions').interactions;
 }
 
 export const CHEMISTRY_CORE_WORKSHOP = [

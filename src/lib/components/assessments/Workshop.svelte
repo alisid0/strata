@@ -12,6 +12,7 @@
   import MatrixCellFinder from './MatrixCellFinder.svelte';
   import MatrixTransform from './MatrixTransform.svelte';
   import CoordinateDrill from './CoordinateDrill.svelte';
+  import UnitDimensionCheck from './UnitDimensionCheck.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -162,6 +163,17 @@
           pointB={current.pointB}
           xRange={current.xRange}
           yRange={current.yRange}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'unitcheck'}
+        <UnitDimensionCheck
+          prompt={current.prompt}
+          expression={current.expression}
+          target={current.target}
+          options={current.options}
+          correctOption={current.correctOption}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
           onDone={handleInteractionDone}
