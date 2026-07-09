@@ -83,6 +83,7 @@
   {#if mode === 'welcome'}
     <div class="screen welcome">
       <div class="brand">QUB<span class="acc">I</span>X</div>
+      <h1 class="sr-only">Log in or sign up to Qubix</h1>
       <div class="tagline">Learn in Bytes. Grow by Leaps.</div>
 
       <div class="tab-row">
@@ -92,11 +93,11 @@
 
       {#if authTab === 'signup'}
         <label class="fl" for="su-name">Name</label>
-        <input id="su-name" class="field" type="text" placeholder="Ada" bind:value={name} />
+        <input id="su-name" class="field" type="text" placeholder="Ada" autocomplete="name" bind:value={name} />
       {/if}
 
       <label class="fl" for="auth-email">{authTab === 'signup' ? 'Email' : 'Email or phone'}</label>
-      <input id="auth-email" class="field" type="email" placeholder="ada@qubix.app" bind:value={email} />
+      <input id="auth-email" class="field" type="email" placeholder="ada@qubix.app" autocomplete={authTab === 'signup' ? 'email' : 'username'} bind:value={email} />
 
       <label class="fl" for="auth-pw">Password</label>
       <div class="pw-row">
@@ -127,7 +128,7 @@
       </button>
 
       <button class="link skip-link" on:click={onSkip}>Continue as guest</button>
-      <div class="legal-note">By continuing you agree to our <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+      <div class="legal-note">By continuing, you agree to our <a href="/terms.html" target="_blank" rel="noopener">Terms</a> and acknowledge our <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</div>
     </div>
 
   {:else if mode === 'verify'}
@@ -158,6 +159,17 @@
     box-sizing: border-box;
   }
   .screen { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; max-width: 320px; margin: auto 0; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 
   .brand { font-size: 23px; font-weight: 900; letter-spacing: 0.13em; color: var(--qx-text); margin-bottom: 4px; }
   .acc { color: var(--qx-accent); }

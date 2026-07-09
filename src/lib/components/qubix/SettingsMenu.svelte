@@ -43,6 +43,7 @@
         <span class="row-label">Signed in as</span>
         <span class="row-val">{$displayName}</span>
       </div>
+      <a class="row link" href="/terms.html" target="_blank" rel="noopener">Terms and Conditions<span class="chev">›</span></a>
       <a class="row link" href="/privacy.html" target="_blank" rel="noopener">Privacy Policy<span class="chev">›</span></a>
       <button class="row link danger" on:click={handleLogout}>Log out</button>
 
