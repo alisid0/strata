@@ -15,6 +15,7 @@
   import CoordinateDrill from './CoordinateDrill.svelte';
   import UnitDimensionCheck from './UnitDimensionCheck.svelte';
   import PixiSceneChoice from './PixiSceneChoice.svelte';
+  import ThermoLab from './ThermoLab.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -206,6 +207,20 @@
           prompt={current.prompt}
           options={current.options}
           correctOption={current.correctOption}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'thermolab'}
+        <ThermoLab
+          mode={current.mode}
+          prompt={current.prompt}
+          target={current.target}
+          tolerance={current.tolerance}
+          start={current.start}
+          min={current.min}
+          max={current.max}
+          step={current.step}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
           onDone={handleInteractionDone}

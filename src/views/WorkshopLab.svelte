@@ -110,7 +110,7 @@
       modules: [
         ...PHYSICS_MODULES.map((module) => ({
           ...module,
-          pathId: 'PHYS_001',
+          pathId: module.pathId || 'PHYS_001',
           getWorkshop: () => getPhysicsWorkshopModule(module.id).interactions
         })),
         {

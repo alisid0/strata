@@ -1651,12 +1651,135 @@ export const PHYSICS_CORE_WORKSHOP = [
     'Not quite. A clear explanation is a good sign that the idea is becoming usable.')
 ];
 
+export const PHYSICS_THERMO_WORKSHOP = [
+  S('A tiny spark is very hot. A warm bathtub has a lower temperature. Which one can usually transfer more total heat?',
+    [O('bath','The bathtub',true), O('spark','The spark',false)],
+    'Correct. Temperature is average particle energy; total heat transfer also depends on how much matter is involved.',
+    'Not quite. The spark is hotter, but it has very little mass. The bath has far more thermal energy available.'),
+  { type: 'sorting', boxes: [
+    { id: 'temperature', label: 'Temperature' },
+    { id: 'heat', label: 'Heat' }
+  ], items: [
+    { id: 'average', label: 'Average particle motion', box: 'temperature' },
+    { id: 'kelvin', label: 'Measured in kelvin', box: 'temperature' },
+    { id: 'transfer', label: 'Energy transferred', box: 'heat' },
+    { id: 'joule', label: 'Measured in joules', box: 'heat' }
+  ]},
+  {
+    type: 'thermolab',
+    mode: 'mix',
+    prompt: 'A warm and cool sample are mixed in an insulated cup. Tune the final temperature to the balance point.',
+    min: 20,
+    max: 80,
+    step: 1,
+    start: 38,
+    target: 50,
+    tolerance: 2,
+    correctFeedback: 'Balanced. In an insulated mix, heat lost by the warmer sample is gained by the cooler one.',
+    incorrectFeedback: 'Move toward the temperature where neither side still has spare heat to give. The balance point here is about 50 C.'
+  },
+  {
+    type: 'unitcheck',
+    prompt: 'Before calculating, check the equation. What unit should Q have in Q = mcDeltaT?',
+    expression: 'kg x J/(kg K) x K',
+    target: 'Heat transferred by changing temperature.',
+    options: [
+      { id: 'j', label: 'J', note: 'joule' },
+      { id: 'k', label: 'K', note: 'kelvin' },
+      { id: 'kg', label: 'kg', note: 'mass' }
+    ],
+    correctOption: 'j',
+    correctFeedback: 'Yes. kg and K cancel, leaving joules: heat is energy.',
+    incorrectFeedback: 'Cancel kg with kg and K with K. The unit left behind is J.'
+  },
+  {
+    type: 'thermolab',
+    mode: 'phase',
+    prompt: 'Heat keeps entering, but the temperature is not rising. Put the marker on the melting plateau.',
+    min: 0,
+    max: 4,
+    step: 1,
+    start: 0,
+    target: 1,
+    tolerance: 0,
+    correctFeedback: 'Exactly. During melting, added energy breaks structure instead of raising temperature.',
+    incorrectFeedback: 'A plateau is the flat part of the heating curve. Melting is the first flat section.'
+  },
+  S('During boiling, water stays at about 100 C while heat is still being added. Where is the energy going?',
+    [O('bonds','Separating molecules into gas',true), O('thermometer','Making the thermometer ignore heat',false)],
+    'Right. The energy is latent heat, used to change state rather than raise temperature.',
+    'Not quite. The thermometer is working. The energy is going into the phase change.'),
+  {
+    type: 'thermolab',
+    mode: 'piston',
+    prompt: 'Boyle law challenge: compress the gas until the pressure doubles from 1.0 atm to 2.0 atm.',
+    min: 2,
+    max: 10,
+    step: 0.5,
+    start: 10,
+    target: 2,
+    tolerance: 0.1,
+    correctFeedback: 'Locked. Halving the volume doubles the pressure when temperature stays fixed.',
+    incorrectFeedback: 'For this setup, pressure is 10 divided by volume. A 2.0 atm target needs 5 L.'
+  },
+  { type: 'sorting', boxes: [
+    { id: 'fixedT', label: 'Temperature fixed' },
+    { id: 'fixedP', label: 'Pressure fixed' },
+    { id: 'fixedV', label: 'Volume fixed' }
+  ], items: [
+    { id: 'boyle', label: 'Boyle law', box: 'fixedT' },
+    { id: 'charles', label: 'Charles law', box: 'fixedP' },
+    { id: 'pressure', label: 'Pressure law', box: 'fixedV' }
+  ]},
+  {
+    type: 'unitcheck',
+    prompt: 'The ideal gas equation is PV = nRT. Which variable must use an absolute temperature scale?',
+    expression: 'PV = nRT',
+    target: 'Gas law calculations.',
+    options: [
+      { id: 't', label: 'T in kelvin', note: 'absolute temperature' },
+      { id: 'c', label: 'T in Celsius', note: 'daily temperature scale' },
+      { id: 'f', label: 'T in Fahrenheit', note: 'daily temperature scale' }
+    ],
+    correctOption: 't',
+    correctFeedback: 'Correct. Gas laws use kelvin because the scale starts at absolute zero.',
+    incorrectFeedback: 'Use kelvin. Celsius can make ratios and gas-law results physically meaningless.'
+  },
+  {
+    type: 'thermolab',
+    mode: 'engine',
+    prompt: 'Carnot challenge: the cold reservoir is fixed at 300 K. Raise the hot reservoir until the maximum efficiency reaches 50%.',
+    min: 350,
+    max: 900,
+    step: 10,
+    start: 450,
+    target: 50,
+    tolerance: 2,
+    correctFeedback: 'Yes. With Tc = 300 K and Th near 600 K, the theoretical ceiling is about 50%.',
+    incorrectFeedback: 'Efficiency rises when the hot reservoir gets hotter compared with the cold one. Aim near 600 K.'
+  },
+  S('A real engine cannot turn every joule of heat into useful work. What must always happen?',
+    [O('waste','Some heat leaves to a colder place',true), O('perfect','The engine eventually becomes 100% efficient',false)],
+    'Exactly. A heat engine needs a temperature difference and always rejects waste heat.',
+    'Not quite. The second law blocks perfect conversion of heat into work. Some heat must be dumped.'),
+  { type: 'sorting', boxes: [
+    { id: 'spreads', label: 'Entropy increases' },
+    { id: 'unlikely', label: 'Needs outside work' }
+  ], items: [
+    { id: 'perfume', label: 'Perfume spreads through a room', box: 'spreads' },
+    { id: 'coffee', label: 'Hot coffee cools on a desk', box: 'spreads' },
+    { id: 'unmix', label: 'Mixed dye unmixes itself', box: 'unlikely' },
+    { id: 'reheat', label: 'Cold tea reheats itself', box: 'unlikely' }
+  ]}
+];
+
 export const PHYSICS_WORKSHOP_MODULES = [
   {
     id: 'units-dimensions',
     label: 'Units',
     title: 'Units and dimensions lab',
     sub: 'Use units as a physics lie detector before trusting the numbers.',
+    pathId: 'PHY_UNITS',
     interactions: PHYSICS_UNITS_WORKSHOP
   },
   {
@@ -1664,12 +1787,21 @@ export const PHYSICS_WORKSHOP_MODULES = [
     label: 'Forces',
     title: 'Forces, waves, and energy',
     sub: 'Balance pushes, tune waves, and read motion.',
+    pathId: 'PHYS_001',
     interactions: PHYSICS_CORE_WORKSHOP
+  },
+  {
+    id: 'thermodynamics',
+    label: 'Thermo',
+    title: 'Heat, gas, and engines',
+    sub: 'Mix heat, read phase changes, compress gas, and tune an engine.',
+    pathId: 'PHY_THERMO',
+    interactions: PHYSICS_THERMO_WORKSHOP
   }
 ];
 
 export function getPhysicsWorkshopModules() {
-  return PHYSICS_WORKSHOP_MODULES.map(({ id, label, title, sub }) => ({ id, label, title, sub }));
+  return PHYSICS_WORKSHOP_MODULES.map(({ id, label, title, sub, pathId }) => ({ id, label, title, sub, pathId }));
 }
 
 export function getPhysicsWorkshopModule(id = 'units-dimensions') {
