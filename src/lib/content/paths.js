@@ -28,6 +28,8 @@ export const PATHS = {
     cards: [1078,1079,1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,1093,1161,1162,1163,1164,1165,1166,1167,1168,1169,1170,1171,1172,1173,1219,1220,1221,1222,1223,1224,1225,1226,1227,1228,1229,1230,1231,1232,1233,1266,1267,1268,1269,1270,1271,1272,1273,1274,1275], quizUrls: [] },
   MATH_COORD: { subject: 'maths', name: 'Coordinate geometry', icon: 'maths',
     cards: [1035,1036,1038,1039,1040,1041,1042,1043,1044,1045,1046,1047,1048,1049,1050], quizUrls: ['tier0'] },
+  MATH_FUNCTIONS: { subject: 'maths', name: 'Functions', icon: 'maths',
+    cards: [1219,1220,1221,1222,1223,1224,1225,1226,1227,1228], quizUrls: [] },
   MATH_MATRICES: { subject: 'maths', name: 'Matrices', icon: 'maths',
     cards: [1305,1306,1307,1308,1309,1310,1311,1312], quizUrls: [] },
 
@@ -57,7 +59,7 @@ export const PATHS = {
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
   physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES'],
-  maths: ['LINE_001', 'MATH_COORD', 'MATH_MATRICES'],
+  maths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_MATRICES'],
   chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH'],
   computing: ['BIT_001']
 };
@@ -90,7 +92,7 @@ export const PATH_GROUPS = {
   line: {
     name: 'The Line',
     subject: 'maths',
-    paths: ['LINE_001', 'MATH_COORD', 'MATH_MATRICES'],
+    paths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_MATRICES'],
     firstTopic: 'LINE_001'
   },
   atom: {
