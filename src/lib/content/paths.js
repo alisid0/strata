@@ -24,6 +24,8 @@ export const PATHS = {
     cards: [1022,1023,1024,1025,1026,1027,1028,1029,1030,1031,1032,1033,1034,1037], quizUrls: ['tier0'] },
   PHY_ELECTRICITY: { subject: 'physics', name: 'Electricity & circuits', icon: 'physics',
     cards: [1323,1324,1325,1326,1327,1328,1329,1330,1331,1332], quizUrls: [] },
+  PHY_THERMO: { subject: 'physics', name: 'Thermodynamics & heat', icon: 'physics',
+    cards: [1343,1344,1345,1346,1347,1348,1349,1350,1351,1352,1353,1354,1355,1356,1357], quizUrls: ['tier0'] },
 
   // ── The Line (starting point) ──
   LINE_001: { subject: 'maths', name: 'The Line', icon: 'maths',
@@ -64,7 +66,7 @@ export const PATHS = {
 
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
-  physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES', 'PHY_ELECTRICITY'],
+  physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO'],
   maths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES'],
   chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS'],
   computing: ['BIT_001']
@@ -90,7 +92,7 @@ export const ROADMAP = {
   line: ['Quadratics & polynomials', 'Limits & continuity', 'Probability', 'Statistics'],
   atom: ['Periodic table & periodicity', 'Organic basics', 'Biomolecules'],
   bit: ['Binary & number systems', 'Logic gates & Boolean', 'Networks: packets, IP, DNS'],
-  unit: ['1D Kinematics', 'Work, energy & power', 'Thermodynamics & heat', 'Magnetism & induction']
+  unit: ['1D Kinematics', 'Work, energy & power', 'Magnetism & induction']
 };
 
 /** Four starting-point gateways — each groups related topics into a learning path. */
@@ -116,7 +118,7 @@ export const PATH_GROUPS = {
   unit: {
     name: 'Physics',
     subject: 'physics',
-    paths: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_INTRO'],
+    paths: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_INTRO'],
     firstTopic: 'PHYS_001'
   }
 };

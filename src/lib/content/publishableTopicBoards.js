@@ -358,5 +358,185 @@ export const PUBLISHABLE_TOPIC_BOARDS = {
       { text: '<p>Coefficients go in front of formulas because they count whole particles.</p>' },
       { text: '<p>Balanced equations are conservation of matter written in chemical language.</p>' }
     ]
+  },
+  1343: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.0',
+    title: 'Temperature is not heat',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'temperature-vs-heat', ground: 'g0' },
+    layers: [
+      { text: '<p>Temperature and heat sound similar, but they answer different questions. Temperature describes how energetically particles are moving on average. Heat describes energy transferred because one place is warmer than another.</p>' },
+      { text: '<p>A tiny spark can be extremely hot but carry very little energy. A warm bath has a lower temperature, but far more particles, so it can transfer much more heat.</p>' },
+      { text: '<p>Temperature is measured in kelvin or degrees Celsius. Heat is measured in joules, the same unit used for energy and work.</p>' },
+      { text: '<p>This distinction matters everywhere in thermal physics. A thermometer reads temperature. It does not tell the full amount of thermal energy available to move, warm, melt, or burn something.</p>' }
+    ]
+  },
+  1344: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.1',
+    title: 'Kelvin starts at the cold limit',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'kelvin-scale; absolute-zero', ground: 'g0' },
+    layers: [
+      { text: '<p>Celsius is convenient for daily life: water freezes near 0&deg;C and boils near 100&deg;C at normal pressure. Physics usually needs a scale with a deeper zero.</p>' },
+      { text: '<p>The kelvin scale starts at absolute zero, the lowest possible temperature. The size of one kelvin is the same as one Celsius degree, but the starting point is different.</p>' },
+      { text: '<p>The conversion is simple: T in kelvin = T in Celsius + 273.15. Room temperature is about 20&deg;C, or about 293 K.</p>' },
+      { text: '<p>Gas laws and engine formulas use kelvin because they depend on absolute temperature. Using Celsius inside those equations can produce negative pressures or volumes that make no physical sense.</p>' }
+    ]
+  },
+  1345: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.2',
+    title: 'Heating usually makes things expand',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'thermal-expansion', ground: 'g0' },
+    layers: [
+      { text: '<p>Most materials expand when heated. Their particles vibrate more strongly, and the average spacing between neighbouring particles becomes slightly larger.</p>' },
+      { text: '<p>The effect is small for a spoon or a coin, but it becomes serious for railway tracks, bridges, pipes, and power lines stretched across long distances.</p>' },
+      { text: '<p>Linear expansion is written as &Delta;L = alpha L0 &Delta;T. The expansion depends on the material, the original length, and the temperature change.</p>' },
+      { text: '<p>Engineers leave expansion gaps because the material will move whether anyone wants it to or not. Ignoring thermal expansion can bend rails, crack concrete, and jam moving parts.</p>' }
+    ]
+  },
+  1346: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.3',
+    title: 'Specific heat is thermal stubbornness',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'specific-heat-capacity; Q=mc-deltaT', ground: 'g0' },
+    layers: [
+      { text: '<p>Different materials need different amounts of energy to change temperature. Water is especially stubborn: it takes a lot of energy to warm it even by one degree.</p>' },
+      { text: '<p>That is why a metal spoon heats quickly in hot tea while the tea itself changes temperature slowly. Metals often have lower specific heat capacity than water.</p>' },
+      { text: '<p>The key equation is Q = mc&Delta;T. Heat transferred equals mass times specific heat capacity times temperature change.</p>' },
+      { text: '<p>Specific heat explains kettles, cooking pans, car radiators, oceans, and climate buffering. A material with high specific heat can absorb a lot of energy before its temperature shifts much.</p>' }
+    ]
+  },
+  1347: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.4',
+    title: 'Latent heat changes state',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'latent-heat; phase-change', ground: 'g0' },
+    layers: [
+      { text: '<p>When ice melts, its temperature stays at 0&deg;C until the melting is complete. Energy is still entering, but it is not raising the temperature.</p>' },
+      { text: '<p>That energy is used to loosen the structure holding the solid together. During boiling, energy separates liquid molecules into gas instead of simply making them warmer.</p>' },
+      { text: '<p>The equation for a phase change is Q = mL. The symbol L is latent heat, the energy needed per kilogram to change state.</p>' },
+      { text: '<p>Latent heat is why steam can burn badly. Steam at 100&deg;C releases a large extra store of energy when it condenses back into liquid water.</p>' }
+    ]
+  },
+  1348: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.5',
+    title: 'Calorimetry balances heat',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'calorimetry; thermal-equilibrium', ground: 'g0' },
+    layers: [
+      { text: '<p>Calorimetry is the practice of measuring heat transfer. The usual setup is simple: put warm and cool things together, insulate them, and watch the final temperature.</p>' },
+      { text: '<p>A hot metal block dropped into cooler water loses heat. The water gains heat. If the cup is well insulated, those amounts should balance.</p>' },
+      { text: '<p>The bookkeeping idea is heat lost = heat gained. In symbols, the total heat change across the insulated system is approximately zero.</p>' },
+      { text: '<p>This is how unknown specific heat capacities are measured. It also teaches the habit thermodynamics uses constantly: track where energy enters, where it leaves, and where it is stored.</p>' }
+    ]
+  },
+  1349: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.6',
+    title: 'Matter changes state by rearranging particles',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'states-of-matter; particle-model', ground: 'g0' },
+    layers: [
+      { text: '<p>Solid, liquid, and gas are not different kinds of substance. They are different arrangements and motions of the same particles.</p>' },
+      { text: '<p>In a solid, particles vibrate around fixed positions. In a liquid, they stay close but slide past each other. In a gas, they spread out and move freely.</p>' },
+      { text: '<p>Temperature measures the average kinetic energy of this random motion. Heating usually makes the particle motion stronger.</p>' },
+      { text: '<p>The particle model explains melting, boiling, evaporation, diffusion, and pressure. It is simple, but it gives a microscopic picture behind the everyday behaviour of matter.</p>' }
+    ]
+  },
+  1350: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.7',
+    title: 'An ideal gas is a useful simplification',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'ideal-gas-model', ground: 'g0' },
+    layers: [
+      { text: '<p>Real gases are complicated. Molecules have size, attract each other slightly, and behave differently near condensation. The ideal gas model strips those details away.</p>' },
+      { text: '<p>It treats gas particles as tiny points moving randomly, colliding elastically, and exerting no forces except during collisions.</p>' },
+      { text: '<p>No gas is perfectly ideal. Many gases behave close to ideal when pressure is low and temperature is reasonably high.</p>' },
+      { text: '<p>The model is valuable because it turns a messy molecular swarm into clear relationships between pressure, volume, temperature, and amount of gas.</p>' }
+    ]
+  },
+  1351: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.8',
+    title: 'The gas laws show simple patterns',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'boyles-law; charles-law; pressure-law', ground: 'g0' },
+    layers: [
+      { text: '<p>The early gas laws each freeze one variable and watch how the others change. That makes the pattern easier to see.</p>' },
+      { text: '<p>Boyle law says that at constant temperature, squeezing a gas into a smaller volume raises its pressure. A bicycle pump is the everyday version.</p>' },
+      { text: '<p>Charles law says that at constant pressure, heating a gas makes its volume increase. The pressure law says that in a fixed container, heating raises pressure.</p>' },
+      { text: '<p>Together, these laws say gases are not random in their large-scale behaviour. Pressure, volume, and absolute temperature move in predictable linked ways.</p>' }
+    ]
+  },
+  1352: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.9',
+    title: 'PV = nRT ties the gas together',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'ideal-gas-equation; PV=nRT', ground: 'g0' },
+    layers: [
+      { text: '<p>The ideal gas equation combines the gas laws into one compact relationship: PV = nRT.</p>' },
+      { text: '<p>P is pressure, V is volume, n is the amount of gas in moles, R is the gas constant, and T is absolute temperature in kelvin.</p>' },
+      { text: '<p>Given any three of those quantities, the fourth can be found. The equation also helps reason qualitatively before calculating.</p>' },
+      { text: '<p>If a sealed tyre warms up, volume is almost fixed and n is fixed, so pressure rises. The equation is not only arithmetic; it is a map of cause and effect.</p>' }
+    ]
+  },
+  1353: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.10',
+    title: 'Gas pressure comes from collisions',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'kinetic-theory; gas-pressure', ground: 'g1' },
+    layers: [
+      { text: '<p>A gas pushes on its container because its molecules keep hitting the walls. Each collision is tiny, but the number of collisions is enormous.</p>' },
+      { text: '<p>Heating the gas makes molecules move faster. Faster molecules hit the walls more often and with greater impulse, so the pressure increases if the volume is fixed.</p>' },
+      { text: '<p>Kinetic theory links the microscopic view to the macroscopic gas law. The average molecular kinetic energy depends only on absolute temperature.</p>' },
+      { text: '<p>This is the bridge from invisible motion to readable measurements. A pressure gauge is indirectly reading the violence of molecular impacts inside the container.</p>' }
+    ]
+  },
+  1354: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.11',
+    title: 'The first law keeps energy honest',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'first-law; internal-energy', ground: 'g1' },
+    layers: [
+      { text: '<p>The first law of thermodynamics is conservation of energy applied to heat, work, and internal energy.</p>' },
+      { text: '<p>A gas can gain energy by being heated. It can lose energy by pushing a piston outward and doing work on the outside world.</p>' },
+      { text: '<p>One common sign convention writes &Delta;U = Q - W. Internal energy rises when heat is added, and falls when the system does work.</p>' },
+      { text: '<p>The law prevents magical thinking. Energy does not appear or vanish inside an engine, kettle, refrigerator, or body. It changes account: heat, work, or internal storage.</p>' }
+    ]
+  },
+  1355: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.12',
+    title: 'Processes describe the path',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'thermodynamic-processes; PV-diagrams', ground: 'g1' },
+    layers: [
+      { text: '<p>Thermodynamics cares not only about the starting and ending states, but also about the path taken between them.</p>' },
+      { text: '<p>An isothermal process keeps temperature constant. An adiabatic process exchanges no heat. An isobaric process keeps pressure constant. An isochoric process keeps volume constant.</p>' },
+      { text: '<p>These names are labels for controlled changes. They make gas problems readable by saying which quantity is being held still.</p>' },
+      { text: '<p>On a pressure-volume diagram, the area under the curve represents work done by the gas. The shape of the path matters, not just the endpoints.</p>' }
+    ]
+  },
+  1356: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.13',
+    title: 'Entropy gives time a direction',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'second-law; entropy', ground: 'g1' },
+    layers: [
+      { text: '<p>Some processes happen naturally in one direction. Hot coffee cools in a room. It does not gather scattered heat from the room and become hotter by itself.</p>' },
+      { text: '<p>The second law says entropy tends to increase in an isolated system. Energy becomes more spread out and less available for organised work.</p>' },
+      { text: '<p>Entropy is often introduced as disorder, but the sharper idea is energy dispersal and the number of microscopic arrangements available.</p>' },
+      { text: '<p>This is why time has a thermal arrow. Broken cups do not reassemble, perfume spreads through a room, and useful energy gradually becomes harder to recover.</p>' }
+    ]
+  },
+  1357: {
+    act: 'II',
+    kicker: 'Thermodynamics 1.14',
+    title: 'Heat engines turn heat into work',
+    tags: { subject: 'physics', topic: 'thermodynamics-heat', concept: 'heat-engine; carnot-efficiency', ground: 'g1' },
+    layers: [
+      { text: '<p>A heat engine takes energy from a hot source, turns part of it into useful work, and dumps the rest into a colder place.</p>' },
+      { text: '<p>Car engines, steam turbines, and power stations all follow this basic pattern. Heat enters, work comes out, and waste heat must leave.</p>' },
+      { text: '<p>The Carnot limit gives the best possible efficiency between two temperatures: eta = 1 - Tc/Th, with temperatures measured in kelvin.</p>' },
+      { text: '<p>No real engine reaches that ideal. The point is not to build perfection, but to know the ceiling. Temperature difference is what makes heat engines possible.</p>' }
+    ]
   }
 };

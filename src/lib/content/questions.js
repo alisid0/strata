@@ -5813,6 +5813,7 @@ function shuffleInPlace(arr) {
 // ids. Only tight subject matches are aliased; topics without an entry simply
 // have no quiz (PathView hides the CTA via the quizUrls gate).
 const PATH_ALIAS = {
+  PHY_THERMO: 'P25',   // Thermodynamics & heat
   PHY_UNITS: 'P4',     // Units & dimensions  ← Measurement & dimensions pool
   PHY_FORCES: 'P7',    // Forces & Newton's laws ← Newton's laws & forces pool
   MATH_COORD: 'M3',    // Coordinate geometry ← Coordinate geometry pool
