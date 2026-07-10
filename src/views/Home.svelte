@@ -11,10 +11,10 @@
   const TOTAL_BOARDS = totalBoards();
 
   const GATEWAY_META = {
-    line: { icon: '/icons/gateways/line.png', tagline: 'Space & abstraction' },
-    atom: { icon: '/icons/gateways/atom.png', tagline: 'Matter & charge' },
-    bit:  { icon: '/icons/gateways/bit.png',  tagline: 'Information & logic' },
-    unit: { icon: '/icons/gateways/unit.png', tagline: 'Measurement & scale' }
+    line: { icon: '/icons/gateways/line.png', tagline: 'Numbers, space & patterns' },
+    bit:  { icon: '/icons/gateways/bit.png',  tagline: 'Code, logic & systems' },
+    atom: { icon: '/icons/gateways/atom.png', tagline: 'Atoms, bonds & reactions' },
+    unit: { icon: '/icons/gateways/unit.png', tagline: 'Forces, units & energy' }
   };
 
   $: overall = ($progress, progress.getOverall());
@@ -150,6 +150,6 @@
   }
   .door:hover { border-color: var(--qx-accent); transform: translateY(-2px); }
   .door-icon { width: 56px; height: 56px; object-fit: contain; display: block; }
-  .door-name { font-size: 15px; font-weight: 800; color: var(--qx-text); }
+  .door-name { font-size: 15px; font-weight: 800; color: var(--qx-text); text-align: center; line-height: 1.18; }
   .door-sub { font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint); }
 </style>

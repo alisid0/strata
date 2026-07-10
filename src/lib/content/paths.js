@@ -74,7 +74,7 @@ export const SUBJECT_LABELS = {
   physics: 'Physics',
   maths: 'Mathematics',
   chemistry: 'Chemistry',
-  computing: 'Computing'
+  computing: 'Computer Science'
 };
 
 export const SUBJECT_ICONS = {
@@ -96,22 +96,22 @@ export const ROADMAP = {
 /** Four starting-point gateways — each groups related topics into a learning path. */
 export const PATH_GROUPS = {
   line: {
-    name: 'The Line',
+    name: 'Mathematics',
     subject: 'maths',
     paths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES'],
     firstTopic: 'LINE_001'
   },
-  atom: {
-    name: 'The Atom',
-    subject: 'chemistry',
-    paths: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS'],
-    firstTopic: 'ATOM_001'
-  },
   bit: {
-    name: 'The Bit',
+    name: 'Computer Science',
     subject: 'computing',
     paths: ['BIT_001'],
     firstTopic: 'BIT_001'
+  },
+  atom: {
+    name: 'Chemistry',
+    subject: 'chemistry',
+    paths: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS'],
+    firstTopic: 'ATOM_001'
   },
   unit: {
     name: 'Physics',
