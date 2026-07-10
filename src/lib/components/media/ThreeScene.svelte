@@ -25,7 +25,8 @@
 
   $: label = spec?.kind === 'molecule' ? spec.formula
     : spec?.kind === 'atom' ? spec.symbol
-    : spec?.kind === 'lattice' ? `${spec.a}${spec.b}` : '';
+    : spec?.kind === 'lattice' ? `${spec.a}${spec.b}`
+    : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors') : '';
 
   // Unit bond directions for each VSEPR geometry.
   function shapeDirs(shape) {
@@ -55,6 +56,44 @@
       new THREE.SphereGeometry(r, 32, 24),
       new THREE.MeshStandardMaterial({ color, roughness: 0.45, metalness: 0.05 })
     );
+  }
+
+  function makeLabel(THREE, text, opts = {}) {
+    const width = opts.width || 512;
+    const height = opts.height || 160;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const r = 30;
+    ctx.clearRect(0, 0, width, height);
+    ctx.beginPath();
+    ctx.moveTo(r, 0);
+    ctx.lineTo(width - r, 0);
+    ctx.quadraticCurveTo(width, 0, width, r);
+    ctx.lineTo(width, height - r);
+    ctx.quadraticCurveTo(width, height, width - r, height);
+    ctx.lineTo(r, height);
+    ctx.quadraticCurveTo(0, height, 0, height - r);
+    ctx.lineTo(0, r);
+    ctx.quadraticCurveTo(0, 0, r, 0);
+    ctx.closePath();
+    ctx.fillStyle = opts.bg || 'rgba(14, 13, 18, 0.88)';
+    ctx.fill();
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = opts.border || 'rgba(238, 147, 98, 0.72)';
+    ctx.stroke();
+    ctx.fillStyle = opts.fg || '#f6efe4';
+    ctx.font = `800 ${opts.size || 42}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, width / 2, height / 2);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+    const scale = opts.scale || [1.35, 0.42, 1];
+    sprite.scale.set(scale[0], scale[1], scale[2]);
+    return sprite;
   }
 
   function bond(THREE, a, b) {
@@ -122,6 +161,135 @@
     return off * sp * 1.8 + 1;
   }
 
+  function buildAiPipeline(THREE, group) {
+    const accentMat = new THREE.MeshStandardMaterial({
+      color: 0xee9362,
+      roughness: 0.38,
+      metalness: 0.08,
+      emissive: 0x8a3f1f,
+      emissiveIntensity: 0.28
+    });
+    const bitOnMat = new THREE.MeshStandardMaterial({
+      color: 0x8ee6c7,
+      roughness: 0.35,
+      emissive: 0x1d6b59,
+      emissiveIntensity: 0.55
+    });
+    const bitOffMat = new THREE.MeshStandardMaterial({
+      color: 0x353644,
+      roughness: 0.68,
+      emissive: 0x11131c,
+      emissiveIntensity: 0.18
+    });
+
+    const title = makeLabel(THREE, spec.title || 'English becomes numbers', {
+      width: 720,
+      height: 150,
+      border: 'rgba(154, 160, 255, 0.7)',
+      size: 42,
+      scale: [2.2, 0.46, 1]
+    });
+    title.position.set(0, 2.35, 0);
+    group.add(title);
+
+    const words = spec.words || ['I', 'ask', 'AI'];
+    words.forEach((word, i) => {
+      const chip = makeLabel(THREE, word, {
+        width: 320,
+        height: 150,
+        bg: 'rgba(32, 27, 24, 0.92)',
+        border: 'rgba(238, 147, 98, 0.82)',
+        size: 48,
+        scale: [0.9, 0.42, 1]
+      });
+      chip.position.set(-3.2, 0.9 - i * 0.62, 0);
+      group.add(chip);
+    });
+
+    const arrowGeo = new THREE.ConeGeometry(0.13, 0.42, 24);
+    const shaftGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.72, 16);
+    [-1.85, 1.35].forEach((x) => {
+      const shaft = new THREE.Mesh(shaftGeo, accentMat);
+      shaft.rotation.z = Math.PI / 2;
+      shaft.position.set(x, 0.28, 0);
+      group.add(shaft);
+      const head = new THREE.Mesh(arrowGeo, accentMat);
+      head.rotation.z = -Math.PI / 2;
+      head.position.set(x + 0.44, 0.28, 0);
+      group.add(head);
+    });
+
+    const bitGroup = new THREE.Group();
+    bitGroup.position.set(0, 0.2, 0);
+    group.add(bitGroup);
+    const boxGeo = new THREE.BoxGeometry(0.32, 0.32, 0.32);
+    const bits = spec.bits || '0100000101001001';
+    for (let i = 0; i < 16; i++) {
+      const bit = bits[i % bits.length];
+      const cube = new THREE.Mesh(boxGeo, bit === '1' ? bitOnMat : bitOffMat);
+      cube.position.set((i % 4 - 1.5) * 0.42, (1.5 - Math.floor(i / 4)) * 0.42, 0);
+      bitGroup.add(cube);
+      const bitLabel = makeLabel(THREE, bit, {
+        width: 128,
+        height: 128,
+        bg: 'rgba(0,0,0,0)',
+        border: 'rgba(0,0,0,0)',
+        fg: bit === '1' ? '#0d1f1a' : '#e7e0d3',
+        size: 70,
+        scale: [0.22, 0.22, 1]
+      });
+      bitLabel.position.set(cube.position.x, cube.position.y, 0.2);
+      bitGroup.add(bitLabel);
+    }
+
+    const vectorGroup = new THREE.Group();
+    vectorGroup.position.set(3.05, 0.12, 0);
+    group.add(vectorGroup);
+    const pts = [
+      [-0.58, -0.42, 0.18],
+      [-0.2, 0.52, -0.32],
+      [0.34, 0.26, 0.42],
+      [0.64, -0.34, -0.12],
+      [0.08, -0.08, 0.7]
+    ].map(p => new THREE.Vector3(p[0], p[1], p[2]));
+    pts.forEach((p, i) => {
+      const dot = sphere(THREE, 0.12 + (i === 2 ? 0.04 : 0), i === 2 ? 0xee9362 : 0x9aa0ff);
+      dot.position.copy(p);
+      vectorGroup.add(dot);
+    });
+    const linePositions = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      linePositions.push(pts[i].x, pts[i].y, pts[i].z, pts[i + 1].x, pts[i + 1].y, pts[i + 1].z);
+    }
+    const lineGeo = new THREE.BufferGeometry();
+    lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+    vectorGroup.add(new THREE.LineSegments(
+      lineGeo,
+      new THREE.LineBasicMaterial({ color: 0x6f76a8, transparent: true, opacity: 0.72 })
+    ));
+
+    const vectorLabel = makeLabel(THREE, 'vector space', {
+      width: 440,
+      height: 140,
+      bg: 'rgba(17, 18, 28, 0.82)',
+      border: 'rgba(142, 230, 199, 0.58)',
+      fg: '#e8fff8',
+      size: 38,
+      scale: [1.15, 0.36, 1]
+    });
+    vectorLabel.position.set(3.05, -1.05, 0);
+    group.add(vectorLabel);
+
+    const base = new THREE.Mesh(
+      new THREE.BoxGeometry(6.9, 0.06, 1.7),
+      new THREE.MeshStandardMaterial({ color: 0x111018, roughness: 0.8, transparent: true, opacity: 0.72 })
+    );
+    base.position.set(0, -1.2, 0);
+    group.add(base);
+
+    return 3.6;
+  }
+
   onMount(() => {
     let disposed = false;
     (async () => {
@@ -148,6 +316,7 @@
         scene.add(group);
         const fit = spec.kind === 'atom' ? buildAtom(THREE, group)
           : spec.kind === 'lattice' ? buildLattice(THREE, group)
+          : spec.kind === 'ai-pipeline' ? buildAiPipeline(THREE, group)
           : buildMolecule(THREE, group);
 
         camera.position.set(fit * 0.4, fit * 0.5, fit * 2.5);
@@ -178,7 +347,10 @@
           controls.dispose();
           scene.traverse(o => {
             if (o.geometry) o.geometry.dispose();
-            if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
+            if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
+              if (m.map) m.map.dispose();
+              m.dispose();
+            });
           });
           renderer.dispose();
           if (renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);

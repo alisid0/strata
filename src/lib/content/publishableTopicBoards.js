@@ -778,5 +778,17 @@ export const PUBLISHABLE_TOPIC_BOARDS = {
       { text: '<p>That is orchestration. The human sets the goal, chooses the tools, checks the evidence, and keeps responsibility for the result.</p>' },
       { text: '<p>Computers are becoming more capable. That makes fundamentals more useful, not less.</p>' }
     ]
+  },
+  1378: {
+    act: 'II',
+    kicker: 'AI Behind Curtain 1.0',
+    title: 'The machine still only has switches',
+    tags: { subject: 'computing', topic: 'ai-behind-the-curtain', concept: 'bits-under-ai', ground: 'g0' },
+    layers: [
+      { text: '<p>When a chatbot replies in smooth English, it can feel as if the computer has finally learned language directly. The old lesson still holds.</p>' },
+      { text: '<p>Inside the hardware, everything is still represented by bits. A 1 means one electrical state. A 0 means another. The machine moves those states, not meanings.</p>' },
+      { text: '<p>English has to be translated before the hardware can touch it. Letters, words, images, and sounds become numbers, then those numbers become patterns of bits in memory.</p>' },
+      { text: '<p>AI is built on that foundation. The surface feels conversational, but underneath it is encoded data, arithmetic, memory, and circuits switching at enormous speed.</p>' }
+    ]
   }
 };

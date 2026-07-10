@@ -72,7 +72,16 @@ export const BOARD_MEDIA = {
   1040: { 0: { type: 'img', src: '/videos/cg21_gradient_sign.gif' } },         // The slanted line: y follows x (+/− gradient)
   1041: { 0: { type: 'img', src: '/videos/cg18_steepness_sweep.gif' } },       // The slope of a line (steepness)
   1046: { 0: { type: 'img', src: '/videos/cg15_distance_pythagoras.gif' } },   // Distance between two points
-  1049: { 0: { type: 'img', src: '/videos/cg17_rectangle_proof.gif' } }        // Proving a shape with coordinates
+  1049: { 0: { type: 'img', src: '/videos/cg17_rectangle_proof.gif' } },       // Proving a shape with coordinates
+
+  // Computer Science - AI Behind the Curtain
+  // 1378 "The machine still only has switches" - text is encoded before AI can process it.
+  1378: { 0: { type: 'three', spec: {
+    kind: 'ai-pipeline',
+    title: 'English becomes machine data',
+    words: ['words', 'tokens', 'bits'],
+    bits: '0100000101001001'
+  } } }
 };
 
 /** Media spec for a board number + floor index, or null. */
