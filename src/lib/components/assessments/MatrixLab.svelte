@@ -61,17 +61,23 @@
   }
 
   $: blankKey = `${blankRow - 1}-${blankCol - 1}`;
+  $: safeOptions = options || [];
+  $: safeMatrices = matrices || [];
+  $: safeChoices = choices || [];
+  $: safeMatrix = matrix || [];
+  $: safeMatrixA = matrixA || [];
+  $: safeMatrixB = matrixB || [];
 
   $: {
-    const nextKey = JSON.stringify({ mode, prompt, matrix, options, matrices, matrixA, matrixB, choices, correctValue, correctIndex, correctChoice });
+    const nextKey = JSON.stringify({ mode, prompt, safeMatrix, safeOptions, safeMatrices, safeMatrixA, safeMatrixB, safeChoices, correctValue, correctIndex, correctChoice });
     if (nextKey !== lastKey) {
       lastKey = nextKey;
       selected = null;
       submitted = false;
       correct = false;
-      shuffledOptions = shuffle(options);
-      shuffledMatrices = shuffle(matrices.map((item, index) => ({ ...item, index })));
-      shuffledChoices = shuffle(choices.map((item, index) => ({ ...item, index })));
+      shuffledOptions = shuffle(safeOptions);
+      shuffledMatrices = shuffle(safeMatrices.map((item, index) => ({ ...item, index })));
+      shuffledChoices = shuffle(safeChoices.map((item, index) => ({ ...item, index })));
     }
   }
 </script>
@@ -81,8 +87,8 @@
 
   {#if mode === 'fill'}
     <div class="matrix-shell">
-      <div class="matrix-grid" style={`--cols:${matrix[0]?.length || 1};`}>
-        {#each matrix as row, r}
+      <div class="matrix-grid" style={`--cols:${safeMatrix[0]?.length || 1};`}>
+        {#each safeMatrix as row, r}
           {#each row as value, c}
             <span class:blank={`${r}-${c}` === blankKey}>
               {`${r}-${c}` === blankKey ? (selected ?? '?') : value}
@@ -126,16 +132,16 @@
     </div>
   {:else}
     <div class="equation">
-      <div class="mini-matrix" style={`--cols:${matrixA[0]?.length || 1};`}>
-        {#each matrixA as row}
+      <div class="mini-matrix" style={`--cols:${safeMatrixA[0]?.length || 1};`}>
+        {#each safeMatrixA as row}
           {#each row as value}
             <i>{value}</i>
           {/each}
         {/each}
       </div>
       <strong>{mode === 'addition' ? '+' : 'with'}</strong>
-      <div class="mini-matrix" style={`--cols:${matrixB[0]?.length || 1};`}>
-        {#each matrixB as row}
+      <div class="mini-matrix" style={`--cols:${safeMatrixB[0]?.length || 1};`}>
+        {#each safeMatrixB as row}
           {#each row as value}
             <i>{value}</i>
           {/each}
