@@ -538,5 +538,245 @@ export const PUBLISHABLE_TOPIC_BOARDS = {
       { text: '<p>The Carnot limit gives the best possible efficiency between two temperatures: eta = 1 - Tc/Th, with temperatures measured in kelvin.</p>' },
       { text: '<p>No real engine reaches that ideal. The point is not to build perfection, but to know the ceiling. Temperature difference is what makes heat engines possible.</p>' }
     ]
+  },
+  1358: {
+    act: 'II',
+    kicker: 'AI-era computing 1.0',
+    title: 'A computer is a filing system with a brain attached',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'files-folders-computation', ground: 'g0' },
+    layers: [
+      { text: '<p>Before code, cloud, or AI, a computer has to keep things somewhere. A file is a named block of data. A folder is just a way to give many files an address.</p>' },
+      { text: '<p>That sounds ordinary, which is why it is easy to skip. Most useful computer work begins with knowing where the inputs live, where the outputs should go, and which copy is the real one.</p>' },
+      { text: '<p>Text, images, spreadsheets, videos, programs, and model weights all become files at some point. The machine does not see a school report or a photograph. It sees bytes with a name and a path.</p>' },
+      { text: '<p>People who handle computers well are often good at this unglamorous layer. They name things clearly, keep versions separate, and can find the exact artifact a tool is supposed to read.</p>' }
+    ]
+  },
+  1359: {
+    act: 'II',
+    kicker: 'AI-era computing 1.1',
+    title: 'The path is the address',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'file-paths', ground: 'g0' },
+    layers: [
+      { text: '<p>A file path is the address of a file inside the machine. It tells the operating system which drive, folder, subfolder, and filename to follow.</p>' },
+      { text: '<p>When software says it cannot find a file, it is usually not confused about the file itself. It is looking in the wrong place, or the name does not match exactly.</p>' },
+      { text: '<p>There are absolute paths, which start from the root of the system, and relative paths, which start from the folder the program is currently standing in.</p>' },
+      { text: '<p>That one idea explains many beginner errors. The program is not reading thoughts. It is walking an address, one folder at a time.</p>' }
+    ]
+  },
+  1360: {
+    act: 'II',
+    kicker: 'AI-era computing 1.2',
+    title: 'The command line is the old control room',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'command-line-shell', ground: 'g0' },
+    layers: [
+      { text: '<p>A graphical app lets us click visible controls. A shell lets us type commands directly to the operating system.</p>' },
+      { text: '<p>The command line feels bare because it removes the buttons. In exchange, it gives exact control: list these files, enter this folder, run this program, copy this output.</p>' },
+      { text: '<p>Modern AI tools make the shell more valuable, not less. A model can suggest a command, but the user still needs to know what folder it will affect and what output to expect.</p>' },
+      { text: '<p>The first useful shell skill is calm reading. What command ran? From which folder? What did the error actually say?</p>' }
+    ]
+  },
+  1361: {
+    act: 'II',
+    kicker: 'AI-era computing 1.3',
+    title: 'Programs are tools that expect inputs',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'input-output', ground: 'g0' },
+    layers: [
+      { text: '<p>A program is a machine made of instructions. It waits for inputs, follows its rules, and produces outputs.</p>' },
+      { text: '<p>The input might be a file, a typed command, a web request, a mouse click, a sensor reading, or a question sent to an AI model.</p>' },
+      { text: '<p>The output might be a saved image, a row in a database, a page on a screen, a sound from a speaker, or another file passed to the next tool.</p>' },
+      { text: '<p>Once this pattern is visible, software becomes less mysterious. Many systems are just chains of small programs handing results to one another.</p>' }
+    ]
+  },
+  1362: {
+    act: 'II',
+    kicker: 'AI-era computing 1.4',
+    title: 'Data needs a shape',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'structured-data-json-csv', ground: 'g0' },
+    layers: [
+      { text: '<p>Computers work best when data has a predictable shape. A spreadsheet uses rows and columns. JSON uses names, brackets, lists, and values.</p>' },
+      { text: '<p>Human notes can be loose. Software needs stricter habits. If one record says price and another says cost, a program may treat them as different fields.</p>' },
+      { text: '<p>This is why forms, tables, schemas, and validation exist. They keep the data boring enough for a machine to read without guessing.</p>' },
+      { text: '<p>AI can help clean messy data, but clean structure still wins. A neat table beats a clever apology from a model.</p>' }
+    ]
+  },
+  1363: {
+    act: 'II',
+    kicker: 'AI-era computing 1.5',
+    title: 'An API is a contract between programs',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'apis', ground: 'g0' },
+    layers: [
+      { text: '<p>An API is a published way for one program to talk to another. It says what can be asked, what must be sent, and what comes back.</p>' },
+      { text: '<p>A weather app does not own every thermometer in the world. It sends a request to a weather service and receives data in a known format.</p>' },
+      { text: '<p>The same idea powers payments, maps, login systems, AI models, shipping labels, calendars, and almost every modern web product.</p>' },
+      { text: '<p>Good API thinking is precise. Which endpoint? Which method? Which fields? Which error code?</p>' }
+    ]
+  },
+  1364: {
+    act: 'II',
+    kicker: 'AI-era computing 1.6',
+    title: 'Databases remember the state',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'databases-state', ground: 'g0' },
+    layers: [
+      { text: '<p>An app without storage forgets everything when it closes. A database gives the app memory.</p>' },
+      { text: '<p>Users, scores, messages, orders, lessons, subscriptions, and progress all become records. Each record has fields that can be created, read, changed, or deleted.</p>' },
+      { text: '<p>The hard part is deciding what should be remembered. Store too little and the app cannot serve the user. Store too much and the system becomes expensive, risky, and hard to change.</p>' },
+      { text: '<p>A serious product is often a clean interface sitting on top of a careful database design.</p>' }
+    ]
+  },
+  1365: {
+    act: 'II',
+    kicker: 'AI-era computing 1.7',
+    title: 'A model predicts the next useful piece',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'ai-models', ground: 'g0' },
+    layers: [
+      { text: '<p>A modern language model reads a sequence of tokens and predicts what should come next. Tokens are small chunks of text, sometimes whole words, sometimes pieces of words.</p>' },
+      { text: '<p>During training, the model sees enormous amounts of text and adjusts billions of internal numbers. Those numbers become a compressed map of patterns in language, code, facts, style, and reasoning traces.</p>' },
+      { text: '<p>When a prompt arrives, the model is not opening a private library of perfect answers. It is using those learned patterns to continue the sequence in a useful direction.</p>' },
+      { text: '<p>That is why wording matters. A vague prompt gives weak steering. A clear task, context, constraints, and examples give the model something firmer to follow.</p>' }
+    ]
+  },
+  1366: {
+    act: 'II',
+    kicker: 'AI-era computing 1.8',
+    title: 'A prompt is a work order',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'prompting-task-design', ground: 'g0' },
+    layers: [
+      { text: '<p>A prompt is not a magic sentence. It is a work order for a machine that can read, write, transform, classify, plan, and generate code.</p>' },
+      { text: '<p>Good work orders name the job. Summarize this contract for a non-lawyer. Find contradictions in this spreadsheet. Rewrite this lesson for a fifteen-year-old without dumbing it down.</p>' },
+      { text: '<p>The prompt should also name the materials. Paste the relevant text, describe the audience, specify the format, and say what counts as success.</p>' },
+      { text: '<p>When the output is poor, the best response is often not anger. Tighten the work order.</p>' }
+    ]
+  },
+  1367: {
+    act: 'II',
+    kicker: 'AI-era computing 1.9',
+    title: 'Context is working memory',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'context-window', ground: 'g0' },
+    layers: [
+      { text: '<p>An AI model can only use what fits inside its context window and what its tools can retrieve. Context is the working memory of the conversation.</p>' },
+      { text: '<p>If the needed file, rule, date, table, or decision is missing, the model may guess. It may sound confident because language can be fluent even when the ground is thin.</p>' },
+      { text: '<p>Strong AI work is mostly context management: provide the right source, remove stale instructions, keep decisions recorded, and ask the model to cite what it used.</p>' },
+      { text: '<p>The better the context, the less the model has to invent.</p>' }
+    ]
+  },
+  1368: {
+    act: 'II',
+    kicker: 'AI-era computing 1.10',
+    title: 'Search and AI solve different problems',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'search-vs-ai', ground: 'g0' },
+    layers: [
+      { text: '<p>Search is good at finding existing pages. AI is good at transforming material once the right material is present.</p>' },
+      { text: '<p>For a current fact, search should win. Prices, laws, model names, sports scores, library versions, and company policies can change after a model was trained.</p>' },
+      { text: '<p>For synthesis, AI becomes useful. It can compare notes, draft options, spot missing steps, write code, turn rough bullets into a lesson, or explain an error message.</p>' },
+      { text: '<p>The skilled habit is choosing the right tool first. Lookup before claiming. Transform after grounding.</p>' }
+    ]
+  },
+  1369: {
+    act: 'II',
+    kicker: 'AI-era computing 1.11',
+    title: 'Embeddings turn meaning into coordinates',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'embeddings-vector-search', ground: 'g1' },
+    layers: [
+      { text: '<p>An embedding turns a piece of text, image, or audio into a long list of numbers. Similar meanings land near each other in that number space.</p>' },
+      { text: '<p>This is how a system can find a document about refunds even if the user searches for getting money back. The words differ. The meaning is close.</p>' },
+      { text: '<p>Vector search is built on this idea. Store embeddings for many documents, embed the query, then retrieve the nearest matches.</p>' },
+      { text: '<p>Many useful AI apps are built from this quiet trick: find the relevant source first, then ask the model to answer from it.</p>' }
+    ]
+  },
+  1370: {
+    act: 'II',
+    kicker: 'AI-era computing 1.12',
+    title: 'RAG gives a model papers on the desk',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'retrieval-augmented-generation', ground: 'g1' },
+    layers: [
+      { text: '<p>RAG means retrieval augmented generation. The name is clumsy, but the idea is plain: fetch relevant documents before asking the model to answer.</p>' },
+      { text: '<p>A support bot can retrieve the exact refund policy, shipping rule, or troubleshooting guide, then write a response using that source.</p>' },
+      { text: '<p>This reduces guessing because the model is not relying only on memory from training. It has the current material sitting in the prompt.</p>' },
+      { text: '<p>RAG does not make truth automatic. The retrieved source can be old, incomplete, or wrong. The system still needs good documents and checks.</p>' }
+    ]
+  },
+  1371: {
+    act: 'II',
+    kicker: 'AI-era computing 1.13',
+    title: 'Automation is a saved decision',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'automation-workflows', ground: 'g0' },
+    layers: [
+      { text: '<p>Automation begins when a repeated decision is written down clearly enough for a machine to perform.</p>' },
+      { text: '<p>If an invoice arrives, extract the amount, check the supplier, save the PDF, update the sheet, and send a message if something looks unusual.</p>' },
+      { text: '<p>None of those steps is glamorous. Together, they remove hours of dull work and reduce the chance that a tired person misses a detail.</p>' },
+      { text: '<p>The best automations start small. One trigger. One action. One check that proves the result is right.</p>' }
+    ]
+  },
+  1372: {
+    act: 'II',
+    kicker: 'AI-era computing 1.14',
+    title: 'Agents are loops with tools',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'ai-agents-tools', ground: 'g1' },
+    layers: [
+      { text: '<p>An AI agent is usually a loop. Read the goal, decide the next step, use a tool, inspect the result, then decide again.</p>' },
+      { text: '<p>The tools might include a browser, a code editor, a terminal, a database, a calendar, or an image generator. The model supplies judgment between tool calls.</p>' },
+      { text: '<p>This makes agents powerful and risky. A bad instruction can repeat, overwrite, spend money, leak data, or confidently finish the wrong task.</p>' },
+      { text: '<p>Good agent design gives narrow permissions, visible logs, stop points, and tests. Freedom is earned one tool at a time.</p>' }
+    ]
+  },
+  1373: {
+    act: 'II',
+    kicker: 'AI-era computing 1.15',
+    title: 'Privacy starts before upload',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'privacy-security-ai', ground: 'g0' },
+    layers: [
+      { text: '<p>AI tools often run on servers. That means a pasted document may leave the local machine and travel to another company&apos;s infrastructure.</p>' },
+      { text: '<p>Some tasks are safe to outsource. Some require removing names, account numbers, addresses, private keys, passwords, medical details, or client material first.</p>' },
+      { text: '<p>The useful question is simple: would this text be acceptable in the wrong inbox? If the answer is no, treat it carefully before uploading.</p>' },
+      { text: '<p>Privacy is not fear of technology. It is knowing where the data goes.</p>' }
+    ]
+  },
+  1374: {
+    act: 'II',
+    kicker: 'AI-era computing 1.16',
+    title: 'Git remembers the project',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'git-version-control', ground: 'g0' },
+    layers: [
+      { text: '<p>Git is a memory system for a folder of work. It records snapshots called commits, each with a message explaining what changed.</p>' },
+      { text: '<p>This matters because real projects move through mistakes. A feature breaks. A file is renamed. A teammate edits the same area. Git keeps a trail.</p>' },
+      { text: '<p>Branches let people try work separately before merging it back. Pull requests create a place to review the change before it becomes part of the main project.</p>' },
+      { text: '<p>In the AI era, Git becomes even more important. Fast code generation needs a strong undo history.</p>' }
+    ]
+  },
+  1375: {
+    act: 'II',
+    kicker: 'AI-era computing 1.17',
+    title: 'Deployment turns code into a service',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'deployment-cloud-hosting', ground: 'g0' },
+    layers: [
+      { text: '<p>Code on a laptop is private. Deployment puts that code on a server where other people can reach it.</p>' },
+      { text: '<p>A deployment platform usually builds the project, copies the finished files or server code, assigns an address, and routes web traffic to it.</p>' },
+      { text: '<p>When a site goes live, the problem changes. It now needs environment variables, monitoring, rollbacks, backups, security rules, and a way to ship fixes without panic.</p>' },
+      { text: '<p>Launch is not a ceremony. It is the moment the computer has to behave while strangers are watching.</p>' }
+    ]
+  },
+  1376: {
+    act: 'II',
+    kicker: 'AI-era computing 1.18',
+    title: 'Logs are the machine speaking back',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'logs-debugging', ground: 'g0' },
+    layers: [
+      { text: '<p>When software fails, it often leaves a trail. Logs record what happened: requests, warnings, errors, timings, missing files, rejected permissions, and failed assumptions.</p>' },
+      { text: '<p>A beginner sees a wall of red text. An engineer scans for the first real error, the file name, the line number, and the operation that failed.</p>' },
+      { text: '<p>AI can help read logs, but it needs the exact message. Paraphrasing an error usually removes the clue that matters.</p>' },
+      { text: '<p>Debugging is not guessing in a panic. It is asking the machine what it saw, then believing the evidence.</p>' }
+    ]
+  },
+  1377: {
+    act: 'II',
+    kicker: 'AI-era computing 1.19',
+    title: 'The new computer skill is orchestration',
+    tags: { subject: 'computing', topic: 'ai-era-computing', concept: 'human-computer-orchestration', ground: 'g1' },
+    layers: [
+      { text: '<p>The valuable computer user is changing. Memorising every command matters less than understanding how tools fit together.</p>' },
+      { text: '<p>A strong operator can gather data, structure it, ask an AI model for help, verify the result, save the work, ship the change, and recover when something breaks.</p>' },
+      { text: '<p>That is orchestration. The human sets the goal, chooses the tools, checks the evidence, and keeps responsibility for the result.</p>' },
+      { text: '<p>Computers are becoming more capable. That makes fundamentals more useful, not less.</p>' }
+    ]
   }
 };

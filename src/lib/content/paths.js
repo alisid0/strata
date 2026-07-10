@@ -50,7 +50,9 @@ export const PATHS = {
 
   // ── The Bit (starting point) ──
   BIT_001: { subject: 'computing', name: 'The Bit', icon: 'computing',
-    cards: [1130,1131,1132,1133,1134,1135,1136,1137,1138,1229,1230,1231,1232,1233,1234,1235,1236,1237,1238,1239,1240,1241,1242,1243,1244,1245,1246,1247,1248,1249,1250,1251,1252,1253,1254,1255,1256,1257,1258,1259,1260,1261,1262,1263,1264,1265,1276,1277,1278,1279,1280,1281,1282,1283,1284,1285,1286,1287,1288,1289,1290,1291,1292,1293,1294,1295,1296,1297,1298,1299,1300,1301,1302,1303,1304], quizUrls: [] },
+    cards: [1130,1131,1132,1133,1134,1135,1136,1137,1138,1229,1230,1231,1232,1233,1234,1235,1236,1237,1238,1239,1240,1241,1242,1243,1244,1245,1246,1247,1248,1249,1250,1251,1252,1253,1254,1255,1256,1257,1258,1259,1260,1261,1262,1263,1264,1265,1276,1277,1278,1279,1280,1281,1282,1283,1284,1285,1286,1287,1288,1289,1290,1291,1292,1293,1294,1295,1296,1297,1298,1299,1300,1301,1302,1303,1304,1358,1359,1360,1361,1362,1363,1364,1365,1366,1367,1368,1369,1370,1371,1372,1373,1374,1375,1376,1377], quizUrls: [] },
+  COMP_AI_ERA: { subject: 'computing', name: 'AI-era computing', icon: 'computing',
+    cards: [1358,1359,1360,1361,1362,1363,1364,1365,1366,1367,1368,1369,1370,1371,1372,1373,1374,1375,1376,1377], quizUrls: [] },
 
   CHEM_ATOMIC: { subject: 'chemistry', name: 'Atomic structure', icon: 'chemistry',
     cards: [1051,1052,1053,1054,1055,1056,1057,1058,1059,1060], quizUrls: ['tier0'] },
@@ -69,7 +71,7 @@ export const SUBJECT_PATHS = {
   physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO'],
   maths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES'],
   chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS'],
-  computing: ['BIT_001']
+  computing: ['BIT_001', 'COMP_AI_ERA']
 };
 
 export const SUBJECT_LABELS = {
@@ -91,7 +93,7 @@ export const SUBJECT_ICONS = {
 export const ROADMAP = {
   line: ['Quadratics & polynomials', 'Limits & continuity', 'Probability', 'Statistics'],
   atom: ['Periodic table & periodicity', 'Organic basics', 'Biomolecules'],
-  bit: ['Binary & number systems', 'Logic gates & Boolean', 'Networks: packets, IP, DNS'],
+  bit: ['Operating systems', 'Databases & SQL', 'Cybersecurity practice', 'AI agents'],
   unit: ['1D Kinematics', 'Work, energy & power', 'Magnetism & induction']
 };
 
@@ -106,7 +108,7 @@ export const PATH_GROUPS = {
   bit: {
     name: 'Computer Science',
     subject: 'computing',
-    paths: ['BIT_001'],
+    paths: ['BIT_001', 'COMP_AI_ERA'],
     firstTopic: 'BIT_001'
   },
   atom: {

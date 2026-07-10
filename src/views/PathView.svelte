@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { PATHS } from '../lib/content/paths.js';
+  import { PATHS, SUBJECT_LABELS } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { getBoard, fetchBoardsByNumbers } from '../lib/content/dynamicBoards.js';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
@@ -72,7 +72,7 @@
   <div class="qx-shell topic-detail-view">
     <div class="topbar">
       <button class="back-chev" on:click={() => onNavigate?.('topics')}>‹</button>
-      <span class="topbar-subject">{manifest.subject === 'physics' ? 'Physics' : manifest.subject === 'maths' ? 'Mathematics' : 'Chemistry'}</span>
+      <span class="topbar-subject">{SUBJECT_LABELS[manifest.subject] || manifest.subject}</span>
     </div>
 
     <div class="topic-header">

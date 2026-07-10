@@ -6,7 +6,8 @@
   const icons = {
     physics: '/images/icon-physics.png',
     maths: '/images/icon-maths.png',
-    chemistry: '/images/icon-chemistry.png'
+    chemistry: '/images/icon-chemistry.png',
+    computing: '/icons/gateways/bit.png'
   };
 
   $: src = icons[subject] || icons.physics;
