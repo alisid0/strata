@@ -154,18 +154,21 @@
     <img src={track.icon} alt={track.label} />
   </div>
 
-  <div class="track-tabs" role="tablist" aria-label="Workshop tracks">
-    {#each Object.entries(TRACKS) as [id, item]}
-      <button
-        class:active={activeTrack === id}
-        on:click={() => chooseTrack(id)}
-        role="tab"
-        aria-selected={activeTrack === id}
-      >
-        <img src={item.icon} alt="" />
-        <span>{item.label}</span>
-      </button>
-    {/each}
+  <div class="track-rail">
+    <div class="track-rail-title">Topics</div>
+    <div class="track-tabs" role="tablist" aria-label="Workshop tracks">
+      {#each Object.entries(TRACKS) as [id, item]}
+        <button
+          class:active={activeTrack === id}
+          on:click={() => chooseTrack(id)}
+          role="tab"
+          aria-selected={activeTrack === id}
+        >
+          <img src={item.icon} alt="" />
+          <span>{item.label}</span>
+        </button>
+      {/each}
+    </div>
   </div>
 
   <section class="spotlight">
@@ -212,7 +215,7 @@
   .workshop-lab {
     height: 100%;
     overflow-y: auto;
-    padding: 16px 18px 24px;
+    padding: 14px 14px 24px;
     box-sizing: border-box;
   }
 
@@ -220,8 +223,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 16px;
+    gap: 14px;
+    margin-bottom: 12px;
   }
 
   .kicker {
@@ -234,7 +237,7 @@
   }
 
   h1 {
-    font-size: 24px;
+    font-size: 23px;
     font-weight: 900;
     color: var(--qx-text);
     margin: 0;
@@ -248,22 +251,57 @@
   }
 
   .lab-header img {
-    width: 50px;
-    height: 50px;
+    width: 46px;
+    height: 46px;
     object-fit: contain;
     flex-shrink: 0;
   }
 
+  .track-rail {
+    position: relative;
+    margin: 0 -14px 12px;
+    padding: 0 14px;
+  }
+
+  .track-rail::after {
+    content: '';
+    position: absolute;
+    top: 18px;
+    right: 0;
+    bottom: 0;
+    width: 34px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, var(--qx-bg));
+  }
+
+  .track-rail-title {
+    color: var(--qx-text-faint);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 7px;
+  }
+
   .track-tabs {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
     gap: 8px;
-    margin-bottom: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding: 0 28px 2px 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .track-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .track-tabs button {
-    min-height: 48px;
-    border-radius: 8px;
+    width: 112px;
+    min-height: 44px;
+    border-radius: 999px;
     border: 1.5px solid var(--qx-border);
     background: var(--qx-surface);
     color: var(--qx-text-dim);
@@ -273,20 +311,17 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 7px;
+    padding: 0 10px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
   }
 
   .track-tabs span {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  @media (max-width: 520px) {
-    .track-tabs {
-      grid-template-columns: repeat(2, 1fr);
-    }
   }
 
   .track-tabs button.active {
@@ -296,9 +331,10 @@
   }
 
   .track-tabs img {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     object-fit: contain;
+    flex: 0 0 auto;
   }
 
   .spotlight {
@@ -310,7 +346,7 @@
     background: var(--qx-surface);
     border-radius: 8px;
     padding: 13px 14px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .spotlight-copy {
@@ -359,9 +395,16 @@
     display: flex;
     gap: 8px;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
     padding: 0 0 10px;
     margin: -2px 0 4px;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .module-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .module-tabs button {
@@ -377,6 +420,7 @@
     padding: 0 13px;
     white-space: nowrap;
     flex: 0 0 auto;
+    scroll-snap-align: start;
   }
 
   .module-tabs button.active {
@@ -431,10 +475,6 @@
   }
 
   @media (max-width: 380px) {
-    .track-tabs {
-      grid-template-columns: 1fr;
-    }
-
     .spotlight {
       align-items: flex-start;
       flex-direction: column;
