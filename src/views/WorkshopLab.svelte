@@ -1,7 +1,6 @@
 <script>
   import Workshop from '../lib/components/assessments/Workshop.svelte';
   import {
-    getBitDataWorkshop,
     getChemistryCoreWorkshop,
     getChemistryStructureWorkshop,
     getComputerWorkshopModule,
@@ -10,7 +9,6 @@
     getMathsExpLogsWorkshop,
     getMathsMatricesWorkshop,
     getPhysicsElectricityWorkshop,
-    getPhysicsCoreWorkshop,
     getPhysicsWorkshopModule,
     getPhysicsWorkshopModules
   } from '../lib/content/workshops.js';
@@ -21,89 +19,120 @@
   let finished = false;
   let score = 0;
   let total = 0;
-  let activeTrack = 'bit';
-  let activeComputerModule = 'binary-data';
-  let activePhysicsModule = 'units-dimensions';
+  let activeTrack = 'computer';
+  let activeModuleBySubject = {
+    mathematics: 'line-core',
+    computer: 'binary-data',
+    chemistry: 'chemistry-core',
+    physics: 'units-dimensions'
+  };
 
   const COMPUTER_MODULES = getComputerWorkshopModules();
   const PHYSICS_MODULES = getPhysicsWorkshopModules();
 
   const TRACKS = {
-    bit: {
-      label: 'The Bit',
+    mathematics: {
+      label: 'Mathematics',
+      title: 'Mathematics workshops',
+      sub: 'Number lines, exponents, logarithms, matrices, and visual problem solving.',
+      icon: '/icons/gateways/line.png',
+      pathId: 'LINE_001',
+      modules: [
+        {
+          id: 'line-core',
+          label: 'The Line',
+          title: 'Plot, build, and measure',
+          sub: 'Drag real points and lines on a live coordinate plane.',
+          pathId: 'LINE_001',
+          getWorkshop: getLineCoreWorkshop
+        },
+        {
+          id: 'exp-logs',
+          label: 'Exponents',
+          title: 'Exponents and logarithms',
+          sub: 'Read powers, growth, decay, logs, and inverse relationships.',
+          pathId: 'MATH_EXP_LOGS',
+          getWorkshop: getMathsExpLogsWorkshop
+        },
+        {
+          id: 'matrices',
+          label: 'Matrices',
+          title: 'Spreadsheet to space machine',
+          sub: 'Read cells, store data, and transform points.',
+          pathId: 'MATH_MATRICES',
+          getWorkshop: getMathsMatricesWorkshop
+        }
+      ]
+    },
+    computer: {
+      label: 'Computer Science',
       title: 'Computer workshops',
       sub: 'Binary, logic, code, hardware, networks, security, and architecture.',
       icon: '/icons/gateways/bit.png',
       pathId: 'BIT_001',
-      getWorkshop: getBitDataWorkshop
+      modules: COMPUTER_MODULES.map((module) => ({
+        ...module,
+        pathId: 'BIT_001',
+        getWorkshop: () => getComputerWorkshopModule(module.id).interactions
+      }))
+    },
+    chemistry: {
+      label: 'Chemistry',
+      title: 'Chemistry workshops',
+      sub: 'Atoms, ions, molecules, bonding, structure, and reactions.',
+      icon: '/icons/gateways/atom.png',
+      pathId: 'ATOM_001',
+      modules: [
+        {
+          id: 'chemistry-core',
+          label: 'Atoms',
+          title: 'Atom and molecule builder',
+          sub: 'Build atoms, ions, isotopes, water, and carbon dioxide.',
+          pathId: 'ATOM_001',
+          getWorkshop: getChemistryCoreWorkshop
+        },
+        {
+          id: 'chemistry-structure',
+          label: 'Structure',
+          title: 'Chemical structure and reactions',
+          sub: 'Build ions, sort bonding, read molecular shape, and balance reaction logic.',
+          pathId: 'CHEM_STRUCTURE_REACTIONS',
+          getWorkshop: getChemistryStructureWorkshop
+        }
+      ]
     },
     physics: {
       label: 'Physics',
       title: 'Physics workshops',
-      sub: 'Units, forces, waves, and energy.',
+      sub: 'Units, dimensions, forces, waves, electricity, and energy.',
       icon: '/icons/gateways/unit.png',
       pathId: 'PHYS_001',
-      getWorkshop: getPhysicsCoreWorkshop
-    },
-    electricity: {
-      label: 'Electricity',
-      title: 'Electricity and circuits',
-      sub: 'Sort charge, current, voltage, series, parallel, power, and circuit rules.',
-      icon: '/icons/gateways/unit.png',
-      pathId: 'PHY_ELECTRICITY',
-      getWorkshop: getPhysicsElectricityWorkshop
-    },
-    chemistry: {
-      label: 'Chemistry',
-      title: 'Atom and molecule builder',
-      sub: 'Build atoms, ions, isotopes, water, and carbon dioxide.',
-      icon: '/icons/gateways/atom.png',
-      pathId: 'ATOM_001',
-      getWorkshop: getChemistryCoreWorkshop
-    },
-    chemStructure: {
-      label: 'Structure',
-      title: 'Chemical structure and reactions',
-      sub: 'Build ions, sort bonding, read molecular shape, and balance reaction logic.',
-      icon: '/icons/gateways/atom.png',
-      pathId: 'CHEM_STRUCTURE_REACTIONS',
-      getWorkshop: getChemistryStructureWorkshop
-    },
-    expLogs: {
-      label: 'Exponents',
-      title: 'Exponents and logarithms',
-      sub: 'Read powers, growth, decay, logs, and inverse relationships.',
-      icon: '/icons/gateways/line.png',
-      pathId: 'MATH_EXP_LOGS',
-      getWorkshop: getMathsExpLogsWorkshop
-    },
-    matrices: {
-      label: 'Matrices',
-      title: 'Spreadsheet to space machine',
-      sub: 'Read cells, store data, and transform points.',
-      icon: '/icons/gateways/line.png',
-      pathId: 'MATH_MATRICES',
-      getWorkshop: getMathsMatricesWorkshop
-    },
-    line: {
-      label: 'The Line',
-      title: 'Plot, build, and measure',
-      sub: 'Drag real points and lines on a live coordinate plane.',
-      icon: '/icons/gateways/line.png',
-      pathId: 'LINE_001',
-      getWorkshop: getLineCoreWorkshop
+      modules: [
+        ...PHYSICS_MODULES.map((module) => ({
+          ...module,
+          pathId: 'PHYS_001',
+          getWorkshop: () => getPhysicsWorkshopModule(module.id).interactions
+        })),
+        {
+          id: 'electricity',
+          label: 'Electricity',
+          title: 'Electricity and circuits',
+          sub: 'Sort charge, current, voltage, series, parallel, power, and circuit rules.',
+          pathId: 'PHY_ELECTRICITY',
+          getWorkshop: getPhysicsElectricityWorkshop
+        }
+      ]
     }
   };
 
   $: track = TRACKS[activeTrack];
-  $: computerModule = activeTrack === 'bit' ? getComputerWorkshopModule(activeComputerModule) : null;
-  $: physicsModule = activeTrack === 'physics' ? getPhysicsWorkshopModule(activePhysicsModule) : null;
-  $: activeModule = computerModule || physicsModule;
-  $: moduleTabs = activeTrack === 'bit' ? COMPUTER_MODULES : activeTrack === 'physics' ? PHYSICS_MODULES : [];
-  $: activeModuleId = activeTrack === 'bit' ? activeComputerModule : activeTrack === 'physics' ? activePhysicsModule : '';
+  $: moduleTabs = track.modules || [];
+  $: activeModuleId = activeModuleBySubject[activeTrack] || moduleTabs[0]?.id;
+  $: activeModule = moduleTabs.find((item) => item.id === activeModuleId) || moduleTabs[0];
   $: workshopTitle = activeModule?.title || track.title;
   $: workshopSub = activeModule?.sub || track.sub;
-  $: interactions = activeModule?.interactions || track.getWorkshop();
+  $: activePathId = activeModule?.pathId || track.pathId;
+  $: interactions = activeModule?.getWorkshop ? activeModule.getWorkshop() : [];
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
 
   function finishWorkshop(finalScore, finalTotal) {
@@ -125,22 +154,10 @@
     replay();
   }
 
-  function chooseComputerModule(id) {
-    if (activeComputerModule === id) return;
-    activeComputerModule = id;
-    replay();
-  }
-
   function chooseModule(id) {
-    if (activeTrack === 'bit') {
-      chooseComputerModule(id);
-      return;
-    }
-    if (activeTrack === 'physics') {
-      if (activePhysicsModule === id) return;
-      activePhysicsModule = id;
-      replay();
-    }
+    if (activeModuleBySubject[activeTrack] === id) return;
+    activeModuleBySubject = { ...activeModuleBySubject, [activeTrack]: id };
+    replay();
   }
 </script>
 
@@ -155,8 +172,8 @@
   </div>
 
   <div class="track-rail">
-    <div class="track-rail-title">Topics</div>
-    <div class="track-tabs" role="tablist" aria-label="Workshop tracks">
+    <div class="track-rail-title">Subjects</div>
+    <div class="track-tabs" role="tablist" aria-label="Workshop subjects">
       {#each Object.entries(TRACKS) as [id, item]}
         <button
           class:active={activeTrack === id}
@@ -177,11 +194,11 @@
       <strong>{workshopTitle}</strong>
       <small>{workshopSub}</small>
     </div>
-    <button on:click={() => onNavigate?.('topicDetail', track.pathId)}>Open path</button>
+    <button on:click={() => onNavigate?.('topicDetail', activePathId)}>Open path</button>
   </section>
 
   {#if moduleTabs.length}
-    <div class="module-tabs" role="tablist" aria-label={`${track.label} workshop modules`}>
+    <div class="module-tabs" role="tablist" aria-label={`${track.label} workshops`}>
       {#each moduleTabs as item}
         <button
           class:active={activeModuleId === item.id}
@@ -299,7 +316,7 @@
   }
 
   .track-tabs button {
-    width: 112px;
+    width: 156px;
     min-height: 44px;
     border-radius: 999px;
     border: 1.5px solid var(--qx-border);
