@@ -1748,6 +1748,212 @@ export function getChemistryCoreWorkshop() {
   return CHEMISTRY_CORE_WORKSHOP;
 }
 
+export const MATHS_EXP_LOGS_WORKSHOP = [
+  S('What does 2^5 actually mean?',
+    [O('repeat','2 multiplied by itself 5 times',true), O('times','2 multiplied by 5',false), O('add','2 added 5 times',false)],
+    'Correct. The exponent counts repeated multiplication.',
+    'Not quite. 2^5 means five 2s multiplied together.'),
+  { type: 'sorting', boxes: [
+    { id: 'growth', label: 'Exponential growth' },
+    { id: 'linear', label: 'Linear growth' }
+  ], items: [
+    { id: 'double', label: '2, 4, 8, 16', box: 'growth' },
+    { id: 'add3', label: '3, 6, 9, 12', box: 'linear' },
+    { id: 'interest', label: 'Compound interest', box: 'growth' },
+    { id: 'steps', label: 'Walking 5 meters each second', box: 'linear' }
+  ]},
+  S('Same base, multiplied powers: 3^2 x 3^4 becomes:',
+    [O('six','3^6',true), O('eight','3^8',false), O('two','3^2',false)],
+    'Yes. Two 3s plus four more 3s gives six 3s.',
+    'When the base matches, multiplication adds the exponents.'),
+  S('What does 5^-2 mean?',
+    [O('reciprocal','1 / 5^2',true), O('negative','-25',false), O('zero','0',false)],
+    'Right. A negative exponent means reciprocal, not a negative answer.',
+    'Negative exponents move the power under 1.'),
+  S('Which expression means square root of x?',
+    [O('half','x^(1/2)',true), O('two','x^2',false), O('minus','x^-1',false)],
+    'Correct. A half power is a square root.',
+    'The denominator of the fractional exponent tells the root.'),
+  S('A medicine halves every hour. What kind of pattern is that?',
+    [O('decay','Exponential decay',true), O('linear','Linear growth',false), O('random','Random change',false)],
+    'Exactly. It keeps a fixed fraction each step.',
+    'Halving repeatedly is exponential decay.'),
+  S('A logarithm asks:',
+    [O('power','What power made this number?',true), O('sum','What two numbers add to this?',false), O('shape','What shape is the graph?',false)],
+    'Yes. Logs are exponents read backward.',
+    'A logarithm asks for the hidden exponent.'),
+  S('If 10^4 = 10000, then log10(10000) equals:',
+    [O('four','4',true), O('ten','10',false), O('thousand','1000',false)],
+    'Correct. The log returns the power.',
+    'The answer is the exponent needed to make 10000 from base 10.'),
+  { type: 'sorting', boxes: [
+    { id: 'exp', label: 'Exponent question' },
+    { id: 'log', label: 'Log question' }
+  ], items: [
+    { id: 'two8', label: '2^8 = ?', box: 'exp' },
+    { id: 'log100', label: 'log10(100) = ?', box: 'log' },
+    { id: 'e3', label: 'e^3 = ?', box: 'exp' },
+    { id: 'lnx', label: 'ln(x) = ?', box: 'log' }
+  ]},
+  S('Why are logs useful when the unknown is in the exponent?',
+    [O('undo','They undo exponentials',true), O('guess','They let us guess faster',false)],
+    'Exactly. Logs pull the exponent back into reach.',
+    'Logs are inverse functions for exponentials.')
+];
+
+export function getMathsExpLogsWorkshop() {
+  return cloneInteractions(MATHS_EXP_LOGS_WORKSHOP);
+}
+
+export const PHYSICS_ELECTRICITY_WORKSHOP = [
+  { type: 'sorting', boxes: [
+    { id: 'charge', label: 'Charge' },
+    { id: 'current', label: 'Current' },
+    { id: 'voltage', label: 'Voltage' }
+  ], items: [
+    { id: 'coulomb', label: 'Measured in coulombs', box: 'charge' },
+    { id: 'amp', label: 'Charge flow each second', box: 'current' },
+    { id: 'energy', label: 'Energy per charge', box: 'voltage' }
+  ]},
+  S('Current is best described as:',
+    [O('flow','Charge passing a point each second',true), O('energy','Energy stored inside the wire',false)],
+    'Correct. Current is a rate of charge flow.',
+    'Current is about moving charge, not stored energy.'),
+  {
+    type: 'unitcheck',
+    prompt: 'Ohm law check: if V = I x R, what unit does voltage use?',
+    expression: 'A x Ohm',
+    target: 'Voltage from current and resistance.',
+    options: [
+      { id: 'v', label: 'V', note: 'volt' },
+      { id: 'w', label: 'W', note: 'watt' },
+      { id: 'c', label: 'C', note: 'coulomb' }
+    ],
+    correctOption: 'v',
+    correctFeedback: 'Yes. Ampere times ohm gives volts.',
+    incorrectFeedback: 'Ohm law is V = IR, so the result is voltage in volts.'
+  },
+  S('In a series circuit, what is the same through every component?',
+    [O('current','Current',true), O('voltage','Voltage',false), O('resistance','Resistance',false)],
+    'Right. One path means the same current through each part.',
+    'Series circuits share current, while voltage is divided.'),
+  S('In a parallel circuit, what is the same across every branch?',
+    [O('voltage','Voltage',true), O('current','Current',false), O('charge','Number of electrons',false)],
+    'Correct. Parallel branches sit across the same two points.',
+    'Parallel branches share voltage. Current splits between them.'),
+  { type: 'sorting', boxes: [
+    { id: 'series', label: 'Series' },
+    { id: 'parallel', label: 'Parallel' }
+  ], items: [
+    { id: 'onepath', label: 'One path', box: 'series' },
+    { id: 'split', label: 'Current splits', box: 'parallel' },
+    { id: 'samei', label: 'Same current everywhere', box: 'series' },
+    { id: 'samev', label: 'Same voltage across branches', box: 'parallel' }
+  ]},
+  {
+    type: 'unitcheck',
+    prompt: 'Electrical power: what does current times voltage become?',
+    expression: 'A x V',
+    target: 'Power transferred by a circuit component.',
+    options: [
+      { id: 'w', label: 'W', note: 'watt' },
+      { id: 'n', label: 'N', note: 'newton' },
+      { id: 'hz', label: 'Hz', note: 'hertz' }
+    ],
+    correctOption: 'w',
+    correctFeedback: 'Correct. P = IV, and power is measured in watts.',
+    incorrectFeedback: 'Current times voltage gives electrical power, measured in watts.'
+  },
+  S('Kirchhoff current rule says that at a junction:',
+    [O('conserve','Current in equals current out',true), O('vanish','Some charge disappears',false)],
+    'Exactly. Charge is conserved at the junction.',
+    'Charge does not vanish. What flows in must flow out.'),
+  S('A capacitor mainly stores energy by:',
+    [O('separating','Separating positive and negative charge',true), O('creating','Creating brand new charge',false)],
+    'Right. It separates charge; it does not create charge.',
+    'A capacitor stores energy in separated charge and the electric field between plates.'),
+  S('A bulb gets brighter because more electrical energy is transferred each second. Which quantity describes that rate?',
+    [O('power','Power',true), O('mass','Mass',false), O('area','Area',false)],
+    'Correct. Power is energy transferred per second.',
+    'Brightness is tied to power, the rate of energy transfer.')
+];
+
+export function getPhysicsElectricityWorkshop() {
+  return cloneInteractions(PHYSICS_ELECTRICITY_WORKSHOP);
+}
+
+export const CHEMISTRY_STRUCTURE_WORKSHOP = [
+  {
+    type: 'atombuilder',
+    prompt: 'Build carbon-14. Same element as carbon-12, but with extra neutrons.',
+    targetName: 'Carbon-14',
+    targetProtons: 6,
+    targetNeutrons: 8,
+    targetElectrons: 6,
+    correctFeedback: 'Correct. Six protons makes carbon. Eight neutrons makes this isotope carbon-14.',
+    incorrectFeedback: 'Keep protons at 6 for carbon. Carbon-14 has 8 neutrons and 6 electrons when neutral.'
+  },
+  S('What decides the identity of an element?',
+    [O('protons','Number of protons',true), O('neutrons','Number of neutrons',false), O('shells','Number of shells',false)],
+    'Exactly. Proton count names the element.',
+    'Neutrons change isotope. Protons decide element identity.'),
+  {
+    type: 'atombuilder',
+    prompt: 'Make a negative fluoride ion. Fluorine has gained one electron.',
+    targetName: 'Fluoride ion',
+    targetProtons: 9,
+    targetNeutrons: 10,
+    targetElectrons: 10,
+    correctFeedback: 'Yes. Nine protons is fluorine; ten electrons gives a -1 ion.',
+    incorrectFeedback: 'Fluorine needs 9 protons. A negative ion has one extra electron.'
+  },
+  { type: 'sorting', boxes: [
+    { id: 'ionic', label: 'Ionic bonding' },
+    { id: 'covalent', label: 'Covalent bonding' },
+    { id: 'metallic', label: 'Metallic bonding' }
+  ], items: [
+    { id: 'transfer', label: 'Electrons transferred', box: 'ionic' },
+    { id: 'share', label: 'Electron pairs shared', box: 'covalent' },
+    { id: 'sea', label: 'Sea of mobile electrons', box: 'metallic' }
+  ]},
+  {
+    type: 'moleculebuilder',
+    prompt: 'Build methane from the formula CH4.',
+    targetFormula: 'CH4',
+    targetAtoms: { C: 1, H: 4 },
+    correctFeedback: 'Correct. Methane has one carbon atom bonded to four hydrogen atoms.',
+    incorrectFeedback: 'CH4 means 1 carbon and 4 hydrogen atoms.'
+  },
+  S('Why does molecular shape matter?',
+    [O('fit','Shape affects how molecules fit, dissolve, and react',true), O('mass','Shape changes the number of protons',false)],
+    'Correct. Shape controls interactions.',
+    'Shape does not change proton count. It changes how the molecule behaves.'),
+  S('Polarity means electrons are:',
+    [O('uneven','Shared unevenly',true), O('gone','Destroyed during bonding',false), O('equal','Always shared equally',false)],
+    'Right. Uneven sharing creates partial charges.',
+    'Polarity comes from uneven electron sharing.'),
+  S('A reaction mainly does what to atoms?',
+    [O('rearrange','Rearranges them into new substances',true), O('erase','Erases atoms and starts again',false)],
+    'Exactly. Atoms are conserved and rearranged.',
+    'Chemical reactions rearrange atoms; they do not erase them.'),
+  S('When balancing an equation, what can be changed?',
+    [O('coeff','Coefficients in front of formulas',true), O('subscript','Subscripts inside formulas',false)],
+    'Correct. Coefficients count whole particles.',
+    'Changing subscripts changes the substance. Balance using coefficients.'),
+  {
+    type: 'moleculebuilder',
+    prompt: 'Build carbon dioxide from the formula CO2.',
+    targetFormula: 'CO2',
+    targetAtoms: { C: 1, O: 2 },
+    correctFeedback: 'Correct. CO2 means one carbon atom and two oxygen atoms.',
+    incorrectFeedback: 'CO2 needs 1 carbon and 2 oxygen atoms.'
+  }
+];
+
+export function getChemistryStructureWorkshop() {
+  return cloneInteractions(CHEMISTRY_STRUCTURE_WORKSHOP);
+}
+
 export const MATHS_MATRICES_WORKSHOP = [
   {
     type: 'matrixcell',

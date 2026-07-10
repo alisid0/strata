@@ -3,10 +3,13 @@
   import {
     getBitDataWorkshop,
     getChemistryCoreWorkshop,
+    getChemistryStructureWorkshop,
     getComputerWorkshopModule,
     getComputerWorkshopModules,
     getLineCoreWorkshop,
+    getMathsExpLogsWorkshop,
     getMathsMatricesWorkshop,
+    getPhysicsElectricityWorkshop,
     getPhysicsCoreWorkshop,
     getPhysicsWorkshopModule,
     getPhysicsWorkshopModules
@@ -42,6 +45,14 @@
       pathId: 'PHYS_001',
       getWorkshop: getPhysicsCoreWorkshop
     },
+    electricity: {
+      label: 'Electricity',
+      title: 'Electricity and circuits',
+      sub: 'Sort charge, current, voltage, series, parallel, power, and circuit rules.',
+      icon: '/icons/gateways/unit.png',
+      pathId: 'PHY_ELECTRICITY',
+      getWorkshop: getPhysicsElectricityWorkshop
+    },
     chemistry: {
       label: 'Chemistry',
       title: 'Atom and molecule builder',
@@ -49,6 +60,22 @@
       icon: '/icons/gateways/atom.png',
       pathId: 'ATOM_001',
       getWorkshop: getChemistryCoreWorkshop
+    },
+    chemStructure: {
+      label: 'Structure',
+      title: 'Chemical structure and reactions',
+      sub: 'Build ions, sort bonding, read molecular shape, and balance reaction logic.',
+      icon: '/icons/gateways/atom.png',
+      pathId: 'CHEM_STRUCTURE_REACTIONS',
+      getWorkshop: getChemistryStructureWorkshop
+    },
+    expLogs: {
+      label: 'Exponents',
+      title: 'Exponents and logarithms',
+      sub: 'Read powers, growth, decay, logs, and inverse relationships.',
+      icon: '/icons/gateways/line.png',
+      pathId: 'MATH_EXP_LOGS',
+      getWorkshop: getMathsExpLogsWorkshop
     },
     matrices: {
       label: 'Matrices',
