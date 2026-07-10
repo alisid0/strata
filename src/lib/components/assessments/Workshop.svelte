@@ -14,6 +14,7 @@
   import MatrixLab from './MatrixLab.svelte';
   import CoordinateDrill from './CoordinateDrill.svelte';
   import UnitDimensionCheck from './UnitDimensionCheck.svelte';
+  import PixiSceneChoice from './PixiSceneChoice.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -192,6 +193,17 @@
           prompt={current.prompt}
           expression={current.expression}
           target={current.target}
+          options={current.options}
+          correctOption={current.correctOption}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'pixiscene'}
+        <PixiSceneChoice
+          mode={current.mode}
+          scene={current.scene}
+          prompt={current.prompt}
           options={current.options}
           correctOption={current.correctOption}
           correctFeedback={current.correctFeedback}

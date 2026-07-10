@@ -1762,6 +1762,20 @@ export const MATHS_EXP_LOGS_WORKSHOP = [
     { id: 'interest', label: 'Compound interest', box: 'growth' },
     { id: 'steps', label: 'Walking 5 meters each second', box: 'linear' }
   ]},
+  {
+    type: 'pixiscene',
+    mode: 'growth',
+    scene: 'exponential',
+    prompt: 'The bars keep doubling. What kind of pattern is the animation showing?',
+    options: [
+      { id: 'exponential', label: 'Exponential growth', note: 'A repeated multiplier' },
+      { id: 'linear', label: 'Linear growth', note: 'A fixed amount added each step' },
+      { id: 'decay', label: 'Exponential decay', note: 'A repeated fraction kept each step' }
+    ],
+    correctOption: 'exponential',
+    correctFeedback: 'Correct. Each step multiplies the previous amount, so the rise speeds up.',
+    incorrectFeedback: 'Watch the spacing between the bars. The change is multiplying, not adding.'
+  },
   S('Same base, multiplied powers: 3^2 x 3^4 becomes:',
     [O('six','3^6',true), O('eight','3^8',false), O('two','3^2',false)],
     'Yes. Two 3s plus four more 3s gives six 3s.',
@@ -1841,6 +1855,19 @@ export const PHYSICS_ELECTRICITY_WORKSHOP = [
     [O('voltage','Voltage',true), O('current','Current',false), O('charge','Number of electrons',false)],
     'Correct. Parallel branches sit across the same two points.',
     'Parallel branches share voltage. Current splits between them.'),
+  {
+    type: 'pixiscene',
+    mode: 'circuit',
+    scene: 'parallel',
+    prompt: 'The moving charges split into two branches. Which circuit layout is shown?',
+    options: [
+      { id: 'parallel', label: 'Parallel circuit', note: 'Branches share the same two connection points' },
+      { id: 'series', label: 'Series circuit', note: 'One path through every component' }
+    ],
+    correctOption: 'parallel',
+    correctFeedback: 'Correct. A split path means parallel branches.',
+    incorrectFeedback: 'The key clue is the split. Series has one path; parallel has branches.'
+  },
   { type: 'sorting', boxes: [
     { id: 'series', label: 'Series' },
     { id: 'parallel', label: 'Parallel' }
@@ -1916,6 +1943,20 @@ export const CHEMISTRY_STRUCTURE_WORKSHOP = [
     { id: 'share', label: 'Electron pairs shared', box: 'covalent' },
     { id: 'sea', label: 'Sea of mobile electrons', box: 'metallic' }
   ]},
+  {
+    type: 'pixiscene',
+    mode: 'bond',
+    scene: 'covalent',
+    prompt: 'The two atoms keep a shared pair of electrons between them. Which bond is this?',
+    options: [
+      { id: 'covalent', label: 'Covalent bond', note: 'Atoms share electron pairs' },
+      { id: 'ionic', label: 'Ionic bond', note: 'Electrons transfer from one atom to another' },
+      { id: 'metallic', label: 'Metallic bond', note: 'Electrons move through a metal structure' }
+    ],
+    correctOption: 'covalent',
+    correctFeedback: 'Correct. Shared electron pairs are the signature of covalent bonding.',
+    incorrectFeedback: 'Look at where the electrons stay. Shared pairs point to covalent bonding.'
+  },
   {
     type: 'moleculebuilder',
     prompt: 'Build methane from the formula CH4.',
