@@ -1758,6 +1758,18 @@ export const MATHS_MATRICES_WORKSHOP = [
     correctFeedback: 'Correct. Row 2, column 3 holds 14. A matrix cell is just an address with a value.',
     incorrectFeedback: 'Find the row first, then move across to the column.'
   },
+  {
+    type: 'matrixlab',
+    mode: 'fill',
+    prompt: 'Replace the missing spreadsheet value. The blank is row 2, column 2.',
+    matrix: [[12, 5, 9], [3, null, 14], [6, 1, 10]],
+    blankRow: 2,
+    blankCol: 2,
+    options: [8, 5, 14, 1],
+    correctValue: 8,
+    correctFeedback: 'Correct. Row 2, column 2 is the centre cell, so the missing value is 8.',
+    incorrectFeedback: 'Start with the row number first, then move across to the column.'
+  },
   S('A spreadsheet cell like B7 has a fixed address. What is the matrix version of that idea?',
     [O('rowcol','Row and column position',true), O('total','The total of every number',false)],
     'Exactly. A matrix is a grid where position matters.',
@@ -1776,6 +1788,63 @@ export const MATHS_MATRICES_WORKSHOP = [
     'Right. A computer can loop through a matrix because every number has a predictable position.',
     'Not quite. Matrices are powerful because numbers sit in fixed, ordered positions.'),
   {
+    type: 'matrixlab',
+    mode: 'addability',
+    prompt: 'Can these two matrices be added? Matrix addition needs the exact same shape.',
+    matrixA: [[2, 4, 6], [1, 3, 5]],
+    matrixB: [[9, 8, 7], [6, 5, 4]],
+    choices: [
+      { label: 'Yes: both are 2 x 3' },
+      { label: 'No: the numbers are different' },
+      { label: 'No: addition only works for square matrices' }
+    ],
+    correctChoice: 0,
+    correctFeedback: 'Correct. The entries differ, but the shapes match: 2 rows and 3 columns in both.',
+    incorrectFeedback: 'For addition, the shape matters first. These are both 2 x 3 matrices.'
+  },
+  {
+    type: 'matrixlab',
+    mode: 'addition',
+    prompt: 'Add matching cells. Which result is A + B?',
+    matrixA: [[1, 4], [2, 3]],
+    matrixB: [[5, 1], [7, 2]],
+    choices: [
+      { label: 'Result A', matrix: [[6, 5], [9, 5]] },
+      { label: 'Result B', matrix: [[5, 4], [14, 6]] },
+      { label: 'Result C', matrix: [[6, 4], [7, 5]] },
+      { label: 'Result D', matrix: [[1, 5], [2, 7]] }
+    ],
+    correctChoice: 0,
+    correctFeedback: 'Yes. Each cell adds to the cell in the same position: 1+5, 4+1, 2+7, 3+2.',
+    incorrectFeedback: 'Do not add rows as totals. Add cell to matching cell.'
+  },
+  {
+    type: 'matrixlab',
+    mode: 'identity',
+    prompt: 'Identify the 2 x 2 identity matrix. It leaves every point unchanged.',
+    matrices: [
+      { label: 'A', matrix: [[1, 0], [0, 1]] },
+      { label: 'B', matrix: [[0, 1], [1, 0]] },
+      { label: 'C', matrix: [[1, 1], [0, 1]] },
+      { label: 'D', matrix: [[2, 0], [0, 2]] }
+    ],
+    correctIndex: 0,
+    correctFeedback: 'Correct. Ones on the main diagonal, zeros everywhere else: that is the identity matrix.',
+    incorrectFeedback: 'The identity matrix has 1s from top-left to bottom-right and 0s everywhere else.'
+  },
+  {
+    type: 'matrixlab',
+    mode: 'fill',
+    prompt: 'Complete the 3 x 3 identity matrix. What belongs in the missing corner of the diagonal?',
+    matrix: [[1, 0, 0], [0, 1, 0], [0, 0, null]],
+    blankRow: 3,
+    blankCol: 3,
+    options: [0, 1, -1, 3],
+    correctValue: 1,
+    correctFeedback: 'Correct. Every main diagonal entry in the identity matrix is 1.',
+    incorrectFeedback: 'Follow the main diagonal from top-left to bottom-right. Identity keeps 1s there.'
+  },
+  {
     type: 'matrixtransform',
     prompt: 'This matrix doubles x and leaves y alone. Where does point (2, 3) land?',
     matrix: [[2, 0], [0, 1]],
@@ -1792,6 +1861,29 @@ export const MATHS_MATRICES_WORKSHOP = [
     options: [[-3, 2], [3, -2], [-3, -2]],
     correctFeedback: 'Correct. The x sign flipped, so the point moved to the other side.',
     incorrectFeedback: 'Only x changes sign here. y stays the same.'
+  },
+  {
+    type: 'matrixtransform',
+    prompt: 'The identity matrix does nothing. Where does point (4, -2) land?',
+    matrix: [[1, 0], [0, 1]],
+    inputPoint: [4, -2],
+    options: [[4, -2], [-4, 2], [2, 4]],
+    correctFeedback: 'Correct. Identity means no change: the point comes out exactly as it went in.',
+    incorrectFeedback: 'The identity matrix leaves both coordinates unchanged.'
+  },
+  {
+    type: 'matrixlab',
+    mode: 'identity',
+    prompt: 'Which matrix swaps x and y? Test it on a point: (3, 8) would become (8, 3).',
+    matrices: [
+      { label: 'A', matrix: [[1, 0], [0, 1]] },
+      { label: 'B', matrix: [[0, 1], [1, 0]] },
+      { label: 'C', matrix: [[-1, 0], [0, 1]] },
+      { label: 'D', matrix: [[2, 0], [0, 1]] }
+    ],
+    correctIndex: 1,
+    correctFeedback: 'Correct. The off-diagonal 1s swap the two coordinates.',
+    incorrectFeedback: 'A swap matrix sends x into the y position and y into the x position.'
   },
   S('What changed between the spreadsheet idea and the transformation idea?',
     [O('active','The grid stopped just storing numbers and started acting on a point',true), O('random','The numbers became random decoration',false)],

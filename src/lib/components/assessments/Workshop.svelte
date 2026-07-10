@@ -11,6 +11,7 @@
   import MoleculeBuilder from './MoleculeBuilder.svelte';
   import MatrixCellFinder from './MatrixCellFinder.svelte';
   import MatrixTransform from './MatrixTransform.svelte';
+  import MatrixLab from './MatrixLab.svelte';
   import CoordinateDrill from './CoordinateDrill.svelte';
   import UnitDimensionCheck from './UnitDimensionCheck.svelte';
   // MCQ-style scenario picker is inline
@@ -144,6 +145,25 @@
           matrix={current.matrix}
           inputPoint={current.inputPoint}
           options={current.options}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'matrixlab'}
+        <MatrixLab
+          mode={current.mode}
+          prompt={current.prompt}
+          matrix={current.matrix}
+          blankRow={current.blankRow}
+          blankCol={current.blankCol}
+          options={current.options}
+          correctValue={current.correctValue}
+          matrices={current.matrices}
+          correctIndex={current.correctIndex}
+          matrixA={current.matrixA}
+          matrixB={current.matrixB}
+          choices={current.choices}
+          correctChoice={current.correctChoice}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
           onDone={handleInteractionDone}
