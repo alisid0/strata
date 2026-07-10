@@ -22,6 +22,8 @@ export const PATHS = {
     cards: [1019,1020,1021], quizUrls: [] },
   PHY_FORCES: { subject: 'physics', name: "Forces & Newton's laws", icon: 'physics',
     cards: [1022,1023,1024,1025,1026,1027,1028,1029,1030,1031,1032,1033,1034,1037], quizUrls: ['tier0'] },
+  PHY_ELECTRICITY: { subject: 'physics', name: 'Electricity & circuits', icon: 'physics',
+    cards: [1323,1324,1325,1326,1327,1328,1329,1330,1331,1332], quizUrls: [] },
 
   // ── The Line (starting point) ──
   LINE_001: { subject: 'maths', name: 'The Line', icon: 'maths',
@@ -30,6 +32,8 @@ export const PATHS = {
     cards: [1035,1036,1038,1039,1040,1041,1042,1043,1044,1045,1046,1047,1048,1049,1050], quizUrls: ['tier0'] },
   MATH_FUNCTIONS: { subject: 'maths', name: 'Functions', icon: 'maths',
     cards: [1219,1220,1221,1222,1223,1224,1225,1226,1227,1228], quizUrls: [] },
+  MATH_EXP_LOGS: { subject: 'maths', name: 'Exponents & logarithms', icon: 'maths',
+    cards: [1313,1314,1315,1316,1317,1318,1319,1320,1321,1322], quizUrls: [] },
   MATH_MATRICES: { subject: 'maths', name: 'Matrices', icon: 'maths',
     cards: [1305,1306,1307,1308,1309,1310,1311,1312], quizUrls: [] },
 
@@ -53,14 +57,16 @@ export const PATHS = {
   CHEM_MOLE: { subject: 'chemistry', name: 'Reactions & the mole', icon: 'chemistry',
     cards: [1066,1067,1068,1069], quizUrls: ['tier0'] },
   CHEM_ARCH: { subject: 'chemistry', name: 'Molecular architecture', icon: 'chemistry',
-    cards: [1070,1071,1072,1073,1074,1075,1076,1077], quizUrls: [] }
+    cards: [1070,1071,1072,1073,1074,1075,1076,1077], quizUrls: [] },
+  CHEM_STRUCTURE_REACTIONS: { subject: 'chemistry', name: 'Structure & reactions', icon: 'chemistry',
+    cards: [1333,1334,1335,1336,1337,1338,1339,1340,1341,1342], quizUrls: [] }
 };
 
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
-  physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES'],
-  maths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_MATRICES'],
-  chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH'],
+  physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES', 'PHY_ELECTRICITY'],
+  maths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES'],
+  chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS'],
   computing: ['BIT_001']
 };
 
@@ -84,7 +90,7 @@ export const ROADMAP = {
   line: ['Quadratics & polynomials', 'Limits & continuity', 'Probability', 'Statistics'],
   atom: ['Periodic table & periodicity', 'Organic basics', 'Biomolecules'],
   bit: ['Binary & number systems', 'Logic gates & Boolean', 'Networks: packets, IP, DNS'],
-  unit: ['1D Kinematics', 'Work, energy & power', 'Thermodynamics & heat', 'Current electricity']
+  unit: ['1D Kinematics', 'Work, energy & power', 'Thermodynamics & heat', 'Magnetism & induction']
 };
 
 /** Four starting-point gateways — each groups related topics into a learning path. */
@@ -92,13 +98,13 @@ export const PATH_GROUPS = {
   line: {
     name: 'The Line',
     subject: 'maths',
-    paths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_MATRICES'],
+    paths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES'],
     firstTopic: 'LINE_001'
   },
   atom: {
     name: 'The Atom',
     subject: 'chemistry',
-    paths: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH'],
+    paths: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS'],
     firstTopic: 'ATOM_001'
   },
   bit: {
@@ -110,7 +116,7 @@ export const PATH_GROUPS = {
   unit: {
     name: 'Physics',
     subject: 'physics',
-    paths: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_INTRO'],
+    paths: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_INTRO'],
     firstTopic: 'PHYS_001'
   }
 };

@@ -3,6 +3,7 @@ import { supabase } from '../supabase.js';
 import { DECK } from './deck.js';
 import { FUNCTION_BOARDS } from './functionBoards.js';
 import { MATRIX_BOARDS } from './matrixBoards.js';
+import { PUBLISHABLE_TOPIC_BOARDS } from './publishableTopicBoards.js';
 
 const KEY = 'strata-dynamic-boards-v2';
 
@@ -81,6 +82,7 @@ export async function fetchBoardsByNumbers(numbers) {
     else if (merged[n]) result[n] = merged[n];
     else if (FUNCTION_BOARDS[n]) result[n] = FUNCTION_BOARDS[n];
     else if (MATRIX_BOARDS[n]) result[n] = MATRIX_BOARDS[n];
+    else if (PUBLISHABLE_TOPIC_BOARDS[n]) result[n] = PUBLISHABLE_TOPIC_BOARDS[n];
   }
   return result;
 }
@@ -111,7 +113,7 @@ export async function fetchSnippets() {
 /** Resolve a single board by number: static DECK first, then the dynamic cache. */
 export function getBoard(number) {
   if (number <= DECK.length) return DECK[number - 1];
-  return get(dynamicBoards)[number] || FUNCTION_BOARDS[number] || MATRIX_BOARDS[number] || null;
+  return get(dynamicBoards)[number] || FUNCTION_BOARDS[number] || MATRIX_BOARDS[number] || PUBLISHABLE_TOPIC_BOARDS[number] || null;
 }
 
 /** Numbers currently resolvable without a fetch (static + already-cached dynamic). */
@@ -120,6 +122,7 @@ export function loadedNumbers() {
   const dynamicNums = Object.keys(merged).map(Number);
   const functionNums = Object.keys(FUNCTION_BOARDS).map(Number);
   const matrixNums = Object.keys(MATRIX_BOARDS).map(Number);
+  const publishableNums = Object.keys(PUBLISHABLE_TOPIC_BOARDS).map(Number);
   const staticNums = Array.from({ length: DECK.length }, (_, i) => i + 1);
-  return [...staticNums, ...dynamicNums, ...functionNums, ...matrixNums].sort((a, b) => a - b);
+  return [...staticNums, ...dynamicNums, ...functionNums, ...matrixNums, ...publishableNums].sort((a, b) => a - b);
 }
