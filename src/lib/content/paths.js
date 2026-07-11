@@ -12,7 +12,13 @@ export const PATHS = {
   // ── Physics ──
   // ── Physics (starting point) ──
   PHYS_001: { subject: 'physics', name: 'Physics', icon: 'physics',
-    cards: [1139,1140,1141,1142,1143,1144,1145,1146,1147,1148,1149,1150,1151,1152,1153,1154,1155,1156,1157,1158,1159,1160,1161,1162,1163,1164,1165,1166,1167,1168,1169,1174,1175,1176,1177,1178,1179,1180,1181,1182,1183,1184,1185,1186,1187,1188,1189,1190,1191,1192,1193,1194,1195,1196,1197,1198,1199,1200], quizUrls: [] },
+    cards: [1139,1140,1141,1142,1143,1144,1145,1146,1147,1148], quizUrls: [] },
+  PHY_SI_SCALE: { subject: 'physics', name: 'SI units & scale', icon: 'physics',
+    cards: [1149,1150,1151,1152,1153,1154,1155,1156,1157,1158], quizUrls: [] },
+  PHY_MOTION_FOUNDATIONS: { subject: 'physics', name: 'Motion foundations', icon: 'physics',
+    cards: [1159,1160,1174,1175,1176,1177,1178,1179,1180,1181,1182,1183,1184,1185,1186,1187,1188,1189,1190,1191,1192], quizUrls: [] },
+  PHY_MEASUREMENT_LIMITS: { subject: 'physics', name: 'Measurement limits', icon: 'physics',
+    cards: [1193,1194,1195,1196,1197,1198,1199,1200], quizUrls: [] },
 
   PHY_UNITS: { subject: 'physics', name: 'Units & dimensions', icon: 'physics',
     cards: [1000,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012], quizUrls: ['tier0'] },
@@ -31,7 +37,9 @@ export const PATHS = {
 
   // ── The Line (starting point) ──
   LINE_001: { subject: 'maths', name: 'The Line', icon: 'maths',
-    cards: [1078,1079,1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,1093,1161,1162,1163,1164,1165,1166,1167,1168,1169,1170,1171,1172,1173,1219,1220,1221,1222,1223,1224,1225,1226,1227,1228,1229,1230,1231,1232,1233,1266,1267,1268,1269,1270,1271,1272,1273,1274,1275], quizUrls: [] },
+    cards: [1078,1079,1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,1093], quizUrls: [] },
+  MATH_COORD_MAPS: { subject: 'maths', name: 'Coordinate maps', icon: 'maths',
+    cards: [1161,1162,1163,1164,1165,1166,1167,1168,1169,1170,1171,1172,1173], quizUrls: [] },
   MATH_COORD: { subject: 'maths', name: 'Coordinate geometry', icon: 'maths',
     cards: [1035,1036,1038,1039,1040,1041,1042,1043,1044,1045,1046,1047,1048,1049,1050], quizUrls: ['tier0'] },
   MATH_FUNCTIONS: { subject: 'maths', name: 'Functions', icon: 'maths',
@@ -40,6 +48,8 @@ export const PATHS = {
     cards: [1313,1314,1315,1316,1317,1318,1319,1320,1321,1322], quizUrls: [] },
   MATH_MATRICES: { subject: 'maths', name: 'Matrices', icon: 'maths',
     cards: [1305,1306,1307,1308,1309,1310,1311,1312], quizUrls: [] },
+  MATH_LINEAR_GRAPHS: { subject: 'maths', name: 'Lines & gradients', icon: 'maths',
+    cards: [1266,1267,1268,1269,1270,1271,1272,1273,1274,1275], quizUrls: [] },
   MATH_TRIG_ADV: { subject: 'maths', name: 'Trigonometry', icon: 'maths',
     cards: [1379,1380,1381,1382,1383,1384], quizUrls: [] },
   MATH_DIFF: { subject: 'maths', name: 'Differentiation', icon: 'maths',
@@ -52,7 +62,15 @@ export const PATHS = {
   // Phase 4: The mole (1121-1124)
   // Phase 5: Molecular architecture (existing 1068-1077, curated)
   ATOM_001: { subject: 'chemistry', name: 'The Atom', icon: 'chemistry',
-    cards: [1094,1095,1096,1097,1098,1099,1100,1101,1102,1103,1104,1109,1110,1111,1112,1113,1114,1115,1116,1117,1118,1119,1120,1121,1122,1123,1124,1125,1126,1127,1128,1129,1201,1202,1203,1204,1205,1206,1207,1208,1209,1210,1211,1212,1213,1214,1215,1216,1217,1218,1068,1069,1070,1071,1072,1073,1074,1076,1077], quizUrls: ['tier0'] },
+    cards: [1094,1095,1096,1097,1098,1099,1100,1101,1102,1103,1104], quizUrls: ['tier0'] },
+  CHEM_NUCLEUS_ISOTOPES: { subject: 'chemistry', name: 'Nucleus & isotopes', icon: 'chemistry',
+    cards: [1109,1110,1111,1112,1113,1114,1115,1116], quizUrls: [] },
+  CHEM_BONDING_TYPES: { subject: 'chemistry', name: 'Bonding types', icon: 'chemistry',
+    cards: [1117,1118,1119,1120], quizUrls: [] },
+  CHEM_MOLE_COUNTING: { subject: 'chemistry', name: 'Counting atoms', icon: 'chemistry',
+    cards: [1121,1122,1123,1124,1125,1126,1127,1128,1129], quizUrls: [] },
+  CHEM_BIOMOLECULES: { subject: 'chemistry', name: 'Biomolecules', icon: 'chemistry',
+    cards: [1201,1202,1203,1204,1205,1206,1207,1208,1209,1210,1211,1212,1213,1214,1215,1216,1217,1218], quizUrls: [] },
 
   // ── The Bit (starting point) ──
   BIT_001: { subject: 'computing', name: 'The Bit', icon: 'computing',
@@ -86,9 +104,9 @@ export const PATHS = {
 
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
-  physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
-  maths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
-  chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS', 'CHEM_QUANT'],
+  physics: ['PHYS_001', 'PHY_SI_SCALE', 'PHY_UNITS', 'PHY_SCALE', 'PHY_MEASUREMENT_LIMITS', 'PHY_INTRO', 'PHY_MOTION_FOUNDATIONS', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
+  maths: ['LINE_001', 'MATH_COORD_MAPS', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_LINEAR_GRAPHS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
+  chemistry: ['ATOM_001', 'CHEM_NUCLEUS_ISOTOPES', 'CHEM_BONDING_TYPES', 'CHEM_MOLE_COUNTING', 'CHEM_BIOMOLECULES', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS', 'CHEM_QUANT'],
   computing: ['BIT_001', 'COMP_CODE_COMMAND', 'COMP_HARDWARE', 'COMP_NETWORKS_SECURITY', 'COMP_SYSTEM_DESIGN', 'COMP_AI_ERA', 'COMP_AI_BEHIND']
 };
 
@@ -120,7 +138,7 @@ export const PATH_GROUPS = {
   line: {
     name: 'Mathematics',
     subject: 'maths',
-    paths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
+    paths: ['LINE_001', 'MATH_COORD_MAPS', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_LINEAR_GRAPHS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
     firstTopic: 'LINE_001'
   },
   bit: {
@@ -132,13 +150,13 @@ export const PATH_GROUPS = {
   atom: {
     name: 'Chemistry',
     subject: 'chemistry',
-    paths: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS', 'CHEM_QUANT'],
+    paths: ['ATOM_001', 'CHEM_NUCLEUS_ISOTOPES', 'CHEM_BONDING_TYPES', 'CHEM_MOLE_COUNTING', 'CHEM_BIOMOLECULES', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS', 'CHEM_QUANT'],
     firstTopic: 'ATOM_001'
   },
   unit: {
     name: 'Physics',
     subject: 'physics',
-    paths: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS', 'PHY_INTRO'],
+    paths: ['PHYS_001', 'PHY_SI_SCALE', 'PHY_UNITS', 'PHY_SCALE', 'PHY_MEASUREMENT_LIMITS', 'PHY_INTRO', 'PHY_MOTION_FOUNDATIONS', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
     firstTopic: 'PHYS_001'
   }
 };
