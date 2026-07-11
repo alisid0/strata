@@ -1293,9 +1293,7 @@ Generated: 2026-07-08
 
 **Floor 1:** But if the electrons are moving so incredibly fast, what keeps them from just flying away into deep space? Why do they stay trapped in their lanes?
 
-**Floor 2:** To understand that, we have to zoom in and crack open the heavy little marble sitting dead in the center: the nucleus.
-
-**Floor 3:** Inside the nucleus, there are larger, heavy particles. The most important one is called the Proton.
+**Floor 2:** To understand that, we have to zoom in and crack open the heavy little marble sitting dead in the center: the nucleus. Inside the nucleus, there are larger, heavy particles. The most important one is called the proton.
 
 ---
 
