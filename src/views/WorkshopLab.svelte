@@ -12,6 +12,12 @@
     getPhysicsWorkshopModule,
     getPhysicsWorkshopModules
   } from '../lib/content/workshops.js';
+  import {
+    getChemistryQuantWorkshop,
+    getMathsDifferentiationWorkshop,
+    getMathsTrigonometryWorkshop,
+    getPhysicsOpticsWorkshop
+  } from '../lib/content/topicExpansionWorkshops.js';
 
   export let onNavigate;
 
@@ -61,6 +67,22 @@
           sub: 'Read cells, store data, and transform points.',
           pathId: 'MATH_MATRICES',
           getWorkshop: getMathsMatricesWorkshop
+        },
+        {
+          id: 'trigonometry',
+          label: 'Trig',
+          title: 'Unit circle and wave lab',
+          sub: 'Read exact values, tune waves, and connect turning to slope.',
+          pathId: 'MATH_TRIG_ADV',
+          getWorkshop: getMathsTrigonometryWorkshop
+        },
+        {
+          id: 'differentiation',
+          label: 'Diff',
+          title: 'Derivative control room',
+          sub: 'Use slopes, rules, units, and rates without guesswork.',
+          pathId: 'MATH_DIFF',
+          getWorkshop: getMathsDifferentiationWorkshop
         }
       ]
     },
@@ -98,6 +120,14 @@
           sub: 'Build ions, sort bonding, read molecular shape, and balance reaction logic.',
           pathId: 'CHEM_STRUCTURE_REACTIONS',
           getWorkshop: getChemistryStructureWorkshop
+        },
+        {
+          id: 'quant-chem',
+          label: 'Moles',
+          title: 'Mole and reaction lab',
+          sub: 'Convert mass to moles, read ratios, find limits, and reverse formulas.',
+          pathId: 'CHEM_QUANT',
+          getWorkshop: getChemistryQuantWorkshop
         }
       ]
     },
@@ -120,6 +150,14 @@
           sub: 'Sort charge, current, voltage, series, parallel, power, and circuit rules.',
           pathId: 'PHY_ELECTRICITY',
           getWorkshop: getPhysicsElectricityWorkshop
+        },
+        {
+          id: 'optics',
+          label: 'Optics',
+          title: 'Reflection and refraction bench',
+          sub: 'Trace rays, reason through mirrors, refraction, lenses, and Snell law.',
+          pathId: 'PHY_OPTICS',
+          getWorkshop: getPhysicsOpticsWorkshop
         }
       ]
     }

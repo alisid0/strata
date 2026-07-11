@@ -1473,9 +1473,19 @@ function cloneInteractions(interactions) {
     boxes: interaction.boxes?.map((box) => ({ ...box })),
     items: interaction.items?.map((item) => ({ ...item })),
     options: interaction.options?.map((option) => ({ ...option })),
+    choices: interaction.choices?.map((choice) => ({
+      ...choice,
+      matrix: choice.matrix?.map((row) => [...row])
+    })),
+    matrices: interaction.matrices?.map((matrix) => ({
+      ...matrix,
+      matrix: matrix.matrix?.map((row) => [...row])
+    })),
     target: Array.isArray(interaction.target) ? [...interaction.target] : interaction.target,
     labels: interaction.labels ? [...interaction.labels] : interaction.labels,
     matrix: interaction.matrix?.map((row) => [...row]),
+    matrixA: interaction.matrixA?.map((row) => [...row]),
+    matrixB: interaction.matrixB?.map((row) => [...row]),
     inputPoint: interaction.inputPoint ? [...interaction.inputPoint] : interaction.inputPoint
   }));
 }
@@ -2275,7 +2285,7 @@ export const MATHS_MATRICES_WORKSHOP = [
 ];
 
 export function getMathsMatricesWorkshop() {
-  return MATHS_MATRICES_WORKSHOP;
+  return cloneInteractions(MATHS_MATRICES_WORKSHOP);
 }
 
 // ── Coordinate geometry (The Line) workshop — drag-based drills on a live plane ──
