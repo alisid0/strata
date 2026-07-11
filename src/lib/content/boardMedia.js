@@ -28,10 +28,16 @@ export const BOARD_MEDIA = {
 
   // ── Chemistry · Molecular architecture ──
   // 1070 "Ionic lattices: the giant structure" — the repeating NaCl grid.
+  1062: { 0: { type: 'three', spec: { kind: 'ionic-transfer', from: 'Na', to: 'Cl', product: 'Na+ + Cl-', title: 'electron transfer' } } },
+  1063: { 1: { type: 'three', spec: { kind: 'covalent-share', atom: 'O', pairs: 2, title: 'shared electron pairs' } } },
+  1064: { 1: { type: 'three', spec: { kind: 'metallic-sea', title: 'mobile electrons in metal' } } },
+
   1070: { 0: { type: 'three', spec: { kind: 'lattice', a: 'Na', b: 'Cl', size: 3 } } },
   // 1072 "Molecular shapes: VSEPR" — the showcase: a rotatable tetrahedron.
   1072: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'CH₄', shape: 'tetrahedral', center: 'C', ligand: 'H', count: 4 } } },
   // 1075 "What is a molecule?" — the most familiar molecule.
+  1073: { 1: { type: 'three', spec: { kind: 'polarity', title: 'dipoles add or cancel' } } },
+  1074: { 2: { type: 'three', spec: { kind: 'hydrogen-bonds', title: 'hydrogen bonds between molecules' } } },
   1075: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'H₂O', shape: 'bent', center: 'O', ligand: 'H', count: 2 } } },
   // 1076 "Bond angles and the shape of a molecule" — the pyramidal case.
   1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } },
@@ -58,6 +64,9 @@ export const BOARD_MEDIA = {
       { label: 'C-14', protons: 6, neutrons: 8 }
     ]
   } } },
+  1117: { 4: { type: 'three', spec: { kind: 'covalent-share', atom: 'O', pairs: 2, title: 'shared electrons glue atoms' } } },
+  1119: { 3: { type: 'three', spec: { kind: 'metallic-sea', title: 'ions plus roaming electrons' } } },
+  1120: { 3: { type: 'three', spec: { kind: 'metallic-sea', title: 'electron flow is current' } } },
 
   // Same smoke-signal relay GIF reused on every floor of the first two BBs
   // (founder decision). ?v= is the file's md5 prefix — bump it whenever the
