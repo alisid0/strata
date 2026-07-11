@@ -26,7 +26,9 @@
   $: label = spec?.kind === 'molecule' ? spec.formula
     : spec?.kind === 'atom' ? spec.symbol
     : spec?.kind === 'lattice' ? `${spec.a}${spec.b}`
-    : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors') : '';
+    : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors')
+    : spec?.kind === 'unit-circle' ? (spec.label || 'cos theta, sin theta')
+    : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary') : '';
 
   // Unit bond directions for each VSEPR geometry.
   function shapeDirs(shape) {
@@ -290,6 +292,100 @@
     return 3.6;
   }
 
+  function buildUnitCircle(THREE, group) {
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xf6efe4, transparent: true, opacity: 0.82 });
+    const accentMat = new THREE.LineBasicMaterial({ color: 0xee9362 });
+    const yMat = new THREE.LineBasicMaterial({ color: 0x8ee6c7 });
+    const xMat = new THREE.LineBasicMaterial({ color: 0x9aa0ff });
+
+    const circlePts = [];
+    for (let i = 0; i <= 160; i++) {
+      const a = (i / 160) * Math.PI * 2;
+      circlePts.push(new THREE.Vector3(Math.cos(a) * 1.55, Math.sin(a) * 1.55, 0));
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(circlePts), lineMat));
+
+    const axes = [
+      [new THREE.Vector3(-2.05, 0, 0), new THREE.Vector3(2.05, 0, 0), xMat],
+      [new THREE.Vector3(0, -2.05, 0), new THREE.Vector3(0, 2.05, 0), yMat]
+    ];
+    axes.forEach(([a, b, mat]) => group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), mat)));
+
+    const theta = (spec.theta || 52) * Math.PI / 180;
+    const point = new THREE.Vector3(Math.cos(theta) * 1.55, Math.sin(theta) * 1.55, 0);
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), point]), accentMat));
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([point, new THREE.Vector3(point.x, 0, 0)]), yMat));
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([point, new THREE.Vector3(0, point.y, 0)]), xMat));
+
+    const dot = sphere(THREE, 0.12, 0xee9362);
+    dot.position.copy(point);
+    group.add(dot);
+
+    const title = makeLabel(THREE, spec.title || '(cos theta, sin theta)', {
+      width: 650,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 42,
+      scale: [1.85, 0.4, 1]
+    });
+    title.position.set(0, -2.45, 0);
+    group.add(title);
+
+    return 2.8;
+  }
+
+  function buildRayOptics(THREE, group) {
+    const airMat = new THREE.MeshStandardMaterial({ color: 0x202232, roughness: 0.8, transparent: true, opacity: 0.52 });
+    const glassMat = new THREE.MeshStandardMaterial({ color: 0x254c63, roughness: 0.55, transparent: true, opacity: 0.58 });
+    const rayMat = new THREE.LineBasicMaterial({ color: 0xee9362, linewidth: 2 });
+    const normalMat = new THREE.LineBasicMaterial({ color: 0xf6efe4, transparent: true, opacity: 0.45 });
+
+    const air = new THREE.Mesh(new THREE.BoxGeometry(4.6, 1.5, 0.08), airMat);
+    air.position.set(0, 0.75, -0.05);
+    group.add(air);
+    const glass = new THREE.Mesh(new THREE.BoxGeometry(4.6, 1.5, 0.08), glassMat);
+    glass.position.set(0, -0.75, -0.05);
+    group.add(glass);
+
+    group.add(new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 1.85, 0.05), new THREE.Vector3(0, -1.85, 0.05)]),
+      normalMat
+    ));
+    group.add(new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-2.35, 0, 0.05), new THREE.Vector3(2.35, 0, 0.05)]),
+      normalMat
+    ));
+
+    const incoming = new THREE.Vector3(-1.55, 1.25, 0.08);
+    const boundary = new THREE.Vector3(0, 0, 0.08);
+    const refracted = new THREE.Vector3(0.72, -1.25, 0.08);
+    const reflected = new THREE.Vector3(1.1, 0.9, 0.08);
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([incoming, boundary, refracted]), rayMat));
+    group.add(new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([boundary, reflected]),
+      new THREE.LineBasicMaterial({ color: 0x9aa0ff, transparent: true, opacity: 0.68 })
+    ));
+
+    [
+      ['air', -1.55, 0.82],
+      ['glass', 1.4, -0.82],
+      ['normal', 0.62, 1.42]
+    ].forEach(([text, x, y]) => {
+      const labelSprite = makeLabel(THREE, text, {
+        width: 250,
+        height: 120,
+        bg: 'rgba(15, 15, 20, 0.76)',
+        border: 'rgba(246, 239, 228, 0.28)',
+        size: 42,
+        scale: [0.7, 0.28, 1]
+      });
+      labelSprite.position.set(x, y, 0.18);
+      group.add(labelSprite);
+    });
+
+    return 2.6;
+  }
+
   onMount(() => {
     let disposed = false;
     (async () => {
@@ -317,6 +413,8 @@
         const fit = spec.kind === 'atom' ? buildAtom(THREE, group)
           : spec.kind === 'lattice' ? buildLattice(THREE, group)
           : spec.kind === 'ai-pipeline' ? buildAiPipeline(THREE, group)
+          : spec.kind === 'unit-circle' ? buildUnitCircle(THREE, group)
+          : spec.kind === 'ray-optics' ? buildRayOptics(THREE, group)
           : buildMolecule(THREE, group);
 
         camera.position.set(fit * 0.4, fit * 0.5, fit * 2.5);

@@ -26,6 +26,8 @@ export const PATHS = {
     cards: [1323,1324,1325,1326,1327,1328,1329,1330,1331,1332], quizUrls: [] },
   PHY_THERMO: { subject: 'physics', name: 'Thermodynamics & heat', icon: 'physics',
     cards: [1343,1344,1345,1346,1347,1348,1349,1350,1351,1352,1353,1354,1355,1356,1357], quizUrls: ['tier0'] },
+  PHY_OPTICS: { subject: 'physics', name: 'Optics', icon: 'physics',
+    cards: [1391,1392,1393,1394,1395,1396], quizUrls: [] },
 
   // ── The Line (starting point) ──
   LINE_001: { subject: 'maths', name: 'The Line', icon: 'maths',
@@ -38,6 +40,10 @@ export const PATHS = {
     cards: [1313,1314,1315,1316,1317,1318,1319,1320,1321,1322], quizUrls: [] },
   MATH_MATRICES: { subject: 'maths', name: 'Matrices', icon: 'maths',
     cards: [1305,1306,1307,1308,1309,1310,1311,1312], quizUrls: [] },
+  MATH_TRIG_ADV: { subject: 'maths', name: 'Trigonometry', icon: 'maths',
+    cards: [1379,1380,1381,1382,1383,1384], quizUrls: [] },
+  MATH_DIFF: { subject: 'maths', name: 'Differentiation', icon: 'maths',
+    cards: [1385,1386,1387,1388,1389,1390], quizUrls: [] },
 
   // ── The Atom (starting point) ──
   // Phase 1: What is an atom? (1094-1104)
@@ -65,14 +71,16 @@ export const PATHS = {
   CHEM_ARCH: { subject: 'chemistry', name: 'Molecular architecture', icon: 'chemistry',
     cards: [1070,1071,1072,1073,1074,1075,1076,1077], quizUrls: [] },
   CHEM_STRUCTURE_REACTIONS: { subject: 'chemistry', name: 'Structure & reactions', icon: 'chemistry',
-    cards: [1333,1334,1335,1336,1337,1338,1339,1340,1341,1342], quizUrls: [] }
+    cards: [1333,1334,1335,1336,1337,1338,1339,1340,1341,1342], quizUrls: [] },
+  CHEM_QUANT: { subject: 'chemistry', name: 'Quantitative chemistry', icon: 'chemistry',
+    cards: [1397,1398,1399,1400,1401,1402], quizUrls: [] }
 };
 
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
-  physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO'],
-  maths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES'],
-  chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS'],
+  physics: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_INTRO', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
+  maths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
+  chemistry: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS', 'CHEM_QUANT'],
   computing: ['BIT_001', 'COMP_AI_ERA', 'COMP_AI_BEHIND']
 };
 
@@ -93,7 +101,7 @@ export const SUBJECT_ICONS = {
 /** Future topics per gateway — shown greyed with a "Soon" chip on the Path tab.
  *  Names only, never a board count (no empty "0/N" promises). */
 export const ROADMAP = {
-  line: ['Quadratics & polynomials', 'Limits & continuity', 'Probability', 'Statistics'],
+  line: ['Quadratics & polynomials', 'Probability', 'Statistics'],
   atom: ['Periodic table & periodicity', 'Organic basics', 'Biomolecules'],
   bit: ['Operating systems', 'Databases & SQL', 'Cybersecurity practice', 'AI agents'],
   unit: ['1D Kinematics', 'Work, energy & power', 'Magnetism & induction']
@@ -104,7 +112,7 @@ export const PATH_GROUPS = {
   line: {
     name: 'Mathematics',
     subject: 'maths',
-    paths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES'],
+    paths: ['LINE_001', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
     firstTopic: 'LINE_001'
   },
   bit: {
@@ -116,13 +124,13 @@ export const PATH_GROUPS = {
   atom: {
     name: 'Chemistry',
     subject: 'chemistry',
-    paths: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS'],
+    paths: ['ATOM_001', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS', 'CHEM_QUANT'],
     firstTopic: 'ATOM_001'
   },
   unit: {
     name: 'Physics',
     subject: 'physics',
-    paths: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_INTRO'],
+    paths: ['PHYS_001', 'PHY_UNITS', 'PHY_SCALE', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS', 'PHY_INTRO'],
     firstTopic: 'PHYS_001'
   }
 };

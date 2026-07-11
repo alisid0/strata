@@ -81,6 +81,21 @@ export const BOARD_MEDIA = {
     title: 'English becomes machine data',
     words: ['words', 'tokens', 'bits'],
     bits: '0100000101001001'
+  } } },
+
+  // Draft expansion - Trigonometry
+  // 1379 "The unit circle holds every angle" - spatial anchor for cos theta and sin theta.
+  1379: { 0: { type: 'three', spec: {
+    kind: 'unit-circle',
+    title: '(cos theta, sin theta)',
+    theta: 52
+  } } },
+
+  // Draft expansion - Optics
+  // 1394 "Refraction bends light at boundaries" - ray bends as it crosses into glass.
+  1394: { 0: { type: 'three', spec: {
+    kind: 'ray-optics',
+    label: 'refraction at a boundary'
   } } }
 };
 
