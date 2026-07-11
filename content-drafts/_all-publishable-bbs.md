@@ -1307,7 +1307,7 @@ Generated: 2026-07-08
 
 **Floor 2:** If you put a proton and an electron near each other, they pull toward one another like powerful magnets.
 
-**Floor 3:** That invisible magnetic pull is the only thing keeping the atom together. The positive protons in the center act like an anchor, pulling constantly on the negative electrons to keep them from flying away.
+**Floor 3:** This pull is electrical, not magnetic. The positive nucleus attracts the negative electron cloud, so the electrons remain bound around the atom instead of simply drifting away.
 
 ---
 
