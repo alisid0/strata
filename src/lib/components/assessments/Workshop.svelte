@@ -1,5 +1,6 @@
 <script>
   // Workshop — steps through interactive assessment interactions
+  import { onDestroy } from 'svelte';
   import { fly } from 'svelte/transition';
   import SortingDesk from './SortingDesk.svelte';
   import TapErase from './TapErase.svelte';
@@ -19,11 +20,39 @@
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
-  export let onDone = () => {}; // (score, total) => void
+  export let onDone = () => {}; // (score, total, bestStreak) => void
+  // Challenge mode: whole-run countdown. 0 = off (normal learn flow, untouched).
+  // When it hits zero the run ends immediately — answered steps keep their score,
+  // unanswered steps count as missed (total = interactions.length throughout).
+  export let timeLimitSec = 0;
 
   let step = 0;
   let totalScore = 0;
   let totalMax = 0;
+  let streak = 0;
+  let bestStreak = 0;
+  let finished = false;
+
+  // ── challenge countdown ──
+  let timeLeft = timeLimitSec;
+  let timerId = null;
+  if (timeLimitSec > 0) {
+    timerId = setInterval(() => {
+      timeLeft -= 1;
+      if (timeLeft <= 0) {
+        stopTimer();
+        finished = true;
+        onDone(totalScore, interactions.length, bestStreak);
+      }
+    }, 1000);
+  }
+  function stopTimer() {
+    if (timerId) { clearInterval(timerId); timerId = null; }
+  }
+  onDestroy(stopTimer);
+
+  $: mmss = `${Math.floor(Math.max(0, timeLeft) / 60)}:${String(Math.max(0, timeLeft) % 60).padStart(2, '0')}`;
+  $: timeCritical = timeLimitSec > 0 && timeLeft <= 15;
 
   function shuffle(items = []) {
     const shuffled = [...items];
@@ -42,12 +71,21 @@
   }
 
   function handleInteractionDone(score, max) {
+    if (finished) return; // timer expired while feedback was on screen
     totalScore += score;
     totalMax += max;
+    if (score >= max && max > 0) {
+      streak += 1;
+      if (streak > bestStreak) bestStreak = streak;
+    } else {
+      streak = 0;
+    }
     if (step < interactions.length - 1) {
       step++;
     } else {
-      onDone(totalScore, totalMax);
+      finished = true;
+      stopTimer();
+      onDone(totalScore, timeLimitSec > 0 ? interactions.length : totalMax, bestStreak);
     }
   }
 
@@ -59,16 +97,28 @@
 <div class="workshop">
   <div class="workshop-header">
     <div>
-      <span class="workshop-kicker">Micro drill</span>
+      <span class="workshop-kicker">{timeLimitSec > 0 ? 'Challenge' : 'Micro drill'}</span>
       <span class="workshop-title">Workshop</span>
     </div>
-    <span class="workshop-progress">{step + 1}/{interactions.length}</span>
+    <div class="workshop-chips">
+      {#if streak >= 2}
+        <span class="workshop-streak">🔥 {streak}</span>
+      {/if}
+      {#if timeLimitSec > 0}
+        <span class="workshop-timer" class:critical={timeCritical}>{mmss}</span>
+      {/if}
+      <span class="workshop-progress">{step + 1}/{interactions.length}</span>
+    </div>
   </div>
   <div class="progress-track" aria-hidden="true">
     <span style={`width:${progressPct}%`}></span>
   </div>
 
-  <div class="workshop-body" in:fly={{ x: 40, duration: 220 }} out:fly={{ x: -40, duration: 160 }}>
+  <!-- Keyed by step: Svelte otherwise reuses the same component instance across
+       consecutive same-type interactions, leaving mount-only state (targets,
+       toggles, selections) stale on every step after the first. -->
+  {#key step}
+  <div class="workshop-body" in:fly={{ x: 40, duration: 220 }}>
     {#if current}
       {#if current.type === 'sorting'}
         <SortingDesk boxes={current.boxes} items={current.items} onDone={handleInteractionDone} />
@@ -263,6 +313,7 @@
       {/if}
     {/if}
   </div>
+  {/key}
 </div>
 
 <style>
@@ -287,6 +338,9 @@
     display: block;
     font-size: 18px; font-weight: 850; color: var(--qx-text);
   }
+  .workshop-chips {
+    display: flex; align-items: center; gap: 6px;
+  }
   .workshop-progress {
     font-size: 12px; font-weight: 850; color: var(--qx-text-faint);
     font-variant-numeric: tabular-nums;
@@ -294,6 +348,35 @@
     border-radius: 999px;
     padding: 5px 9px;
     background: var(--qx-surface-2);
+  }
+  .workshop-timer {
+    font-size: 12px; font-weight: 900; color: var(--qx-accent);
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--qx-accent);
+    border-radius: 999px;
+    padding: 5px 9px;
+    background: var(--qx-accent-soft);
+    min-width: 40px;
+    text-align: center;
+  }
+  .workshop-timer.critical {
+    color: var(--qx-danger-text);
+    border-color: var(--qx-danger);
+    background: var(--qx-danger-soft);
+    animation: timerPulse 1s ease-in-out infinite;
+  }
+  @keyframes timerPulse {
+    50% { transform: scale(1.08); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .workshop-timer.critical { animation: none; }
+  }
+  .workshop-streak {
+    font-size: 12px; font-weight: 900; color: var(--qx-green-text);
+    border: 1px solid var(--qx-green);
+    border-radius: 999px;
+    padding: 5px 9px;
+    background: var(--qx-green-soft);
   }
   .progress-track {
     height: 5px;

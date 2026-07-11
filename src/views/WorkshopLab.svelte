@@ -18,6 +18,8 @@
     getMathsTrigonometryWorkshop,
     getPhysicsOpticsWorkshop
   } from '../lib/content/topicExpansionWorkshops.js';
+  import { getChallengeForModule } from '../lib/content/challenges.js';
+  import { progress } from '../lib/stores/progress.js';
 
   export let onNavigate;
 
@@ -25,6 +27,8 @@
   let finished = false;
   let score = 0;
   let total = 0;
+  let bestStreak = 0;
+  let challenge = null; // { interactions, timeLimitSec } — active randomized run
   let activeTrack = 'computer';
   let activeModuleBySubject = {
     mathematics: 'line-core',
@@ -175,34 +179,64 @@
   $: moduleTabs = track.modules || [];
   $: activeModuleId = activeModuleBySubject[activeTrack] || moduleTabs[0]?.id;
   $: activeModule = moduleTabs.find((item) => item.id === activeModuleId) || moduleTabs[0];
-  $: workshopTitle = activeModule?.title || track.title;
-  $: workshopSub = activeModule?.sub || track.sub;
+  $: workshopTitle = challenge ? `${activeModule?.title || track.title} — challenge` : (activeModule?.title || track.title);
+  $: workshopSub = challenge ? 'Randomized targets, one run against the clock. Every attempt is different.' : (activeModule?.sub || track.sub);
   $: activePathId = activeModule?.pathId || track.pathId;
-  $: interactions = activeModule?.getWorkshop ? activeModule.getWorkshop() : [];
+  $: interactions = challenge ? challenge.interactions : (activeModule?.getWorkshop ? activeModule.getWorkshop() : []);
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
+  $: hasChallenge = !!getChallengeForModule(activeModuleId);
 
-  function finishWorkshop(finalScore, finalTotal) {
+  function finishWorkshop(finalScore, finalTotal, finalStreak = 0) {
     score = finalScore;
     total = finalTotal;
+    bestStreak = finalStreak;
     finished = true;
+    if (challenge && activePathId) {
+      progress.recordQuizResult(activePathId, finalScore, finalTotal);
+    }
   }
 
   function replay() {
+    if (challenge) {
+      // A challenge replay is a NEW challenge — fresh random targets every run.
+      challenge = getChallengeForModule(activeModuleId);
+    }
     runId += 1;
     score = 0;
     total = 0;
+    bestStreak = 0;
+    finished = false;
+  }
+
+  function startChallenge() {
+    challenge = getChallengeForModule(activeModuleId);
+    runId += 1;
+    score = 0;
+    total = 0;
+    bestStreak = 0;
+    finished = false;
+  }
+
+  function exitChallenge() {
+    challenge = null;
+    runId += 1;
+    score = 0;
+    total = 0;
+    bestStreak = 0;
     finished = false;
   }
 
   function chooseTrack(id) {
     if (activeTrack === id) return;
     activeTrack = id;
+    challenge = null;
     replay();
   }
 
   function chooseModule(id) {
     if (activeModuleBySubject[activeTrack] === id) return;
     activeModuleBySubject = { ...activeModuleBySubject, [activeTrack]: id };
+    challenge = null;
     replay();
   }
 </script>
@@ -258,17 +292,47 @@
     </div>
   {/if}
 
-  <div class="workshop-card">
+  {#if hasChallenge && !challenge}
+    <div class="challenge-bar">
+      <div>
+        <strong>Ready for pressure?</strong>
+        <small>Randomized targets against the clock — different every run.</small>
+      </div>
+      <button on:click={startChallenge}>⚡ Challenge</button>
+    </div>
+  {/if}
+
+  {#if challenge && !finished}
+    <button class="challenge-exit" on:click={exitChallenge}>← Back to practice</button>
+  {/if}
+
+  <div class="workshop-card" class:challenge-active={!!challenge}>
     {#if finished}
       <div class="done-state">
         <div class="score-ring">{scorePct}%</div>
         <h2>{score}/{total} locked in</h2>
-        <p>{scorePct >= 80 ? 'Strong grasp. This is the confidence zone: the idea is usable, not just familiar.' : 'Replay once and aim for a cleaner run. Short repetition is where the pattern starts to feel automatic.'}</p>
-        <button class="primary-btn" on:click={replay}>Replay drill</button>
+        {#if challenge}
+          {#if bestStreak >= 2}
+            <div class="streak-badge">🔥 Best streak: {bestStreak} in a row</div>
+          {/if}
+          <p>{scorePct >= 80 ? 'Under time pressure, with targets you had never seen. That is real mastery.' : scorePct >= 50 ? 'Solid under pressure. Another run means brand-new targets — no memorising your way through this one.' : 'The clock is brutal at first. Every rerun is freshly randomized, so each attempt genuinely trains the skill.'}</p>
+          <div class="done-actions">
+            <button class="primary-btn" on:click={replay}>⚡ New challenge</button>
+            <button class="ghost-btn" on:click={exitChallenge}>Back to practice</button>
+          </div>
+        {:else}
+          <p>{scorePct >= 80 ? 'Strong grasp. This is the confidence zone: the idea is usable, not just familiar.' : 'Replay once and aim for a cleaner run. Short repetition is where the pattern starts to feel automatic.'}</p>
+          <div class="done-actions">
+            <button class="primary-btn" on:click={replay}>Replay drill</button>
+            {#if hasChallenge}
+              <button class="ghost-btn" on:click={startChallenge}>⚡ Try the challenge</button>
+            {/if}
+          </div>
+        {/if}
       </div>
     {:else}
       {#key runId}
-        <Workshop interactions={interactions} onDone={finishWorkshop} />
+        <Workshop interactions={interactions} timeLimitSec={challenge?.timeLimitSec || 0} onDone={finishWorkshop} />
       {/key}
     {/if}
   </div>
@@ -535,6 +599,92 @@
   .done-state p {
     max-width: 32ch;
     margin: 0;
+  }
+
+  .challenge-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1.5px solid var(--qx-accent);
+    background: var(--qx-accent-soft);
+    border-radius: 8px;
+    padding: 11px 13px;
+    margin: 0 0 10px;
+  }
+
+  .challenge-bar strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 850;
+    color: var(--qx-accent-text);
+  }
+
+  .challenge-bar small {
+    display: block;
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: var(--qx-text-dim);
+    margin-top: 2px;
+  }
+
+  .challenge-bar button {
+    border: none;
+    border-radius: 999px;
+    background: var(--qx-accent);
+    color: #fff;
+    font-family: var(--qx-font);
+    font-size: 13px;
+    font-weight: 850;
+    cursor: pointer;
+    min-height: 36px;
+    padding: 0 16px;
+    flex-shrink: 0;
+  }
+
+  .challenge-exit {
+    border: none;
+    background: none;
+    color: var(--qx-text-dim);
+    font-family: var(--qx-font);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    padding: 2px 0 8px;
+  }
+
+  .workshop-card.challenge-active {
+    border-color: var(--qx-accent);
+  }
+
+  .streak-badge {
+    font-size: 13px;
+    font-weight: 850;
+    color: var(--qx-green-text);
+    background: var(--qx-green-soft);
+    border: 1px solid var(--qx-green);
+    border-radius: 999px;
+    padding: 6px 14px;
+  }
+
+  .done-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .ghost-btn {
+    border: 1.5px solid var(--qx-border-2);
+    border-radius: 999px;
+    background: var(--qx-surface);
+    color: var(--qx-text-dim);
+    font-family: var(--qx-font);
+    font-size: 13px;
+    font-weight: 850;
+    cursor: pointer;
+    min-height: 38px;
+    padding: 0 15px;
   }
 
   @media (max-width: 380px) {
