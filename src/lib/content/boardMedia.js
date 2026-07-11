@@ -31,8 +31,12 @@ export const BOARD_MEDIA = {
   1062: { 0: { type: 'three', spec: { kind: 'ionic-transfer', from: 'Na', to: 'Cl', product: 'Na+ + Cl-', title: 'electron transfer' } } },
   1063: { 1: { type: 'three', spec: { kind: 'covalent-share', atom: 'O', pairs: 2, title: 'shared electron pairs' } } },
   1064: { 1: { type: 'three', spec: { kind: 'metallic-sea', title: 'mobile electrons in metal' } } },
+  1066: { 2: { type: 'three', spec: { kind: 'mole-scale', title: 'one mole is a counting unit' } } },
+  1067: { 1: { type: 'three', spec: { kind: 'mass-moles', title: 'grams translate into moles', equation: 'n = m / M' } } },
+  1068: { 1: { type: 'three', spec: { kind: 'isotope-average', title: 'weighted isotope average', result: 'Cl average = 35.5' } } },
 
   1070: { 0: { type: 'three', spec: { kind: 'lattice', a: 'Na', b: 'Cl', size: 3 } } },
+  1071: { 1: { type: 'three', spec: { kind: 'covalent-network', title: 'same carbon, different structure' } } },
   // 1072 "Molecular shapes: VSEPR" — the showcase: a rotatable tetrahedron.
   1072: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'CH₄', shape: 'tetrahedral', center: 'C', ligand: 'H', count: 4 } } },
   // 1075 "What is a molecule?" — the most familiar molecule.
@@ -41,6 +45,7 @@ export const BOARD_MEDIA = {
   1075: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'H₂O', shape: 'bent', center: 'O', ligand: 'H', count: 2 } } },
   // 1076 "Bond angles and the shape of a molecule" — the pyramidal case.
   1076: { 0: { type: 'three', spec: { kind: 'molecule', formula: 'NH₃', shape: 'pyramidal', center: 'N', ligand: 'H', count: 3 } } },
+  1077: { 2: { type: 'three', spec: { kind: 'dna-helix', title: 'two strands twist together' } } },
 
   // ── The Atom · pixel-art floor animations ──
   1094: {
@@ -67,6 +72,12 @@ export const BOARD_MEDIA = {
   1117: { 4: { type: 'three', spec: { kind: 'covalent-share', atom: 'O', pairs: 2, title: 'shared electrons glue atoms' } } },
   1119: { 3: { type: 'three', spec: { kind: 'metallic-sea', title: 'ions plus roaming electrons' } } },
   1120: { 3: { type: 'three', spec: { kind: 'metallic-sea', title: 'electron flow is current' } } },
+  1121: { 4: { type: 'three', spec: { kind: 'mole-scale', title: 'a mole is a huge count' } } },
+  1122: { 2: { type: 'three', spec: { kind: 'mole-scale', title: 'tiny atoms become visible amounts' } } },
+  1123: { 4: { type: 'three', spec: { kind: 'mass-moles', title: 'count atoms by weighing' } } },
+  1127: { 3: { type: 'three', spec: { kind: 'isotope-average', title: 'not one atom, an average', result: 'table mass = average' } } },
+  1128: { 3: { type: 'three', spec: { kind: 'isotope-average', title: '75 percent light, 25 percent heavy', result: '35.5 from the mix' } } },
+  1129: { 4: { type: 'three', spec: { kind: 'mass-moles', title: 'the scale becomes a counter' } } },
 
   // Same smoke-signal relay GIF reused on every floor of the first two BBs
   // (founder decision). ?v= is the file's md5 prefix — bump it whenever the

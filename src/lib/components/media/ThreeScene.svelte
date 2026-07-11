@@ -34,6 +34,11 @@
     : spec?.kind === 'metallic-sea' ? (spec.label || 'electron sea')
     : spec?.kind === 'polarity' ? (spec.label || 'shape decides polarity')
     : spec?.kind === 'hydrogen-bonds' ? (spec.label || 'hydrogen bonds')
+    : spec?.kind === 'mole-scale' ? (spec.label || 'the mole scales atoms up')
+    : spec?.kind === 'mass-moles' ? (spec.label || 'mass to moles')
+    : spec?.kind === 'isotope-average' ? (spec.label || 'weighted average mass')
+    : spec?.kind === 'covalent-network' ? (spec.label || 'structure decides properties')
+    : spec?.kind === 'dna-helix' ? (spec.label || 'DNA double helix')
     : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors')
     : spec?.kind === 'unit-circle' ? (spec.label || 'cos theta, sin theta')
     : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary') : '';
@@ -586,6 +591,242 @@
     return 3.0;
   }
 
+  function buildMoleScale(THREE, group) {
+    const tinyMat = new THREE.MeshStandardMaterial({ color: 0x8ee6c7, roughness: 0.35, emissive: 0x1d6b59, emissiveIntensity: 0.25 });
+    const visibleMat = new THREE.MeshStandardMaterial({ color: 0xee9362, roughness: 0.45, emissive: 0x8a3f1f, emissiveIntensity: 0.18 });
+    const atomGroup = new THREE.Group();
+    group.add(atomGroup);
+    const dotGeo = new THREE.SphereGeometry(0.055, 12, 8);
+    for (let i = 0; i < 120; i++) {
+      const dot = new THREE.Mesh(dotGeo, tinyMat);
+      const a = i * 2.399;
+      const r = 0.18 * Math.sqrt(i);
+      dot.position.set(Math.cos(a) * r, Math.sin(a) * r * 0.62 + 0.18, Math.sin(a * 1.7) * 0.35);
+      atomGroup.add(dot);
+    }
+
+    const spoon = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.25, 0.9, 0.16, 48),
+      new THREE.MeshStandardMaterial({ color: 0x353644, roughness: 0.62, metalness: 0.18 })
+    );
+    spoon.scale.set(1.45, 0.32, 1);
+    spoon.rotation.x = Math.PI / 2;
+    spoon.position.set(0, -0.88, -0.1);
+    group.add(spoon);
+
+    for (let i = 0; i < 8; i++) {
+      const bead = new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), visibleMat);
+      bead.position.set((i % 4 - 1.5) * 0.28, -0.72 + Math.floor(i / 4) * 0.22, 0.1);
+      group.add(bead);
+    }
+
+    const title = makeLabel(THREE, spec.title || '6.022 x 10^23 tiny units', {
+      width: 760,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 38,
+      scale: [2.05, 0.38, 1]
+    });
+    title.position.set(0, -1.72, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      atomGroup.rotation.y = t * 0.00055;
+      atomGroup.rotation.x = Math.sin(t * 0.0006) * 0.14;
+    };
+    return 2.7;
+  }
+
+  function buildMassMoles(THREE, group) {
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x22232e, roughness: 0.72, metalness: 0.08 });
+    const accentMat = new THREE.MeshStandardMaterial({ color: 0xee9362, roughness: 0.42, emissive: 0x8a3f1f, emissiveIntensity: 0.16 });
+    const panMat = new THREE.MeshStandardMaterial({ color: 0x6f76a8, roughness: 0.46, metalness: 0.28 });
+
+    const stand = new THREE.Mesh(new THREE.BoxGeometry(3.7, 0.1, 0.6), baseMat);
+    stand.position.set(0, -0.72, 0);
+    group.add(stand);
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.5, 16), baseMat);
+    post.position.set(0, 0.05, 0);
+    group.add(post);
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.06, 0.08), accentMat);
+    beam.position.set(0, 0.7, 0);
+    group.add(beam);
+
+    [-1.2, 1.2].forEach((x) => {
+      const string = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x, 0.68, 0), new THREE.Vector3(x, 0.1, 0)]),
+        new THREE.LineBasicMaterial({ color: 0xf6efe4, transparent: true, opacity: 0.42 })
+      );
+      group.add(string);
+      const pan = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.42, 0.08, 36), panMat);
+      pan.position.set(x, 0.05, 0);
+      group.add(pan);
+    });
+
+    for (let i = 0; i < 10; i++) {
+      const atom = sphere(THREE, 0.09, 0x8ee6c7);
+      atom.position.set(-1.2 + (i % 5 - 2) * 0.12, 0.18 + Math.floor(i / 5) * 0.12, 0.05);
+      group.add(atom);
+    }
+
+    const eq = makeLabel(THREE, spec.equation || 'n = m / M', {
+      width: 440,
+      height: 140,
+      border: 'rgba(142, 230, 199, 0.7)',
+      fg: '#e8fff8',
+      size: 50,
+      scale: [1.15, 0.34, 1]
+    });
+    eq.position.set(1.2, 0.25, 0.18);
+    group.add(eq);
+
+    const title = makeLabel(THREE, spec.title || 'weigh it, then count it', {
+      width: 690,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 40,
+      scale: [1.85, 0.38, 1]
+    });
+    title.position.set(0, -1.52, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      beam.rotation.z = Math.sin(t * 0.0013) * 0.04;
+    };
+    return 2.55;
+  }
+
+  function buildIsotopeAverage(THREE, group) {
+    const lightMat = new THREE.MeshStandardMaterial({ color: 0x8ee6c7, roughness: 0.35, emissive: 0x1d6b59, emissiveIntensity: 0.22 });
+    const heavyMat = new THREE.MeshStandardMaterial({ color: 0x9aa0ff, roughness: 0.45, emissive: 0x34375f, emissiveIntensity: 0.28 });
+    const bars = [
+      { label: spec.lightLabel || 'Cl-35', x: -0.72, height: 1.45, mat: lightMat, pct: '75%' },
+      { label: spec.heavyLabel || 'Cl-37', x: 0.82, height: 0.55, mat: heavyMat, pct: '25%' }
+    ];
+    bars.forEach((bar) => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.56, bar.height, 0.42), bar.mat);
+      mesh.position.set(bar.x, -0.3 + bar.height / 2, 0);
+      group.add(mesh);
+      const pct = makeLabel(THREE, bar.pct, { width: 220, height: 110, border: 'rgba(246, 239, 228, 0.28)', size: 42, scale: [0.55, 0.24, 1] });
+      pct.position.set(bar.x, bar.height + 0.48, 0);
+      group.add(pct);
+      const tag = makeLabel(THREE, bar.label, { width: 260, height: 110, border: 'rgba(246, 239, 228, 0.28)', size: 36, scale: [0.65, 0.24, 1] });
+      tag.position.set(bar.x, -1.22, 0);
+      group.add(tag);
+    });
+
+    const avg = makeLabel(THREE, spec.result || 'average = 35.5', {
+      width: 670,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 42,
+      scale: [1.75, 0.38, 1]
+    });
+    avg.position.set(0, -1.82, 0);
+    group.add(avg);
+
+    group.userData.animate = (t) => {
+      group.rotation.y = Math.sin(t * 0.0005) * 0.18;
+    };
+    return 2.55;
+  }
+
+  function buildCovalentNetwork(THREE, group) {
+    const diamond = new THREE.Group();
+    diamond.position.set(-1.35, 0.15, 0);
+    group.add(diamond);
+    const dPts = [
+      [0, 0, 0], [0.65, 0.65, 0.65], [0.65, -0.65, -0.65], [-0.65, 0.65, -0.65], [-0.65, -0.65, 0.65]
+    ].map(p => new THREE.Vector3(p[0], p[1], p[2]));
+    dPts.forEach((p, i) => {
+      const atom = sphere(THREE, i === 0 ? 0.16 : 0.13, el('C').color);
+      atom.position.copy(p);
+      diamond.add(atom);
+      if (i > 0) diamond.add(bond(THREE, dPts[0], p));
+    });
+
+    const graphite = new THREE.Group();
+    graphite.position.set(1.45, 0.05, 0);
+    group.add(graphite);
+    const hexPts = [];
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      hexPts.push(new THREE.Vector3(Math.cos(a) * 0.62, Math.sin(a) * 0.62, 0));
+    }
+    [0, 0.34].forEach((z, layer) => {
+      hexPts.forEach((p, i) => {
+        const atom = sphere(THREE, 0.12, el('C').color);
+        atom.position.set(p.x, p.y - layer * 0.18, z);
+        graphite.add(atom);
+        const next = hexPts[(i + 1) % hexPts.length];
+        graphite.add(bond(THREE, new THREE.Vector3(p.x, p.y - layer * 0.18, z), new THREE.Vector3(next.x, next.y - layer * 0.18, z)));
+      });
+    });
+    const slideArrow = arrow(THREE, new THREE.Vector3(0.05, -0.95, 0.5), new THREE.Vector3(0.7, -0.95, 0.5), 0x8ee6c7);
+    graphite.add(slideArrow);
+
+    [
+      ['diamond', -1.35, -1.35],
+      ['graphite', 1.45, -1.35]
+    ].forEach(([text, x, y]) => {
+      const tag = makeLabel(THREE, text, { width: 300, height: 120, border: 'rgba(246, 239, 228, 0.32)', size: 38, scale: [0.78, 0.28, 1] });
+      tag.position.set(x, y, 0);
+      group.add(tag);
+    });
+
+    group.userData.animate = (t) => {
+      diamond.rotation.y = t * 0.00055;
+      graphite.rotation.y = -t * 0.00035;
+    };
+    return 2.9;
+  }
+
+  function buildDnaHelix(THREE, group) {
+    const strandMatA = new THREE.LineBasicMaterial({ color: 0xee9362, transparent: true, opacity: 0.88 });
+    const strandMatB = new THREE.LineBasicMaterial({ color: 0x9aa0ff, transparent: true, opacity: 0.88 });
+    const rungMat = new THREE.LineBasicMaterial({ color: 0x8ee6c7, transparent: true, opacity: 0.5 });
+    const aPts = [];
+    const bPts = [];
+    const rungs = [];
+    const turns = spec.turns || 1.7;
+    const steps = 34;
+    for (let i = 0; i <= steps; i++) {
+      const p = i / steps;
+      const theta = p * Math.PI * 2 * turns;
+      const y = (p - 0.5) * 2.9;
+      const a = new THREE.Vector3(Math.cos(theta) * 0.72, y, Math.sin(theta) * 0.72);
+      const b = new THREE.Vector3(Math.cos(theta + Math.PI) * 0.72, y, Math.sin(theta + Math.PI) * 0.72);
+      aPts.push(a);
+      bPts.push(b);
+      if (i % 3 === 0) rungs.push([a, b, i]);
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(aPts), strandMatA));
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(bPts), strandMatB));
+    rungs.forEach(([a, b, i]) => {
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), rungMat));
+      const mid = a.clone().add(b).multiplyScalar(0.5);
+      const bead = sphere(THREE, 0.07, i % 2 === 0 ? 0x8ee6c7 : 0xf6efe4);
+      bead.position.copy(mid);
+      group.add(bead);
+    });
+
+    const title = makeLabel(THREE, spec.title || 'two strands, paired bases', {
+      width: 700,
+      height: 140,
+      border: 'rgba(142, 230, 199, 0.7)',
+      fg: '#e8fff8',
+      size: 40,
+      scale: [1.85, 0.38, 1]
+    });
+    title.position.set(0, -2.05, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      group.rotation.y = t * 0.00055;
+    };
+    return 2.9;
+  }
+
   function buildAiPipeline(THREE, group) {
     const accentMat = new THREE.MeshStandardMaterial({
       color: 0xee9362,
@@ -843,6 +1084,11 @@
           : spec.kind === 'metallic-sea' ? buildMetallicSea(THREE, group)
           : spec.kind === 'polarity' ? buildPolarity(THREE, group)
           : spec.kind === 'hydrogen-bonds' ? buildHydrogenBonds(THREE, group)
+          : spec.kind === 'mole-scale' ? buildMoleScale(THREE, group)
+          : spec.kind === 'mass-moles' ? buildMassMoles(THREE, group)
+          : spec.kind === 'isotope-average' ? buildIsotopeAverage(THREE, group)
+          : spec.kind === 'covalent-network' ? buildCovalentNetwork(THREE, group)
+          : spec.kind === 'dna-helix' ? buildDnaHelix(THREE, group)
           : spec.kind === 'ai-pipeline' ? buildAiPipeline(THREE, group)
           : spec.kind === 'unit-circle' ? buildUnitCircle(THREE, group)
           : spec.kind === 'ray-optics' ? buildRayOptics(THREE, group)
