@@ -35,6 +35,14 @@
 
   const COMPUTER_MODULES = getComputerWorkshopModules();
   const PHYSICS_MODULES = getPhysicsWorkshopModules();
+  const COMPUTER_MODULE_PATHS = {
+    'binary-data': 'BIT_001',
+    'logic-gates': 'BIT_001',
+    'code-algorithms': 'COMP_CODE_COMMAND',
+    'hardware-memory': 'COMP_HARDWARE',
+    'networks-cloud': 'COMP_NETWORKS_SECURITY',
+    'security-architecture': 'COMP_SYSTEM_DESIGN'
+  };
 
   const TRACKS = {
     mathematics: {
@@ -89,12 +97,12 @@
     computer: {
       label: 'Computer Science',
       title: 'Computer workshops',
-      sub: 'Binary, logic, code, hardware, networks, security, and architecture.',
+      sub: 'Practice the foundations first, then code, hardware, networks, systems, and AI.',
       icon: '/icons/gateways/bit.png',
       pathId: 'BIT_001',
       modules: COMPUTER_MODULES.map((module) => ({
         ...module,
-        pathId: 'BIT_001',
+        pathId: COMPUTER_MODULE_PATHS[module.id] || 'BIT_001',
         getWorkshop: () => getComputerWorkshopModule(module.id).interactions
       }))
     },
