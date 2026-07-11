@@ -15,6 +15,9 @@
  *   { type:'three', spec:{ kind:'atom',     symbol, shells:[2,8,1] } }
  *   { type:'three', spec:{ kind:'molecule', formula, shape, center, ligand, count } }
  *   { type:'three', spec:{ kind:'lattice',  a, b, size } }
+ *   { type:'three', spec:{ kind:'nucleus',  protons, neutrons, title } }
+ *   { type:'three', spec:{ kind:'electric-attraction', title } }
+ *   { type:'three', spec:{ kind:'isotopes', isotopes:[{label,protons,neutrons}] } }
  *   shape ∈ linear | bent | trigonal | pyramidal | tetrahedral
  */
 
@@ -42,6 +45,20 @@ export const BOARD_MEDIA = {
   },
 
   // ── The Bit · pixel-art floor animations ──
+  // Atom 2.x: nucleus, charge, neutrons, and isotopes.
+  1109: { 2: { type: 'three', spec: { kind: 'nucleus', protons: 6, neutrons: 6, title: 'inside the nucleus' } } },
+  1110: { 3: { type: 'three', spec: { kind: 'electric-attraction', title: '+ nucleus attracts - electrons' } } },
+  1113: { 4: { type: 'three', spec: { kind: 'nucleus', protons: 6, neutrons: 8, title: 'protons + neutrons' } } },
+  1115: { 2: { type: 'three', spec: {
+    kind: 'isotopes',
+    title: 'same protons, different neutrons',
+    isotopes: [
+      { label: 'C-12', protons: 6, neutrons: 6 },
+      { label: 'C-13', protons: 6, neutrons: 7 },
+      { label: 'C-14', protons: 6, neutrons: 8 }
+    ]
+  } } },
+
   // Same smoke-signal relay GIF reused on every floor of the first two BBs
   // (founder decision). ?v= is the file's md5 prefix — bump it whenever the
   // GIF is rebuilt, or the cache-first SW keeps serving the old frames.

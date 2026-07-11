@@ -26,6 +26,9 @@
   $: label = spec?.kind === 'molecule' ? spec.formula
     : spec?.kind === 'atom' ? spec.symbol
     : spec?.kind === 'lattice' ? `${spec.a}${spec.b}`
+    : spec?.kind === 'nucleus' ? (spec.label || 'nucleus')
+    : spec?.kind === 'electric-attraction' ? (spec.label || 'electrical attraction')
+    : spec?.kind === 'isotopes' ? (spec.label || 'same protons, different neutrons')
     : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors')
     : spec?.kind === 'unit-circle' ? (spec.label || 'cos theta, sin theta')
     : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary') : '';
@@ -161,6 +164,180 @@
           group.add(m);
         }
     return off * sp * 1.8 + 1;
+  }
+
+  function makeParticle(THREE, type = 'proton', radius = 0.28) {
+    const isProton = type === 'proton';
+    const p = sphere(THREE, radius, isProton ? 0xee9362 : 0x9aa0ff);
+    p.add(makeLabel(THREE, isProton ? '+' : 'n', {
+      width: 128,
+      height: 128,
+      bg: 'rgba(0,0,0,0)',
+      border: 'rgba(0,0,0,0)',
+      fg: '#fff8ef',
+      size: 70,
+      scale: [0.2, 0.2, 1]
+    }));
+    return p;
+  }
+
+  function clusterPositions(THREE, count, radius = 0.58) {
+    const pts = [];
+    if (count <= 1) return [new THREE.Vector3(0, 0, 0)];
+    for (let i = 0; i < count; i++) {
+      const y = 1 - ((i + 0.5) / count) * 2;
+      const rad = Math.sqrt(Math.max(0, 1 - y * y));
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      pts.push(new THREE.Vector3(
+        Math.cos(theta) * rad * radius,
+        y * radius,
+        Math.sin(theta) * rad * radius
+      ));
+    }
+    return pts;
+  }
+
+  function buildNucleus(THREE, group) {
+    const nucleus = new THREE.Group();
+    group.add(nucleus);
+    const protons = spec.protons || 6;
+    const neutrons = spec.neutrons ?? protons;
+    const total = protons + neutrons;
+    clusterPositions(THREE, total, Math.min(0.95, 0.38 + total * 0.035)).forEach((pos, i) => {
+      const particle = makeParticle(THREE, i < protons ? 'proton' : 'neutron', 0.27);
+      particle.position.copy(pos);
+      nucleus.add(particle);
+    });
+
+    const shell = new THREE.Mesh(
+      new THREE.SphereGeometry(1.22, 36, 24),
+      new THREE.MeshBasicMaterial({ color: 0xee9362, transparent: true, opacity: 0.06, wireframe: true })
+    );
+    group.add(shell);
+
+    const title = makeLabel(THREE, spec.title || `${protons} protons + ${neutrons} neutrons`, {
+      width: 720,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 38,
+      scale: [2.0, 0.4, 1]
+    });
+    title.position.set(0, -1.8, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      nucleus.rotation.y = t * 0.0008;
+      nucleus.rotation.x = Math.sin(t * 0.0007) * 0.18;
+      shell.rotation.y = -t * 0.0004;
+    };
+    return 2.4;
+  }
+
+  function buildElectricAttraction(THREE, group) {
+    const nucleus = sphere(THREE, 0.52, 0xee9362);
+    group.add(nucleus);
+    nucleus.add(makeLabel(THREE, '+ nucleus', {
+      width: 360,
+      height: 130,
+      bg: 'rgba(0,0,0,0)',
+      border: 'rgba(0,0,0,0)',
+      fg: '#fff8ef',
+      size: 44,
+      scale: [0.9, 0.32, 1]
+    }));
+
+    const cloud = new THREE.Group();
+    group.add(cloud);
+    const electronMat = new THREE.MeshStandardMaterial({
+      color: 0x8ee6c7,
+      roughness: 0.35,
+      emissive: 0x1d6b59,
+      emissiveIntensity: 0.42
+    });
+    const electronGeo = new THREE.SphereGeometry(0.12, 24, 16);
+    const electrons = [];
+    [0, 1, 2, 3, 4, 5].forEach((i) => {
+      const e = new THREE.Mesh(electronGeo, electronMat);
+      const a = (i / 6) * Math.PI * 2;
+      e.position.set(Math.cos(a) * 1.75, Math.sin(a * 1.7) * 0.72, Math.sin(a) * 1.75);
+      cloud.add(e);
+      electrons.push({ mesh: e, phase: a });
+    });
+
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x8ee6c7, transparent: true, opacity: 0.42 });
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      const p = new THREE.Vector3(Math.cos(a) * 1.55, Math.sin(a * 2) * 0.5, Math.sin(a) * 1.55);
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p, new THREE.Vector3(0, 0, 0)]), lineMat));
+    }
+
+    const title = makeLabel(THREE, spec.title || '+ attracts -', {
+      width: 520,
+      height: 140,
+      border: 'rgba(142, 230, 199, 0.7)',
+      fg: '#e8fff8',
+      size: 46,
+      scale: [1.45, 0.38, 1]
+    });
+    title.position.set(0, -2.05, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      cloud.rotation.y = t * 0.001;
+      cloud.rotation.z = Math.sin(t * 0.0006) * 0.14;
+      electrons.forEach(({ mesh, phase }) => {
+        mesh.scale.setScalar(1 + Math.sin(t * 0.004 + phase) * 0.12);
+      });
+    };
+    return 2.6;
+  }
+
+  function buildIsotopes(THREE, group) {
+    const isotopes = spec.isotopes || [
+      { label: 'C-12', protons: 6, neutrons: 6 },
+      { label: 'C-13', protons: 6, neutrons: 7 },
+      { label: 'C-14', protons: 6, neutrons: 8 }
+    ];
+    const row = new THREE.Group();
+    group.add(row);
+    isotopes.forEach((iso, idx) => {
+      const mini = new THREE.Group();
+      mini.position.set((idx - 1) * 1.7, 0.18, 0);
+      row.add(mini);
+      const total = iso.protons + iso.neutrons;
+      clusterPositions(THREE, total, 0.52).forEach((pos, i) => {
+        const particle = makeParticle(THREE, i < iso.protons ? 'proton' : 'neutron', 0.18);
+        particle.position.copy(pos);
+        mini.add(particle);
+      });
+      const tag = makeLabel(THREE, iso.label, {
+        width: 260,
+        height: 120,
+        border: 'rgba(246, 239, 228, 0.32)',
+        size: 42,
+        scale: [0.72, 0.3, 1]
+      });
+      tag.position.set(mini.position.x, -1.12, 0);
+      group.add(tag);
+    });
+
+    const title = makeLabel(THREE, spec.title || 'same element, different mass', {
+      width: 760,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 38,
+      scale: [2.2, 0.38, 1]
+    });
+    title.position.set(0, 1.45, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      row.rotation.y = Math.sin(t * 0.0007) * 0.32;
+      row.children.forEach((child, i) => {
+        child.rotation.y = t * (0.00045 + i * 0.00008);
+      });
+    };
+    return 3.0;
   }
 
   function buildAiPipeline(THREE, group) {
@@ -412,6 +589,9 @@
         scene.add(group);
         const fit = spec.kind === 'atom' ? buildAtom(THREE, group)
           : spec.kind === 'lattice' ? buildLattice(THREE, group)
+          : spec.kind === 'nucleus' ? buildNucleus(THREE, group)
+          : spec.kind === 'electric-attraction' ? buildElectricAttraction(THREE, group)
+          : spec.kind === 'isotopes' ? buildIsotopes(THREE, group)
           : spec.kind === 'ai-pipeline' ? buildAiPipeline(THREE, group)
           : spec.kind === 'unit-circle' ? buildUnitCircle(THREE, group)
           : spec.kind === 'ray-optics' ? buildRayOptics(THREE, group)
@@ -428,7 +608,12 @@
         controls.autoRotateSpeed = 1.3;
 
         let raf;
-        const tick = () => { controls.update(); renderer.render(scene, camera); raf = requestAnimationFrame(tick); };
+        const tick = (time = 0) => {
+          if (!reduceMotion && group.userData.animate) group.userData.animate(time);
+          controls.update();
+          renderer.render(scene, camera);
+          raf = requestAnimationFrame(tick);
+        };
         tick();
 
         const ro = new ResizeObserver(() => {
