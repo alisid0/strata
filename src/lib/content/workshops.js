@@ -1467,20 +1467,31 @@ export const COMPUTER_WORKSHOP_MODULES = [
   }
 ];
 
+function cloneOption(option) {
+  if (Array.isArray(option)) return [...option];
+  if (option && typeof option === 'object') return { ...option };
+  return option;
+}
+
+function cloneMatrixChoice(choice) {
+  if (Array.isArray(choice)) return [...choice];
+  if (choice && typeof choice === 'object') {
+    return {
+      ...choice,
+      matrix: choice.matrix?.map((row) => [...row])
+    };
+  }
+  return choice;
+}
+
 function cloneInteractions(interactions) {
   return interactions.map((interaction) => ({
     ...interaction,
     boxes: interaction.boxes?.map((box) => ({ ...box })),
     items: interaction.items?.map((item) => ({ ...item })),
-    options: interaction.options?.map((option) => ({ ...option })),
-    choices: interaction.choices?.map((choice) => ({
-      ...choice,
-      matrix: choice.matrix?.map((row) => [...row])
-    })),
-    matrices: interaction.matrices?.map((matrix) => ({
-      ...matrix,
-      matrix: matrix.matrix?.map((row) => [...row])
-    })),
+    options: interaction.options?.map(cloneOption),
+    choices: interaction.choices?.map(cloneMatrixChoice),
+    matrices: interaction.matrices?.map(cloneMatrixChoice),
     target: Array.isArray(interaction.target) ? [...interaction.target] : interaction.target,
     labels: interaction.labels ? [...interaction.labels] : interaction.labels,
     matrix: interaction.matrix?.map((row) => [...row]),

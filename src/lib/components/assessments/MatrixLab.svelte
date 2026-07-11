@@ -38,7 +38,15 @@
   }
 
   function choiceLabel(choice) {
-    return choice?.label || choice;
+    if (choice?.label) return choice.label;
+    if (Array.isArray(choice)) return `(${choice.join(', ')})`;
+    return String(choice ?? '');
+  }
+
+  function displayValue(value) {
+    if (Array.isArray(value)) return `(${value.join(', ')})`;
+    if (value && typeof value === 'object') return value.label || '';
+    return value ?? '';
   }
 
   function isSelected(value) {
@@ -77,7 +85,11 @@
       correct = false;
       shuffledOptions = shuffle(safeOptions);
       shuffledMatrices = shuffle(safeMatrices.map((item, index) => ({ ...item, index })));
-      shuffledChoices = shuffle(safeChoices.map((item, index) => ({ ...item, index })));
+      shuffledChoices = shuffle(safeChoices.map((item, index) => (
+        item && typeof item === 'object' && !Array.isArray(item)
+          ? { ...item, index }
+          : { value: item, index }
+      )));
     }
   }
 </script>
@@ -91,7 +103,7 @@
         {#each safeMatrix as row, r}
           {#each row as value, c}
             <span class:blank={`${r}-${c}` === blankKey}>
-              {`${r}-${c}` === blankKey ? (selected ?? '?') : value}
+              {`${r}-${c}` === blankKey ? (selected === null ? '?' : displayValue(selected)) : value}
             </span>
           {/each}
         {/each}
@@ -106,7 +118,7 @@
           class:wrong={submitted && isSelected(opt) && String(opt) !== String(correctValue)}
           on:click={() => { if (!submitted) selected = opt; }}
         >
-          {opt}
+          {displayValue(opt)}
         </button>
       {/each}
     </div>
@@ -167,7 +179,7 @@
               {/each}
             </div>
           {:else}
-            {choiceLabel(choice)}
+            {choiceLabel(choice.value ?? choice)}
           {/if}
         </button>
       {/each}
