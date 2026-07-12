@@ -13,6 +13,8 @@ export const PATHS = {
   // ── Physics (starting point) ──
   PHYS_001: { subject: 'physics', name: 'Physics', icon: 'physics',
     cards: [1139,1140,1141,1142,1143,1144,1145,1146,1147,1148], quizUrls: [] },
+  PHY_ENERGY_MOMENTUM: { subject: 'physics', name: 'Energy and momentum', icon: 'physics',
+    cards: [1407,1408,1409,1410,1421], quizUrls: [] },
   PHY_SI_SCALE: { subject: 'physics', name: 'SI units & scale', icon: 'physics',
     cards: [1149,1150,1151,1152,1153,1154,1155,1156,1157,1158], quizUrls: [] },
   PHY_MOTION_FOUNDATIONS: { subject: 'physics', name: 'Motion foundations', icon: 'physics',
@@ -37,7 +39,7 @@ export const PATHS = {
 
   // ── The Line (starting point) ──
   LINE_001: { subject: 'maths', name: 'The Line', icon: 'maths',
-    cards: [1078,1079,1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,1093], quizUrls: [] },
+    cards: [1078,1079,1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,1093,1403,1404,1405,1406,1420], quizUrls: [] },
   MATH_COORD_MAPS: { subject: 'maths', name: 'Coordinate maps', icon: 'maths',
     cards: [1161,1162,1163,1164,1165,1166,1167,1168,1169,1170,1171,1172,1173], quizUrls: [] },
   MATH_COORD: { subject: 'maths', name: 'Coordinate geometry', icon: 'maths',
@@ -62,7 +64,7 @@ export const PATHS = {
   // Phase 4: The mole (1121-1124)
   // Phase 5: Molecular architecture (existing 1068-1077, curated)
   ATOM_001: { subject: 'chemistry', name: 'The Atom', icon: 'chemistry',
-    cards: [1094,1095,1096,1097,1098,1099,1100,1101,1102,1103,1104], quizUrls: ['tier0'] },
+    cards: [1094,1095,1096,1097,1098,1099,1100,1101,1102,1103,1104,1411,1412,1413,1414,1419,1422], quizUrls: ['tier0'] },
   CHEM_NUCLEUS_ISOTOPES: { subject: 'chemistry', name: 'Nucleus & isotopes', icon: 'chemistry',
     cards: [1109,1110,1111,1112,1113,1114,1115,1116], quizUrls: [] },
   CHEM_BONDING_TYPES: { subject: 'chemistry', name: 'Bonding types', icon: 'chemistry',
@@ -74,13 +76,13 @@ export const PATHS = {
 
   // ── The Bit (starting point) ──
   BIT_001: { subject: 'computing', name: 'The Bit', icon: 'computing',
-    cards: [1130,1131,1132,1133,1134,1135,1136,1137,1138,1229,1230,1231,1232,1233], quizUrls: [] },
+    cards: [1130,1131,1132,1133,1134,1135,1136,1137,1138,1229,1230,1231,1232,1233,1415,1416], quizUrls: [] },
   COMP_CODE_COMMAND: { subject: 'computing', name: 'Code & command line', icon: 'computing',
     cards: [1234,1235,1236,1237,1238,1289,1290,1291,1292,1293,1294,1295,1296,1297,1298,1299,1300,1301,1302,1303,1304], quizUrls: [] },
   COMP_HARDWARE: { subject: 'computing', name: 'Hardware & memory', icon: 'computing',
     cards: [1239,1240,1241,1242,1243,1250,1251,1252,1253,1254,1255,1256,1257,1258,1259,1260], quizUrls: [] },
-  COMP_NETWORKS_SECURITY: { subject: 'computing', name: 'Networks & security', icon: 'computing',
-    cards: [1244,1245,1246,1247,1248,1249,1261,1262,1263,1264,1265], quizUrls: [] },
+  COMP_NETWORKS_SECURITY: { subject: 'computing', name: 'Machines talk', icon: 'computing',
+    cards: [1244,1245,1246,1247,1248,1249,1261,1262,1263,1264,1265,1417,1418], quizUrls: [] },
   COMP_SYSTEM_DESIGN: { subject: 'computing', name: 'System design basics', icon: 'computing',
     cards: [1276,1277,1278,1279,1280,1281,1282,1283,1284,1285,1286,1287,1288], quizUrls: [] },
   COMP_AI_ERA: { subject: 'computing', name: 'AI-era computing', icon: 'computing',
@@ -104,7 +106,7 @@ export const PATHS = {
 
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
-  physics: ['PHYS_001', 'PHY_SI_SCALE', 'PHY_UNITS', 'PHY_SCALE', 'PHY_MEASUREMENT_LIMITS', 'PHY_INTRO', 'PHY_MOTION_FOUNDATIONS', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
+  physics: ['PHYS_001', 'PHY_ENERGY_MOMENTUM', 'PHY_SI_SCALE', 'PHY_UNITS', 'PHY_SCALE', 'PHY_MEASUREMENT_LIMITS', 'PHY_INTRO', 'PHY_MOTION_FOUNDATIONS', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
   maths: ['LINE_001', 'MATH_COORD_MAPS', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_LINEAR_GRAPHS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
   chemistry: ['ATOM_001', 'CHEM_NUCLEUS_ISOTOPES', 'CHEM_BONDING_TYPES', 'CHEM_MOLE_COUNTING', 'CHEM_BIOMOLECULES', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS', 'CHEM_QUANT'],
   computing: ['BIT_001', 'COMP_CODE_COMMAND', 'COMP_HARDWARE', 'COMP_NETWORKS_SECURITY', 'COMP_SYSTEM_DESIGN', 'COMP_AI_ERA', 'COMP_AI_BEHIND']
@@ -156,7 +158,7 @@ export const PATH_GROUPS = {
   unit: {
     name: 'Physics',
     subject: 'physics',
-    paths: ['PHYS_001', 'PHY_SI_SCALE', 'PHY_UNITS', 'PHY_SCALE', 'PHY_MEASUREMENT_LIMITS', 'PHY_INTRO', 'PHY_MOTION_FOUNDATIONS', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
+    paths: ['PHYS_001', 'PHY_ENERGY_MOMENTUM', 'PHY_SI_SCALE', 'PHY_UNITS', 'PHY_SCALE', 'PHY_MEASUREMENT_LIMITS', 'PHY_INTRO', 'PHY_MOTION_FOUNDATIONS', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
     firstTopic: 'PHYS_001'
   }
 };
