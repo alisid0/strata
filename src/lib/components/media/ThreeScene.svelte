@@ -26,6 +26,19 @@
   $: label = spec?.kind === 'molecule' ? spec.formula
     : spec?.kind === 'atom' ? spec.symbol
     : spec?.kind === 'lattice' ? `${spec.a}${spec.b}`
+    : spec?.kind === 'nucleus' ? (spec.label || 'nucleus')
+    : spec?.kind === 'electric-attraction' ? (spec.label || 'electrical attraction')
+    : spec?.kind === 'isotopes' ? (spec.label || 'same protons, different neutrons')
+    : spec?.kind === 'ionic-transfer' ? (spec.label || 'electron transfer')
+    : spec?.kind === 'covalent-share' ? (spec.label || 'shared electrons')
+    : spec?.kind === 'metallic-sea' ? (spec.label || 'electron sea')
+    : spec?.kind === 'polarity' ? (spec.label || 'shape decides polarity')
+    : spec?.kind === 'hydrogen-bonds' ? (spec.label || 'hydrogen bonds')
+    : spec?.kind === 'mole-scale' ? (spec.label || 'the mole scales atoms up')
+    : spec?.kind === 'mass-moles' ? (spec.label || 'mass to moles')
+    : spec?.kind === 'isotope-average' ? (spec.label || 'weighted average mass')
+    : spec?.kind === 'covalent-network' ? (spec.label || 'structure decides properties')
+    : spec?.kind === 'dna-helix' ? (spec.label || 'DNA double helix')
     : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors')
     : spec?.kind === 'unit-circle' ? (spec.label || 'cos theta, sin theta')
     : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary') : '';
@@ -161,6 +174,657 @@
           group.add(m);
         }
     return off * sp * 1.8 + 1;
+  }
+
+  function makeParticle(THREE, type = 'proton', radius = 0.28) {
+    const isProton = type === 'proton';
+    const p = sphere(THREE, radius, isProton ? 0xee9362 : 0x9aa0ff);
+    p.add(makeLabel(THREE, isProton ? '+' : 'n', {
+      width: 128,
+      height: 128,
+      bg: 'rgba(0,0,0,0)',
+      border: 'rgba(0,0,0,0)',
+      fg: '#fff8ef',
+      size: 70,
+      scale: [0.2, 0.2, 1]
+    }));
+    return p;
+  }
+
+  function clusterPositions(THREE, count, radius = 0.58) {
+    const pts = [];
+    if (count <= 1) return [new THREE.Vector3(0, 0, 0)];
+    for (let i = 0; i < count; i++) {
+      const y = 1 - ((i + 0.5) / count) * 2;
+      const rad = Math.sqrt(Math.max(0, 1 - y * y));
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      pts.push(new THREE.Vector3(
+        Math.cos(theta) * rad * radius,
+        y * radius,
+        Math.sin(theta) * rad * radius
+      ));
+    }
+    return pts;
+  }
+
+  function buildNucleus(THREE, group) {
+    const nucleus = new THREE.Group();
+    group.add(nucleus);
+    const protons = spec.protons || 6;
+    const neutrons = spec.neutrons ?? protons;
+    const total = protons + neutrons;
+    clusterPositions(THREE, total, Math.min(0.95, 0.38 + total * 0.035)).forEach((pos, i) => {
+      const particle = makeParticle(THREE, i < protons ? 'proton' : 'neutron', 0.27);
+      particle.position.copy(pos);
+      nucleus.add(particle);
+    });
+
+    const shell = new THREE.Mesh(
+      new THREE.SphereGeometry(1.22, 36, 24),
+      new THREE.MeshBasicMaterial({ color: 0xee9362, transparent: true, opacity: 0.06, wireframe: true })
+    );
+    group.add(shell);
+
+    const title = makeLabel(THREE, spec.title || `${protons} protons + ${neutrons} neutrons`, {
+      width: 720,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 38,
+      scale: [2.0, 0.4, 1]
+    });
+    title.position.set(0, -1.8, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      nucleus.rotation.y = t * 0.0008;
+      nucleus.rotation.x = Math.sin(t * 0.0007) * 0.18;
+      shell.rotation.y = -t * 0.0004;
+    };
+    return 2.4;
+  }
+
+  function buildElectricAttraction(THREE, group) {
+    const nucleus = sphere(THREE, 0.52, 0xee9362);
+    group.add(nucleus);
+    nucleus.add(makeLabel(THREE, '+ nucleus', {
+      width: 360,
+      height: 130,
+      bg: 'rgba(0,0,0,0)',
+      border: 'rgba(0,0,0,0)',
+      fg: '#fff8ef',
+      size: 44,
+      scale: [0.9, 0.32, 1]
+    }));
+
+    const cloud = new THREE.Group();
+    group.add(cloud);
+    const electronMat = new THREE.MeshStandardMaterial({
+      color: 0x8ee6c7,
+      roughness: 0.35,
+      emissive: 0x1d6b59,
+      emissiveIntensity: 0.42
+    });
+    const electronGeo = new THREE.SphereGeometry(0.12, 24, 16);
+    const electrons = [];
+    [0, 1, 2, 3, 4, 5].forEach((i) => {
+      const e = new THREE.Mesh(electronGeo, electronMat);
+      const a = (i / 6) * Math.PI * 2;
+      e.position.set(Math.cos(a) * 1.75, Math.sin(a * 1.7) * 0.72, Math.sin(a) * 1.75);
+      cloud.add(e);
+      electrons.push({ mesh: e, phase: a });
+    });
+
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x8ee6c7, transparent: true, opacity: 0.42 });
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      const p = new THREE.Vector3(Math.cos(a) * 1.55, Math.sin(a * 2) * 0.5, Math.sin(a) * 1.55);
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p, new THREE.Vector3(0, 0, 0)]), lineMat));
+    }
+
+    const title = makeLabel(THREE, spec.title || '+ attracts -', {
+      width: 520,
+      height: 140,
+      border: 'rgba(142, 230, 199, 0.7)',
+      fg: '#e8fff8',
+      size: 46,
+      scale: [1.45, 0.38, 1]
+    });
+    title.position.set(0, -2.05, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      cloud.rotation.y = t * 0.001;
+      cloud.rotation.z = Math.sin(t * 0.0006) * 0.14;
+      electrons.forEach(({ mesh, phase }) => {
+        mesh.scale.setScalar(1 + Math.sin(t * 0.004 + phase) * 0.12);
+      });
+    };
+    return 2.6;
+  }
+
+  function buildIsotopes(THREE, group) {
+    const isotopes = spec.isotopes || [
+      { label: 'C-12', protons: 6, neutrons: 6 },
+      { label: 'C-13', protons: 6, neutrons: 7 },
+      { label: 'C-14', protons: 6, neutrons: 8 }
+    ];
+    const row = new THREE.Group();
+    group.add(row);
+    isotopes.forEach((iso, idx) => {
+      const mini = new THREE.Group();
+      mini.position.set((idx - 1) * 1.7, 0.18, 0);
+      row.add(mini);
+      const total = iso.protons + iso.neutrons;
+      clusterPositions(THREE, total, 0.52).forEach((pos, i) => {
+        const particle = makeParticle(THREE, i < iso.protons ? 'proton' : 'neutron', 0.18);
+        particle.position.copy(pos);
+        mini.add(particle);
+      });
+      const tag = makeLabel(THREE, iso.label, {
+        width: 260,
+        height: 120,
+        border: 'rgba(246, 239, 228, 0.32)',
+        size: 42,
+        scale: [0.72, 0.3, 1]
+      });
+      tag.position.set(mini.position.x, -1.12, 0);
+      group.add(tag);
+    });
+
+    const title = makeLabel(THREE, spec.title || 'same element, different mass', {
+      width: 760,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 38,
+      scale: [2.2, 0.38, 1]
+    });
+    title.position.set(0, 1.45, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      row.rotation.y = Math.sin(t * 0.0007) * 0.32;
+      row.children.forEach((child, i) => {
+        child.rotation.y = t * (0.00045 + i * 0.00008);
+      });
+    };
+    return 3.0;
+  }
+
+  function arrow(THREE, from, to, color = 0xee9362) {
+    const dir = new THREE.Vector3().subVectors(to, from);
+    const len = dir.length();
+    const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.45, emissive: color, emissiveIntensity: 0.15 });
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, Math.max(0.1, len - 0.28), 16), mat);
+    shaft.position.copy(from).add(to).multiplyScalar(0.5);
+    shaft.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.32, 24), mat);
+    head.position.copy(to).add(dir.clone().normalize().multiplyScalar(-0.12));
+    head.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+    const g = new THREE.Group();
+    g.add(shaft);
+    g.add(head);
+    return g;
+  }
+
+  function buildIonicTransfer(THREE, group) {
+    const left = new THREE.Group();
+    const right = new THREE.Group();
+    left.position.set(-1.45, 0.15, 0);
+    right.position.set(1.45, 0.15, 0);
+    group.add(left);
+    group.add(right);
+
+    left.add(sphere(THREE, 0.52, el(spec.from || 'Na').color));
+    right.add(sphere(THREE, 0.72, el(spec.to || 'Cl').color));
+    left.add(new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.018, 12, 96), new THREE.MeshBasicMaterial({ color: 0x9aa0ff, transparent: true, opacity: 0.35 })));
+    right.add(new THREE.Mesh(new THREE.TorusGeometry(1.08, 0.018, 12, 96), new THREE.MeshBasicMaterial({ color: 0x8ee6c7, transparent: true, opacity: 0.35 })));
+
+    const electron = sphere(THREE, 0.13, 0x8ee6c7);
+    group.add(electron);
+    const path = arrow(THREE, new THREE.Vector3(-0.72, 0.92, 0), new THREE.Vector3(0.72, 0.92, 0), 0x8ee6c7);
+    group.add(path);
+
+    const labels = [
+      [spec.fromLabel || 'Na', -1.45, -1.15, 'rgba(154, 160, 255, 0.55)'],
+      [spec.toLabel || 'Cl', 1.45, -1.15, 'rgba(142, 230, 199, 0.55)'],
+      [spec.product || 'Na+ + Cl-', 0, -1.85, 'rgba(238, 147, 98, 0.72)']
+    ];
+    labels.forEach(([text, x, y, border]) => {
+      const tag = makeLabel(THREE, text, { width: 360, height: 125, border, size: 42, scale: [0.9, 0.3, 1] });
+      tag.position.set(x, y, 0);
+      group.add(tag);
+    });
+
+    group.userData.animate = (t) => {
+      const p = (Math.sin(t * 0.0014) + 1) / 2;
+      electron.position.set(-0.95 + p * 1.9, 0.92 + Math.sin(p * Math.PI) * 0.28, 0.12);
+      left.rotation.y = t * 0.00035;
+      right.rotation.y = -t * 0.0003;
+    };
+    return 2.8;
+  }
+
+  function buildCovalentShare(THREE, group) {
+    const pairs = spec.pairs || 1;
+    const atomColor = el(spec.atom || 'O').color;
+    const a = new THREE.Vector3(-0.88, 0.08, 0);
+    const b = new THREE.Vector3(0.88, 0.08, 0);
+    const atomA = sphere(THREE, 0.58, atomColor);
+    const atomB = sphere(THREE, 0.58, atomColor);
+    atomA.position.copy(a);
+    atomB.position.copy(b);
+    group.add(atomA);
+    group.add(atomB);
+
+    for (let i = 0; i < pairs; i++) {
+      const off = (i - (pairs - 1) / 2) * 0.24;
+      group.add(bond(THREE, new THREE.Vector3(-0.5, off + 0.08, 0), new THREE.Vector3(0.5, off + 0.08, 0)));
+    }
+
+    const shared = new THREE.Group();
+    group.add(shared);
+    const electrons = [];
+    for (let i = 0; i < pairs * 2; i++) {
+      const e = sphere(THREE, 0.11, 0x8ee6c7);
+      shared.add(e);
+      electrons.push(e);
+    }
+
+    const title = makeLabel(THREE, spec.title || `${pairs} shared pair${pairs > 1 ? 's' : ''}`, {
+      width: 620,
+      height: 140,
+      border: 'rgba(142, 230, 199, 0.7)',
+      fg: '#e8fff8',
+      size: 42,
+      scale: [1.65, 0.38, 1]
+    });
+    title.position.set(0, -1.55, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      electrons.forEach((e, i) => {
+        const pair = Math.floor(i / 2);
+        const side = i % 2 === 0 ? -1 : 1;
+        const phase = t * 0.0025 + pair * 0.9;
+        e.position.set(Math.cos(phase) * 0.16, 0.18 + (pair - (pairs - 1) / 2) * 0.34 + side * 0.08, Math.sin(phase) * 0.28);
+      });
+      shared.rotation.y = Math.sin(t * 0.0007) * 0.22;
+    };
+    return 2.25;
+  }
+
+  function buildMetallicSea(THREE, group) {
+    const ionMat = new THREE.MeshStandardMaterial({ color: 0xee9362, roughness: 0.42, metalness: 0.12 });
+    const electronMat = new THREE.MeshStandardMaterial({ color: 0x8ee6c7, roughness: 0.3, emissive: 0x1d6b59, emissiveIntensity: 0.45 });
+    const ions = new THREE.Group();
+    group.add(ions);
+    for (let x = -2; x <= 2; x++) {
+      for (let y = -1; y <= 1; y++) {
+        const ion = new THREE.Mesh(new THREE.SphereGeometry(0.22, 24, 18), ionMat);
+        ion.position.set(x * 0.7, y * 0.62, (x + y) % 2 === 0 ? 0.08 : -0.08);
+        ions.add(ion);
+        const plus = makeLabel(THREE, '+', { width: 96, height: 96, bg: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', size: 58, scale: [0.16, 0.16, 1] });
+        plus.position.copy(ion.position).add(new THREE.Vector3(0, 0, 0.21));
+        ions.add(plus);
+      }
+    }
+
+    const electrons = [];
+    for (let i = 0; i < 18; i++) {
+      const e = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 12), electronMat);
+      group.add(e);
+      electrons.push({ mesh: e, phase: i * 0.7, lane: i % 5 });
+    }
+
+    const title = makeLabel(THREE, spec.title || 'mobile electrons hold metal together', {
+      width: 780,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 36,
+      scale: [2.25, 0.38, 1]
+    });
+    title.position.set(0, -1.8, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      ions.rotation.y = Math.sin(t * 0.00045) * 0.22;
+      electrons.forEach(({ mesh, phase, lane }) => {
+        const x = ((t * 0.0012 + phase) % 4.8) - 2.4;
+        mesh.position.set(x, -0.75 + lane * 0.36 + Math.sin(t * 0.002 + phase) * 0.06, 0.38 + Math.cos(t * 0.001 + phase) * 0.18);
+      });
+    };
+    return 3.0;
+  }
+
+  function buildPolarity(THREE, group) {
+    const water = new THREE.Group();
+    water.position.set(-1.45, 0.22, 0);
+    group.add(water);
+    const o = sphere(THREE, 0.36, el('O').color);
+    water.add(o);
+    const h1 = new THREE.Vector3(-0.55, -0.56, 0);
+    const h2 = new THREE.Vector3(0.55, -0.56, 0);
+    [h1, h2].forEach((p) => {
+      const h = sphere(THREE, 0.2, el('H').color);
+      h.position.copy(p);
+      water.add(h);
+      water.add(bond(THREE, new THREE.Vector3(0, 0, 0), p));
+    });
+    water.add(arrow(THREE, new THREE.Vector3(0, -0.92, 0.2), new THREE.Vector3(0, 0.62, 0.2), 0x8ee6c7));
+
+    const co2 = new THREE.Group();
+    co2.position.set(1.45, 0.2, 0);
+    group.add(co2);
+    const c = sphere(THREE, 0.32, el('C').color);
+    co2.add(c);
+    [-0.72, 0.72].forEach((x) => {
+      const oxygen = sphere(THREE, 0.34, el('O').color);
+      oxygen.position.set(x, 0, 0);
+      co2.add(oxygen);
+      co2.add(bond(THREE, new THREE.Vector3(0, 0, 0), new THREE.Vector3(x, 0, 0)));
+    });
+    co2.add(arrow(THREE, new THREE.Vector3(-0.12, 0.42, 0.2), new THREE.Vector3(-0.7, 0.42, 0.2), 0x9aa0ff));
+    co2.add(arrow(THREE, new THREE.Vector3(0.12, -0.42, 0.2), new THREE.Vector3(0.7, -0.42, 0.2), 0x9aa0ff));
+
+    [
+      ['H2O: adds', -1.45, -1.35, 'rgba(142, 230, 199, 0.7)'],
+      ['CO2: cancels', 1.45, -1.35, 'rgba(154, 160, 255, 0.58)']
+    ].forEach(([text, x, y, border]) => {
+      const tag = makeLabel(THREE, text, { width: 410, height: 125, border, size: 38, scale: [1.02, 0.3, 1] });
+      tag.position.set(x, y, 0);
+      group.add(tag);
+    });
+
+    group.userData.animate = (t) => {
+      water.rotation.y = Math.sin(t * 0.0007) * 0.28;
+      co2.rotation.y = -Math.sin(t * 0.0007) * 0.18;
+    };
+    return 3.0;
+  }
+
+  function buildHydrogenBonds(THREE, group) {
+    const waters = new THREE.Group();
+    group.add(waters);
+    const positions = [
+      [-1.2, 0.55, 0],
+      [0.85, 0.62, 0.08],
+      [-0.2, -0.58, -0.05],
+      [1.55, -0.62, 0.02]
+    ];
+    positions.forEach(([x, y, z], idx) => {
+      const w = new THREE.Group();
+      w.position.set(x, y, z);
+      w.rotation.z = (idx % 2 ? -1 : 1) * 0.42;
+      waters.add(w);
+      w.add(sphere(THREE, 0.26, el('O').color));
+      [new THREE.Vector3(-0.38, -0.36, 0), new THREE.Vector3(0.38, -0.36, 0)].forEach((p) => {
+        const h = sphere(THREE, 0.15, el('H').color);
+        h.position.copy(p);
+        w.add(h);
+        w.add(bond(THREE, new THREE.Vector3(0, 0, 0), p));
+      });
+    });
+
+    const hbMat = new THREE.LineBasicMaterial({ color: 0x8ee6c7, transparent: true, opacity: 0.42 });
+    const hbonds = [
+      [new THREE.Vector3(-0.86, 0.2, 0.08), new THREE.Vector3(-0.32, -0.34, 0.08)],
+      [new THREE.Vector3(0.58, 0.26, 0.08), new THREE.Vector3(0.1, -0.35, 0.08)],
+      [new THREE.Vector3(1.02, 0.22, 0.08), new THREE.Vector3(1.36, -0.36, 0.08)]
+    ].map(([a, b]) => new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), hbMat));
+    hbonds.forEach((line) => group.add(line));
+
+    const title = makeLabel(THREE, spec.title || 'weak bonds, strong network', {
+      width: 700,
+      height: 140,
+      border: 'rgba(142, 230, 199, 0.7)',
+      fg: '#e8fff8',
+      size: 40,
+      scale: [1.85, 0.38, 1]
+    });
+    title.position.set(0, -1.85, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      waters.rotation.y = Math.sin(t * 0.00055) * 0.26;
+      hbMat.opacity = 0.3 + (Math.sin(t * 0.003) + 1) * 0.16;
+    };
+    return 3.0;
+  }
+
+  function buildMoleScale(THREE, group) {
+    const tinyMat = new THREE.MeshStandardMaterial({ color: 0x8ee6c7, roughness: 0.35, emissive: 0x1d6b59, emissiveIntensity: 0.25 });
+    const visibleMat = new THREE.MeshStandardMaterial({ color: 0xee9362, roughness: 0.45, emissive: 0x8a3f1f, emissiveIntensity: 0.18 });
+    const atomGroup = new THREE.Group();
+    group.add(atomGroup);
+    const dotGeo = new THREE.SphereGeometry(0.055, 12, 8);
+    for (let i = 0; i < 120; i++) {
+      const dot = new THREE.Mesh(dotGeo, tinyMat);
+      const a = i * 2.399;
+      const r = 0.18 * Math.sqrt(i);
+      dot.position.set(Math.cos(a) * r, Math.sin(a) * r * 0.62 + 0.18, Math.sin(a * 1.7) * 0.35);
+      atomGroup.add(dot);
+    }
+
+    const spoon = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.25, 0.9, 0.16, 48),
+      new THREE.MeshStandardMaterial({ color: 0x353644, roughness: 0.62, metalness: 0.18 })
+    );
+    spoon.scale.set(1.45, 0.32, 1);
+    spoon.rotation.x = Math.PI / 2;
+    spoon.position.set(0, -0.88, -0.1);
+    group.add(spoon);
+
+    for (let i = 0; i < 8; i++) {
+      const bead = new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), visibleMat);
+      bead.position.set((i % 4 - 1.5) * 0.28, -0.72 + Math.floor(i / 4) * 0.22, 0.1);
+      group.add(bead);
+    }
+
+    const title = makeLabel(THREE, spec.title || '6.022 x 10^23 tiny units', {
+      width: 760,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 38,
+      scale: [2.05, 0.38, 1]
+    });
+    title.position.set(0, -1.72, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      atomGroup.rotation.y = t * 0.00055;
+      atomGroup.rotation.x = Math.sin(t * 0.0006) * 0.14;
+    };
+    return 2.7;
+  }
+
+  function buildMassMoles(THREE, group) {
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x22232e, roughness: 0.72, metalness: 0.08 });
+    const accentMat = new THREE.MeshStandardMaterial({ color: 0xee9362, roughness: 0.42, emissive: 0x8a3f1f, emissiveIntensity: 0.16 });
+    const panMat = new THREE.MeshStandardMaterial({ color: 0x6f76a8, roughness: 0.46, metalness: 0.28 });
+
+    const stand = new THREE.Mesh(new THREE.BoxGeometry(3.7, 0.1, 0.6), baseMat);
+    stand.position.set(0, -0.72, 0);
+    group.add(stand);
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.5, 16), baseMat);
+    post.position.set(0, 0.05, 0);
+    group.add(post);
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.06, 0.08), accentMat);
+    beam.position.set(0, 0.7, 0);
+    group.add(beam);
+
+    [-1.2, 1.2].forEach((x) => {
+      const string = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x, 0.68, 0), new THREE.Vector3(x, 0.1, 0)]),
+        new THREE.LineBasicMaterial({ color: 0xf6efe4, transparent: true, opacity: 0.42 })
+      );
+      group.add(string);
+      const pan = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.42, 0.08, 36), panMat);
+      pan.position.set(x, 0.05, 0);
+      group.add(pan);
+    });
+
+    for (let i = 0; i < 10; i++) {
+      const atom = sphere(THREE, 0.09, 0x8ee6c7);
+      atom.position.set(-1.2 + (i % 5 - 2) * 0.12, 0.18 + Math.floor(i / 5) * 0.12, 0.05);
+      group.add(atom);
+    }
+
+    const eq = makeLabel(THREE, spec.equation || 'n = m / M', {
+      width: 440,
+      height: 140,
+      border: 'rgba(142, 230, 199, 0.7)',
+      fg: '#e8fff8',
+      size: 50,
+      scale: [1.15, 0.34, 1]
+    });
+    eq.position.set(1.2, 0.25, 0.18);
+    group.add(eq);
+
+    const title = makeLabel(THREE, spec.title || 'weigh it, then count it', {
+      width: 690,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 40,
+      scale: [1.85, 0.38, 1]
+    });
+    title.position.set(0, -1.52, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      beam.rotation.z = Math.sin(t * 0.0013) * 0.04;
+    };
+    return 2.55;
+  }
+
+  function buildIsotopeAverage(THREE, group) {
+    const lightMat = new THREE.MeshStandardMaterial({ color: 0x8ee6c7, roughness: 0.35, emissive: 0x1d6b59, emissiveIntensity: 0.22 });
+    const heavyMat = new THREE.MeshStandardMaterial({ color: 0x9aa0ff, roughness: 0.45, emissive: 0x34375f, emissiveIntensity: 0.28 });
+    const bars = [
+      { label: spec.lightLabel || 'Cl-35', x: -0.72, height: 1.45, mat: lightMat, pct: '75%' },
+      { label: spec.heavyLabel || 'Cl-37', x: 0.82, height: 0.55, mat: heavyMat, pct: '25%' }
+    ];
+    bars.forEach((bar) => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.56, bar.height, 0.42), bar.mat);
+      mesh.position.set(bar.x, -0.3 + bar.height / 2, 0);
+      group.add(mesh);
+      const pct = makeLabel(THREE, bar.pct, { width: 220, height: 110, border: 'rgba(246, 239, 228, 0.28)', size: 42, scale: [0.55, 0.24, 1] });
+      pct.position.set(bar.x, bar.height + 0.48, 0);
+      group.add(pct);
+      const tag = makeLabel(THREE, bar.label, { width: 260, height: 110, border: 'rgba(246, 239, 228, 0.28)', size: 36, scale: [0.65, 0.24, 1] });
+      tag.position.set(bar.x, -1.22, 0);
+      group.add(tag);
+    });
+
+    const avg = makeLabel(THREE, spec.result || 'average = 35.5', {
+      width: 670,
+      height: 140,
+      border: 'rgba(238, 147, 98, 0.72)',
+      size: 42,
+      scale: [1.75, 0.38, 1]
+    });
+    avg.position.set(0, -1.82, 0);
+    group.add(avg);
+
+    group.userData.animate = (t) => {
+      group.rotation.y = Math.sin(t * 0.0005) * 0.18;
+    };
+    return 2.55;
+  }
+
+  function buildCovalentNetwork(THREE, group) {
+    const diamond = new THREE.Group();
+    diamond.position.set(-1.35, 0.15, 0);
+    group.add(diamond);
+    const dPts = [
+      [0, 0, 0], [0.65, 0.65, 0.65], [0.65, -0.65, -0.65], [-0.65, 0.65, -0.65], [-0.65, -0.65, 0.65]
+    ].map(p => new THREE.Vector3(p[0], p[1], p[2]));
+    dPts.forEach((p, i) => {
+      const atom = sphere(THREE, i === 0 ? 0.16 : 0.13, el('C').color);
+      atom.position.copy(p);
+      diamond.add(atom);
+      if (i > 0) diamond.add(bond(THREE, dPts[0], p));
+    });
+
+    const graphite = new THREE.Group();
+    graphite.position.set(1.45, 0.05, 0);
+    group.add(graphite);
+    const hexPts = [];
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      hexPts.push(new THREE.Vector3(Math.cos(a) * 0.62, Math.sin(a) * 0.62, 0));
+    }
+    [0, 0.34].forEach((z, layer) => {
+      hexPts.forEach((p, i) => {
+        const atom = sphere(THREE, 0.12, el('C').color);
+        atom.position.set(p.x, p.y - layer * 0.18, z);
+        graphite.add(atom);
+        const next = hexPts[(i + 1) % hexPts.length];
+        graphite.add(bond(THREE, new THREE.Vector3(p.x, p.y - layer * 0.18, z), new THREE.Vector3(next.x, next.y - layer * 0.18, z)));
+      });
+    });
+    const slideArrow = arrow(THREE, new THREE.Vector3(0.05, -0.95, 0.5), new THREE.Vector3(0.7, -0.95, 0.5), 0x8ee6c7);
+    graphite.add(slideArrow);
+
+    [
+      ['diamond', -1.35, -1.35],
+      ['graphite', 1.45, -1.35]
+    ].forEach(([text, x, y]) => {
+      const tag = makeLabel(THREE, text, { width: 300, height: 120, border: 'rgba(246, 239, 228, 0.32)', size: 38, scale: [0.78, 0.28, 1] });
+      tag.position.set(x, y, 0);
+      group.add(tag);
+    });
+
+    group.userData.animate = (t) => {
+      diamond.rotation.y = t * 0.00055;
+      graphite.rotation.y = -t * 0.00035;
+    };
+    return 2.9;
+  }
+
+  function buildDnaHelix(THREE, group) {
+    const strandMatA = new THREE.LineBasicMaterial({ color: 0xee9362, transparent: true, opacity: 0.88 });
+    const strandMatB = new THREE.LineBasicMaterial({ color: 0x9aa0ff, transparent: true, opacity: 0.88 });
+    const rungMat = new THREE.LineBasicMaterial({ color: 0x8ee6c7, transparent: true, opacity: 0.5 });
+    const aPts = [];
+    const bPts = [];
+    const rungs = [];
+    const turns = spec.turns || 1.7;
+    const steps = 34;
+    for (let i = 0; i <= steps; i++) {
+      const p = i / steps;
+      const theta = p * Math.PI * 2 * turns;
+      const y = (p - 0.5) * 2.9;
+      const a = new THREE.Vector3(Math.cos(theta) * 0.72, y, Math.sin(theta) * 0.72);
+      const b = new THREE.Vector3(Math.cos(theta + Math.PI) * 0.72, y, Math.sin(theta + Math.PI) * 0.72);
+      aPts.push(a);
+      bPts.push(b);
+      if (i % 3 === 0) rungs.push([a, b, i]);
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(aPts), strandMatA));
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(bPts), strandMatB));
+    rungs.forEach(([a, b, i]) => {
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), rungMat));
+      const mid = a.clone().add(b).multiplyScalar(0.5);
+      const bead = sphere(THREE, 0.07, i % 2 === 0 ? 0x8ee6c7 : 0xf6efe4);
+      bead.position.copy(mid);
+      group.add(bead);
+    });
+
+    const title = makeLabel(THREE, spec.title || 'two strands, paired bases', {
+      width: 700,
+      height: 140,
+      border: 'rgba(142, 230, 199, 0.7)',
+      fg: '#e8fff8',
+      size: 40,
+      scale: [1.85, 0.38, 1]
+    });
+    title.position.set(0, -2.05, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      group.rotation.y = t * 0.00055;
+    };
+    return 2.9;
   }
 
   function buildAiPipeline(THREE, group) {
@@ -412,6 +1076,19 @@
         scene.add(group);
         const fit = spec.kind === 'atom' ? buildAtom(THREE, group)
           : spec.kind === 'lattice' ? buildLattice(THREE, group)
+          : spec.kind === 'nucleus' ? buildNucleus(THREE, group)
+          : spec.kind === 'electric-attraction' ? buildElectricAttraction(THREE, group)
+          : spec.kind === 'isotopes' ? buildIsotopes(THREE, group)
+          : spec.kind === 'ionic-transfer' ? buildIonicTransfer(THREE, group)
+          : spec.kind === 'covalent-share' ? buildCovalentShare(THREE, group)
+          : spec.kind === 'metallic-sea' ? buildMetallicSea(THREE, group)
+          : spec.kind === 'polarity' ? buildPolarity(THREE, group)
+          : spec.kind === 'hydrogen-bonds' ? buildHydrogenBonds(THREE, group)
+          : spec.kind === 'mole-scale' ? buildMoleScale(THREE, group)
+          : spec.kind === 'mass-moles' ? buildMassMoles(THREE, group)
+          : spec.kind === 'isotope-average' ? buildIsotopeAverage(THREE, group)
+          : spec.kind === 'covalent-network' ? buildCovalentNetwork(THREE, group)
+          : spec.kind === 'dna-helix' ? buildDnaHelix(THREE, group)
           : spec.kind === 'ai-pipeline' ? buildAiPipeline(THREE, group)
           : spec.kind === 'unit-circle' ? buildUnitCircle(THREE, group)
           : spec.kind === 'ray-optics' ? buildRayOptics(THREE, group)
@@ -428,7 +1105,12 @@
         controls.autoRotateSpeed = 1.3;
 
         let raf;
-        const tick = () => { controls.update(); renderer.render(scene, camera); raf = requestAnimationFrame(tick); };
+        const tick = (time = 0) => {
+          if (!reduceMotion && group.userData.animate) group.userData.animate(time);
+          controls.update();
+          renderer.render(scene, camera);
+          raf = requestAnimationFrame(tick);
+        };
         tick();
 
         const ro = new ResizeObserver(() => {
