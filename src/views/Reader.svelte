@@ -63,9 +63,15 @@
   let checkpointSeen = new Set();
   let checkpointCount = 0;         // which checkpoint this is (0, 1, 2...)
 
+  function layerHasContent(layer) {
+    if (layer == null) return false;
+    if (typeof layer === 'string') return layer.replace(/<[^>]+>/g, '').trim().length > 0;
+    return !!(layer.text || layer.content || layer.img || layer.image || layer.audio);
+  }
+
   function availableFloors(i) {
     const card = getBoard(numbers[i]);
-    return card ? card.layers.map((l, k) => l !== null ? k : -1).filter(k => k >= 0) : [];
+    return card ? card.layers.map((l, k) => layerHasContent(l) ? k : -1).filter(k => k >= 0) : [];
   }
 
   function rebuildDerived() {
@@ -116,6 +122,12 @@
   // it's re-enabled; only the trigger in move() is gone.
   function move(to) {
     idx = Math.max(0, Math.min(totalCards - 1, to));
+    const floors = availableFloors(idx);
+    if (floors.length && !floors.includes(depthOf[idx])) {
+      depthOf[idx] = floors[0];
+      depthOf = [...depthOf];
+      rebuildDerived();
+    }
     const cardNumber = numbers[idx];
     progress.recordBoardOpen(cardNumber, pathsForCard(cardNumber));
   }
@@ -144,11 +156,12 @@
   }
 
   function floorNumber(i, d) {
-    return floor0Img(i) ? d : d + 1;
+    const floors = railFloors(i);
+    const pos = floors.indexOf(d);
+    return pos >= 0 ? pos + 1 : 1;
   }
   function floorTotal(i) {
-    const len = getBoard(numbers[i])?.layers.length || 0;
-    return floor0Img(i) ? len - 1 : len;
+    return railFloors(i).length;
   }
 
   function floorBodyHTML(i, d) {
