@@ -157,12 +157,122 @@ function genPixelGrid() {
   };
 }
 
+function genBitsToNumber(mode) {
+  const n = ri(1, 15);
+  if (mode === 'read') {
+    const options = [n];
+    while (options.length < 4) {
+      const d = riNot(0, 15, options);
+      options.push(d);
+    }
+    return {
+      type: 'bitsnumber', mode: 'read',
+      prompt: 'Read the bits. What number is this?',
+      shown: n.toString(2).padStart(4, '0'),
+      options: options.sort((a, b) => a - b),
+      correctFeedback: `Correct. ${n.toString(2).padStart(4, '0')} is ${n}.`,
+      incorrectFeedback: `Add up the lit place values — they come to ${n}.`,
+    };
+  }
+  return {
+    type: 'bitsnumber', mode: 'build',
+    prompt: `Build ${n}. The running total updates as you flip.`,
+    bits: 4, target: n,
+    correctFeedback: `Correct. ${n} is ${n.toString(2).padStart(4, '0')}.`,
+    incorrectFeedback: `Break ${n} into powers of two and flip those switches.`,
+  };
+}
+
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+function genBitsToWord(mode) {
+  const letter = LETTERS[ri(0, 25)];
+  if (mode === 'read') {
+    const options = [letter];
+    while (options.length < 4) {
+      const d = LETTERS[ri(0, 25)];
+      if (!options.includes(d)) options.push(d);
+    }
+    return {
+      type: 'bitsword', mode: 'read',
+      prompt: 'Decode the byte. Which letter is it?',
+      shown: letter.charCodeAt(0).toString(2).padStart(8, '0'),
+      options: options.sort(),
+      correctFeedback: `Correct. Code ${letter.charCodeAt(0)} is ${letter}.`,
+      incorrectFeedback: `The lit places sum to ${letter.charCodeAt(0)}, which is ${letter}.`,
+    };
+  }
+  return {
+    type: 'bitsword', mode: 'build',
+    prompt: `Build the byte for ${letter}. Watch the letter card as you flip.`,
+    target: letter,
+    correctFeedback: `Correct. ${letter} is code ${letter.charCodeAt(0)}.`,
+    incorrectFeedback: `${letter} is code ${letter.charCodeAt(0)} — build that number from the place values.`,
+  };
+}
+
 function binaryChallenge() {
   return [
-    genBitPattern(), genBitPattern(),
-    genPixelGrid(), genBitPattern(),
-    genBitPattern(), genPixelGrid(),
-    genBitPattern(), genBitPattern(),
+    genBitsToNumber('build'), genBitPattern(),
+    genBitsToNumber('read'), genPixelGrid(),
+    genBitsToWord('build'), genBitsToNumber('read'),
+    genBitsToWord('read'), genBitPattern(),
+  ];
+}
+
+// ── computer: logic gates ─────────────────────────────────────────────────────
+const GATE_TABLES = {
+  AND:  [0, 0, 0, 1], OR: [0, 1, 1, 1], XOR: [0, 1, 1, 0],
+  NAND: [1, 1, 1, 0], NOR: [1, 0, 0, 0],
+};
+const GATE_HINTS = {
+  AND: 'on only when both inputs agree at 1',
+  OR: 'on when at least one input is 1',
+  XOR: 'on only when the inputs disagree',
+  NAND: 'the opposite of AND — off only for 1,1',
+  NOR: 'the opposite of OR — on only for 0,0',
+};
+
+function genGatePick() {
+  const names = Object.keys(GATE_TABLES);
+  const answer = pick(names);
+  const palette = [answer];
+  while (palette.length < 4) {
+    const g = pick(names);
+    if (!palette.includes(g)) palette.push(g);
+  }
+  // Stable palette order so the answer position isn't a tell.
+  palette.sort();
+  return {
+    type: 'gatebuilder', mode: 'pick',
+    prompt: 'Match the truth table. Toggle A and B to test each gate live.',
+    chain: 1, palette, targetTable: GATE_TABLES[answer],
+    correctFeedback: `Correct. ${answer}: ${GATE_HINTS[answer]}.`,
+    incorrectFeedback: `That table is ${answer} — ${GATE_HINTS[answer]}.`,
+  };
+}
+
+function genGateSolve() {
+  const pairs = [
+    ['AND', 'OR'], ['OR', 'AND'], ['XOR', 'AND'], ['AND', 'XOR'],
+    ['XOR', 'OR'], ['NAND', 'AND'], ['OR', 'XOR'],
+  ];
+  const [g1, g2] = pick(pairs);
+  return {
+    type: 'gatebuilder', mode: 'solve',
+    prompt: `Light the bulb through ${g1} feeding ${g2}.`,
+    chain: 2, gatesLocked: [g1, g2],
+    correctFeedback: `Correct. The ${g1} output and C together satisfy the ${g2}.`,
+    incorrectFeedback: `Work backwards: what does the ${g2} need, and how does the ${g1} produce it?`,
+  };
+}
+
+function logicChallenge() {
+  return [
+    genGatePick(), genGateSolve(),
+    genGatePick(), genGatePick(),
+    genGateSolve(), genGatePick(),
+    genGateSolve(), genGatePick(),
   ];
 }
 
@@ -295,6 +405,7 @@ const CHALLENGES = {
   'line-core': { build: lineChallenge, timeLimitSec: 150 },
   'matrices': { build: matricesChallenge, timeLimitSec: 120 },
   'binary-data': { build: binaryChallenge, timeLimitSec: 120 },
+  'logic-gates': { build: logicChallenge, timeLimitSec: 150 },
   'chemistry-core': { build: chemistryChallenge, timeLimitSec: 180 },
   'forces-waves': { build: physicsChallenge, timeLimitSec: 120 },
 };

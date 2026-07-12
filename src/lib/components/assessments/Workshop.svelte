@@ -17,6 +17,9 @@
   import UnitDimensionCheck from './UnitDimensionCheck.svelte';
   import PixiSceneChoice from './PixiSceneChoice.svelte';
   import ThermoLab from './ThermoLab.svelte';
+  import BitsToNumber from './BitsToNumber.svelte';
+  import BitsToWord from './BitsToWord.svelte';
+  import GateBuilder from './GateBuilder.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -271,6 +274,41 @@
           min={current.min}
           max={current.max}
           step={current.step}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'bitsnumber'}
+        <BitsToNumber
+          mode={current.mode}
+          prompt={current.prompt}
+          bits={current.bits}
+          target={current.target}
+          shown={current.shown}
+          options={current.options}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'bitsword'}
+        <BitsToWord
+          mode={current.mode}
+          prompt={current.prompt}
+          target={current.target}
+          shown={current.shown}
+          options={current.options}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'gatebuilder'}
+        <GateBuilder
+          mode={current.mode}
+          prompt={current.prompt}
+          chain={current.chain}
+          palette={current.palette}
+          gatesLocked={current.gatesLocked}
+          targetTable={current.targetTable}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
           onDone={handleInteractionDone}

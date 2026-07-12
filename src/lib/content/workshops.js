@@ -1218,6 +1218,34 @@ export const COMPUTER_WORKSHOP_MODULES = [
     sub: 'Switch bits into numbers, letters, pixels, colour, and sound.',
     interactions: [
       ...BIT_DATA_WORKSHOP,
+      {
+        type: 'bitsnumber', mode: 'build',
+        prompt: 'Flip switches and watch the total. Build 13.',
+        bits: 4, target: 13,
+        correctFeedback: 'Correct. 8 + 4 + 1 = 13, so 13 is 1101 in binary.',
+        incorrectFeedback: 'Watch the running total under the switches: you need 8 + 4 + 1.'
+      },
+      {
+        type: 'bitsnumber', mode: 'read',
+        prompt: 'Read the bits. What number is this?',
+        shown: '0110', options: [3, 6, 9, 12],
+        correctFeedback: 'Correct. 4 + 2 = 6.',
+        incorrectFeedback: 'Only the 4 and the 2 are switched on: 4 + 2 = 6.'
+      },
+      {
+        type: 'bitsword', mode: 'build',
+        prompt: 'Letters are numbers in disguise. Build the byte for A — watch the letter card as you flip.',
+        target: 'A',
+        correctFeedback: 'Correct. A is code 65: 64 + 1, or 01000001.',
+        incorrectFeedback: 'A is code 65. You need the 64 switch and the 1 switch.'
+      },
+      {
+        type: 'bitsword', mode: 'read',
+        prompt: 'A byte arrives over the network. Which letter is it?',
+        shown: '01001000', options: ['E', 'H', 'L', 'O'],
+        correctFeedback: 'Correct. 64 + 8 = 72, and code 72 is H.',
+        incorrectFeedback: '64 + 8 = 72. Code 72 is the letter H.'
+      },
       S('A sensor stores 00000000 for darkness and 11111111 for full brightness. What is the computer really storing?',
         [O('measurements','Measurements written as bits',true), O('light','Actual light trapped inside memory',false)],
         'Correct. The machine stores measured values, not the physical light itself.',
@@ -1250,6 +1278,34 @@ export const COMPUTER_WORKSHOP_MODULES = [
     title: 'Logic gate trainer',
     sub: 'Build confidence with AND, OR, NOT, and gate behaviour.',
     interactions: [
+      {
+        type: 'gatebuilder', mode: 'pick',
+        prompt: 'Pick the gate that matches this truth table. Toggle A and B to test your circuit live.',
+        chain: 1, palette: ['AND', 'OR', 'XOR', 'NAND'], targetTable: [0, 0, 0, 1],
+        correctFeedback: 'Correct. Only AND outputs 1 exclusively when both inputs are 1.',
+        incorrectFeedback: 'The table lights the bulb only for A=1, B=1 — that strict "both must agree" rule is AND.'
+      },
+      {
+        type: 'gatebuilder', mode: 'pick',
+        prompt: 'This table lights the bulb when the inputs DISAGREE. Which gate is that?',
+        chain: 1, palette: ['AND', 'OR', 'XOR', 'NAND'], targetTable: [0, 1, 1, 0],
+        correctFeedback: 'Correct. XOR means "exactly one, not both".',
+        incorrectFeedback: 'Bulb on only when A and B differ — that is XOR, the exclusive OR.'
+      },
+      {
+        type: 'gatebuilder', mode: 'solve',
+        prompt: 'The gates are fixed. Toggle A, B, and C until the bulb lights.',
+        chain: 2, gatesLocked: ['AND', 'OR'],
+        correctFeedback: 'Correct. (A AND B) OR C — either both A and B, or just C, lights it.',
+        incorrectFeedback: 'Trace the wires: the first gate needs A and B together, OR the bulb takes C directly.'
+      },
+      {
+        type: 'gatebuilder', mode: 'solve',
+        prompt: 'Harder wiring: light the bulb through an XOR feeding an AND.',
+        chain: 2, gatesLocked: ['XOR', 'AND'],
+        correctFeedback: 'Correct. A and B must disagree AND C must be on.',
+        incorrectFeedback: 'The XOR only passes 1 when A and B differ — and then the AND still needs C.'
+      },
       S('A bit can only hold one yes/no state. Which pair matches that idea?',
         [O('onezero','1 and 0',true), O('onetwo','1 and 2',false)],
         'Exactly. A bit is one binary state.',
