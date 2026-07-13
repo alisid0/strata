@@ -2,6 +2,7 @@
   import { PATHS, totalBoards } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { displayName } from '../lib/stores/auth.js';
+  import { getLeague } from '../lib/stores/league.js';
 
   export let onNavigate;
 
@@ -11,6 +12,10 @@
   $: overall = ($progress, progress.getOverall());
   $: pct = TOTAL_BOARDS ? Math.round((overall.read / TOTAL_BOARDS) * 100) : 0;
   $: streak = ($progress, progress.getStreak());
+  $: ws = ($progress, progress.getWs());
+  $: weeklyPoints = ($progress, progress.getWeeklyPoints());
+  $: league = ($progress, getLeague());
+  $: yourRank = league.members.findIndex(m => m.isYou) + 1;
   $: activity = ($progress, progress.getActivity(7));
   $: activeDays = activity.filter(a => a.active).length;
   $: pace = ($progress, progress.getPace());
@@ -32,6 +37,14 @@
       <h1>W Score</h1>
     </div>
     <div class="avatar">{$displayName.charAt(0).toUpperCase()}</div>
+  </div>
+
+  <!-- W hero: the primary metric -->
+  <div class="w-hero">
+    <div class="w-hero-number">W {ws}</div>
+    <div class="w-hero-sub">
+      {#if ws === 0}Your journey starts here{:else}this week: {weeklyPoints} pts{/if}
+    </div>
   </div>
 
   <!-- Boards read + Streak -->
@@ -56,6 +69,23 @@
       </div>
     {/each}
     <span class="consistency-summary">{activeDays} of 7 days</span>
+  </div>
+
+  <!-- League (local-first preview) -->
+  <div class="league-head">
+    <span class="section-label">{league.name} · you're #{yourRank}</span>
+    <span class="league-reset">Resets Monday</span>
+  </div>
+  <div class="league-card">
+    {#each league.members.slice(0, Math.max(8, yourRank + 1)) as m, i}
+      <div class="league-row" class:you={m.isYou}>
+        <span class="league-rank">{i + 1}</span>
+        <span class="league-avatar">{m.name.charAt(0)}</span>
+        <span class="league-name">{m.name}</span>
+        <span class="league-pts">{m.points} pts</span>
+      </div>
+    {/each}
+    <div class="league-note">Preview league — goes live with accounts.</div>
   </div>
 
   <!-- Metrics -->
@@ -95,6 +125,42 @@
   .avatar {
     width: 36px; height: 36px; border-radius: 50%; background: var(--qx-accent); color: #fff;
     font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  /* W hero */
+  .w-hero {
+    text-align: center; padding: 18px 0 22px;
+  }
+  .w-hero-number {
+    font-size: 52px; font-weight: 900; color: var(--qx-green-text); line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .w-hero-sub { font-size: 13px; font-weight: 700; color: var(--qx-text-dim); margin-top: 6px; }
+
+  /* League */
+  .league-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .league-reset { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); }
+  .league-card {
+    border: 1.5px solid var(--qx-border); background: var(--qx-surface);
+    border-radius: var(--qx-radius-md); padding: 6px 0 0; margin-bottom: 20px;
+  }
+  .league-row {
+    display: flex; align-items: center; gap: 10px; padding: 8px 14px;
+    font-size: 13px; font-weight: 700; color: var(--qx-text);
+  }
+  .league-row.you { background: var(--qx-accent-soft); }
+  .league-rank { width: 20px; text-align: right; color: var(--qx-text-faint); font-variant-numeric: tabular-nums; }
+  .league-avatar {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--qx-surface-2);
+    color: var(--qx-text-dim); font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .league-row.you .league-avatar { background: var(--qx-accent); color: #fff; }
+  .league-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .league-pts { color: var(--qx-text-dim); font-variant-numeric: tabular-nums; }
+  .league-note {
+    padding: 8px 14px 10px; font-size: 11px; font-weight: 600; color: var(--qx-text-faint);
+    border-top: 1px solid var(--qx-border);
   }
 
   .top-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }

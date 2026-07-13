@@ -11,27 +11,25 @@
   import WorkshopLab from './views/WorkshopLab.svelte';
   import PathView from './views/PathView.svelte';
   import WScore from './views/WScore.svelte';
-  import Leaderboard from './views/Leaderboard.svelte';
-  import OtherUserStats from './views/OtherUserStats.svelte';
   import Snippets from './views/Snippets.svelte';
   import Reader from './views/Reader.svelte';
   import Quiz from './views/Quiz.svelte';
   import Author from './views/Author.svelte';
   import BottomNav from './lib/components/qubix/BottomNav.svelte';
+  import WToast from './lib/components/qubix/WToast.svelte';
 
   // loading | auth | onboarding | home | topics | topicDetail | stats | leaderboard | otherUserStats | snippets | reader | quiz | author
   let currentView = 'loading';
   let currentPathId = '';
-  let currentUserId = '';
   let readerNumbers = [];
   let readerStart = 1;
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
 
   const TAB_VIEWS = ['home', 'path', 'workshop', 'wscore'];
   const TAB_ORDER = ['home', 'path', 'workshop', 'wscore'];
-  const PUSH_VIEWS = ['topicDetail', 'leaderboard', 'otherUserStats', 'reader', 'quiz', 'author', 'snippetMode'];
+  const PUSH_VIEWS = ['topicDetail', 'reader', 'quiz', 'author', 'snippetMode'];
   // Old view ids still used by callers/deep-links → their streamlined homes.
-  const LEGACY_VIEWS = { topics: 'path', stats: 'wscore', map: 'path', snippets: 'snippetMode' };
+  const LEGACY_VIEWS = { topics: 'path', stats: 'wscore', map: 'path', snippets: 'snippetMode', leaderboard: 'wscore', otherUserStats: 'wscore' };
 
   // Honour reduced-motion: Svelte's fly is JS-driven, so the CSS media query
   // can't stop it — zero the distance/duration instead.
@@ -95,7 +93,6 @@
     }
 
     if (view === 'topicDetail') { currentPathId = arg; currentView = 'topicDetail'; }
-    else if (view === 'otherUserStats') { currentUserId = arg || ''; currentView = 'otherUserStats'; }
     else if (view === 'reader') {
       readerNumbers = arg?.numbers || Array.from({ length: 84 }, (_, i) => i + 1);
       readerStart = arg?.start || readerNumbers[0] || 1;
@@ -145,16 +142,6 @@
       <PathView pathId={currentPathId} onNavigate={navigate} />
     </div>
 
-  {:else if currentView === 'leaderboard'}
-    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
-      <Leaderboard onNavigate={navigate} />
-    </div>
-
-  {:else if currentView === 'otherUserStats'}
-    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
-      <OtherUserStats userId={currentUserId} onNavigate={navigate} />
-    </div>
-
   {:else if currentView === 'reader'}
     <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
       <Reader
@@ -184,6 +171,8 @@
       <Snippets onClose={() => navigate('home')} />
     </div>
   {/if}
+
+  <WToast />
 </div>
 
 <style>

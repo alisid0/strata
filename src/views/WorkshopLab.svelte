@@ -193,6 +193,9 @@
     finished = true;
     if (challenge && activePathId) {
       progress.recordQuizResult(activePathId, finalScore, finalTotal);
+    } else {
+      // Practice run: +1 per correct + 3 completion bonus, once per module ever.
+      progress.recordWorkshopComplete(activeModuleId, finalScore, finalTotal);
     }
   }
 

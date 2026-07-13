@@ -100,12 +100,17 @@
   const reduceMotion = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function goDeeper(i) {
-    const next = availableFloors(i).find(k => k > depthOf[i]);
+    const floors = availableFloors(i);
+    const next = floors.find(k => k > depthOf[i]);
     if (next === undefined) return;
     floorDir = 1;
     depthOf[i] = next;
     depthOf = [...depthOf];
     rebuildDerived();
+    // Reached the deepest floor → +2 W (once ever per board, store-side).
+    if (next === floors[floors.length - 1]) {
+      progress.recordDeepestFloor(numbers[i]);
+    }
   }
 
   function goShallower(i) {
