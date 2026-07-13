@@ -183,6 +183,7 @@
   $: workshopSub = challenge ? 'Randomized targets, one run against the clock. Every attempt is different.' : (activeModule?.sub || track.sub);
   $: activePathId = activeModule?.pathId || track.pathId;
   $: interactions = challenge ? challenge.interactions : (activeModule?.getWorkshop ? activeModule.getWorkshop() : []);
+  $: workshopRunKey = `${activeTrack}-${activeModuleId}-${challenge ? 'challenge' : 'practice'}-${runId}`;
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
   $: hasChallenge = !!getChallengeForModule(activeModuleId);
 
@@ -334,7 +335,7 @@
         {/if}
       </div>
     {:else}
-      {#key runId}
+      {#key workshopRunKey}
         <Workshop interactions={interactions} timeLimitSec={challenge?.timeLimitSec || 0} onDone={finishWorkshop} />
       {/key}
     {/if}

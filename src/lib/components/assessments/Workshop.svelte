@@ -14,6 +14,7 @@
   import MatrixTransform from './MatrixTransform.svelte';
   import MatrixLab from './MatrixLab.svelte';
   import CoordinateDrill from './CoordinateDrill.svelte';
+  import CoordinateWorkbook from './CoordinateWorkbook.svelte';
   import UnitDimensionCheck from './UnitDimensionCheck.svelte';
   import PixiSceneChoice from './PixiSceneChoice.svelte';
   import ThermoLab from './ThermoLab.svelte';
@@ -236,6 +237,22 @@
           distanceTolerance={current.distanceTolerance}
           pointA={current.pointA}
           pointB={current.pointB}
+          xRange={current.xRange}
+          yRange={current.yRange}
+          correctFeedback={current.correctFeedback}
+          incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'coordworkbook'}
+        <CoordinateWorkbook
+          mode={current.mode}
+          prompt={current.prompt}
+          points={current.points}
+          targetId={current.targetId}
+          targetCoordinate={current.targetCoordinate}
+          targetQuadrant={current.targetQuadrant}
+          vector={current.vector}
+          axis={current.axis}
           xRange={current.xRange}
           yRange={current.yRange}
           correctFeedback={current.correctFeedback}
