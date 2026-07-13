@@ -4,6 +4,7 @@
   import { fly, fade } from 'svelte/transition';
   import { initAuth, isAuthenticated } from './lib/stores/auth.js';
   import { profile } from './lib/stores/profile.js';
+  import { progress } from './lib/stores/progress.js';
   import { engagement } from './lib/stores/engagement.js';
   import { retryIssueReportQueue } from './lib/stores/issueReports.js';
   import { theme } from './lib/stores/theme.js';
@@ -54,6 +55,7 @@
 
     async function boot() {
     try { await initAuth(); } catch (_) {}
+    progress.init();
     const profileData = await profile.init();
     stopEngagement = engagement.start(() => currentView);
     retryIssueReportQueue();

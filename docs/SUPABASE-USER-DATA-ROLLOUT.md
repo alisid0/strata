@@ -56,6 +56,35 @@ Every user-data table has Row Level Security enabled. Policies only allow an aut
 auth.uid() = user_id
 ```
 
+## Current App Wiring
+
+The frontend now keeps local progress as the offline fallback and syncs it to Supabase after authentication is ready.
+
+Implemented sync coverage:
+- board opens, deepest floor reached, recall dates, and board-level Ws
+- path quiz state, quiz scores, and quiz attempts
+- workshop completions, best streak, challenge flag, and workshop metadata
+- daily activity for streak and pace tracking
+- W events with idempotent refs so repeated syncs do not double-award normal rewards
+
+The app initializes auth first, then initializes progress sync from `src/App.svelte`.
+
+If the Supabase migration is not live yet, the app still works locally through `localStorage`, but signed-in users will not get cloud progress persistence until the tables and policies exist.
+
+## Production Auth Setup
+
+In Supabase Dashboard:
+- enable Email sign-in if it is not already enabled
+- enable Google provider before public launch
+- add production redirect URL: `https://strata-nine-pi.vercel.app`
+- add local redirect URL for testing: `http://localhost:5173`
+- add the final custom domain when the brand domain is connected
+
+In Vercel:
+- confirm `VITE_SUPABASE_URL` is set
+- confirm `VITE_SUPABASE_ANON_KEY` is set
+- never add the Supabase service role key to frontend or Vercel client env vars
+
 ## Rollout Order
 
 1. Apply the migration in Supabase SQL Editor or with the Supabase CLI.
@@ -64,7 +93,7 @@ auth.uid() = user_id
 4. Create one test user with Google sign-in.
 5. Confirm both users get a row in `user_profiles`.
 6. Confirm user A cannot read user B's rows.
-7. Wire the app to sync local progress into the new tables.
+7. Test that board progress, quiz attempts, workshop attempts, Ws, and daily activity sync after sign-in.
 8. Keep localStorage as offline/cache fallback.
 9. After sync is stable, make authenticated progress the source of truth.
 10. Add account deletion/export UI before wide public launch.

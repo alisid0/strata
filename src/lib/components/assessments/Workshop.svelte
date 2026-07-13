@@ -21,6 +21,9 @@
   import BitsToNumber from './BitsToNumber.svelte';
   import BitsToWord from './BitsToWord.svelte';
   import GateBuilder from './GateBuilder.svelte';
+  import BitMachineLab from './BitMachineLab.svelte';
+  import UnitForgeLab from './UnitForgeLab.svelte';
+  import BondLab from './BondLab.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -328,6 +331,21 @@
           targetTable={current.targetTable}
           correctFeedback={current.correctFeedback}
           incorrectFeedback={current.incorrectFeedback}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'bitmachine'}
+        <BitMachineLab
+          prompt={current.prompt}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'unitforge'}
+        <UnitForgeLab
+          prompt={current.prompt}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'bondlab'}
+        <BondLab
+          prompt={current.prompt}
           onDone={handleInteractionDone}
         />
       {:else if current.type === 'scenario'}

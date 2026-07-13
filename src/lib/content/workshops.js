@@ -1217,6 +1217,10 @@ export const COMPUTER_WORKSHOP_MODULES = [
     title: 'Binary and data lab',
     sub: 'Switch bits into numbers, letters, pixels, colour, and sound.',
     interactions: [
+      {
+        type: 'bitmachine',
+        prompt: 'Use a tiny machine to build a number, handle a carry, and run instructions.'
+      },
       ...BIT_DATA_WORKSHOP,
       {
         type: 'bitsnumber', mode: 'build',
@@ -1582,6 +1586,10 @@ export function getBitDataWorkshop() {
 }
 
 export const PHYSICS_UNITS_WORKSHOP = [
+  {
+    type: 'unitforge',
+    prompt: 'Measure, convert, forge, and judge units before trusting a physics answer.'
+  },
   { type: 'sorting', boxes: [
     { id: 'base', label: 'Base unit' },
     { id: 'derived', label: 'Derived unit' }
@@ -1894,6 +1902,10 @@ export function getPhysicsCoreWorkshop() {
 }
 
 export const CHEMISTRY_CORE_WORKSHOP = [
+  {
+    type: 'bondlab',
+    prompt: 'Place atoms on the bench and form stable compounds by sharing or transferring electrons.'
+  },
   {
     type: 'atombuilder',
     prompt: 'Build neutral oxygen. Protons set the element; electrons set the charge.',
