@@ -134,10 +134,10 @@ BB CONTENT PIPELINE
 E2E COMPLETE: ${e2e} BBs  (text + images + GIF)
 
 OPEN BLOCKERS
-  ✗ uploadReference() — automation blocked
+  ✗ uploadReference() — image automation blocked
   ✗ quiz_results table — not in schema.sql
-  ✗ Leaderboard — placeholder data
-  ✗ Quiz.svelte — still chalk-styled
+  ✗ Audio coverage — ${db.audio} boards; entry topics need a TTS batch run
+  ✗ Board images — 0 curated boards have a top image
 `.trim();
 
   const col = (v, good = false, warn = false) => {
@@ -199,8 +199,8 @@ OPEN BLOCKERS
     <div class="section-label">Open Blockers</div>
     <div class="blocker"><span class="tag">SCRIPT</span><span>uploadReference() — Playwright click blocked by role="presentation"</span></div>
     <div class="blocker"><span class="tag">SCHEMA</span><span>quiz_results table missing from schema.sql</span></div>
-    <div class="blocker"><span class="tag">DATA</span><span>Leaderboard + streaks are placeholder data</span></div>
-    <div class="blocker"><span class="tag">UX</span><span>Quiz.svelte still uses chalk tokens</span></div>
+    <div class="blocker"><span class="tag">AUDIO</span><span>${db.audio} boards narrated — entry topics need a TTS batch run</span></div>
+    <div class="blocker"><span class="tag">MEDIA</span><span>0 curated boards have a top image</span></div>
   </div>
 </div></body></html>`;
 
