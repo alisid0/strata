@@ -2528,6 +2528,64 @@ export function getLineCoreWorkshop() {
   return LINE_CORE_WORKSHOP;
 }
 
+// ── Functions workshop — Function Machine (docs/FUNCTIONS-WORKSHOP-DESIGN.md) ──
+
+export const MATHS_FUNCTIONS_WORKSHOP = [
+  {
+    type: 'functionmachine',
+    prompt: 'Feed inputs, repair broken rules, graph outputs, reverse machines, and chain functions.'
+  },
+  S('A relation sends 4 to 10 on Monday and 4 to 12 on Tuesday. Is it a function?',
+    [O('no', 'No — one input gave two outputs', true), O('yes', 'Yes — outputs are allowed to vary', false)],
+    'Correct. A function must give the same output for the same input, every time.',
+    'A function is reliable: input 4 must always produce the same output.'),
+  S('Machine h uses h(x) = x - 4. What does h(10) mean?',
+    [O('feed', 'Feed 10 into machine h: the output is 6', true), O('times', 'Multiply h by 10', false)],
+    'Good. The number inside the brackets is the input; the rule turns it into the output.',
+    'h(10) reads as "put 10 into machine h". Apply the rule: 10 - 4 = 6.'),
+  { type: 'sorting',
+    boxes: [
+      { id: 'domain', label: 'Domain (inputs)' },
+      { id: 'range', label: 'Range (outputs)' }
+    ],
+    items: [
+      { id: 'safe', label: 'The list of numbers allowed in', box: 'domain' },
+      { id: 'produced', label: 'The values the machine produces', box: 'range' },
+      { id: 'x', label: 'The x in f(x)', box: 'domain' },
+      { id: 'fx', label: 'The value of f(x)', box: 'range' }
+    ] },
+  S('A graph is scanned with a vertical line. At x = 3 the line crosses the curve twice. What does that mean?',
+    [O('notfn', 'Not a function — input 3 has two outputs', true), O('fn', 'A function — twice is fine', false)],
+    'Correct. If a vertical line hits twice, one input has split into two outputs.',
+    'One x-position cannot give two y-values. The double hit breaks the function rule.'),
+  { type: 'sorting',
+    boxes: [
+      { id: 'linear', label: 'Steady add (linear)' },
+      { id: 'expo', label: 'Repeated multiply (exponential)' },
+      { id: 'quad', label: 'Square rule (quadratic)' }
+    ],
+    items: [
+      { id: 'l1', label: 'Outputs: 3, 5, 7, 9', box: 'linear' },
+      { id: 'e1', label: 'Outputs: 2, 4, 8, 16', box: 'expo' },
+      { id: 'q1', label: 'Outputs: 0, 1, 4, 9', box: 'quad' },
+      { id: 'l2', label: 'x + 7', box: 'linear' },
+      { id: 'e2', label: '3^x', box: 'expo' },
+      { id: 'q2', label: 'x²', box: 'quad' }
+    ] },
+  S('Machine f multiplies by 4. The output tray shows 20. What was the input?',
+    [O('five', '5 — reverse it by dividing by 4', true), O('eighty', '80 — reverse it by multiplying again', false)],
+    'Correct. The inverse undoes the machine: divide 20 by 4 to walk back to 5.',
+    'To undo "multiply by 4", divide by 4. The inverse walks the output back to the input.'),
+  S('g(x) = x + 1 runs first, then f(x) = 2x. What is f(g(3))?',
+    [O('eight', '8', true), O('seven', '7', false), O('six', '6', false)],
+    'Correct. g turns 3 into 4, then f doubles it to 8. The inside machine runs first.',
+    'Run g first: 3 + 1 = 4. Then feed 4 to f: 2 × 4 = 8.')
+];
+
+export function getMathsFunctionsWorkshop() {
+  return cloneInteractions(MATHS_FUNCTIONS_WORKSHOP);
+}
+
 // ── Physics workshops ──
 
 export const PHYS_WORKSHOPS = {

@@ -6,6 +6,7 @@
     getComputerWorkshopModule,
     getComputerWorkshopModules,
     getLineCoreWorkshop,
+    getMathsFunctionsWorkshop,
     getMathsExpLogsWorkshop,
     getMathsMatricesWorkshop,
     getPhysicsElectricityWorkshop,
@@ -63,6 +64,14 @@
           sub: 'Drag real points and lines on a live coordinate plane.',
           pathId: 'LINE_001',
           getWorkshop: getLineCoreWorkshop
+        },
+        {
+          id: 'functions',
+          label: 'Functions',
+          title: 'Function Machine',
+          sub: 'Feed inputs, repair rules, read graphs, and chain machines.',
+          pathId: 'MATH_FUNCTIONS',
+          getWorkshop: getMathsFunctionsWorkshop
         },
         {
           id: 'exp-logs',

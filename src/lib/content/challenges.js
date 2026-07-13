@@ -400,9 +400,124 @@ function physicsChallenge() {
   ];
 }
 
+// ── maths: functions ──────────────────────────────────────────────────────────
+function shuffleOpts(opts) {
+  const s = [...opts];
+  for (let i = s.length - 1; i > 0; i--) {
+    const j = ri(0, i);
+    [s[i], s[j]] = [s[j], s[i]];
+  }
+  return s;
+}
+
+function genFunctionValue() {
+  const a = ri(2, 5), b = ri(1, 9), x = ri(0, 6);
+  const answer = a * x + b;
+  const distractors = [...new Set([x + b, a * x, a + b + x])].filter(v => v !== answer).slice(0, 3);
+  return {
+    type: 'scenario',
+    prompt: `Machine f uses f(x) = ${a}x + ${b}. What is f(${x})?`,
+    options: shuffleOpts([
+      { id: 'correct', label: String(answer), correct: true },
+      ...distractors.map((v, i) => ({ id: `d${i}`, label: String(v), correct: false })),
+    ]),
+    correctFeedback: 'Correct. Put the input into the rule and calculate the output.',
+    incorrectFeedback: `Use ${a} × ${x} + ${b} = ${answer}.`,
+  };
+}
+
+function genBrokenTable() {
+  const brokenIn = ri(1, 5);
+  const goodOut = brokenIn + ri(2, 5);
+  const badOut = goodOut + ri(1, 4);
+  const okIn = riNot(1, 6, [brokenIn]);
+  const isABroken = ri(0, 1) === 1;
+  const tableFor = (broken) => broken
+    ? `${brokenIn}→${goodOut}, ${okIn}→${okIn + 2}, ${brokenIn}→${badOut}`
+    : `${brokenIn}→${goodOut}, ${okIn}→${okIn + 2}, ${brokenIn}→${goodOut}`;
+  return {
+    type: 'scenario',
+    prompt: `One of these tables is NOT a function.\n\nTable A: ${tableFor(isABroken)}\nTable B: ${tableFor(!isABroken)}`,
+    options: shuffleOpts([
+      { id: 'a', label: 'Table A', correct: isABroken },
+      { id: 'b', label: 'Table B', correct: !isABroken },
+    ]),
+    correctFeedback: `Correct. Input ${brokenIn} appears twice with different outputs — the machine is unreliable.`,
+    incorrectFeedback: `Look for input ${brokenIn} giving both ${goodOut} and ${badOut} in the broken table.`,
+  };
+}
+
+function genRangeFromDomain() {
+  const domain = [0, ri(1, 2), ri(3, 4)];
+  const kind = pick(['square', 'double', 'add']);
+  const k = ri(2, 5);
+  const fn = kind === 'square' ? (x) => x * x : kind === 'double' ? (x) => k * x : (x) => x + k;
+  const rule = kind === 'square' ? 'f(x) = x²' : kind === 'double' ? `f(x) = ${k}x` : `f(x) = x + ${k}`;
+  const range = domain.map(fn);
+  const wrong1 = domain.join(', ');
+  const wrong2 = domain.map(x => fn(x) + 1).join(', ');
+  return {
+    type: 'scenario',
+    prompt: `Domain: {${domain.join(', ')}}. Rule: ${rule}. What is the range?`,
+    options: shuffleOpts([
+      { id: 'correct', label: `{${range.join(', ')}}`, correct: true },
+      { id: 'w1', label: `{${wrong1}}`, correct: false },
+      { id: 'w2', label: `{${wrong2}}`, correct: false },
+    ]),
+    correctFeedback: 'Correct. The range is every output the machine actually produces from its domain.',
+    incorrectFeedback: `Apply ${rule} to each domain value: {${range.join(', ')}}.`,
+  };
+}
+
+function genComposition() {
+  const b = ri(1, 4), a = ri(2, 4), x = ri(1, 5);
+  const mid = x + b, out = a * mid;
+  return {
+    type: 'scenario',
+    prompt: `g(x) = x + ${b} runs first, then f(x) = ${a}x. What is f(g(${x}))?`,
+    options: shuffleOpts([
+      { id: 'correct', label: String(out), correct: true },
+      { id: 'swap', label: String(a * x + b), correct: false },
+      { id: 'gonly', label: String(mid), correct: false },
+    ]),
+    correctFeedback: `Correct. g makes ${mid}, then f turns it into ${out}.`,
+    incorrectFeedback: `Inside machine first: ${x} + ${b} = ${mid}, then ${a} × ${mid} = ${out}.`,
+  };
+}
+
+function genInverseOp() {
+  const k = ri(2, 9);
+  const kind = pick(['add', 'multiply']);
+  const rule = kind === 'add' ? `f(x) = x + ${k}` : `f(x) = ${k}x`;
+  const answer = kind === 'add' ? `subtract ${k}` : `divide by ${k}`;
+  const wrongs = kind === 'add'
+    ? [`add ${k}`, `divide by ${k}`]
+    : [`multiply by ${k}`, `subtract ${k}`];
+  return {
+    type: 'scenario',
+    prompt: `Machine: ${rule}. Which operation runs it backwards?`,
+    options: shuffleOpts([
+      { id: 'correct', label: answer, correct: true },
+      ...wrongs.map((w, i) => ({ id: `w${i}`, label: w, correct: false })),
+    ]),
+    correctFeedback: 'Correct. The inverse undoes the machine and walks the output back to the input.',
+    incorrectFeedback: `To undo "${rule.split('= ')[1]}", ${answer}.`,
+  };
+}
+
+function functionsChallenge() {
+  return [
+    genFunctionValue(), genBrokenTable(),
+    genRangeFromDomain(), genFunctionValue(),
+    genComposition(), genInverseOp(),
+    genBrokenTable(), genComposition(),
+  ];
+}
+
 // ── registry ──────────────────────────────────────────────────────────────────
 const CHALLENGES = {
   'line-core': { build: lineChallenge, timeLimitSec: 150 },
+  'functions': { build: functionsChallenge, timeLimitSec: 150 },
   'matrices': { build: matricesChallenge, timeLimitSec: 120 },
   'binary-data': { build: binaryChallenge, timeLimitSec: 120 },
   'logic-gates': { build: logicChallenge, timeLimitSec: 150 },
