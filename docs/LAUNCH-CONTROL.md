@@ -346,6 +346,42 @@ Device checks:
 Known warning class:
 - Existing Svelte accessibility warnings exist in the build. These should be cleaned when possible, but they are not currently blocking launch if the flows work.
 
+## 11. Android Play Store Pilot
+
+Priority: high
+
+Reference file:
+- `docs/ANDROID-PLAY-LAUNCH.md`
+
+Recommended first mobile release:
+- Android first through Google Play.
+- Use a Trusted Web Activity wrapper around the live Qubix web app.
+- Keep web/tablet/iPad as the main version.
+- Use Apple App Store after the Android pilot produces real feedback.
+
+Why this route:
+- New BBs, edited floors, images, GIFs, audio, and existing workshop formats can update through the web/backend without forcing Play Store updates.
+- Android users get an app-store install experience.
+- The team avoids maintaining two separate products too early.
+
+Store updates should be needed only for:
+- Android wrapper changes
+- native notification bridge
+- Play Billing
+- new native permissions
+- target SDK requirements
+- launcher name/icon changes
+
+Immediate Android blockers:
+- Final public domain
+- Final package id
+- Google Play Developer account
+- Support email
+- Store screenshots
+- Data Safety answers
+- Signed Android App Bundle
+- Digital Asset Links file after the signing certificate is known
+
 ## Two-Week Execution Plan
 
 ### Week 1
