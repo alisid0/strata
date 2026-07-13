@@ -2,12 +2,14 @@
   import { theme } from '../../stores/theme.js';
   import { textSize } from '../../stores/textSize.js';
   import { displayName, logOut } from '../../stores/auth.js';
+  import IssueReportDialog from './IssueReportDialog.svelte';
 
   export let open = false;
   export let onClose = () => {};
   export let onNavigate = () => {};
 
   const SIZE_LABEL = { s: 'Small', m: 'Default', l: 'Large', xl: 'X-Large' };
+  let reportOpen = false;
 
   async function handleLogout() {
     try { await logOut(); } catch (_) {}
@@ -45,11 +47,13 @@
       </div>
       <a class="row link" href="/terms.html" target="_blank" rel="noopener">Terms and Conditions<span class="chev">›</span></a>
       <a class="row link" href="/privacy.html" target="_blank" rel="noopener">Privacy Policy<span class="chev">›</span></a>
+      <button class="row link" on:click={() => reportOpen = true}>Report a problem<span class="chev">›</span></button>
       <button class="row link danger" on:click={handleLogout}>Log out</button>
 
       <div class="version">Qubix</div>
     </div>
   </div>
+  <IssueReportDialog open={reportOpen} onClose={() => reportOpen = false} />
 {/if}
 
 <style>

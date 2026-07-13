@@ -1,28 +1,31 @@
-import { writable, derived, get } from 'svelte/store';
+import { writable, get } from 'svelte/store';
+import { supabase } from '../supabase.js';
 import { user } from './auth.js';
 import { PATHS } from '../content/paths.js';
 import { notifyW } from './wtoast.js';
 
-const KEY = 'strata-progress-v2'; // same storage key; payload migrates to version: 3
+const KEY = 'strata-progress-v2';
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-// Recall scheduler intervals (days). A pass advances one stage; a miss resets
-// to stage 0. Stage 2 repeats at 21d indefinitely.
+const SYNC_DEBOUNCE_MS = 1200;
 const RECALL_INTERVALS = [1, 7, 21];
 
-/** Local-midnight Monday of the week containing `dt` — the league week anchor. */
+const WELL_READ_RATIO = 0.7;
+const MASTERED_RATIO = 0.9;
+const RECALL_GAP_DAYS = 6.5;
+const MASTERED_TWICE_GAP_DAYS = 27.5;
+
 function weekStart(dt = new Date()) {
   const d = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
-  const dow = (d.getDay() + 6) % 7; // Mon=0 .. Sun=6
+  const dow = (d.getDay() + 6) % 7;
   d.setDate(d.getDate() - dow);
   return d;
 }
+
 function weekKey(dt = new Date()) {
   const ws = weekStart(dt);
   return `${ws.getFullYear()}-${String(ws.getMonth() + 1).padStart(2, '0')}-${String(ws.getDate()).padStart(2, '0')}`;
 }
 
-/** Local YYYY-MM-DD key for a date (used by the daily-activity log). */
 function dayKey(dt = new Date()) {
   const y = dt.getFullYear();
   const m = String(dt.getMonth() + 1).padStart(2, '0');
@@ -30,58 +33,211 @@ function dayKey(dt = new Date()) {
   return `${y}-${m}-${d}`;
 }
 
-/** Consecutive active days ending today (a still-inactive today doesn't break it). */
 function computeStreak(activity) {
   if (!activity) return 0;
   let streak = 0;
   const d = new Date();
-  if (!activity[dayKey(d)]) d.setDate(d.getDate() - 1); // grace: today need not be active yet
-  while (activity[dayKey(d)]) { streak++; d.setDate(d.getDate() - 1); }
+  if (!activity[dayKey(d)]) d.setDate(d.getDate() - 1);
+  while (activity[dayKey(d)]) {
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
   return streak;
 }
 
-// Thresholds matching PATHS.md
-const WELL_READ_RATIO = 0.7;
-const MASTERED_RATIO = 0.9;
-const RECALL_GAP_DAYS = 6.5;
-const MASTERED_TWICE_GAP_DAYS = 27.5;
+function emptyState() {
+  return {
+    version: 3,
+    boards: {},
+    paths: {},
+    quizzes: {},
+    activity: {},
+    ws: { total: 0, events: [], granted: {}, week: { key: weekKey(), earned: 0 } },
+    sync: { attempts: [] }
+  };
+}
 
-function createProgressStore() {
-  const { subscribe, set, update } = writable(loadFromStorage());
+function normalizeState(data) {
+  const fallback = emptyState();
+  if (!data || typeof data !== 'object') data = {};
+  data.version = 3;
+  data.boards = data.boards || {};
+  data.paths = data.paths || {};
+  data.quizzes = data.quizzes || {};
+  data.activity = data.activity || {};
+  data.ws = data.ws || fallback.ws;
+  data.ws.total = data.ws.total || 0;
+  data.ws.events = Array.isArray(data.ws.events) ? data.ws.events : [];
+  data.ws.granted = data.ws.granted || {};
+  data.ws.week = data.ws.week || { key: weekKey(), earned: 0 };
+  data.sync = data.sync || { attempts: [] };
+  data.sync.attempts = Array.isArray(data.sync.attempts) ? data.sync.attempts : [];
+  return data;
+}
 
-  function emptyState() {
-    return {
-      version: 3, boards: {}, paths: {}, quizzes: {}, activity: {},
-      ws: { total: 0, events: [], granted: {}, week: { key: weekKey(), earned: 0 } }
-    };
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return emptyState();
+    return normalizeState(JSON.parse(raw));
+  } catch {
+    return emptyState();
+  }
+}
+
+function saveLocal(data) {
+  try { localStorage.setItem(KEY, JSON.stringify(normalizeState(data))); } catch {}
+}
+
+function safeRandomId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
+function latestIso(a, b) {
+  return [a, b].filter(Boolean).sort().at(-1) || null;
+}
+
+function earliestIso(a, b) {
+  return [a, b].filter(Boolean).sort()[0] || null;
+}
+
+function isDuplicateError(error) {
+  return error?.code === '23505' || String(error?.message || '').toLowerCase().includes('duplicate');
+}
+
+function hasProgress(data) {
+  return !!(
+    Object.keys(data.boards || {}).length ||
+    Object.keys(data.paths || {}).length ||
+    Object.keys(data.activity || {}).length ||
+    (data.ws?.events || []).length ||
+    (data.sync?.attempts || []).length
+  );
+}
+
+function mergeBoard(local = {}, remote = {}) {
+  return {
+    ...remote,
+    ...local,
+    firstOpenedAt: earliestIso(local.firstOpenedAt, remote.firstOpenedAt),
+    lastOpenedAt: latestIso(local.lastOpenedAt, remote.lastOpenedAt),
+    openCount: Math.max(local.openCount || 0, remote.openCount || 0),
+    deepestFloorReached: Math.max(local.deepestFloorReached || 0, remote.deepestFloorReached || 0),
+    deepestFloorCompletedAt: local.deepestFloorCompletedAt || remote.deepestFloorCompletedAt || null,
+    recall: local.recall || remote.recall || null
+  };
+}
+
+function mergePath(local = {}, remote = {}) {
+  const lq = local.quiz || {};
+  const rq = remote.quiz || {};
+  const localRatio = (lq.bestScore || 0) / Math.max(lq.bestTotal || 1, 1);
+  const remoteRatio = (rq.bestScore || 0) / Math.max(rq.bestTotal || 1, 1);
+  const best = localRatio >= remoteRatio ? lq : rq;
+
+  return {
+    ...remote,
+    ...local,
+    firstOpenedAt: earliestIso(local.firstOpenedAt, remote.firstOpenedAt),
+    lastOpenedAt: latestIso(local.lastOpenedAt, remote.lastOpenedAt),
+    quiz: {
+      ...rq,
+      ...lq,
+      bestScore: best.bestScore ?? null,
+      bestTotal: best.bestTotal ?? null,
+      firstPassAt: lq.firstPassAt || rq.firstPassAt || null,
+      masteredOnceAt: lq.masteredOnceAt || rq.masteredOnceAt || null,
+      recalledMasteredTwiceAt: lq.recalledMasteredTwiceAt || rq.recalledMasteredTwiceAt || null
+    }
+  };
+}
+
+function mergeStates(localState, remoteState) {
+  const local = normalizeState(localState);
+  const remote = normalizeState(remoteState);
+  const merged = emptyState();
+
+  merged.boards = { ...remote.boards };
+  for (const [bbid, board] of Object.entries(local.boards || {})) {
+    merged.boards[bbid] = mergeBoard(board, merged.boards[bbid]);
   }
 
-  function loadFromStorage() {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (!raw) return emptyState();
-      const data = JSON.parse(raw);
-      if (!data.boards) data.boards = {};
-      if (!data.paths) data.paths = {};
-      if (!data.quizzes) data.quizzes = {};
-      if (!data.activity) data.activity = {};
-      // v2 → v3: add the ws block; every v2 field is preserved untouched.
-      if (!data.ws) data.ws = { total: 0, events: [], granted: {}, week: { key: weekKey(), earned: 0 } };
-      if (!data.ws.granted) data.ws.granted = {};
-      if (!data.ws.week) data.ws.week = { key: weekKey(), earned: 0 };
-      data.version = 3;
-      return data;
-    } catch {
-      return emptyState();
+  merged.paths = { ...remote.paths };
+  for (const [pathId, path] of Object.entries(local.paths || {})) {
+    merged.paths[pathId] = mergePath(path, merged.paths[pathId]);
+  }
+
+  merged.activity = { ...remote.activity };
+  for (const [date, count] of Object.entries(local.activity || {})) {
+    merged.activity[date] = Math.max(merged.activity[date] || 0, count || 0);
+  }
+
+  merged.quizzes = { ...remote.quizzes };
+  for (const [pathId, attempts] of Object.entries(local.quizzes || {})) {
+    const existing = merged.quizzes[pathId] || [];
+    const seen = new Set(existing.map(a => `${a.completedAt}:${a.score}:${a.total}`));
+    merged.quizzes[pathId] = [...existing];
+    for (const attempt of attempts || []) {
+      const key = `${attempt.completedAt}:${attempt.score}:${attempt.total}`;
+      if (!seen.has(key)) merged.quizzes[pathId].push(attempt);
     }
   }
 
-  function persist(data) {
-    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch {}
+  const eventMap = new Map();
+  for (const event of [...(remote.ws.events || []), ...(local.ws.events || [])]) {
+    eventMap.set(`${event.type}:${event.ref}:${event.t || ''}:${event.amount}`, event);
+  }
+  const events = [...eventMap.values()]
+    .sort((a, b) => new Date(a.t || 0) - new Date(b.t || 0))
+    .slice(-200);
+
+  const granted = {};
+  let total = 0;
+  let weekEarned = 0;
+  const wk = weekKey();
+  for (const event of events) {
+    total += event.amount || 0;
+    if (!event.repeatable) granted[`${event.type}:${event.ref}`] = event.amount || 0;
+    if (weekKey(new Date(event.t || Date.now())) === wk) weekEarned += event.amount || 0;
+  }
+  merged.ws = { total, events, granted, week: { key: wk, earned: weekEarned } };
+  merged.sync = { attempts: [...(remote.sync?.attempts || []), ...(local.sync?.attempts || [])] };
+
+  return normalizeState(merged);
+}
+
+function createProgressStore() {
+  const { subscribe, set, update } = writable(loadFromStorage());
+  let currentUser = null;
+  let syncTimer = null;
+  let syncInFlight = false;
+  let hasHydratedRemote = false;
+
+  function persist(data, { sync = true } = {}) {
+    normalizeState(data);
+    saveLocal(data);
+    if (sync) scheduleSync();
   }
 
-  /** Core W award. Idempotent by `type:ref` unless repeatable. Mutates `data`
-   *  in place (callers persist); returns the amount actually awarded. */
+  function scheduleSync(delay = SYNC_DEBOUNCE_MS) {
+    if (!currentUser) return;
+    if (syncTimer) clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => {
+      syncTimer = null;
+      flushRemote();
+    }, delay);
+  }
+
+  function enqueueAttempt(data, kind, payload) {
+    data.sync.attempts.push({
+      id: safeRandomId(),
+      kind,
+      payload,
+      createdAt: new Date().toISOString()
+    });
+  }
+
   function grantWs(data, type, ref, amount, { repeatable = false, bonus = false } = {}) {
     if (!amount || amount <= 0) return 0;
     const key = `${type}:${ref}`;
@@ -89,10 +245,9 @@ function createProgressStore() {
     if (!repeatable) data.ws.granted[key] = amount;
 
     data.ws.total += amount;
-    data.ws.events.push({ t: new Date().toISOString(), type, amount, ref: String(ref) });
+    data.ws.events.push({ t: new Date().toISOString(), type, amount, ref: String(ref), bonus, repeatable });
     if (data.ws.events.length > 200) data.ws.events = data.ws.events.slice(-200);
 
-    // Weekly tally, reset when the Monday anchor moves.
     const wk = weekKey();
     if (data.ws.week.key !== wk) data.ws.week = { key: wk, earned: 0 };
     data.ws.week.earned += amount;
@@ -101,12 +256,227 @@ function createProgressStore() {
     return amount;
   }
 
+  async function loadRemoteState(forUser) {
+    const remote = emptyState();
+    const [boardsResult, pathsResult, quizResult, activityResult, wResult] = await Promise.all([
+      supabase.from('user_board_progress').select('*').eq('user_id', forUser.id),
+      supabase.from('user_path_progress').select('*').eq('user_id', forUser.id),
+      supabase.from('user_quiz_attempts').select('*').eq('user_id', forUser.id).order('completed_at', { ascending: true }).limit(200),
+      supabase.from('user_daily_activity').select('*').eq('user_id', forUser.id),
+      supabase.from('user_w_events').select('*').eq('user_id', forUser.id).order('created_at', { ascending: true }).limit(200)
+    ]);
+
+    for (const result of [boardsResult, pathsResult, quizResult, activityResult, wResult]) {
+      if (result.error) throw result.error;
+    }
+
+    for (const row of boardsResult.data || []) {
+      remote.boards[row.bbid] = {
+        firstOpenedAt: row.first_opened_at,
+        lastOpenedAt: row.last_opened_at,
+        openCount: row.open_count || 0,
+        deepestFloorReached: row.deepest_floor_reached || 0,
+        deepestFloorCompletedAt: row.deepest_floor_completed_at,
+        recall: row.recall_due_at ? {
+          dueAt: row.recall_due_at,
+          stage: row.recall_stage || 0,
+          passes: row.recall_passes || 0
+        } : null
+      };
+    }
+
+    for (const row of pathsResult.data || []) {
+      remote.paths[row.path_id] = {
+        firstOpenedAt: row.first_opened_at,
+        lastOpenedAt: row.last_opened_at,
+        quiz: {
+          bestScore: row.best_score,
+          bestTotal: row.best_total,
+          firstPassAt: row.first_pass_at,
+          masteredOnceAt: row.mastered_once_at,
+          recalledMasteredTwiceAt: row.recalled_mastered_twice_at
+        }
+      };
+    }
+
+    for (const row of quizResult.data || []) {
+      const attempts = remote.quizzes[row.path_id] || [];
+      attempts.push({ score: row.score, total: row.total, completedAt: row.completed_at });
+      remote.quizzes[row.path_id] = attempts;
+    }
+
+    for (const row of activityResult.data || []) {
+      remote.activity[row.activity_date] = row.event_count || 0;
+    }
+
+    for (const row of wResult.data || []) {
+      remote.ws.events.push({
+        t: row.created_at,
+        type: row.event_type,
+        amount: row.amount,
+        ref: row.event_ref,
+        bonus: row.bonus,
+        repeatable: row.repeatable
+      });
+    }
+
+    return normalizeState(remote);
+  }
+
+  async function hydrateRemote(forUser) {
+    if (!forUser || hasHydratedRemote) return;
+    hasHydratedRemote = true;
+    try {
+      const remote = await loadRemoteState(forUser);
+      const local = get({ subscribe });
+      const merged = hasProgress(local) ? mergeStates(local, remote) : remote;
+      set(merged);
+      persist(merged, { sync: false });
+      scheduleSync(50);
+    } catch (_) {
+      // The secure migration may not be live yet. Local progress remains intact.
+    }
+  }
+
+  async function insertWEvent(forUser, event) {
+    const { error } = await supabase.from('user_w_events').insert({
+      user_id: forUser.id,
+      event_type: event.type,
+      event_ref: String(event.ref),
+      amount: event.amount,
+      bonus: !!event.bonus,
+      repeatable: !!event.repeatable,
+      created_at: event.t,
+      metadata: {}
+    });
+    if (error && !isDuplicateError(error)) throw error;
+  }
+
+  async function insertAttempt(forUser, attempt) {
+    if (attempt.kind === 'quiz') {
+      const { error } = await supabase.from('user_quiz_attempts').insert({
+        user_id: forUser.id,
+        path_id: attempt.payload.pathId,
+        score: attempt.payload.score,
+        total: attempt.payload.total,
+        completed_at: attempt.payload.completedAt,
+        metadata: attempt.payload.metadata || {}
+      });
+      if (error) throw error;
+      return;
+    }
+
+    if (attempt.kind === 'workshop') {
+      const { error } = await supabase.from('user_workshop_attempts').insert({
+        user_id: forUser.id,
+        module_id: attempt.payload.moduleId,
+        score: attempt.payload.score,
+        total: attempt.payload.total,
+        best_streak: attempt.payload.bestStreak || 0,
+        is_challenge: !!attempt.payload.isChallenge,
+        completed_at: attempt.payload.completedAt,
+        metadata: attempt.payload.metadata || {}
+      });
+      if (error) throw error;
+    }
+  }
+
+  async function flushRemote() {
+    const forUser = currentUser;
+    if (!forUser || syncInFlight) return;
+    syncInFlight = true;
+    try {
+      const data = normalizeState(get({ subscribe }));
+
+      const boardRows = Object.entries(data.boards || {}).map(([bbid, board]) => ({
+        user_id: forUser.id,
+        bbid: Number(bbid),
+        first_opened_at: board.firstOpenedAt || null,
+        last_opened_at: board.lastOpenedAt || null,
+        open_count: board.openCount || 0,
+        deepest_floor_reached: board.deepestFloorReached || 0,
+        deepest_floor_completed_at: board.deepestFloorCompletedAt || null,
+        recall_due_at: board.recall?.dueAt || null,
+        recall_stage: board.recall?.stage || 0,
+        recall_passes: board.recall?.passes || 0
+      }));
+      if (boardRows.length) {
+        const { error } = await supabase.from('user_board_progress').upsert(boardRows, { onConflict: 'user_id,bbid' });
+        if (error) throw error;
+      }
+
+      const pathRows = Object.entries(data.paths || {}).map(([pathId, path]) => ({
+        user_id: forUser.id,
+        path_id: pathId,
+        first_opened_at: path.firstOpenedAt || null,
+        last_opened_at: path.lastOpenedAt || null,
+        best_score: path.quiz?.bestScore ?? null,
+        best_total: path.quiz?.bestTotal ?? null,
+        first_pass_at: path.quiz?.firstPassAt || null,
+        mastered_once_at: path.quiz?.masteredOnceAt || null,
+        recalled_mastered_twice_at: path.quiz?.recalledMasteredTwiceAt || null
+      }));
+      if (pathRows.length) {
+        const { error } = await supabase.from('user_path_progress').upsert(pathRows, { onConflict: 'user_id,path_id' });
+        if (error) throw error;
+      }
+
+      const activityRows = Object.entries(data.activity || {}).map(([date, count]) => ({
+        user_id: forUser.id,
+        activity_date: date,
+        event_count: count || 0
+      }));
+      if (activityRows.length) {
+        const { error } = await supabase.from('user_daily_activity').upsert(activityRows, { onConflict: 'user_id,activity_date' });
+        if (error) throw error;
+      }
+
+      for (const event of data.ws.events || []) {
+        await insertWEvent(forUser, event);
+      }
+
+      const remainingAttempts = [];
+      for (const attempt of data.sync.attempts || []) {
+        try {
+          await insertAttempt(forUser, attempt);
+        } catch (_) {
+          remainingAttempts.push(attempt);
+        }
+      }
+
+      const latest = normalizeState(get({ subscribe }));
+      latest.sync.attempts = remainingAttempts;
+      set(latest);
+      persist(latest, { sync: false });
+    } catch (_) {
+      // Retry later; local progress remains the source of immediate truth.
+    } finally {
+      syncInFlight = false;
+    }
+  }
+
+  user.subscribe((nextUser) => {
+    currentUser = nextUser;
+    if (!nextUser) {
+      hasHydratedRemote = false;
+      if (syncTimer) clearTimeout(syncTimer);
+      syncTimer = null;
+      return;
+    }
+    hydrateRemote(nextUser);
+  });
+
   return {
     subscribe,
 
-    /** Record that a board was opened */
+    init() {
+      const signedIn = get(user);
+      if (signedIn) hydrateRemote(signedIn);
+    },
+
     recordBoardOpen(cardNumber, pathIds = []) {
       update(data => {
+        normalizeState(data);
         const now = new Date().toISOString();
         const isFirst = !data.boards[cardNumber]?.firstOpenedAt;
         const b = data.boards[cardNumber] || { firstOpenedAt: now, lastOpenedAt: now, openCount: 0 };
@@ -116,12 +486,10 @@ function createProgressStore() {
 
         if (isFirst) {
           grantWs(data, 'board_open', cardNumber, 1);
-          // Recall scheduler: a board enters the loop the moment it's read.
           b.recall = { dueAt: new Date(Date.now() + RECALL_INTERVALS[0] * DAY_MS).toISOString(), stage: 0, passes: 0 };
         }
         data.boards[cardNumber] = b;
 
-        if (!data.activity) data.activity = {};
         data.activity[dayKey()] = (data.activity[dayKey()] || 0) + 1;
 
         pathIds.forEach(pid => {
@@ -137,39 +505,52 @@ function createProgressStore() {
       });
     },
 
-    /** Reader calls this when the user reaches a board's deepest floor. +2 W, once ever. */
     recordDeepestFloor(cardNumber) {
       update(data => {
+        normalizeState(data);
+        const now = new Date().toISOString();
+        const b = data.boards[cardNumber] || { firstOpenedAt: now, lastOpenedAt: now, openCount: 0 };
+        b.deepestFloorReached = Math.max(b.deepestFloorReached || 0, 1);
+        b.deepestFloorCompletedAt = b.deepestFloorCompletedAt || now;
+        data.boards[cardNumber] = b;
         grantWs(data, 'deep_floor', cardNumber, 2);
         persist(data);
         return data;
       });
     },
 
-    /** Workshop run finished: +1 per correct + 3 completion bonus, once per module. */
-    recordWorkshopComplete(moduleId, score, total) {
+    recordWorkshopComplete(moduleId, score, total, options = {}) {
       update(data => {
+        normalizeState(data);
+        const now = new Date().toISOString();
+        data.activity[dayKey()] = (data.activity[dayKey()] || 0) + 1;
         if (moduleId && total > 0) {
           grantWs(data, 'workshop', moduleId, score + 3, { bonus: true });
+          enqueueAttempt(data, 'workshop', {
+            moduleId,
+            score,
+            total,
+            bestStreak: options.bestStreak || 0,
+            isChallenge: !!options.isChallenge,
+            completedAt: now,
+            metadata: options.metadata || {}
+          });
         }
         persist(data);
         return data;
       });
     },
 
-    /** Record a quiz result for a path */
     recordQuizResult(pathId, score, total) {
       update(data => {
+        normalizeState(data);
         const now = new Date().toISOString();
-        if (!data.activity) data.activity = {};
         data.activity[dayKey()] = (data.activity[dayKey()] || 0) + 1;
         const p = data.paths[pathId] || { firstOpenedAt: now, lastOpenedAt: now, quiz: {} };
         if (!p.quiz) p.quiz = {};
         const q = p.quiz;
         const ratio = total > 0 ? score / total : 0;
 
-        // W economy: +1 per correct answer on every attempt (retakes allowed);
-        // one-time bonuses for first pass (>=60%) and first perfect.
         if (score > 0) grantWs(data, 'quiz_correct', `${pathId}:${now}`, score, { repeatable: true });
         if (ratio >= 0.6) grantWs(data, 'quiz_first_pass', pathId, 5, { bonus: true });
         if (total > 0 && score === total) grantWs(data, 'quiz_perfect', pathId, 10, { bonus: true });
@@ -188,20 +569,19 @@ function createProgressStore() {
         }
 
         p.quiz = q;
-        if (!p.lastOpenedAt) p.lastOpenedAt = now;
+        p.lastOpenedAt = now;
         data.paths[pathId] = p;
 
-        // Also log to quiz history
         const qh = data.quizzes[pathId] || [];
         qh.push({ score, total, completedAt: now });
         data.quizzes[pathId] = qh;
+        enqueueAttempt(data, 'quiz', { pathId, score, total, completedAt: now });
 
         persist(data);
         return data;
       });
     },
 
-    /** Get the mastery state for a path */
     getPathState(pathId, manifest) {
       const data = get({ subscribe });
       const p = data.paths[pathId];
@@ -223,8 +603,8 @@ function createProgressStore() {
       if (allRead) { state = 'checked'; label = 'Checked'; }
       if (wellRead) { state = 'well_read'; label = 'Well read'; }
       if (recalled) { state = 'recalled'; label = 'Recalled'; }
-      if (masteredOnce) { state = 'mastered_1'; label = 'Mastered ×1'; }
-      if (masteredTwice) { state = 'mastered_2'; label = 'Mastered ×2'; }
+      if (masteredOnce) { state = 'mastered_1'; label = 'Mastered x1'; }
+      if (masteredTwice) { state = 'mastered_2'; label = 'Mastered x2'; }
 
       const boardsRead = manifest.cards.filter(n => data.boards[n] && data.boards[n].firstOpenedAt).length;
 
@@ -235,31 +615,25 @@ function createProgressStore() {
       };
     },
 
-    /** Get the read/unread state for a single board (card number).
-     *  Boards only carry a read/unread distinction; quiz/mastery is path-level. */
     getBoardState(cardNumber) {
       const data = get({ subscribe });
       const b = data.boards[cardNumber];
       return { state: b && b.firstOpenedAt ? 'checked' : 'unwandered' };
     },
 
-    /** Get overall progress count */
     getOverall() {
       const data = get({ subscribe });
       return { read: Object.keys(data.boards).length };
     },
 
-    /** Consecutive-day study streak. */
     getStreak() {
       return computeStreak(get({ subscribe }).activity || {});
     },
 
-    /** Total Ws earned. */
     getWs() {
       return get({ subscribe }).ws?.total || 0;
     },
 
-    /** Weekly league points = Ws earned this week + 10 × active days this week. */
     getWeeklyPoints() {
       const data = get({ subscribe });
       const wk = weekKey();
@@ -275,7 +649,6 @@ function createProgressStore() {
       return earned + 10 * activeDays;
     },
 
-    /** Boards whose recall is due (dueAt <= now), oldest due first. */
     getDueBoards(limit = 10) {
       const data = get({ subscribe });
       const now = Date.now();
@@ -293,16 +666,12 @@ function createProgressStore() {
         .filter(b => b.recall?.dueAt && new Date(b.recall.dueAt).getTime() <= now).length;
     },
 
-    /** Outcome of a due recall check. Pass: advance 1→7→21d and +5 W (only when
-     *  actually due — the scheduler is the sole repeatable W source). Miss:
-     *  interval resets to 1d, no W. Counts as an active (streak) day either way. */
     recordRecallResult(cardNumber, passed) {
       update(data => {
+        normalizeState(data);
         const b = data.boards[cardNumber];
         if (!b?.recall) return data;
         const wasDue = new Date(b.recall.dueAt).getTime() <= Date.now();
-
-        if (!data.activity) data.activity = {};
         data.activity[dayKey()] = (data.activity[dayKey()] || 0) + 1;
 
         if (passed) {
@@ -326,7 +695,6 @@ function createProgressStore() {
       });
     },
 
-    /** Last `n` days of activity, oldest → newest, for the consistency chart. */
     getActivity(n = 7) {
       const act = get({ subscribe }).activity || {};
       const out = [];
@@ -339,7 +707,6 @@ function createProgressStore() {
       return out;
     },
 
-    /** Boards first opened in the last 7 days (a simple weekly pace). */
     getPace() {
       const data = get({ subscribe });
       const since = Date.now() - 7 * DAY_MS;
@@ -351,7 +718,6 @@ function createProgressStore() {
       return n;
     },
 
-    /** Earned-medal flags derived from real progress. */
     getMedals() {
       const data = get({ subscribe });
       const boardCount = Object.keys(data.boards).length;
@@ -368,7 +734,6 @@ function createProgressStore() {
       ];
     },
 
-    /** Reset all progress (for testing) */
     reset() {
       const empty = emptyState();
       set(empty);

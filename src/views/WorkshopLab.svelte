@@ -183,6 +183,7 @@
   $: workshopSub = challenge ? 'Randomized targets, one run against the clock. Every attempt is different.' : (activeModule?.sub || track.sub);
   $: activePathId = activeModule?.pathId || track.pathId;
   $: interactions = challenge ? challenge.interactions : (activeModule?.getWorkshop ? activeModule.getWorkshop() : []);
+  $: workshopRunKey = `${activeTrack}-${activeModuleId}-${challenge ? 'challenge' : 'practice'}-${runId}`;
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
   $: hasChallenge = !!getChallengeForModule(activeModuleId);
 
@@ -195,7 +196,11 @@
       progress.recordQuizResult(activePathId, finalScore, finalTotal);
     } else {
       // Practice run: +1 per correct + 3 completion bonus, once per module ever.
-      progress.recordWorkshopComplete(activeModuleId, finalScore, finalTotal);
+      progress.recordWorkshopComplete(activeModuleId, finalScore, finalTotal, {
+        bestStreak: finalStreak,
+        isChallenge: false,
+        metadata: { track: activeTrack, pathId: activePathId }
+      });
     }
   }
 
@@ -334,7 +339,7 @@
         {/if}
       </div>
     {:else}
-      {#key runId}
+      {#key workshopRunKey}
         <Workshop interactions={interactions} timeLimitSec={challenge?.timeLimitSec || 0} onDone={finishWorkshop} />
       {/key}
     {/if}

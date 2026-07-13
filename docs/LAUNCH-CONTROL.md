@@ -252,6 +252,9 @@ Status labels:
 
 Priority: high before public launch
 
+Reference file:
+- `docs/SUPABASE-USER-DATA-ROLLOUT.md`
+
 Check:
 - Auth works.
 - Guest or trial behavior is clear.
@@ -263,6 +266,12 @@ Check:
 - No private keys are exposed.
 - Storage paths for images/audio are stable.
 - Retry and reset behavior does not corrupt progress.
+- User email/Gmail identity stays in Supabase Auth, not public app tables.
+- User progress tables have RLS policies using `auth.uid() = user_id`.
+- The service role key is never used in frontend code.
+- Age is collected as a band, not exact date of birth.
+- Engagement time is tracked as active session seconds.
+- Issue reports can include user-chosen screenshots only.
 
 Minimum launch data:
 - User id
@@ -272,6 +281,8 @@ Minimum launch data:
 - Topic completions
 - Last active timestamp
 - Streak window status
+- Active session minutes
+- Issue report metadata
 
 Post-launch:
 - Payments
@@ -304,6 +315,9 @@ Trust polish:
 
 Priority: medium-high
 
+Community reference:
+- `docs/DISCORD-COMMUNITY-LAUNCH.md`
+
 Launch assets:
 - Homepage title and meta description
 - Social preview image
@@ -314,11 +328,17 @@ Launch assets:
 - Feedback form
 - Founder launch post
 - Short posts for X, LinkedIn, Reddit, Discord
+- Discord tester community with bug, content, workshop, and Android testing channels
 
 Positioning:
 - Microlearning for science, math, and computing.
 - Short explanations plus active workshops.
 - Designed for confidence, not exam anxiety.
+
+Discord launch rule:
+- Start with personally invited testers before public posting.
+- Use Discord for feedback, support, Android testing, bug reports, and release notes.
+- Do not fake community activity or pretend simulated leaderboard users are real people.
 
 ## 10. QA Gates
 
@@ -345,6 +365,42 @@ Device checks:
 
 Known warning class:
 - Existing Svelte accessibility warnings exist in the build. These should be cleaned when possible, but they are not currently blocking launch if the flows work.
+
+## 11. Android Play Store Pilot
+
+Priority: high
+
+Reference file:
+- `docs/ANDROID-PLAY-LAUNCH.md`
+
+Recommended first mobile release:
+- Android first through Google Play.
+- Use a Trusted Web Activity wrapper around the live Qubix web app.
+- Keep web/tablet/iPad as the main version.
+- Use Apple App Store after the Android pilot produces real feedback.
+
+Why this route:
+- New BBs, edited floors, images, GIFs, audio, and existing workshop formats can update through the web/backend without forcing Play Store updates.
+- Android users get an app-store install experience.
+- The team avoids maintaining two separate products too early.
+
+Store updates should be needed only for:
+- Android wrapper changes
+- native notification bridge
+- Play Billing
+- new native permissions
+- target SDK requirements
+- launcher name/icon changes
+
+Immediate Android blockers:
+- Final public domain
+- Final package id
+- Google Play Developer account
+- Support email
+- Store screenshots
+- Data Safety answers
+- Signed Android App Bundle
+- Digital Asset Links file after the signing certificate is known
 
 ## Two-Week Execution Plan
 

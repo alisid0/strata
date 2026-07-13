@@ -1217,6 +1217,10 @@ export const COMPUTER_WORKSHOP_MODULES = [
     title: 'Binary and data lab',
     sub: 'Switch bits into numbers, letters, pixels, colour, and sound.',
     interactions: [
+      {
+        type: 'bitmachine',
+        prompt: 'Use a tiny machine to build a number, handle a carry, and run instructions.'
+      },
       ...BIT_DATA_WORKSHOP,
       {
         type: 'bitsnumber', mode: 'build',
@@ -1582,6 +1586,10 @@ export function getBitDataWorkshop() {
 }
 
 export const PHYSICS_UNITS_WORKSHOP = [
+  {
+    type: 'unitforge',
+    prompt: 'Measure, convert, forge, and judge units before trusting a physics answer.'
+  },
   { type: 'sorting', boxes: [
     { id: 'base', label: 'Base unit' },
     { id: 'derived', label: 'Derived unit' }
@@ -1894,6 +1902,10 @@ export function getPhysicsCoreWorkshop() {
 }
 
 export const CHEMISTRY_CORE_WORKSHOP = [
+  {
+    type: 'bondlab',
+    prompt: 'Place atoms on the bench and form stable compounds by sharing or transferring electrons.'
+  },
   {
     type: 'atombuilder',
     prompt: 'Build neutral oxygen. Protons set the element; electrons set the charge.',
@@ -2357,7 +2369,90 @@ export function getMathsMatricesWorkshop() {
 
 // ── Coordinate geometry (The Line) workshop — drag-based drills on a live plane ──
 
+const CG_FIVE_POINTS_A = [
+  { id: 'a', label: 'A', x: -3, y: 2 },
+  { id: 'b', label: 'B', x: 2, y: 4 },
+  { id: 'c', label: 'C', x: 4, y: -1 },
+  { id: 'd', label: 'D', x: -2, y: -3 },
+  { id: 'e', label: 'E', x: 0, y: 3 }
+];
+
+const CG_FIVE_POINTS_B = [
+  { id: 'a', label: 'A', x: -4, y: 1 },
+  { id: 'b', label: 'B', x: 1, y: 3 },
+  { id: 'c', label: 'C', x: 3, y: -2 },
+  { id: 'd', label: 'D', x: -1, y: -4 },
+  { id: 'e', label: 'E', x: 0, y: 0 }
+];
+
 export const LINE_CORE_WORKSHOP = [
+  {
+    type: 'coordworkbook',
+    mode: 'selectPoint',
+    prompt: 'Five points are on the grid. Tap the point whose address is (-3, 2).',
+    points: CG_FIVE_POINTS_A,
+    targetCoordinate: { x: -3, y: 2 },
+    correctFeedback: 'Correct. A is three left and two up, so its address is (-3, 2).',
+    incorrectFeedback: 'Read across first, then up or down. The point at (-3, 2) is A.'
+  },
+  {
+    type: 'coordworkbook',
+    mode: 'quadrant',
+    prompt: 'Tap a point in Quadrant IV. That means x is positive and y is negative.',
+    points: CG_FIVE_POINTS_A,
+    targetQuadrant: 'IV',
+    correctFeedback: 'Correct. Quadrant IV is right of the y-axis and below the x-axis.',
+    incorrectFeedback: 'Quadrant IV has positive x and negative y. Look for the point on the lower-right side.'
+  },
+  {
+    type: 'coordworkbook',
+    mode: 'readPoint',
+    prompt: 'Read the address of point B. Use the steppers instead of typing.',
+    points: CG_FIVE_POINTS_A,
+    targetId: 'b',
+    correctFeedback: 'Correct. B is at (2, 4): two across, four up.',
+    incorrectFeedback: 'Point B is two units right and four units up, so its address is (2, 4).'
+  },
+  {
+    type: 'coordworkbook',
+    mode: 'movePoint',
+    prompt: 'Move point C to the address (-1, 4). Tap the target square or drag the point.',
+    points: CG_FIVE_POINTS_B,
+    targetId: 'c',
+    targetCoordinate: { x: -1, y: 4 },
+    correctFeedback: 'Correct. You moved C to (-1, 4): left one, up four.',
+    incorrectFeedback: 'C needs to land one unit left of the origin and four units above it.'
+  },
+  {
+    type: 'coordworkbook',
+    mode: 'translatePoint',
+    prompt: 'Translate point A by (3, -2). Across changes by +3, height changes by -2.',
+    points: CG_FIVE_POINTS_B,
+    targetId: 'a',
+    vector: { x: 3, y: -2 },
+    correctFeedback: 'Correct. A moved three right and two down.',
+    incorrectFeedback: 'Start from A and add the vector: x plus 3, y minus 2.'
+  },
+  {
+    type: 'coordworkbook',
+    mode: 'reflectPoint',
+    prompt: 'Reflect point D across the x-axis. Only the y-coordinate changes sign.',
+    points: CG_FIVE_POINTS_B,
+    targetId: 'd',
+    axis: 'x',
+    correctFeedback: 'Correct. Reflection across the x-axis keeps x and flips y.',
+    incorrectFeedback: 'Across the x-axis means keep x the same and change y to its opposite.'
+  },
+  {
+    type: 'coordworkbook',
+    mode: 'reflectPoint',
+    prompt: 'Reflect point C across the y-axis. Only the x-coordinate changes sign.',
+    points: CG_FIVE_POINTS_A,
+    targetId: 'c',
+    axis: 'y',
+    correctFeedback: 'Correct. Reflection across the y-axis keeps y and flips x.',
+    incorrectFeedback: 'Across the y-axis means keep y the same and change x to its opposite.'
+  },
   {
     type: 'coorddrill', mode: 'plotPoint',
     prompt: 'Every point has an address: across, then up. Plot it.',
