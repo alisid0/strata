@@ -1,7 +1,11 @@
 <script>
   import { onMount } from 'svelte';
+  import { get } from 'svelte/store';
   import { fly, fade } from 'svelte/transition';
   import { initAuth, isAuthenticated } from './lib/stores/auth.js';
+  import { profile } from './lib/stores/profile.js';
+  import { engagement } from './lib/stores/engagement.js';
+  import { retryIssueReportQueue } from './lib/stores/issueReports.js';
   import { theme } from './lib/stores/theme.js';
   import { PATHS, PATH_GROUPS } from './lib/content/paths.js';
   import Auth from './views/Auth.svelte';
@@ -44,8 +48,16 @@
     ? { duration: 0 }
     : { x: -dir * 60, duration: 200, easing: easeInOutQuad };
 
-  onMount(async () => {
+  onMount(() => {
+    let mounted = true;
+    let stopEngagement = () => {};
+
+    async function boot() {
     try { await initAuth(); } catch (_) {}
+    const profileData = await profile.init();
+    stopEngagement = engagement.start(() => currentView);
+    retryIssueReportQueue();
+    if (!mounted) return;
 
     // SEO deep-link: ?path=P12 → open that topic directly
     const params = new URLSearchParams(location.search);
@@ -56,7 +68,18 @@
       return;
     }
 
-    currentView = $isAuthenticated ? 'home' : 'auth';
+    currentView = get(isAuthenticated)
+      ? profileData.onboardingCompleted ? 'home' : 'onboarding'
+      : 'auth';
+
+    }
+
+    boot();
+
+    return () => {
+      mounted = false;
+      stopEngagement();
+    };
   });
 
   function skipAuth() {
@@ -74,8 +97,9 @@
     }
   }
 
-  function handleAuthed(isNewUser) {
-    currentView = isNewUser ? 'onboarding' : 'home';
+  async function handleAuthed(isNewUser) {
+    const profileData = await profile.init();
+    currentView = isNewUser || !profileData.onboardingCompleted ? 'onboarding' : 'home';
   }
 
   function navigate(view, arg) {

@@ -11,11 +11,17 @@ Supabase Auth stores email/Gmail identity in `auth.users`. The app should use th
 Public app tables should store:
 - internal user id
 - internal username
+- age band, not exact age
+- learning goal
+- preferred daily minutes
+- selected launch topics
 - progress data
 - Ws/reward events
 - workshop attempts
 - quiz attempts
 - daily activity/streak data
+- engagement session duration
+- user-submitted issue reports
 
 Public app tables should not store:
 - email address
@@ -39,6 +45,9 @@ What it creates:
 - `public.user_workshop_attempts`
 - `public.user_w_events`
 - `public.user_daily_activity`
+- `public.user_engagement_sessions`
+- `public.issue_reports`
+- private `issue-screenshots` storage bucket
 - `public.delete_my_user_data()`
 
 Every user-data table has Row Level Security enabled. Policies only allow an authenticated user to access rows where:
@@ -59,6 +68,7 @@ auth.uid() = user_id
 8. Keep localStorage as offline/cache fallback.
 9. After sync is stable, make authenticated progress the source of truth.
 10. Add account deletion/export UI before wide public launch.
+11. Test issue reporting with and without a screenshot.
 
 ## Verification SQL
 
@@ -107,6 +117,7 @@ When a signed-in user opens the app:
 - insert workshop attempts into `user_workshop_attempts`
 - insert W events into `user_w_events`
 - upsert daily activity into `user_daily_activity`
+- insert engagement sessions into `user_engagement_sessions`
 
 Use idempotent refs for Ws so repeated syncs do not double-award.
 
@@ -134,6 +145,8 @@ After enough testing:
 - Do not create public read policies for `user_*` tables.
 - Do not add email to `user_profiles`.
 - Do not expose leaderboard rows from real users until privacy rules are designed.
+- Do not pretend simulated league members are real people. Label them as preview/practice league members until real opt-in leaderboards exist.
+- Do not auto-upload screenshots. Users must choose a screenshot before it is attached to a report.
 - Any future admin dashboard must use server-side service role code, not the public app client.
 
 ## Data Deletion
@@ -147,4 +160,3 @@ select public.delete_my_user_data();
 This deletes the signed-in user's learning data and resets onboarding metadata, but does not delete the Supabase Auth account itself.
 
 Full account deletion should be done later with a server-side function using the service role key after explicit user confirmation.
-

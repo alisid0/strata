@@ -269,6 +269,9 @@ Check:
 - User email/Gmail identity stays in Supabase Auth, not public app tables.
 - User progress tables have RLS policies using `auth.uid() = user_id`.
 - The service role key is never used in frontend code.
+- Age is collected as a band, not exact date of birth.
+- Engagement time is tracked as active session seconds.
+- Issue reports can include user-chosen screenshots only.
 
 Minimum launch data:
 - User id
@@ -278,6 +281,8 @@ Minimum launch data:
 - Topic completions
 - Last active timestamp
 - Streak window status
+- Active session minutes
+- Issue report metadata
 
 Post-launch:
 - Payments

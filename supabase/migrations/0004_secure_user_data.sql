@@ -35,6 +35,12 @@ $$;
 create table if not exists public.user_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   internal_username text not null unique,
+  age_band text check (age_band in ('under_13','13_15','16_17','18_plus','prefer_not')),
+  learning_goal text check (learning_goal in ('exam','school','career','curiosity','coding','teaching','prefer_not')),
+  daily_goal_minutes integer check (daily_goal_minutes in (5, 10, 15, 30)),
+  selected_topics jsonb not null default '[]'::jsonb,
+  heard_from text,
+  learner_type text,
   onboarding_completed boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -347,6 +353,110 @@ create policy "user_daily_activity_own_delete"
   on public.user_daily_activity for delete
   using (auth.uid() = user_id);
 
+create table if not exists public.user_engagement_sessions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  started_at timestamptz not null,
+  ended_at timestamptz not null,
+  active_seconds integer not null check (active_seconds >= 0),
+  route text,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  constraint user_engagement_sessions_time_valid check (ended_at >= started_at)
+);
+
+create index if not exists user_engagement_sessions_user_started_idx
+  on public.user_engagement_sessions (user_id, started_at desc);
+
+alter table public.user_engagement_sessions enable row level security;
+
+create policy "user_engagement_sessions_own_select"
+  on public.user_engagement_sessions for select
+  using (auth.uid() = user_id);
+
+create policy "user_engagement_sessions_own_insert"
+  on public.user_engagement_sessions for insert
+  with check (auth.uid() = user_id);
+
+create policy "user_engagement_sessions_own_delete"
+  on public.user_engagement_sessions for delete
+  using (auth.uid() = user_id);
+
+-- ---------------------------------------------------------------------------
+-- User issue reporting
+-- ---------------------------------------------------------------------------
+
+create table if not exists public.issue_reports (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  category text not null default 'bug'
+    check (category in ('bug','content','workshop','audio','visual','account','idea','other')),
+  message text not null check (char_length(message) between 3 and 4000),
+  route text,
+  bbid integer,
+  workshop_id text,
+  screenshot_path text,
+  status text not null default 'open'
+    check (status in ('open','reviewing','fixed','closed')),
+  app_version text,
+  user_agent text,
+  viewport jsonb not null default '{}'::jsonb,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists issue_reports_user_created_idx
+  on public.issue_reports (user_id, created_at desc);
+
+create index if not exists issue_reports_status_created_idx
+  on public.issue_reports (status, created_at desc);
+
+create trigger issue_reports_set_updated_at
+  before update on public.issue_reports
+  for each row execute function public.set_updated_at();
+
+alter table public.issue_reports enable row level security;
+
+create policy "issue_reports_own_select"
+  on public.issue_reports for select
+  using (auth.uid() = user_id);
+
+create policy "issue_reports_own_insert"
+  on public.issue_reports for insert
+  with check (auth.uid() = user_id or user_id is null);
+
+-- Users can close their own issue, but cannot edit status/details after submit.
+create policy "issue_reports_own_update"
+  on public.issue_reports for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+insert into storage.buckets (id, name, public)
+values ('issue-screenshots', 'issue-screenshots', false)
+on conflict (id) do nothing;
+
+create policy "issue_screenshots_own_read"
+  on storage.objects for select
+  using (
+    bucket_id = 'issue-screenshots'
+    and auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+create policy "issue_screenshots_own_insert"
+  on storage.objects for insert
+  with check (
+    bucket_id = 'issue-screenshots'
+    and auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+create policy "issue_screenshots_own_delete"
+  on storage.objects for delete
+  using (
+    bucket_id = 'issue-screenshots'
+    and auth.uid()::text = (storage.foldername(name))[1]
+  );
+
 -- ---------------------------------------------------------------------------
 -- Privacy helper: user-owned data export/delete support
 -- ---------------------------------------------------------------------------
@@ -361,6 +471,7 @@ begin
   delete from public.user_workshop_attempts where user_id = auth.uid();
   delete from public.user_quiz_attempts where user_id = auth.uid();
   delete from public.user_daily_activity where user_id = auth.uid();
+  delete from public.user_engagement_sessions where user_id = auth.uid();
   delete from public.user_path_progress where user_id = auth.uid();
   delete from public.user_board_progress where user_id = auth.uid();
   update public.user_profiles
@@ -370,4 +481,3 @@ end;
 $$;
 
 grant execute on function public.delete_my_user_data() to authenticated;
-
