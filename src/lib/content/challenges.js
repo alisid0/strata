@@ -514,6 +514,86 @@ function functionsChallenge() {
   ];
 }
 
+// ── chemistry: Atom Foundry ────────────────────────────────────────────────────
+// Full light-element table with shell configs, for the identity/shell drills.
+const FOUNDRY_ELEMENTS = [
+  { z: 3, symbol: 'Li', name: 'Lithium', n: 4, shells: [2, 1] },
+  { z: 4, symbol: 'Be', name: 'Beryllium', n: 5, shells: [2, 2] },
+  { z: 5, symbol: 'B', name: 'Boron', n: 6, shells: [2, 3] },
+  { z: 6, symbol: 'C', name: 'Carbon', n: 6, shells: [2, 4] },
+  { z: 7, symbol: 'N', name: 'Nitrogen', n: 7, shells: [2, 5] },
+  { z: 8, symbol: 'O', name: 'Oxygen', n: 8, shells: [2, 6] },
+  { z: 9, symbol: 'F', name: 'Fluorine', n: 10, shells: [2, 7] },
+  { z: 10, symbol: 'Ne', name: 'Neon', n: 10, shells: [2, 8] },
+  { z: 11, symbol: 'Na', name: 'Sodium', n: 12, shells: [2, 8, 1] },
+  { z: 12, symbol: 'Mg', name: 'Magnesium', n: 12, shells: [2, 8, 2] },
+  { z: 13, symbol: 'Al', name: 'Aluminium', n: 14, shells: [2, 8, 3] },
+  { z: 14, symbol: 'Si', name: 'Silicon', n: 14, shells: [2, 8, 4] },
+  { z: 15, symbol: 'P', name: 'Phosphorus', n: 16, shells: [2, 8, 5] },
+  { z: 16, symbol: 'S', name: 'Sulfur', n: 16, shells: [2, 8, 6] },
+  { z: 17, symbol: 'Cl', name: 'Chlorine', n: 18, shells: [2, 8, 7] },
+  { z: 18, symbol: 'Ar', name: 'Argon', n: 22, shells: [2, 8, 8] },
+];
+
+function genForgeElement() {
+  const el = pick(FOUNDRY_ELEMENTS);
+  return {
+    type: 'atombuilder',
+    prompt: `Build a neutral ${el.name} atom from scratch.`,
+    targetName: el.name, targetProtons: el.z, targetNeutrons: el.n, targetElectrons: el.z,
+    correctFeedback: `Correct. ${el.z} protons define ${el.name}; neutral means the electrons match.`,
+    incorrectFeedback: `${el.name} needs ${el.z}p / ${el.n}n / ${el.z}e.`,
+  };
+}
+
+function genIdentityQuiz() {
+  const el = pick(FOUNDRY_ELEMENTS);
+  const charge = pick([-2, -1, 0, 1, 2]);
+  const e = el.z - charge;
+  if (e < 0 || e > 18) return genForgeElement(); // guard rare invalid electron count
+  const chSign = charge === 0 ? 'neutral' : charge > 0 ? `${el.symbol}${charge === 1 ? '⁺' : charge + '⁺'}` : `${el.symbol}${charge === -1 ? '⁻' : Math.abs(charge) + '⁻'}`;
+  const correct = charge === 0 ? `${el.name}, neutral` : `${el.name} ion (${chSign})`;
+  const other = pick(FOUNDRY_ELEMENTS.filter(x => x.z !== el.z));
+  return {
+    type: 'scenario',
+    prompt: `An atom reads ${el.z}p / ${el.n}n / ${e}e. What is it?`,
+    options: shuffleOpts([
+      { id: 'correct', label: correct, correct: true },
+      { id: 'wrongel', label: `${other.name}, neutral`, correct: false },
+      { id: 'wrongch', label: charge === 0 ? `${el.name} ion` : `${el.name}, neutral`, correct: false },
+    ]),
+    correctFeedback: `Correct. ${el.z} protons is ${el.name}; ${el.z} − ${e} electrons gives charge ${charge === 0 ? '0' : charge > 0 ? '+' + charge : charge}.`,
+    incorrectFeedback: `${el.z} protons names it ${el.name}. Charge = ${el.z} − ${e} = ${charge === 0 ? '0' : charge > 0 ? '+' + charge : charge}.`,
+  };
+}
+
+function genShellConfig() {
+  const el = pick(FOUNDRY_ELEMENTS);
+  const near = FOUNDRY_ELEMENTS.filter(x => Math.abs(x.z - el.z) <= 2 && x.z !== el.z);
+  const [d1, d2] = shuffleOpts(near).slice(0, 2);
+  return {
+    type: 'scenario',
+    prompt: `A neutral atom has the shell pattern ${el.shells.join(', ')}. Which element is it?`,
+    options: shuffleOpts([
+      { id: 'correct', label: el.name, correct: true },
+      { id: 'd1', label: (d1 || FOUNDRY_ELEMENTS[0]).name, correct: false },
+      { id: 'd2', label: (d2 || FOUNDRY_ELEMENTS[1]).name, correct: false },
+    ]),
+    correctFeedback: `Correct. Shells ${el.shells.join(', ')} sum to ${el.z} electrons — that is ${el.name}.`,
+    incorrectFeedback: `Add the shell counts: ${el.shells.join(' + ')} = ${el.z} electrons, which is ${el.name}.`,
+  };
+}
+
+function atomFoundryChallenge() {
+  // Order per brief B.7: forge, identity, ion, shell, isotope, identity, ion, forge.
+  return [
+    genForgeElement(), genIdentityQuiz(),
+    genAtom(1), genShellConfig(),
+    genAtom(2), genIdentityQuiz(),
+    genAtom(1), genForgeElement(),
+  ];
+}
+
 // ── registry ──────────────────────────────────────────────────────────────────
 const CHALLENGES = {
   'line-core': { build: lineChallenge, timeLimitSec: 150 },
@@ -521,6 +601,7 @@ const CHALLENGES = {
   'matrices': { build: matricesChallenge, timeLimitSec: 120 },
   'binary-data': { build: binaryChallenge, timeLimitSec: 120 },
   'logic-gates': { build: logicChallenge, timeLimitSec: 150 },
+  'atom-foundry': { build: atomFoundryChallenge, timeLimitSec: 150 },
   'chemistry-core': { build: chemistryChallenge, timeLimitSec: 180 },
   'forces-waves': { build: physicsChallenge, timeLimitSec: 120 },
 };

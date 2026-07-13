@@ -1,6 +1,7 @@
 <script>
   import Workshop from '../lib/components/assessments/Workshop.svelte';
   import {
+    getChemFoundryWorkshop,
     getChemistryCoreWorkshop,
     getChemistryStructureWorkshop,
     getComputerWorkshopModule,
@@ -126,6 +127,14 @@
       icon: '/icons/gateways/atom.png',
       pathId: 'ATOM_001',
       modules: [
+        {
+          id: 'atom-foundry',
+          label: 'Foundry',
+          title: 'Atom Foundry',
+          sub: 'Forge a nucleus, fill the shells, and strip electrons into ions.',
+          pathId: 'ATOM_001',
+          getWorkshop: getChemFoundryWorkshop
+        },
         {
           id: 'chemistry-core',
           label: 'Atoms',

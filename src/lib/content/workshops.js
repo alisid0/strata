@@ -2586,6 +2586,53 @@ export function getMathsFunctionsWorkshop() {
   return cloneInteractions(MATHS_FUNCTIONS_WORKSHOP);
 }
 
+// ── Chemistry: Atom Foundry (docs/ATOM-FOUNDRY-WORKSHOP-DESIGN.md) ──
+
+export const CHEM_FOUNDRY_WORKSHOP = [
+  {
+    type: 'atomfoundry',
+    prompt: 'Forge a nucleus, steady it, fill the shells, and strip electrons into ions.'
+  },
+  S('An atom has 19 protons. A cosmic ray knocks out an electron. What is it now?',
+    [O('kion', 'Potassium ion, K⁺', true), O('argon', 'Argon — it lost a particle', false)],
+    'Right. Electrons come and go; the 19 protons keep it potassium.',
+    'Only protons set identity. 19 protons is potassium whether it has 19 or 18 electrons.'),
+  { type: 'sorting',
+    boxes: [
+      { id: 'element', label: 'Changes the element' },
+      { id: 'isotope', label: 'Makes an isotope' },
+      { id: 'ion', label: 'Makes an ion' }
+    ],
+    items: [
+      { id: 'addp', label: 'Add a proton', box: 'element' },
+      { id: 'remp', label: 'Remove a proton', box: 'element' },
+      { id: 'addn', label: 'Add a neutron', box: 'isotope' },
+      { id: 'adde', label: 'Add an electron', box: 'ion' },
+      { id: 'reme', label: 'Remove an electron', box: 'ion' },
+      { id: 'twon', label: 'Two extra neutrons', box: 'isotope' }
+    ] },
+  S('Why does the second electron shell refuse a 9th electron?',
+    [O('cap', 'Each shell has a strict capacity — shell 2 holds 8', true), O('repel', 'Electrons repel it away randomly', false)],
+    'Correct. The shells fill inner-first and each has a fixed capacity: 2, then 8, then 8.',
+    'It is not random. Shell 2 simply holds a maximum of 8 electrons — a 9th must sit further out.'),
+  S('Chlorine-35 and chlorine-37 react identically in every experiment. Why?',
+    [O('same', 'Same protons and same electron shells — chemistry only sees those', true), O('weigh', 'They weigh the same', false)],
+    'Correct. Isotopes differ only in neutrons, and chemistry is decided by protons and electrons.',
+    'They do not weigh the same — that is the whole point of isotopes. Chemistry ignores the neutron difference.'),
+  S('Mg²⁺ and Ne both have 10 electrons. Are they the same thing?',
+    [O('no', 'No — 12 protons vs 10 protons, different elements', true), O('yes', 'Yes — same electrons means same atom', false)],
+    'Correct. Identity is the proton count: 12 is magnesium, 10 is neon, matching electrons or not.',
+    'Matching electron counts do not make them the same. Magnesium has 12 protons; neon has 10.'),
+  S('An ion reads charge −2 with 18 electrons. How many protons does it have?',
+    [O('16', '16 — it gained two', true), O('20', '20', false), O('18', '18', false)],
+    'Correct. Charge = protons − electrons, so −2 = protons − 18 gives 16 protons.',
+    'Charge = protons − electrons. −2 = p − 18, so p = 16.')
+];
+
+export function getChemFoundryWorkshop() {
+  return cloneInteractions(CHEM_FOUNDRY_WORKSHOP);
+}
+
 // ── Physics workshops ──
 
 export const PHYS_WORKSHOPS = {
