@@ -315,6 +315,9 @@ Trust polish:
 
 Priority: medium-high
 
+Community reference:
+- `docs/DISCORD-COMMUNITY-LAUNCH.md`
+
 Launch assets:
 - Homepage title and meta description
 - Social preview image
@@ -325,11 +328,17 @@ Launch assets:
 - Feedback form
 - Founder launch post
 - Short posts for X, LinkedIn, Reddit, Discord
+- Discord tester community with bug, content, workshop, and Android testing channels
 
 Positioning:
 - Microlearning for science, math, and computing.
 - Short explanations plus active workshops.
 - Designed for confidence, not exam anxiety.
+
+Discord launch rule:
+- Start with personally invited testers before public posting.
+- Use Discord for feedback, support, Android testing, bug reports, and release notes.
+- Do not fake community activity or pretend simulated leaderboard users are real people.
 
 ## 10. QA Gates
 
