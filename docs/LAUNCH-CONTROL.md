@@ -252,6 +252,9 @@ Status labels:
 
 Priority: high before public launch
 
+Reference file:
+- `docs/SUPABASE-USER-DATA-ROLLOUT.md`
+
 Check:
 - Auth works.
 - Guest or trial behavior is clear.
@@ -263,6 +266,9 @@ Check:
 - No private keys are exposed.
 - Storage paths for images/audio are stable.
 - Retry and reset behavior does not corrupt progress.
+- User email/Gmail identity stays in Supabase Auth, not public app tables.
+- User progress tables have RLS policies using `auth.uid() = user_id`.
+- The service role key is never used in frontend code.
 
 Minimum launch data:
 - User id
