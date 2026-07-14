@@ -2623,6 +2623,52 @@ export function getMathsUnitCircleWorkshop() {
   return cloneInteractions(MATHS_UNIT_CIRCLE_WORKSHOP);
 }
 
+// ── Physics: Circuit Bench (Electricity signature lab) ──
+
+export const PHY_CIRCUIT_WORKSHOP = [
+  {
+    type: 'circuitbench',
+    prompt: 'Close the loop, drive it with voltage, choke it with resistance, and compare series with parallel.'
+  },
+  S('A bulb, a battery, and wires are connected but the switch is open. Why is the bulb dark?',
+    [O('loop', 'The loop is broken, so charge cannot flow', true), O('gone', 'The battery ran out of charge', false)],
+    'Correct. Current needs a complete path; an open switch breaks the loop.',
+    'Nothing is used up — the open switch just breaks the loop so charge cannot flow round.'),
+  S('Ohm’s law is I = V / R. Voltage stays fixed and you double the resistance. The current:',
+    [O('half', 'Halves', true), O('double', 'Doubles', false)],
+    'Correct. With V fixed, doubling R halves I — resistance chokes the current.',
+    'I = V / R. If R doubles and V is fixed, I is cut in half.'),
+  S('Current is measured through a component; voltage is measured:',
+    [O('across', 'Across it', true), O('through', 'Through it too', false)],
+    'Correct. Voltage is the energy difference across a component; current is the flow through it.',
+    'Voltage is measured across a component (the energy drop); current is what flows through.'),
+  { type: 'sorting',
+    boxes: [
+      { id: 'series', label: 'Series' },
+      { id: 'parallel', label: 'Parallel' }
+    ],
+    items: [
+      { id: 'onepath', label: 'One single path for the current', box: 'series' },
+      { id: 'sharei', label: 'Same current through every part', box: 'series' },
+      { id: 'splitv', label: 'Supply voltage is shared', box: 'series' },
+      { id: 'branches', label: 'Current has more than one path', box: 'parallel' },
+      { id: 'fullv', label: 'Each branch gets the full voltage', box: 'parallel' },
+      { id: 'homewire', label: 'How home wiring is built', box: 'parallel' }
+    ] },
+  S('Old fairy lights were wired in series. One bulb blew and the whole string went dark. Why?',
+    [O('onepath', 'Series has one path — a break stops all current', true), O('power', 'The power surged through the others', false)],
+    'Correct. In series a single break opens the only loop, so every bulb goes out.',
+    'Series has just one path. Break it anywhere and the whole loop is open — all bulbs die.'),
+  S('Electrical power is P = IV. For the same current, a higher voltage means:',
+    [O('more', 'More power transferred', true), O('less', 'Less power', false)],
+    'Correct. P = IV rises with either current or voltage.',
+    'P = I × V. With current fixed, more voltage means more power delivered.')
+];
+
+export function getPhysCircuitWorkshop() {
+  return cloneInteractions(PHY_CIRCUIT_WORKSHOP);
+}
+
 // ── Chemistry: Atom Foundry (docs/ATOM-FOUNDRY-WORKSHOP-DESIGN.md) ──
 
 export const CHEM_FOUNDRY_WORKSHOP = [

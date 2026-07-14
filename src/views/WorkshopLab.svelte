@@ -9,9 +9,9 @@
     getLineCoreWorkshop,
     getMathsFunctionsWorkshop,
     getMathsUnitCircleWorkshop,
+    getPhysCircuitWorkshop,
     getMathsExpLogsWorkshop,
     getMathsMatricesWorkshop,
-    getPhysicsElectricityWorkshop,
     getPhysicsWorkshopModule,
     getPhysicsWorkshopModules
   } from '../lib/content/workshops.js';
@@ -176,10 +176,10 @@
         {
           id: 'electricity',
           label: 'Electricity',
-          title: 'Electricity and circuits',
-          sub: 'Sort charge, current, voltage, series, parallel, power, and circuit rules.',
+          title: 'Circuit Bench',
+          sub: 'Close the loop, drive the current, and compare series with parallel — live.',
           pathId: 'PHY_ELECTRICITY',
-          getWorkshop: getPhysicsElectricityWorkshop
+          getWorkshop: getPhysCircuitWorkshop
         },
         {
           id: 'optics',

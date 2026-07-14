@@ -696,11 +696,127 @@ function trigChallenge() {
   ];
 }
 
+// ── physics: electricity (Circuit Bench) ──────────────────────────────────────
+function genOhm() {
+  const kind = pick(['I', 'V', 'R']);
+  const V = ri(2, 12), R = ri(1, 6);
+  if (kind === 'I') {
+    const I = +(V / R).toFixed(2);
+    return {
+      type: 'scenario',
+      prompt: `A ${V} V supply drives a ${R} Ω resistor. What is the current? (I = V / R)`,
+      options: shuffleOpts([
+        { id: 'correct', label: `${I} A`, correct: true },
+        { id: 'mul', label: `${V * R} A`, correct: false },
+        { id: 'swap', label: `${+(R / V).toFixed(2)} A`, correct: false },
+      ]),
+      correctFeedback: `Correct. I = V / R = ${V} / ${R} = ${I} A.`,
+      incorrectFeedback: `I = V / R = ${V} / ${R} = ${I} A.`,
+    };
+  }
+  if (kind === 'V') {
+    const I = ri(1, 4);
+    const Vans = I * R;
+    return {
+      type: 'scenario',
+      prompt: `A current of ${I} A flows through a ${R} Ω resistor. What is the voltage across it? (V = I × R)`,
+      options: shuffleOpts([
+        { id: 'correct', label: `${Vans} V`, correct: true },
+        { id: 'div', label: `${+(I / R).toFixed(2)} V`, correct: false },
+        { id: 'sum', label: `${I + R} V`, correct: false },
+      ]),
+      correctFeedback: `Correct. V = I × R = ${I} × ${R} = ${Vans} V.`,
+      incorrectFeedback: `V = I × R = ${I} × ${R} = ${Vans} V.`,
+    };
+  }
+  const I = ri(1, 4);
+  const Vv = I * ri(2, 6);
+  const Rans = +(Vv / I).toFixed(1);
+  return {
+    type: 'scenario',
+    prompt: `${Vv} V pushes ${I} A through a component. What is its resistance? (R = V / I)`,
+    options: shuffleOpts([
+      { id: 'correct', label: `${Rans} Ω`, correct: true },
+      { id: 'mul', label: `${Vv * I} Ω`, correct: false },
+      { id: 'swap', label: `${+(I / Vv).toFixed(2)} Ω`, correct: false },
+    ]),
+    correctFeedback: `Correct. R = V / I = ${Vv} / ${I} = ${Rans} Ω.`,
+    incorrectFeedback: `R = V / I = ${Vv} / ${I} = ${Rans} Ω.`,
+  };
+}
+
+function genSeriesParallel() {
+  const series = ri(0, 1) === 1;
+  const q = series
+    ? { prompt: 'Two identical bulbs are in series with one battery. Compared with a single bulb, each is:',
+        correct: 'Dimmer', wrong: 'Brighter',
+        cf: 'Correct. Series shares one current and splits the voltage, so each bulb is dimmer.',
+        icf: 'Series splits the voltage and adds resistance — each bulb is dimmer.' }
+    : { prompt: 'Two identical bulbs are in parallel across one battery. Compared with a single bulb, each is:',
+        correct: 'Same brightness', wrong: 'Dimmer',
+        cf: 'Correct. Each parallel branch gets the full voltage, so each bulb is as bright as one alone.',
+        icf: 'Parallel gives each branch the full voltage — each bulb stays at full brightness.' };
+  return {
+    type: 'scenario',
+    prompt: q.prompt,
+    options: shuffleOpts([
+      { id: 'correct', label: q.correct, correct: true },
+      { id: 'wrong', label: q.wrong, correct: false },
+    ]),
+    correctFeedback: q.cf,
+    incorrectFeedback: q.icf,
+  };
+}
+
+function genBreak() {
+  const series = ri(0, 1) === 1;
+  return {
+    type: 'scenario',
+    prompt: `Three bulbs are wired in ${series ? 'series' : 'parallel'}. One bulb is unscrewed. What happens to the others?`,
+    options: shuffleOpts([
+      { id: 'correct', label: series ? 'They all go dark' : 'They stay lit', correct: true },
+      { id: 'wrong', label: series ? 'They stay lit' : 'They all go dark', correct: false },
+    ]),
+    correctFeedback: series
+      ? 'Correct. Series has one path — a single break opens the loop and all bulbs die.'
+      : 'Correct. Parallel branches are independent, so removing one leaves the others lit.',
+    incorrectFeedback: series
+      ? 'Series is a single loop: break it anywhere and every bulb goes out.'
+      : 'Parallel branches are independent — the others keep their own full path.',
+  };
+}
+
+function genPower() {
+  const I = ri(1, 5), V = ri(2, 12);
+  const P = I * V;
+  return {
+    type: 'scenario',
+    prompt: `A device draws ${I} A at ${V} V. What power does it use? (P = I × V)`,
+    options: shuffleOpts([
+      { id: 'correct', label: `${P} W`, correct: true },
+      { id: 'sum', label: `${I + V} W`, correct: false },
+      { id: 'div', label: `${+(V / I).toFixed(1)} W`, correct: false },
+    ]),
+    correctFeedback: `Correct. P = I × V = ${I} × ${V} = ${P} W.`,
+    incorrectFeedback: `P = I × V = ${I} × ${V} = ${P} W.`,
+  };
+}
+
+function circuitChallenge() {
+  return [
+    genOhm(), genSeriesParallel(),
+    genOhm(), genBreak(),
+    genPower(), genOhm(),
+    genSeriesParallel(), genBreak(),
+  ];
+}
+
 // ── registry ──────────────────────────────────────────────────────────────────
 const CHALLENGES = {
   'line-core': { build: lineChallenge, timeLimitSec: 150 },
   'functions': { build: functionsChallenge, timeLimitSec: 150 },
   'trigonometry': { build: trigChallenge, timeLimitSec: 150 },
+  'electricity': { build: circuitChallenge, timeLimitSec: 150 },
   'matrices': { build: matricesChallenge, timeLimitSec: 120 },
   'binary-data': { build: binaryChallenge, timeLimitSec: 120 },
   'logic-gates': { build: logicChallenge, timeLimitSec: 150 },
