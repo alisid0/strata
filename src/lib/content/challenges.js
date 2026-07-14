@@ -594,10 +594,113 @@ function atomFoundryChallenge() {
   ];
 }
 
+// ── maths: trigonometry (unit circle) ─────────────────────────────────────────
+// Exact reference values on the unit circle.
+const TRIG_TABLE = [
+  { deg: 0,  rad: '0',    cos: '1',      sin: '0',      tan: '0' },
+  { deg: 30, rad: 'π/6',  cos: '√3/2',   sin: '1/2',    tan: '1/√3' },
+  { deg: 45, rad: 'π/4',  cos: '√2/2',   sin: '√2/2',   tan: '1' },
+  { deg: 60, rad: 'π/3',  cos: '1/2',    sin: '√3/2',   tan: '√3' },
+  { deg: 90, rad: 'π/2',  cos: '0',      sin: '1',      tan: 'undefined' },
+];
+
+function genTrigValue() {
+  const row = pick(TRIG_TABLE.filter(r => r.deg !== 90));
+  const fn = pick(['cos', 'sin']);
+  const answer = row[fn];
+  const pool = [...new Set(TRIG_TABLE.map(r => r[fn]))].filter(v => v !== answer && v !== 'undefined');
+  const distractors = shuffleOpts(pool).slice(0, 2);
+  return {
+    type: 'scenario',
+    prompt: `On the unit circle, what is ${fn} ${row.deg}°?`,
+    options: shuffleOpts([
+      { id: 'correct', label: answer, correct: true },
+      ...distractors.map((v, i) => ({ id: `d${i}`, label: v, correct: false })),
+    ]),
+    correctFeedback: `Correct. ${fn} ${row.deg}° = ${answer}.`,
+    incorrectFeedback: `${fn} ${row.deg}° = ${answer} — read it straight off the unit circle.`,
+  };
+}
+
+function genQuadrantSign() {
+  const q = ri(1, 4);
+  const fn = pick(['sin', 'cos']);
+  // sin > 0 in Q1,Q2; cos > 0 in Q1,Q4.
+  const positive = fn === 'sin' ? (q === 1 || q === 2) : (q === 1 || q === 4);
+  const roman = ['I', 'II', 'III', 'IV'][q - 1];
+  return {
+    type: 'scenario',
+    prompt: `In quadrant ${roman}, is ${fn} θ positive or negative?`,
+    options: shuffleOpts([
+      { id: 'pos', label: 'Positive', correct: positive },
+      { id: 'neg', label: 'Negative', correct: !positive },
+    ]),
+    correctFeedback: `Correct. ${fn} is the ${fn === 'sin' ? 'height' : 'across'} value; in quadrant ${roman} that is ${positive ? 'above/right of' : 'below/left of'} the axis.`,
+    incorrectFeedback: `${fn} θ is ${positive ? 'positive' : 'negative'} in quadrant ${roman}. Picture where the point sits.`,
+  };
+}
+
+function genSpecialAngle() {
+  const row = pick(TRIG_TABLE.filter(r => r.deg !== 0 && r.deg !== 90));
+  const fn = pick(['sin', 'cos']);
+  const val = row[fn];
+  const others = TRIG_TABLE.filter(r => r.deg !== row.deg && r.deg !== 90);
+  const distractors = shuffleOpts(others).slice(0, 2).map(r => `${r.deg}°`);
+  return {
+    type: 'scenario',
+    prompt: `Which angle has ${fn} θ = ${val}?`,
+    options: shuffleOpts([
+      { id: 'correct', label: `${row.deg}°`, correct: true },
+      ...distractors.map((d, i) => ({ id: `d${i}`, label: d, correct: false })),
+    ]),
+    correctFeedback: `Correct. ${fn} ${row.deg}° = ${val}.`,
+    incorrectFeedback: `${fn} θ = ${val} at ${row.deg}°.`,
+  };
+}
+
+function genRadianConvert() {
+  const row = pick(TRIG_TABLE.filter(r => r.deg !== 0));
+  const toRad = ri(0, 1) === 1;
+  if (toRad) {
+    const wrong = TRIG_TABLE.filter(r => r.deg !== row.deg && r.deg !== 0).map(r => r.rad);
+    return {
+      type: 'scenario',
+      prompt: `${row.deg}° is how many radians?`,
+      options: shuffleOpts([
+        { id: 'correct', label: row.rad, correct: true },
+        ...shuffleOpts(wrong).slice(0, 2).map((w, i) => ({ id: `d${i}`, label: w, correct: false })),
+      ]),
+      correctFeedback: `Correct. ${row.deg}° = ${row.rad} radians.`,
+      incorrectFeedback: `${row.deg}° = ${row.rad}. A full turn (360°) is 2π.`,
+    };
+  }
+  const wrong = TRIG_TABLE.filter(r => r.deg !== row.deg && r.deg !== 0).map(r => `${r.deg}°`);
+  return {
+    type: 'scenario',
+    prompt: `${row.rad} radians is how many degrees?`,
+    options: shuffleOpts([
+      { id: 'correct', label: `${row.deg}°`, correct: true },
+      ...shuffleOpts(wrong).slice(0, 2).map((w, i) => ({ id: `d${i}`, label: w, correct: false })),
+    ]),
+    correctFeedback: `Correct. ${row.rad} = ${row.deg}°.`,
+    incorrectFeedback: `${row.rad} radians = ${row.deg}°. Remember π = 180°.`,
+  };
+}
+
+function trigChallenge() {
+  return [
+    genTrigValue(), genQuadrantSign(),
+    genSpecialAngle(), genRadianConvert(),
+    genTrigValue(), genQuadrantSign(),
+    genRadianConvert(), genSpecialAngle(),
+  ];
+}
+
 // ── registry ──────────────────────────────────────────────────────────────────
 const CHALLENGES = {
   'line-core': { build: lineChallenge, timeLimitSec: 150 },
   'functions': { build: functionsChallenge, timeLimitSec: 150 },
+  'trigonometry': { build: trigChallenge, timeLimitSec: 150 },
   'matrices': { build: matricesChallenge, timeLimitSec: 120 },
   'binary-data': { build: binaryChallenge, timeLimitSec: 120 },
   'logic-gates': { build: logicChallenge, timeLimitSec: 150 },

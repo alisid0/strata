@@ -2586,6 +2586,43 @@ export function getMathsFunctionsWorkshop() {
   return cloneInteractions(MATHS_FUNCTIONS_WORKSHOP);
 }
 
+// ── Maths: Unit Circle (Trigonometry signature lab) ──
+
+export const MATHS_UNIT_CIRCLE_WORKSHOP = [
+  {
+    type: 'unitcircle',
+    prompt: 'Drag the angle around the unit circle. Read cos and sin, place the special angles, and unwrap the wave.'
+  },
+  S('On the unit circle, the point at angle θ has coordinates:',
+    [O('cs', '(cos θ, sin θ)', true), O('sc', '(sin θ, cos θ)', false)],
+    'Correct. The x-coordinate is cos θ, the y-coordinate is sin θ.',
+    'Across is cos θ, up is sin θ — the point is (cos θ, sin θ).'),
+  S('At θ = 90°, the point sits at the top of the circle. What are cos and sin there?',
+    [O('01', 'cos = 0, sin = 1', true), O('10', 'cos = 1, sin = 0', false)],
+    'Correct. Straight up means no horizontal reach (cos 0) and full height (sin 1).',
+    'At the top: no sideways distance, full height. cos 90° = 0, sin 90° = 1.'),
+  S('Why is cos 45° equal to sin 45°?',
+    [O('iso', 'The 45° right triangle is isosceles — equal legs', true), O('big', 'Because 45 is half of 90', false)],
+    'Correct. Equal legs give equal cos and sin: both √2 / 2.',
+    'The 45°-45°-90° triangle has two equal sides, so cos and sin match at √2 / 2.'),
+  S('Tangent is undefined at 90° because:',
+    [O('div0', 'tan θ = sin θ / cos θ and cos 90° = 0', true), O('big', 'sin 90° is too large', false)],
+    'Correct. Dividing by cos 90° = 0 sends tan θ to infinity.',
+    'tan θ = sin θ / cos θ. At 90°, cos θ = 0, so the ratio is undefined.'),
+  S('A point sweeps once around the circle. Its height plotted against the angle gives:',
+    [O('sine', 'One full sine wave', true), O('line', 'A straight line', false)],
+    'Correct. One trip around the circle is one period of the sine wave — it repeats every 2π.',
+    'The rising and falling height traces a sine wave; one lap = one full wave.'),
+  S('How many radians are in a full turn?',
+    [O('2pi', '2π', true), O('360', '360', false), O('pi', 'π', false)],
+    'Correct. A full turn is 2π radians (that is where 360° comes from).',
+    'A full circle is 2π radians. Half a turn is π, a quarter is π/2.')
+];
+
+export function getMathsUnitCircleWorkshop() {
+  return cloneInteractions(MATHS_UNIT_CIRCLE_WORKSHOP);
+}
+
 // ── Chemistry: Atom Foundry (docs/ATOM-FOUNDRY-WORKSHOP-DESIGN.md) ──
 
 export const CHEM_FOUNDRY_WORKSHOP = [

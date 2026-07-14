@@ -8,6 +8,7 @@
     getComputerWorkshopModules,
     getLineCoreWorkshop,
     getMathsFunctionsWorkshop,
+    getMathsUnitCircleWorkshop,
     getMathsExpLogsWorkshop,
     getMathsMatricesWorkshop,
     getPhysicsElectricityWorkshop,
@@ -17,7 +18,6 @@
   import {
     getChemistryQuantWorkshop,
     getMathsDifferentiationWorkshop,
-    getMathsTrigonometryWorkshop,
     getPhysicsOpticsWorkshop
   } from '../lib/content/topicExpansionWorkshops.js';
   import { getChallengeForModule } from '../lib/content/challenges.js';
@@ -94,9 +94,9 @@
           id: 'trigonometry',
           label: 'Trig',
           title: 'Unit circle and wave lab',
-          sub: 'Read exact values, tune waves, and connect turning to slope.',
+          sub: 'Drag the angle, read cos and sin, and unwrap the sine wave.',
           pathId: 'MATH_TRIG_ADV',
-          getWorkshop: getMathsTrigonometryWorkshop
+          getWorkshop: getMathsUnitCircleWorkshop
         },
         {
           id: 'differentiation',

@@ -26,6 +26,7 @@
   import BondLab from './BondLab.svelte';
   import FunctionMachineLab from './FunctionMachineLab.svelte';
   import AtomFoundryLab from './AtomFoundryLab.svelte';
+  import UnitCircleLab from './UnitCircleLab.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -357,6 +358,11 @@
         />
       {:else if current.type === 'atomfoundry'}
         <AtomFoundryLab
+          prompt={current.prompt}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'unitcircle'}
+        <UnitCircleLab
           prompt={current.prompt}
           onDone={handleInteractionDone}
         />
