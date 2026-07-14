@@ -179,7 +179,7 @@
           </div>
         </div>
       {:else}
-        <CheckpointQuiz questions={recallActive.questions} title="Recall check" onDone={finishRecall} />
+        <CheckpointQuiz questions={recallActive.questions} title="Recall check" onDone={finishRecall} boardIndex={recallActive.cardNumber} />
       {/if}
     {/key}
   {/if}

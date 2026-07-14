@@ -617,7 +617,7 @@
   {:else if checkpointLegacy}
     <div class="checkpoint-overlay">
       <div class="checkpoint-modal">
-        <CheckpointQuiz questions={checkpointLegacy} onDone={finishCheckpoint} />
+        <CheckpointQuiz questions={checkpointLegacy} onDone={finishCheckpoint} boardIndex={idx} />
       </div>
     </div>
   {/if}

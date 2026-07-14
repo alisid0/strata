@@ -44,6 +44,7 @@
     if (isCorrect) {
       status[questionIdx] = 'correct';
       score++;
+      progress.grantCorrectAnswer();
       showFeedback[questionIdx] = { type: 'good', text: `Correct. ${q.explain || ''}` };
     } else if (attempts[questionIdx] >= 2) {
       status[questionIdx] = 'failed';
@@ -68,6 +69,7 @@
     if (isCorrect) {
       status[questionIdx] = 'correct';
       score++;
+      progress.grantCorrectAnswer();
       showFeedback[questionIdx] = { type: 'good', text: `Correct. ${q.explain || ''}` };
     } else if (attempts[questionIdx] >= 2) {
       status[questionIdx] = 'failed';
@@ -94,6 +96,7 @@
     if (isCorrect) {
       status[questionIdx] = 'correct';
       score++;
+      progress.grantCorrectAnswer();
       showFeedback[questionIdx] = { type: 'good', text: `Correct. ${q.explain || ''}` };
     } else if (attempts[questionIdx] >= 2) {
       status[questionIdx] = 'failed';
@@ -120,6 +123,7 @@
     if (isCorrect) {
       status[questionIdx] = 'correct';
       score++;
+      progress.grantCorrectAnswer();
       showFeedback[questionIdx] = { type: 'good', text: `Correct. ${q.explain || ''}` };
     } else if (attempts[questionIdx] >= 2) {
       status[questionIdx] = 'failed';

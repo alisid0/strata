@@ -541,6 +541,38 @@ function createProgressStore() {
       });
     },
 
+    /** +1 W per correct answer — called live from Quiz / Checkpoint as each
+     *  answer lands, so the toast fires immediately. Repeatable so retakes
+     *  earn again (the real anti-farming gate is the 200-event cap). */
+    grantCorrectAnswer() {
+      update(data => {
+        normalizeState(data);
+        grantWs(data, 'quiz_correct', `${Date.now()}:${Math.random().toString(16).slice(2, 6)}`, 1, { repeatable: true });
+        persist(data);
+        return data;
+      });
+    },
+
+    /** +1 W per correct checkpoint answer (non-repeatable per board boundary). */
+    grantCheckpointCorrect(boardIndex) {
+      update(data => {
+        normalizeState(data);
+        grantWs(data, 'checkpoint_correct', `cp:${boardIndex}`, 1);
+        persist(data);
+        return data;
+      });
+    },
+
+    /** +2 W bonus when all 3 checkpoint answers are correct. */
+    grantCheckpointPerfect(boardIndex) {
+      update(data => {
+        normalizeState(data);
+        grantWs(data, 'checkpoint_perfect', `cp_perfect:${boardIndex}`, 2, { bonus: true });
+        persist(data);
+        return data;
+      });
+    },
+
     recordQuizResult(pathId, score, total) {
       update(data => {
         normalizeState(data);
@@ -551,7 +583,8 @@ function createProgressStore() {
         const q = p.quiz;
         const ratio = total > 0 ? score / total : 0;
 
-        if (score > 0) grantWs(data, 'quiz_correct', `${pathId}:${now}`, score, { repeatable: true });
+        // Per-correct-answer Ws are now granted live via grantCorrectAnswer() —
+        // only bonuses remain here.
         if (ratio >= 0.6) grantWs(data, 'quiz_first_pass', pathId, 5, { bonus: true });
         if (total > 0 && score === total) grantWs(data, 'quiz_perfect', pathId, 10, { bonus: true });
 
