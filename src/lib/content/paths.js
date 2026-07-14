@@ -54,8 +54,10 @@ export const PATHS = {
     cards: [1266,1267,1268,1269,1270,1271,1272,1273,1274,1275], quizUrls: [] },
   MATH_TRIG_ADV: { subject: 'maths', name: 'Trigonometry', icon: 'maths',
     cards: [1379,1380,1381,1382,1383,1384], quizUrls: [] },
+  MATH_LIMITS: { subject: 'maths', name: 'Limits', icon: 'maths',
+    cards: [1423,1424,1425,1426,1427,1428,1429,1430], quizUrls: [] },
   MATH_DIFF: { subject: 'maths', name: 'Differentiation', icon: 'maths',
-    cards: [1385,1386,1387,1388,1389,1390], quizUrls: [] },
+    cards: [1385,1386,1387,1388,1389,1390,1431,1432], quizUrls: [] },
 
   // ── The Atom (starting point) ──
   // Phase 1: What is an atom? (1094-1104)
@@ -107,7 +109,7 @@ export const PATHS = {
 /** Grouped by subject for the subjects overview (display order). */
 export const SUBJECT_PATHS = {
   physics: ['PHYS_001', 'PHY_ENERGY_MOMENTUM', 'PHY_SI_SCALE', 'PHY_UNITS', 'PHY_SCALE', 'PHY_MEASUREMENT_LIMITS', 'PHY_INTRO', 'PHY_MOTION_FOUNDATIONS', 'PHY_FORCES', 'PHY_ELECTRICITY', 'PHY_THERMO', 'PHY_OPTICS'],
-  maths: ['LINE_001', 'MATH_COORD_MAPS', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_LINEAR_GRAPHS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
+  maths: ['LINE_001', 'MATH_COORD_MAPS', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_LINEAR_GRAPHS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_LIMITS', 'MATH_DIFF'],
   chemistry: ['ATOM_001', 'CHEM_NUCLEUS_ISOTOPES', 'CHEM_BONDING_TYPES', 'CHEM_MOLE_COUNTING', 'CHEM_BIOMOLECULES', 'CHEM_ATOMIC', 'CHEM_BONDING', 'CHEM_MOLE', 'CHEM_ARCH', 'CHEM_STRUCTURE_REACTIONS', 'CHEM_QUANT'],
   computing: ['BIT_001', 'COMP_CODE_COMMAND', 'COMP_HARDWARE', 'COMP_NETWORKS_SECURITY', 'COMP_SYSTEM_DESIGN', 'COMP_AI_ERA', 'COMP_AI_BEHIND']
 };
@@ -140,7 +142,7 @@ export const PATH_GROUPS = {
   line: {
     name: 'Mathematics',
     subject: 'maths',
-    paths: ['LINE_001', 'MATH_COORD_MAPS', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_LINEAR_GRAPHS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_DIFF'],
+    paths: ['LINE_001', 'MATH_COORD_MAPS', 'MATH_COORD', 'MATH_FUNCTIONS', 'MATH_LINEAR_GRAPHS', 'MATH_EXP_LOGS', 'MATH_MATRICES', 'MATH_TRIG_ADV', 'MATH_LIMITS', 'MATH_DIFF'],
     firstTopic: 'LINE_001'
   },
   bit: {
