@@ -31,6 +31,7 @@
   let total = 0;
   let bestStreak = 0;
   let challenge = null; // { interactions, timeLimitSec } — active randomized run
+  let running = false;  // false = browse the module grid; true = a workshop is open
   let activeTrack = 'computer';
   let activeModuleBySubject = {
     mathematics: 'line-core',
@@ -204,6 +205,9 @@
   $: workshopRunKey = `${activeTrack}-${activeModuleId}-${challenge ? 'challenge' : 'practice'}-${runId}`;
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
   $: hasChallenge = !!getChallengeForModule(activeModuleId);
+  // Was this module ever completed? (recordWorkshopComplete grants a one-time
+  // 'workshop:<id>' W, so its presence in granted marks the module done.)
+  const moduleDone = (id) => !!$progress?.ws?.granted?.[`workshop:${id}`];
 
   function finishWorkshop(finalScore, finalTotal, finalStreak = 0) {
     score = finalScore;
@@ -256,14 +260,22 @@
     if (activeTrack === id) return;
     activeTrack = id;
     challenge = null;
+    running = false; // switching subject returns to the grid
     replay();
   }
 
-  function chooseModule(id) {
-    if (activeModuleBySubject[activeTrack] === id) return;
+  // Tapping a grid tile opens that workshop.
+  function openModule(id) {
     activeModuleBySubject = { ...activeModuleBySubject, [activeTrack]: id };
     challenge = null;
+    running = true;
     replay();
+  }
+
+  function backToGrid() {
+    running = false;
+    challenge = null;
+    finished = false;
   }
 </script>
 
@@ -277,60 +289,65 @@
     <img src={track.icon} alt={track.label} />
   </div>
 
-  <div class="track-rail">
-    <div class="track-rail-title">Subjects</div>
-    <div class="track-tabs" role="tablist" aria-label="Workshop subjects">
-      {#each Object.entries(TRACKS) as [id, item]}
-        <button
-          class:active={activeTrack === id}
-          on:click={() => chooseTrack(id)}
-          role="tab"
-          aria-selected={activeTrack === id}
-        >
-          <img src={item.icon} alt="" />
-          <span>{item.label}</span>
-        </button>
-      {/each}
-    </div>
-  </div>
-
-  <section class="spotlight">
-    <div class="spotlight-copy">
-      <span>{track.label}</span>
-      <strong>{workshopTitle}</strong>
-      <small>{workshopSub}</small>
-    </div>
-    <button on:click={() => onNavigate?.('topicDetail', activePathId)}>Open path</button>
-  </section>
-
-  {#if moduleTabs.length}
-    <div class="module-tabs" role="tablist" aria-label={`${track.label} workshops`}>
-      {#each moduleTabs as item}
-        <button
-          class:active={activeModuleId === item.id}
-          on:click={() => chooseModule(item.id)}
-          role="tab"
-          aria-selected={activeModuleId === item.id}
-        >
-          {item.label}
-        </button>
-      {/each}
-    </div>
-  {/if}
-
-  {#if hasChallenge && !challenge}
-    <div class="challenge-bar">
-      <div>
-        <strong>Ready for pressure?</strong>
-        <small>Randomized targets against the clock — different every run.</small>
+  {#if !running}
+    <!-- Browse: subjects, then a grid of workshop tiles (matches the Path boards grid) -->
+    <div class="track-rail">
+      <div class="track-rail-title">Subjects</div>
+      <div class="track-tabs" role="tablist" aria-label="Workshop subjects">
+        {#each Object.entries(TRACKS) as [id, item]}
+          <button
+            class:active={activeTrack === id}
+            on:click={() => chooseTrack(id)}
+            role="tab"
+            aria-selected={activeTrack === id}
+          >
+            <img src={item.icon} alt="" />
+            <span>{item.label}</span>
+          </button>
+        {/each}
       </div>
-      <button on:click={startChallenge}>⚡ Challenge</button>
     </div>
-  {/if}
 
-  {#if challenge && !finished}
-    <button class="challenge-exit" on:click={exitChallenge}>← Back to practice</button>
-  {/if}
+    <div class="ws-grid">
+      {#each moduleTabs as item (item.id)}
+        <button class="ws-tile" on:click={() => openModule(item.id)}>
+          <span class="ws-tile-icon"><img src={track.icon} alt="" /></span>
+          <span class="ws-tile-name">{item.title}</span>
+          <span class="ws-tile-sub">{item.sub}</span>
+          <span class="ws-tile-foot">
+            <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Practice'}</span>
+            {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">⚡</span>{/if}
+          </span>
+        </button>
+      {/each}
+    </div>
+
+  {:else}
+    <!-- Running a workshop -->
+    <button class="ws-back" on:click={backToGrid}>← All workshops</button>
+
+    <section class="spotlight">
+      <div class="spotlight-copy">
+        <span>{track.label}</span>
+        <strong>{workshopTitle}</strong>
+        <small>{workshopSub}</small>
+      </div>
+      <button on:click={() => onNavigate?.('topicDetail', activePathId)}>Open path</button>
+    </section>
+
+    {#if hasChallenge && !challenge}
+      <div class="challenge-bar">
+        <div>
+          <strong>Ready for pressure?</strong>
+          <small>Randomized targets against the clock — different every run.</small>
+        </div>
+        <button on:click={startChallenge}>⚡ Challenge</button>
+      </div>
+    {/if}
+
+    {#if challenge && !finished}
+      <button class="challenge-exit" on:click={exitChallenge}>← Back to practice</button>
+    {/if}
 
   <div class="workshop-card" class:challenge-active={!!challenge}>
     {#if finished}
@@ -362,6 +379,7 @@
       {/key}
     {/if}
   </div>
+  {/if}
 </div>
 
 <style>
@@ -378,6 +396,61 @@
     justify-content: space-between;
     gap: 14px;
     margin-bottom: 12px;
+  }
+
+  /* Workshop grid — mirrors the Path boards grid (.topic-grid / .topic-tile) */
+  .ws-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .ws-tile {
+    min-height: 132px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    width: 100%; text-align: left;
+    padding: 12px; border-radius: var(--qx-radius-lg);
+    border: 1.5px solid var(--qx-border); background: var(--qx-surface);
+    cursor: pointer; font-family: var(--qx-font);
+    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  }
+  .ws-tile:hover { border-color: var(--qx-accent); transform: translateY(-1px); }
+  .ws-tile:active { transform: scale(0.98); }
+  .ws-tile-icon {
+    width: 34px; height: 34px; border-radius: 8px; background: var(--qx-surface-2);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .ws-tile-icon img { width: 26px; height: 26px; object-fit: contain; display: block; }
+  .ws-tile-name {
+    font-size: 14px; font-weight: 850; color: var(--qx-text);
+    line-height: 1.22; overflow-wrap: anywhere;
+  }
+  .ws-tile-sub {
+    font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint);
+    line-height: 1.35; overflow-wrap: anywhere;
+  }
+  .ws-tile-foot {
+    margin-top: auto; display: flex; align-items: center; gap: 6px;
+  }
+  .ws-chip {
+    font-size: 11px; font-weight: 800; color: var(--qx-text-faint);
+    background: var(--qx-surface-2); border-radius: var(--qx-radius-pill); padding: 4px 10px;
+  }
+  .ws-chip.done { color: var(--qx-green-text); background: var(--qx-green-soft); }
+  .ws-bolt {
+    font-size: 12px; color: var(--qx-accent-text);
+    background: var(--qx-accent-soft); border-radius: var(--qx-radius-pill); padding: 3px 8px;
+  }
+
+  .ws-back {
+    align-self: flex-start;
+    border: none; background: none; color: var(--qx-text-dim);
+    font-family: var(--qx-font); font-size: 13px; font-weight: 800;
+    cursor: pointer; padding: 2px 0 10px;
+  }
+
+  @media (min-width: 620px) {
+    .ws-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 
   .kicker {
@@ -542,44 +615,6 @@
     min-height: 38px;
     padding: 0 15px;
     flex-shrink: 0;
-  }
-
-  .module-tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    padding: 0 0 10px;
-    margin: -2px 0 4px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .module-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .module-tabs button {
-    border: 1.5px solid var(--qx-border);
-    border-radius: 999px;
-    background: var(--qx-surface);
-    color: var(--qx-text-dim);
-    font-family: var(--qx-font);
-    font-size: 12px;
-    font-weight: 850;
-    cursor: pointer;
-    min-height: 34px;
-    padding: 0 13px;
-    white-space: nowrap;
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-  }
-
-  .module-tabs button.active {
-    border-color: var(--qx-accent);
-    background: var(--qx-accent-soft);
-    color: var(--qx-accent-text);
   }
 
   .workshop-card {
