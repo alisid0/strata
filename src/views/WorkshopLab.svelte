@@ -4,6 +4,14 @@
     getChemFoundryWorkshop,
     getChemistryCoreWorkshop,
     getChemistryStructureWorkshop,
+    getMathCoordGeometryWorkshop,
+    getMathCoordMapsWorkshop,
+    getMathLinearGraphsWorkshop,
+    getChemAtomicWorkshop,
+    getChemNucleusWorkshop,
+    getChemBondingWorkshop,
+    getChemBondingTypesWorkshop,
+    getChemArchWorkshop,
     getComputerWorkshopModule,
     getComputerWorkshopModules,
     getLineCoreWorkshop,
@@ -107,6 +115,30 @@
           sub: 'Use slopes, rules, units, and rates without guesswork.',
           pathId: 'MATH_DIFF',
           getWorkshop: getMathsDifferentiationWorkshop
+        },
+        {
+          id: 'coord-geometry',
+          label: 'Coordinates',
+          title: 'Coordinate geometry',
+          sub: 'Plot points, measure distance, find midpoints, and match lines.',
+          pathId: 'MATH_COORD',
+          getWorkshop: getMathCoordGeometryWorkshop
+        },
+        {
+          id: 'coord-maps',
+          label: 'Grid maps',
+          title: 'Coordinate maps',
+          sub: 'Read and write coordinates across all four quadrants.',
+          pathId: 'MATH_COORD_MAPS',
+          getWorkshop: getMathCoordMapsWorkshop
+        },
+        {
+          id: 'linear-graphs',
+          label: 'Gradients',
+          title: 'Lines and gradients',
+          sub: 'Build y = mx + c and feel how slope and intercept move a line.',
+          pathId: 'MATH_LINEAR_GRAPHS',
+          getWorkshop: getMathLinearGraphsWorkshop
         }
       ]
     },
@@ -160,6 +192,46 @@
           sub: 'Convert mass to moles, read ratios, find limits, and reverse formulas.',
           pathId: 'CHEM_QUANT',
           getWorkshop: getChemistryQuantWorkshop
+        },
+        {
+          id: 'atomic-structure',
+          label: 'Atom',
+          title: 'Atomic structure',
+          sub: 'Build atoms and ions, and see what protons and electrons decide.',
+          pathId: 'CHEM_ATOMIC',
+          getWorkshop: getChemAtomicWorkshop
+        },
+        {
+          id: 'nucleus-isotopes',
+          label: 'Isotopes',
+          title: 'Nucleus and isotopes',
+          sub: 'Change neutrons to build isotopes without changing the element.',
+          pathId: 'CHEM_NUCLEUS_ISOTOPES',
+          getWorkshop: getChemNucleusWorkshop
+        },
+        {
+          id: 'chem-bonding',
+          label: 'Bonds',
+          title: 'Chemical bonding',
+          sub: 'Share or transfer electrons and watch stable compounds form.',
+          pathId: 'CHEM_BONDING',
+          getWorkshop: getChemBondingWorkshop
+        },
+        {
+          id: 'bonding-types',
+          label: 'Bond types',
+          title: 'Bonding types',
+          sub: 'Sort ionic, covalent, and metallic bonding by what electrons do.',
+          pathId: 'CHEM_BONDING_TYPES',
+          getWorkshop: getChemBondingTypesWorkshop
+        },
+        {
+          id: 'molecular-arch',
+          label: 'Shapes',
+          title: 'Molecular architecture',
+          sub: 'Build molecules from formulas and read their real shapes.',
+          pathId: 'CHEM_ARCH',
+          getWorkshop: getChemArchWorkshop
         }
       ]
     },

@@ -922,6 +922,15 @@ const CHALLENGES = {
   'atom-foundry': { build: atomFoundryChallenge, timeLimitSec: 150 },
   'chemistry-core': { build: chemistryChallenge, timeLimitSec: 180 },
   'forces-waves': { build: physicsChallenge, timeLimitSec: 120 },
+  // Tier A coverage modules reuse existing randomized generators.
+  'coord-geometry': { build: lineChallenge, timeLimitSec: 150 },
+  'coord-maps': { build: lineChallenge, timeLimitSec: 150 },
+  'linear-graphs': { build: lineChallenge, timeLimitSec: 150 },
+  'atomic-structure': { build: chemistryChallenge, timeLimitSec: 180 },
+  'nucleus-isotopes': { build: chemistryChallenge, timeLimitSec: 180 },
+  'chem-bonding': { build: chemistryChallenge, timeLimitSec: 180 },
+  'bonding-types': { build: chemistryChallenge, timeLimitSec: 180 },
+  'molecular-arch': { build: chemistryChallenge, timeLimitSec: 180 },
 };
 
 /** Fresh randomized challenge for a WorkshopLab module, or null if none exists. */

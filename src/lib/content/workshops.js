@@ -2711,6 +2711,210 @@ export function getPhysMotionWorkshop() {
   return cloneInteractions(PHY_MOTION_WORKSHOP);
 }
 
+// ── Tier A: coverage workshops reusing existing lab components ──
+// Each points an uncovered topic at a lab that already exists (CoordinateDrill,
+// AtomBuilder, BondLab, MoleculeBuilder), with topic-matched reinforcement.
+
+// Maths · Coordinate geometry (CoordinateDrill)
+export const MATH_COORD_GEOMETRY_WORKSHOP = [
+  { type: 'coorddrill', mode: 'plotPoint', prompt: 'Plot the point (3, 4) — across first, then up.',
+    targetX: 3, targetY: 4,
+    correctFeedback: 'Correct. 3 across, 4 up.', incorrectFeedback: 'Across is x, up is y. Drag to (3, 4).' },
+  S('The distance between two points is found with which idea?',
+    [O('pyth', 'Pythagoras on the horizontal and vertical gaps', true), O('add', 'Adding the two coordinates', false)],
+    'Correct. The gaps form a right triangle; the distance is its hypotenuse.',
+    'The horizontal and vertical gaps are the legs of a right triangle — use Pythagoras.'),
+  { type: 'coorddrill', mode: 'distance', prompt: 'Drag B until it is exactly 5 units from A.',
+    fixedPoint: { x: -1, y: -1 }, targetDistance: 5, distanceTolerance: 0.4,
+    correctFeedback: 'Correct — a hidden 3-4-5 triangle.', incorrectFeedback: 'Try 3 across and 4 up from A.' },
+  { type: 'coorddrill', mode: 'midpoint', prompt: 'Drag M to the midpoint of A and B.',
+    pointA: { x: -3, y: 1 }, pointB: { x: 3, y: 5 },
+    correctFeedback: 'Correct. Average the x values, average the y values.', incorrectFeedback: 'Midpoint = ((-3+3)/2, (1+5)/2) = (0, 3).' },
+  S('Two lines are parallel. What do they share?',
+    [O('slope', 'The same slope', true), O('inter', 'The same y-intercept', false)],
+    'Correct. Parallel lines have equal slopes and never meet.',
+    'Parallel means equal steepness — the same slope.'),
+  { type: 'coorddrill', mode: 'buildLine', prompt: 'Match the target line y = 2x + 1.',
+    targetM: 2, targetC: 1,
+    correctFeedback: 'Correct. Slope 2, crossing the y-axis at 1.', incorrectFeedback: 'Slope sets the tilt, intercept sets where it crosses y.' }
+];
+export function getMathCoordGeometryWorkshop() { return cloneInteractions(MATH_COORD_GEOMETRY_WORKSHOP); }
+
+// Maths · Coordinate maps (CoordinateDrill — reading/writing coordinates, quadrants)
+export const MATH_COORD_MAPS_WORKSHOP = [
+  { type: 'coorddrill', mode: 'plotPoint', prompt: 'Plot (2, 5): the address is across, then up.',
+    targetX: 2, targetY: 5,
+    correctFeedback: 'Correct. (2, 5): 2 across, 5 up.', incorrectFeedback: 'First number across, second up. Drag to (2, 5).' },
+  S('A point sits in the bottom-left region. Both its coordinates are:',
+    [O('neg', 'Negative', true), O('pos', 'Positive', false)],
+    'Correct. Bottom-left is quadrant III: x negative, y negative.',
+    'Bottom-left means left (negative x) and down (negative y).'),
+  { type: 'coorddrill', mode: 'plotPoint', prompt: 'Plot (-4, 2) — negatives go the other way.',
+    targetX: -4, targetY: 2,
+    correctFeedback: 'Correct. Left 4, up 2.', incorrectFeedback: 'Negative x is left; positive y is up.' },
+  S('The point (0, 3) sits where?',
+    [O('yaxis', 'On the y-axis', true), O('xaxis', 'On the x-axis', false)],
+    'Correct. An x-coordinate of 0 puts it on the vertical y-axis.',
+    'When x is 0 there is no sideways move — the point is on the y-axis.'),
+  { type: 'coorddrill', mode: 'plotPoint', prompt: 'Plot (5, -3): right and down.',
+    targetX: 5, targetY: -3,
+    correctFeedback: 'Correct. Right 5, down 3 — quadrant IV.', incorrectFeedback: 'Positive x is right; negative y is down.' },
+  S('Why does the order in a coordinate pair matter?',
+    [O('diff', '(3, 5) and (5, 3) are different points', true), O('same', 'It does not — they mean the same', false)],
+    'Correct. (x, y) is ordered; swapping gives a different location.',
+    '(3, 5) is 3 across and 5 up; (5, 3) is 5 across and 3 up — different points.')
+];
+export function getMathCoordMapsWorkshop() { return cloneInteractions(MATH_COORD_MAPS_WORKSHOP); }
+
+// Maths · Lines & gradients (CoordinateDrill — buildLine focus)
+export const MATH_LINEAR_GRAPHS_WORKSHOP = [
+  { type: 'coorddrill', mode: 'buildLine', prompt: 'Build y = x + 2: slope 1, intercept 2.',
+    targetM: 1, targetC: 2,
+    correctFeedback: 'Correct. Rises 1 per step across, crosses y at 2.', incorrectFeedback: 'Slope 1 (gentle rise), intercept 2 (crosses y at 2).' },
+  S('In y = mx + c, what does m control?',
+    [O('slope', 'The steepness (slope)', true), O('cross', 'Where it crosses the y-axis', false)],
+    'Correct. m is the gradient — how steep the line is.',
+    'm is the slope; c is where it crosses the y-axis.'),
+  { type: 'coorddrill', mode: 'buildLine', prompt: 'Build a steeper, falling line: y = -3x + 2.',
+    targetM: -3, targetC: 2,
+    correctFeedback: 'Correct. A negative slope falls as it moves right.', incorrectFeedback: 'Negative slope falls left-to-right; push m below zero.' },
+  S('A line has slope 0. It is:',
+    [O('flat', 'Perfectly flat (horizontal)', true), O('vert', 'Perfectly vertical', false)],
+    'Correct. Zero slope means no rise — a horizontal line.',
+    'Slope 0 means it never rises: a flat, horizontal line.'),
+  { type: 'coorddrill', mode: 'buildLine', prompt: 'Match y = 2x - 3.',
+    targetM: 2, targetC: -3,
+    correctFeedback: 'Correct. Climbs 2 per step, crosses y at -3.', incorrectFeedback: 'Slope 2, intercept -3 (crosses y below the origin).' },
+  S('A line climbs 6 units over a run of 2 units. Its gradient is:',
+    [O('3', '3', true), O('6', '6', false)],
+    'Correct. Gradient = rise / run = 6 / 2 = 3.',
+    'Gradient is rise over run: 6 ÷ 2 = 3.')
+];
+export function getMathLinearGraphsWorkshop() { return cloneInteractions(MATH_LINEAR_GRAPHS_WORKSHOP); }
+
+// Chemistry · Atomic structure (AtomBuilder)
+export const CHEM_ATOMIC_WORKSHOP = [
+  { type: 'atombuilder', prompt: 'Build a neutral carbon atom. Protons name it; electrons balance it.',
+    targetName: 'Carbon', targetProtons: 6, targetNeutrons: 6, targetElectrons: 6,
+    correctFeedback: 'Correct. Six protons is carbon; six electrons keeps it neutral.', incorrectFeedback: 'Carbon needs 6p / 6n / 6e.' },
+  S('What decides which element an atom is?',
+    [O('p', 'The number of protons', true), O('e', 'The number of electrons', false)],
+    'Correct. The proton count (atomic number) sets the identity.',
+    'Electrons can change; the proton count fixes the element.'),
+  { type: 'atombuilder', prompt: 'Build a neutral oxygen atom.',
+    targetName: 'Oxygen', targetProtons: 8, targetNeutrons: 8, targetElectrons: 8,
+    correctFeedback: 'Correct. Eight protons is oxygen.', incorrectFeedback: 'Oxygen needs 8p / 8n / 8e.' },
+  S('The first electron shell fills before the second. How many electrons does it hold?',
+    [O('2', '2', true), O('8', '8', false)],
+    'Correct. Shell 1 holds a maximum of 2, then shell 2 holds 8.',
+    'The inner shell holds only 2 electrons before the next shell starts.'),
+  { type: 'atombuilder', prompt: 'Make a sodium ion, Na⁺: it lost one electron.',
+    targetName: 'Na⁺', targetProtons: 11, targetNeutrons: 12, targetElectrons: 10,
+    correctFeedback: 'Correct. Still 11 protons (sodium) but 10 electrons — charge +1.', incorrectFeedback: 'Na⁺ keeps 11 protons; losing an electron leaves 10.' },
+  S('A neutral atom gains 2 electrons. Its charge becomes:',
+    [O('neg2', '−2', true), O('pos2', '+2', false)],
+    'Correct. Extra electrons add negative charge: −2.',
+    'Electrons are negative, so gaining 2 gives a charge of −2.')
+];
+export function getChemAtomicWorkshop() { return cloneInteractions(CHEM_ATOMIC_WORKSHOP); }
+
+// Chemistry · Nucleus & isotopes (AtomBuilder — isotope focus)
+export const CHEM_NUCLEUS_WORKSHOP = [
+  { type: 'atombuilder', prompt: 'Build carbon-12: 6 protons, 6 neutrons, neutral.',
+    targetName: 'Carbon-12', targetProtons: 6, targetNeutrons: 6, targetElectrons: 6,
+    correctFeedback: 'Correct. The standard carbon nucleus.', incorrectFeedback: 'Carbon-12 is 6p / 6n / 6e.' },
+  S('Isotopes of one element differ in the number of:',
+    [O('n', 'Neutrons', true), O('p', 'Protons', false)],
+    'Correct. Same protons, different neutrons — that is an isotope.',
+    'Changing protons changes the element. Isotopes only change neutrons.'),
+  { type: 'atombuilder', prompt: 'Now build carbon-14: same protons, two extra neutrons.',
+    targetName: 'Carbon-14', targetProtons: 6, targetNeutrons: 8, targetElectrons: 6,
+    correctFeedback: 'Correct. Still carbon, heavier nucleus — the dating isotope.', incorrectFeedback: 'Carbon-14 keeps 6 protons but has 8 neutrons.' },
+  S('Carbon-12 and carbon-14 react identically. Why?',
+    [O('shell', 'Same protons and electron shells', true), O('mass', 'They weigh the same', false)],
+    'Correct. Chemistry depends on protons and electrons, not neutrons.',
+    'They have different masses, but identical proton and electron arrangements.'),
+  { type: 'atombuilder', prompt: 'Build neutral helium: 2 protons, 2 neutrons.',
+    targetName: 'Helium', targetProtons: 2, targetNeutrons: 2, targetElectrons: 2,
+    correctFeedback: 'Correct. A tidy, stable little nucleus.', incorrectFeedback: 'Helium is 2p / 2n / 2e.' },
+  S('The mass number of an atom counts:',
+    [O('pn', 'Protons plus neutrons', true), O('pe', 'Protons plus electrons', false)],
+    'Correct. Mass sits in the nucleus: protons + neutrons.',
+    'Electrons are almost massless. Mass number = protons + neutrons.')
+];
+export function getChemNucleusWorkshop() { return cloneInteractions(CHEM_NUCLEUS_WORKSHOP); }
+
+// Chemistry · Chemical bonding (BondLab)
+export const CHEM_BONDING_WORKSHOP = [
+  { type: 'bondlab', prompt: 'Place atoms on the bench and form stable compounds by sharing or transferring electrons.' },
+  S('Why do atoms bond at all?',
+    [O('shell', 'To reach a full outer shell', true), O('mass', 'To gain more mass', false)],
+    'Correct. A full outer shell is stable, so atoms bond to reach it.',
+    'Bonding is about stability — a full outer shell — not gaining mass.'),
+  S('Sodium gives an electron to chlorine. This is:',
+    [O('ionic', 'Ionic bonding (transfer)', true), O('cov', 'Covalent bonding (sharing)', false)],
+    'Correct. Transferring electrons makes ions that attract — ionic bonding.',
+    'Giving/taking electrons is ionic. Sharing them is covalent.'),
+  S('Two atoms share a pair of electrons. This bond is:',
+    [O('cov', 'Covalent', true), O('metal', 'Metallic', false)],
+    'Correct. Shared electron pairs are covalent bonds.',
+    'Sharing a pair is covalent; a sea of free electrons is metallic.'),
+  S('A compound conducts electricity when molten and dissolves in water. Its bonding is likely:',
+    [O('ionic', 'Ionic', true), O('cov', 'Simple covalent', false)],
+    'Correct. Free-moving ions carry charge — typical of ionic compounds.',
+    'Mobile charged ions point to ionic bonding.')
+];
+export function getChemBondingWorkshop() { return cloneInteractions(CHEM_BONDING_WORKSHOP); }
+
+// Chemistry · Bonding types (BondLab — ionic/covalent/metallic sorting)
+export const CHEM_BONDING_TYPES_WORKSHOP = [
+  { type: 'bondlab', prompt: 'Build compounds by transferring or sharing electrons, and watch which bond forms.' },
+  { type: 'sorting',
+    boxes: [ { id: 'ionic', label: 'Ionic' }, { id: 'covalent', label: 'Covalent' }, { id: 'metallic', label: 'Metallic' } ],
+    items: [
+      { id: 'transfer', label: 'Electrons transferred metal → non-metal', box: 'ionic' },
+      { id: 'share', label: 'Electrons shared between non-metals', box: 'covalent' },
+      { id: 'sea', label: 'A sea of free electrons around metal ions', box: 'metallic' },
+      { id: 'salt', label: 'Sodium chloride (table salt)', box: 'ionic' },
+      { id: 'water', label: 'Water, H₂O', box: 'covalent' },
+      { id: 'copper', label: 'Solid copper wire', box: 'metallic' }
+    ] },
+  S('Metals conduct electricity because they have:',
+    [O('sea', 'Free (delocalised) electrons', true), O('ions', 'Trapped, fixed electrons', false)],
+    'Correct. The mobile electron sea carries charge through the metal.',
+    'Metallic bonding gives free-moving electrons that carry current.'),
+  S('Non-metals bonding with each other usually form:',
+    [O('cov', 'Covalent bonds (sharing)', true), O('ionic', 'Ionic bonds (transfer)', false)],
+    'Correct. Neither wants to give up electrons, so they share — covalent.',
+    'Two non-metals share electrons: covalent bonding.')
+];
+export function getChemBondingTypesWorkshop() { return cloneInteractions(CHEM_BONDING_TYPES_WORKSHOP); }
+
+// Chemistry · Molecular architecture (MoleculeBuilder)
+export const CHEM_ARCH_WORKSHOP = [
+  { type: 'moleculebuilder', prompt: 'Build water from its formula, H2O.',
+    targetFormula: 'H2O', targetAtoms: { H: 2, O: 1 },
+    correctFeedback: 'Correct. Two hydrogens, one oxygen.', incorrectFeedback: 'H2O = 2 H and 1 O.' },
+  S('In a chemical formula, the small subscript tells you:',
+    [O('count', 'How many of that atom', true), O('charge', 'The charge of the atom', false)],
+    'Correct. The subscript counts atoms of that element.',
+    'The subscript is a count — H₂ means two hydrogen atoms.'),
+  { type: 'moleculebuilder', prompt: 'Build carbon dioxide, CO2.',
+    targetFormula: 'CO2', targetAtoms: { C: 1, O: 2 },
+    correctFeedback: 'Correct. One carbon, two oxygens.', incorrectFeedback: 'CO2 = 1 C and 2 O.' },
+  { type: 'moleculebuilder', prompt: 'Build ammonia, NH3.',
+    targetFormula: 'NH3', targetAtoms: { N: 1, H: 3 },
+    correctFeedback: 'Correct. One nitrogen, three hydrogens.', incorrectFeedback: 'NH3 = 1 N and 3 H.' },
+  S('Water (H₂O) is bent, not straight. What pushes it into that shape?',
+    [O('lone', 'Lone pairs of electrons on the oxygen', true), O('h', 'The two hydrogens repelling', false)],
+    'Correct. Oxygen’s lone pairs push the bonds down into a bent shape.',
+    'The oxygen’s lone electron pairs crowd the bonds, bending the molecule.'),
+  { type: 'moleculebuilder', prompt: 'Build methane, CH4 — the tetrahedral one.',
+    targetFormula: 'CH4', targetAtoms: { C: 1, H: 4 },
+    correctFeedback: 'Correct. One carbon bonded to four hydrogens.', incorrectFeedback: 'CH4 = 1 C and 4 H.' }
+];
+export function getChemArchWorkshop() { return cloneInteractions(CHEM_ARCH_WORKSHOP); }
+
 // ── Chemistry: Atom Foundry (docs/ATOM-FOUNDRY-WORKSHOP-DESIGN.md) ──
 
 export const CHEM_FOUNDRY_WORKSHOP = [

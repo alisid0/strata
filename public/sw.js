@@ -1,4 +1,4 @@
-const CACHE = 'strata-v4';
+const CACHE = 'strata-v5';
 
 const CORE = [
   './',
