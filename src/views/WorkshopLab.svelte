@@ -337,17 +337,11 @@
     finished = false;
   }
 
-  function chooseTrack(id) {
-    if (activeTrack === id) return;
-    activeTrack = id;
-    challenge = null;
-    running = false; // switching subject returns to the grid
-    replay();
-  }
-
-  // Tapping a grid tile opens that workshop.
-  function openModule(id) {
-    activeModuleBySubject = { ...activeModuleBySubject, [activeTrack]: id };
+  // Tapping a grid tile opens that workshop. Every subject's tiles are on the
+  // page at once (Topics-style), so the tile carries its own track.
+  function openModule(trackId, id) {
+    activeTrack = trackId;
+    activeModuleBySubject = { ...activeModuleBySubject, [trackId]: id };
     challenge = null;
     running = true;
     replay();
@@ -371,37 +365,32 @@
   </div>
 
   {#if !running}
-    <!-- Browse: subjects, then a grid of workshop tiles (matches the Path boards grid) -->
-    <div class="track-rail">
-      <div class="track-rail-title">Subjects</div>
-      <div class="track-tabs" role="tablist" aria-label="Workshop subjects">
-        {#each Object.entries(TRACKS) as [id, item]}
-          <button
-            class:active={activeTrack === id}
-            on:click={() => chooseTrack(id)}
-            role="tab"
-            aria-selected={activeTrack === id}
-          >
-            <img src={item.icon} alt="" />
-            <span>{item.label}</span>
-          </button>
-        {/each}
-      </div>
-    </div>
-
-    <div class="ws-grid">
-      {#each moduleTabs as item (item.id)}
-        <button class="ws-tile" on:click={() => openModule(item.id)}>
-          <span class="ws-tile-icon"><img src={track.icon} alt="" /></span>
-          <span class="ws-tile-name">{item.title}</span>
-          <span class="ws-tile-sub">{item.sub}</span>
-          <span class="ws-tile-foot">
-            <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Practice'}</span>
-            {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">⚡</span>{/if}
-          </span>
-        </button>
-      {/each}
-    </div>
+    <!-- Browse: every subject stacked as its own section + grid (matches the Topics page) -->
+    {#each Object.entries(TRACKS) as [tid, trk] (tid)}
+      <section class="ws-block">
+        <div class="ws-block-head">
+          <img class="ws-block-icon" src={trk.icon} alt="" />
+          <div class="ws-block-info">
+            <div class="ws-block-name">{trk.label}</div>
+            <div class="ws-block-sub">{trk.sub}</div>
+          </div>
+          <span class="ws-block-progress">{trk.modules.filter((m) => moduleDone(m.id)).length}/{trk.modules.length}</span>
+        </div>
+        <div class="ws-grid">
+          {#each trk.modules as item (item.id)}
+            <button class="ws-tile" on:click={() => openModule(tid, item.id)}>
+              <span class="ws-tile-icon"><img src={trk.icon} alt="" /></span>
+              <span class="ws-tile-name">{item.title}</span>
+              <span class="ws-tile-sub">{item.sub}</span>
+              <span class="ws-tile-foot">
+                <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Practice'}</span>
+                {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">⚡</span>{/if}
+              </span>
+            </button>
+          {/each}
+        </div>
+      </section>
+    {/each}
 
   {:else}
     <!-- Running a workshop -->
@@ -564,84 +553,52 @@
     flex-shrink: 0;
   }
 
-  .track-rail {
-    position: relative;
-    margin: 0 -14px 12px;
-    padding: 0 14px;
+  .ws-block {
+    margin: 0 0 22px;
   }
 
-  .track-rail::after {
-    content: '';
-    position: absolute;
-    top: 18px;
-    right: 0;
-    bottom: 0;
-    width: 34px;
-    pointer-events: none;
-    background: linear-gradient(90deg, transparent, var(--qx-bg));
-  }
-
-  .track-rail-title {
-    color: var(--qx-text-faint);
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin: 0 0 7px;
-  }
-
-  .track-tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    padding: 0 28px 2px 0;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .track-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .track-tabs button {
-    width: 156px;
-    min-height: 44px;
-    border-radius: 999px;
-    border: 1.5px solid var(--qx-border);
-    background: var(--qx-surface);
-    color: var(--qx-text-dim);
-    font-family: var(--qx-font);
-    font-size: 13px;
-    font-weight: 850;
-    cursor: pointer;
+  .ws-block-head {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 7px;
-    padding: 0 10px;
-    flex: 0 0 auto;
-    scroll-snap-align: start;
+    gap: 10px;
+    margin: 0 0 10px;
   }
 
-  .track-tabs span {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .track-tabs button.active {
-    border-color: var(--qx-accent);
-    background: var(--qx-accent-soft);
-    color: var(--qx-accent-text);
-  }
-
-  .track-tabs img {
-    width: 20px;
-    height: 20px;
+  .ws-block-icon {
+    width: 30px;
+    height: 30px;
     object-fit: contain;
     flex: 0 0 auto;
+  }
+
+  .ws-block-info {
+    min-width: 0;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .ws-block-name {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--qx-text);
+  }
+
+  .ws-block-sub {
+    font-size: 12px;
+    color: var(--qx-text-dim);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ws-block-progress {
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 850;
+    color: var(--qx-text-faint);
+    font-variant-numeric: tabular-nums;
   }
 
   .spotlight {
