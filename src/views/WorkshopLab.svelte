@@ -12,6 +12,10 @@
     getChemBondingWorkshop,
     getChemBondingTypesWorkshop,
     getChemArchWorkshop,
+    getPhysMomentumWorkshop,
+    getChemMoleWorkshop,
+    getChemMoleCountingWorkshop,
+    getChemBiomoleculesWorkshop,
     getComputerWorkshopModule,
     getComputerWorkshopModules,
     getLineCoreWorkshop,
@@ -232,6 +236,30 @@
           sub: 'Build molecules from formulas and read their real shapes.',
           pathId: 'CHEM_ARCH',
           getWorkshop: getChemArchWorkshop
+        },
+        {
+          id: 'mole-reactions',
+          label: 'Reactions',
+          title: 'Reactions and the mole',
+          sub: 'Read balanced equations as ratios and build the products.',
+          pathId: 'CHEM_MOLE',
+          getWorkshop: getChemMoleWorkshop
+        },
+        {
+          id: 'counting-atoms',
+          label: 'Counting',
+          title: 'Counting atoms',
+          sub: 'Read a formula as a count and total the atoms in a molecule.',
+          pathId: 'CHEM_MOLE_COUNTING',
+          getWorkshop: getChemMoleCountingWorkshop
+        },
+        {
+          id: 'biomolecules',
+          label: 'Biomolecules',
+          title: 'Biomolecules',
+          sub: 'See why carbon builds life, and assemble the molecules of respiration.',
+          pathId: 'CHEM_BIOMOLECULES',
+          getWorkshop: getChemBiomoleculesWorkshop
         }
       ]
     },
@@ -254,6 +282,14 @@
           sub: 'Set a velocity, hit run, and watch the motion graphs draw themselves.',
           pathId: 'PHY_MOTION_FOUNDATIONS',
           getWorkshop: getPhysMotionWorkshop
+        },
+        {
+          id: 'momentum',
+          label: 'Collisions',
+          title: 'Collision Lab',
+          sub: 'Crash two carts, share momentum, and watch kinetic energy grow with speed.',
+          pathId: 'PHY_ENERGY_MOMENTUM',
+          getWorkshop: getPhysMomentumWorkshop
         },
         {
           id: 'electricity',

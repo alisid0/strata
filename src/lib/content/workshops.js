@@ -2915,6 +2915,82 @@ export const CHEM_ARCH_WORKSHOP = [
 ];
 export function getChemArchWorkshop() { return cloneInteractions(CHEM_ARCH_WORKSHOP); }
 
+// ── Tier B: Energy & Momentum (bespoke Collision Lab) ──
+export const PHY_MOMENTUM_WORKSHOP = [
+  { type: 'momentumlab', prompt: 'Set the carts, choose a collision, hit Run, and watch momentum and energy.' }
+];
+export function getPhysMomentumWorkshop() { return cloneInteractions(PHY_MOMENTUM_WORKSHOP); }
+
+// ── Tier B: chemistry coverage reusing MoleculeBuilder ──
+
+// Chemistry · Reactions & the mole (MoleculeBuilder + ratio reasoning)
+export const CHEM_MOLE_WORKSHOP = [
+  S('A balanced equation says 2 H₂ + O₂ → 2 H₂O. What does the “2” in front of H₂ count?',
+    [O('mol', 'How many molecules (or moles) react', true), O('atom', 'How many atoms are in one molecule', false)],
+    'Correct. The big number is the amount reacting; the subscript counts atoms inside one molecule.',
+    'The front number is the count of molecules/moles; the small subscript counts atoms in one molecule.'),
+  { type: 'moleculebuilder', prompt: 'Build one water molecule, a product of that reaction.',
+    targetFormula: 'H2O', targetAtoms: { H: 2, O: 1 },
+    correctFeedback: 'Correct. Two hydrogens and one oxygen.', incorrectFeedback: 'Water is H2O: 2 H and 1 O.' },
+  S('Burning methane: CH₄ + 2 O₂ → CO₂ + 2 H₂O. How many O₂ molecules per methane?',
+    [O('2', 'Two', true), O('1', 'One', false)],
+    'Correct. The ratio is 1 methane to 2 oxygen — read straight off the coefficients.',
+    'The coefficient on O₂ is 2, so two O₂ per one CH₄.'),
+  { type: 'moleculebuilder', prompt: 'Build the carbon dioxide that methane burning gives off.',
+    targetFormula: 'CO2', targetAtoms: { C: 1, O: 2 },
+    correctFeedback: 'Correct. One carbon, two oxygens.', incorrectFeedback: 'CO₂ is 1 C and 2 O.' },
+  S('Why must a chemical equation be balanced?',
+    [O('cons', 'Atoms are conserved — none created or destroyed', true), O('look', 'To make it look tidy', false)],
+    'Correct. Every atom on the left must reappear on the right; matter is conserved.',
+    'Balancing enforces conservation of atoms: the same atoms, rearranged.')
+];
+export function getChemMoleWorkshop() { return cloneInteractions(CHEM_MOLE_WORKSHOP); }
+
+// Chemistry · Counting atoms (MoleculeBuilder — read a formula as a count)
+export const CHEM_MOLE_COUNTING_WORKSHOP = [
+  { type: 'moleculebuilder', prompt: 'Build ammonia, NH₃. Read the formula as a shopping list of atoms.',
+    targetFormula: 'NH3', targetAtoms: { N: 1, H: 3 },
+    correctFeedback: 'Correct. One nitrogen, three hydrogens.', incorrectFeedback: 'NH₃ is 1 N and 3 H.' },
+  S('How many atoms are in one molecule of NH₃?',
+    [O('4', 'Four', true), O('3', 'Three', false)],
+    'Correct. One N plus three H makes four atoms.',
+    'Add them up: 1 nitrogen + 3 hydrogen = 4 atoms.'),
+  { type: 'moleculebuilder', prompt: 'Build methane, CH₄.',
+    targetFormula: 'CH4', targetAtoms: { C: 1, H: 4 },
+    correctFeedback: 'Correct. One carbon, four hydrogens — five atoms in all.', incorrectFeedback: 'CH₄ is 1 C and 4 H.' },
+  S('In the formula 2 CO₂, how many oxygen atoms are there in total?',
+    [O('4', 'Four', true), O('2', 'Two', false)],
+    'Correct. Two molecules × two oxygens each = four oxygen atoms.',
+    'Each CO₂ has 2 oxygens, and there are 2 molecules: 2 × 2 = 4.'),
+  { type: 'moleculebuilder', prompt: 'Build carbon dioxide, CO₂.',
+    targetFormula: 'CO2', targetAtoms: { C: 1, O: 2 },
+    correctFeedback: 'Correct. One carbon, two oxygens.', incorrectFeedback: 'CO₂ is 1 C and 2 O.' }
+];
+export function getChemMoleCountingWorkshop() { return cloneInteractions(CHEM_MOLE_COUNTING_WORKSHOP); }
+
+// Chemistry · Biomolecules (MoleculeBuilder — carbon backbone + small builds)
+export const CHEM_BIOMOLECULES_WORKSHOP = [
+  S('Life’s big molecules are built mostly around one element that bonds four ways. Which?',
+    [O('c', 'Carbon', true), O('o', 'Oxygen', false)],
+    'Correct. Carbon’s four bonds let it form long chains and rings — the scaffold of biology.',
+    'Carbon forms four bonds, so it chains into the backbones of biomolecules.'),
+  { type: 'moleculebuilder', prompt: 'Build methane, CH₄ — the simplest carbon skeleton.',
+    targetFormula: 'CH4', targetAtoms: { C: 1, H: 4 },
+    correctFeedback: 'Correct. One carbon holding four hydrogens — the seed of every carbon chain.', incorrectFeedback: 'CH₄ is 1 C and 4 H.' },
+  S('Cells run on respiration: glucose + O₂ → CO₂ + H₂O. What are the two waste products?',
+    [O('cw', 'Carbon dioxide and water', true), O('go', 'Glucose and oxygen', false)],
+    'Correct. Respiration breaks sugar down to carbon dioxide and water, releasing energy.',
+    'The outputs are carbon dioxide and water; glucose and oxygen are the inputs.'),
+  { type: 'moleculebuilder', prompt: 'Build a water molecule, one product of respiration.',
+    targetFormula: 'H2O', targetAtoms: { H: 2, O: 1 },
+    correctFeedback: 'Correct. Two hydrogens, one oxygen.', incorrectFeedback: 'Water is H₂O: 2 H and 1 O.' },
+  S('Proteins, carbohydrates, and DNA are all polymers. What does that mean?',
+    [O('rep', 'Long chains built from small repeating units', true), O('one', 'Single large atoms', false)],
+    'Correct. A polymer is many small monomers linked into a long chain.',
+    'Polymer means a long chain of repeating small units (monomers).')
+];
+export function getChemBiomoleculesWorkshop() { return cloneInteractions(CHEM_BIOMOLECULES_WORKSHOP); }
+
 // ── Chemistry: Atom Foundry (docs/ATOM-FOUNDRY-WORKSHOP-DESIGN.md) ──
 
 export const CHEM_FOUNDRY_WORKSHOP = [

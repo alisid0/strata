@@ -931,6 +931,11 @@ const CHALLENGES = {
   'chem-bonding': { build: chemistryChallenge, timeLimitSec: 180 },
   'bonding-types': { build: chemistryChallenge, timeLimitSec: 180 },
   'molecular-arch': { build: chemistryChallenge, timeLimitSec: 180 },
+  // Tier B coverage modules.
+  'momentum': { build: physicsChallenge, timeLimitSec: 120 },
+  'mole-reactions': { build: chemistryChallenge, timeLimitSec: 180 },
+  'counting-atoms': { build: chemistryChallenge, timeLimitSec: 180 },
+  'biomolecules': { build: chemistryChallenge, timeLimitSec: 180 },
 };
 
 /** Fresh randomized challenge for a WorkshopLab module, or null if none exists. */

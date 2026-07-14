@@ -29,6 +29,7 @@
   import UnitCircleLab from './UnitCircleLab.svelte';
   import CircuitBenchLab from './CircuitBenchLab.svelte';
   import MotionLab from './MotionLab.svelte';
+  import MomentumLab from './MomentumLab.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -375,6 +376,11 @@
         />
       {:else if current.type === 'motionlab'}
         <MotionLab
+          prompt={current.prompt}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'momentumlab'}
+        <MomentumLab
           prompt={current.prompt}
           onDone={handleInteractionDone}
         />
