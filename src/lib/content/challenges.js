@@ -811,12 +811,111 @@ function circuitChallenge() {
   ];
 }
 
+// ── physics: motion ───────────────────────────────────────────────────────────
+function genSpeedVsVelocity() {
+  const scalar = ri(0, 1) === 1;
+  const q = scalar
+    ? { prompt: 'Which of these is a scalar (size only, no direction)?', correct: 'Speed', wrong: 'Velocity' }
+    : { prompt: 'Which of these is a vector (has a direction)?', correct: 'Velocity', wrong: 'Speed' };
+  return {
+    type: 'scenario',
+    prompt: q.prompt,
+    options: shuffleOpts([
+      { id: 'correct', label: q.correct, correct: true },
+      { id: 'wrong', label: q.wrong, correct: false },
+    ]),
+    correctFeedback: 'Correct. Speed is size only; velocity is speed with a direction.',
+    incorrectFeedback: 'Speed is a scalar (size only). Velocity is a vector (size and direction).',
+  };
+}
+
+function genGraphRead() {
+  const kind = pick([
+    { g: 'a flat position-time line', ans: 'At rest (not moving)', wrong: ['Speeding up', 'Moving fast'] },
+    { g: 'a straight, sloped position-time line', ans: 'Constant velocity', wrong: ['Accelerating', 'At rest'] },
+    { g: 'a velocity-time line climbing from zero', ans: 'Speeding up', wrong: ['Constant speed', 'At rest'] },
+    { g: 'a flat velocity-time line above zero', ans: 'Constant velocity', wrong: ['Speeding up', 'Slowing down'] },
+    { g: 'a velocity-time line below the axis', ans: 'Moving backwards', wrong: ['At rest', 'Speeding up'] },
+  ]);
+  return {
+    type: 'scenario',
+    prompt: `A motion shows ${kind.g}. What is the object doing?`,
+    options: shuffleOpts([
+      { id: 'correct', label: kind.ans, correct: true },
+      ...kind.wrong.map((w, i) => ({ id: `w${i}`, label: w, correct: false })),
+    ]),
+    correctFeedback: `Correct. ${kind.g.charAt(0).toUpperCase() + kind.g.slice(1)} means: ${kind.ans.toLowerCase()}.`,
+    incorrectFeedback: `${kind.g.charAt(0).toUpperCase() + kind.g.slice(1)} means the object is: ${kind.ans.toLowerCase()}.`,
+  };
+}
+
+function genKinematics() {
+  const kind = pick(['speed', 'accel', 'relative']);
+  if (kind === 'speed') {
+    const d = ri(20, 100), t = ri(2, 10);
+    const v = +(d / t).toFixed(1);
+    return {
+      type: 'scenario',
+      prompt: `An object covers ${d} m in ${t} s at a steady rate. What is its speed? (speed = distance / time)`,
+      options: shuffleOpts([
+        { id: 'correct', label: `${v} m/s`, correct: true },
+        { id: 'mul', label: `${d * t} m/s`, correct: false },
+        { id: 'swap', label: `${+(t / d).toFixed(2)} m/s`, correct: false },
+      ]),
+      correctFeedback: `Correct. speed = ${d} / ${t} = ${v} m/s.`,
+      incorrectFeedback: `speed = distance / time = ${d} / ${t} = ${v} m/s.`,
+    };
+  }
+  if (kind === 'accel') {
+    const dv = ri(4, 20), t = ri(2, 5);
+    const a = +(dv / t).toFixed(1);
+    return {
+      type: 'scenario',
+      prompt: `Velocity rises by ${dv} m/s over ${t} s. What is the acceleration? (a = change in v / time)`,
+      options: shuffleOpts([
+        { id: 'correct', label: `${a} m/s²`, correct: true },
+        { id: 'mul', label: `${dv * t} m/s²`, correct: false },
+        { id: 'swap', label: `${+(t / dv).toFixed(2)} m/s²`, correct: false },
+      ]),
+      correctFeedback: `Correct. a = ${dv} / ${t} = ${a} m/s².`,
+      incorrectFeedback: `a = change in velocity / time = ${dv} / ${t} = ${a} m/s².`,
+    };
+  }
+  // relative velocity: two objects, same or opposite direction
+  const a = ri(3, 12), b = ri(2, 8), same = ri(0, 1) === 1;
+  const rel = same ? Math.abs(a - b) : a + b;
+  return {
+    type: 'scenario',
+    prompt: `Two cars move at ${a} m/s and ${b} m/s in the ${same ? 'same' : 'opposite'} direction. How fast does one see the other approach or recede?`,
+    options: shuffleOpts([
+      { id: 'correct', label: `${rel} m/s`, correct: true },
+      { id: 'other', label: `${same ? a + b : Math.abs(a - b)} m/s`, correct: false },
+    ]),
+    correctFeedback: same
+      ? `Correct. Same direction: subtract — ${a} − ${b} = ${rel} m/s relative.`
+      : `Correct. Opposite directions: add — ${a} + ${b} = ${rel} m/s relative.`,
+    incorrectFeedback: same
+      ? `Same direction means subtract the velocities: ${rel} m/s.`
+      : `Opposite directions means add the velocities: ${rel} m/s.`,
+  };
+}
+
+function motionChallenge() {
+  return [
+    genSpeedVsVelocity(), genGraphRead(),
+    genKinematics(), genGraphRead(),
+    genKinematics(), genSpeedVsVelocity(),
+    genGraphRead(), genKinematics(),
+  ];
+}
+
 // ── registry ──────────────────────────────────────────────────────────────────
 const CHALLENGES = {
   'line-core': { build: lineChallenge, timeLimitSec: 150 },
   'functions': { build: functionsChallenge, timeLimitSec: 150 },
   'trigonometry': { build: trigChallenge, timeLimitSec: 150 },
   'electricity': { build: circuitChallenge, timeLimitSec: 150 },
+  'motion': { build: motionChallenge, timeLimitSec: 150 },
   'matrices': { build: matricesChallenge, timeLimitSec: 120 },
   'binary-data': { build: binaryChallenge, timeLimitSec: 120 },
   'logic-gates': { build: logicChallenge, timeLimitSec: 150 },

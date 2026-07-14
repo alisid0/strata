@@ -10,6 +10,7 @@
     getMathsFunctionsWorkshop,
     getMathsUnitCircleWorkshop,
     getPhysCircuitWorkshop,
+    getPhysMotionWorkshop,
     getMathsExpLogsWorkshop,
     getMathsMatricesWorkshop,
     getPhysicsWorkshopModule,
@@ -174,6 +175,14 @@
           pathId: module.pathId || 'PHYS_001',
           getWorkshop: () => getPhysicsWorkshopModule(module.id).interactions
         })),
+        {
+          id: 'motion',
+          label: 'Motion',
+          title: 'Motion Lab',
+          sub: 'Set a velocity, hit run, and watch the motion graphs draw themselves.',
+          pathId: 'PHY_MOTION_FOUNDATIONS',
+          getWorkshop: getPhysMotionWorkshop
+        },
         {
           id: 'electricity',
           label: 'Electricity',

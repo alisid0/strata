@@ -2669,6 +2669,48 @@ export function getPhysCircuitWorkshop() {
   return cloneInteractions(PHY_CIRCUIT_WORKSHOP);
 }
 
+// ── Physics: Motion Lab (Motion foundations signature lab) ──
+
+export const PHY_MOTION_WORKSHOP = [
+  {
+    type: 'motionlab',
+    prompt: 'Set the motion, hit Run, and watch the position, velocity, and acceleration graphs draw themselves.'
+  },
+  S('Speed is a scalar; velocity is a vector. What does velocity have that speed does not?',
+    [O('dir', 'A direction', true), O('unit', 'A different unit', false)],
+    'Correct. Velocity is speed with a direction — that is what makes it a vector.',
+    'They share the same unit (m/s). Velocity adds a direction; speed is just the size.'),
+  S('A car drives north at 30 m/s, then south at 30 m/s. Its speed is unchanged, but its velocity:',
+    [O('changed', 'Changed — the direction reversed', true), O('same', 'Stayed the same', false)],
+    'Correct. Same speed, opposite direction, so the velocity is different (and it accelerated to turn around).',
+    'Velocity includes direction. Reversing direction changes the velocity even at the same speed.'),
+  S('On a position-time graph, a steeper line means:',
+    [O('faster', 'A greater velocity', true), O('further', 'A longer journey', false)],
+    'Correct. The slope of a position-time graph is the velocity — steeper is faster.',
+    'Slope is velocity. A steeper position-time line means the object covers ground faster.'),
+  { type: 'sorting',
+    boxes: [
+      { id: 'vgraph', label: 'Velocity-time graph' },
+      { id: 'motion', label: 'What the object does' }
+    ],
+    items: [
+      { id: 'flatpos', label: 'A flat line above zero', box: 'vgraph' },
+      { id: 'steady', label: 'Moves at a steady speed', box: 'motion' },
+      { id: 'rising', label: 'A line climbing from zero', box: 'vgraph' },
+      { id: 'speedup', label: 'Speeds up (accelerates)', box: 'motion' },
+      { id: 'belowzero', label: 'A line below the axis', box: 'vgraph' },
+      { id: 'backwards', label: 'Moves in reverse', box: 'motion' }
+    ] },
+  S('A velocity-time graph is a flat horizontal line above zero. The acceleration is:',
+    [O('zero', 'Zero — velocity is not changing', true), O('big', 'Large and steady', false)],
+    'Correct. Acceleration is the slope of the velocity graph; a flat line has zero slope, so zero acceleration.',
+    'Acceleration is how fast velocity changes. A flat velocity line is not changing, so acceleration is zero.')
+];
+
+export function getPhysMotionWorkshop() {
+  return cloneInteractions(PHY_MOTION_WORKSHOP);
+}
+
 // ── Chemistry: Atom Foundry (docs/ATOM-FOUNDRY-WORKSHOP-DESIGN.md) ──
 
 export const CHEM_FOUNDRY_WORKSHOP = [
