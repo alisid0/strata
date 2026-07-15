@@ -38,6 +38,10 @@
   // When it hits zero the run ends immediately — answered steps keep their score,
   // unanswered steps count as missed (total = interactions.length throughout).
   export let timeLimitSec = 0;
+  // Test (assessment) mode: one attempt per item with nothing revealed while
+  // running — no correct-answer highlight, no teaching feedback, no streak
+  // flame (it would leak correctness). The verdict arrives only at the end.
+  export let assess = false;
 
   let step = 0;
   let totalScore = 0;
@@ -110,11 +114,11 @@
 <div class="workshop">
   <div class="workshop-header">
     <div>
-      <span class="workshop-kicker">{timeLimitSec > 0 ? 'Challenge' : 'Micro drill'}</span>
+      <span class="workshop-kicker">{assess ? 'Test' : timeLimitSec > 0 ? 'Challenge' : 'Micro drill'}</span>
       <span class="workshop-title">Workshop</span>
     </div>
     <div class="workshop-chips">
-      {#if streak >= 2}
+      {#if streak >= 2 && !assess}
         <span class="workshop-streak">🔥 {streak}</span>
       {/if}
       {#if timeLimitSec > 0}
@@ -394,9 +398,9 @@
             {#each scenarioOptions as opt}
               <button
                 class="scenario-opt"
-                class:selected={current._answered}
-                class:correct={current._answered && opt.correct}
-                class:incorrect={current._answered && current._chosen === opt.id && !opt.correct}
+                class:selected={current._answered && (!assess || current._chosen === opt.id)}
+                class:correct={!assess && current._answered && opt.correct}
+                class:incorrect={!assess && current._answered && current._chosen === opt.id && !opt.correct}
                 on:click={() => {
                   if (current._answered) return;
                   current._answered = true;
@@ -407,15 +411,19 @@
                 }}
               >
                 {opt.label}
-                {#if current._answered && opt.correct}<span class="check"> ✓</span>{/if}
-                {#if current._answered && current._chosen === opt.id && !opt.correct}<span class="check"> ✗</span>{/if}
+                {#if !assess && current._answered && opt.correct}<span class="check"> ✓</span>{/if}
+                {#if !assess && current._answered && current._chosen === opt.id && !opt.correct}<span class="check"> ✗</span>{/if}
               </button>
             {/each}
           </div>
           {#if current._answered}
-            <div class="scenario-feedback" class:correct={current._correct} class:incorrect={!current._correct}>
-              {current._feedback}
-            </div>
+            {#if assess}
+              <div class="scenario-feedback">Answer locked in. You’ll see your score at the end.</div>
+            {:else}
+              <div class="scenario-feedback" class:correct={current._correct} class:incorrect={!current._correct}>
+                {current._feedback}
+              </div>
+            {/if}
             <button class="continue-btn" on:click={() => handleInteractionDone(current._correct ? 1 : 0, 1)}>Continue</button>
           {/if}
         </div>
