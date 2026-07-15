@@ -522,6 +522,7 @@
               <span class="ws-tile-foot">
                 <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Practice'}</span>
                 {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">⚡</span>{/if}
+                {#if getTestForModule(item.id, item.getWorkshop ? item.getWorkshop() : [])}<span class="ws-bolt" title="Scored test available">📋</span>{/if}
               </span>
             </button>
           {/each}
@@ -569,6 +570,9 @@
           <p>{scorePct >= 80 ? 'Scored cold, one attempt per question, nothing revealed on the way. This result is trustworthy — the idea is genuinely yours.' : scorePct >= 50 ? 'This is what testing is for: it found the soft spots practice papered over. Revisit the practice drill, then retake — the questions reshuffle.' : 'A low test score is information, not a verdict. Run the practice drill again with fresh eyes, then come back and retake.'}</p>
           <div class="done-actions">
             <button class="primary-btn" on:click={replay}>📋 Retake test</button>
+            {#if hasChallenge}
+              <button class="ghost-btn" on:click={startChallenge}>⚡ Try the challenge</button>
+            {/if}
             <button class="ghost-btn" on:click={exitChallenge}>Back to practice</button>
           </div>
         {:else if challenge}
@@ -578,16 +582,20 @@
           <p>{scorePct >= 80 ? 'Under time pressure, with targets you had never seen. That is real mastery.' : scorePct >= 50 ? 'Solid under pressure. Another run means brand-new targets — no memorising your way through this one.' : 'The clock is brutal at first. Every rerun is freshly randomized, so each attempt genuinely trains the skill.'}</p>
           <div class="done-actions">
             <button class="primary-btn" on:click={replay}>⚡ New challenge</button>
+            {#if hasTest}
+              <button class="ghost-btn" on:click={startTest}>📋 Take the test</button>
+            {/if}
             <button class="ghost-btn" on:click={exitChallenge}>Back to practice</button>
           </div>
         {:else}
           <p>{scorePct >= 80 ? 'Strong grasp. This is the confidence zone: the idea is usable, not just familiar.' : 'Replay once and aim for a cleaner run. Short repetition is where the pattern starts to feel automatic.'}</p>
           <div class="done-actions">
             <button class="primary-btn" on:click={replay}>Replay drill</button>
+            {#if hasChallenge}
+              <button class="ghost-btn" on:click={startChallenge}>⚡ Try the challenge</button>
+            {/if}
             {#if hasTest}
               <button class="ghost-btn" on:click={startTest}>📋 Take the test</button>
-            {:else if hasChallenge}
-              <button class="ghost-btn" on:click={startChallenge}>⚡ Try the challenge</button>
             {/if}
           </div>
         {/if}
