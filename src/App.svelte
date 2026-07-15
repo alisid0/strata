@@ -26,6 +26,7 @@
   // loading | auth | onboarding | home | topics | topicDetail | stats | leaderboard | otherUserStats | snippets | reader | quiz | author
   let currentView = 'loading';
   let currentPathId = '';
+  let workshopTarget = null; // module id the workshop tab should open directly
   let readerNumbers = [];
   let readerStart = 1;
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
@@ -119,6 +120,7 @@
     }
 
     if (view === 'topicDetail') { currentPathId = arg; currentView = 'topicDetail'; }
+    else if (view === 'workshop') { workshopTarget = arg || null; currentView = 'workshop'; }
     else if (view === 'reader') {
       readerNumbers = arg?.numbers || Array.from({ length: 84 }, (_, i) => i + 1);
       readerStart = arg?.start || readerNumbers[0] || 1;
@@ -155,7 +157,7 @@
         {:else if currentView === 'path'}
           <Path onNavigate={navigate} />
         {:else if currentView === 'workshop'}
-          <WorkshopLab onNavigate={navigate} />
+          <WorkshopLab onNavigate={navigate} openTarget={workshopTarget} />
         {:else if currentView === 'wscore'}
           <WScore onNavigate={navigate} />
         {/if}

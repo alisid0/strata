@@ -1,5 +1,6 @@
-<script>
-  import Workshop from '../lib/components/assessments/Workshop.svelte';
+<script context="module">
+  // Module-level catalog: lets other views (PathView's "Learn it by doing"
+  // section) look up workshops by pathId without mounting this component.
   import {
     getChemFoundryWorkshop,
     getChemistryCoreWorkshop,
@@ -41,28 +42,7 @@
     getMathsDifferentiationWorkshop,
     getPhysicsOpticsWorkshop
   } from '../lib/content/topicExpansionWorkshops.js';
-  import { getChallengeForModule } from '../lib/content/challenges.js';
-  import { getTestForModule } from '../lib/content/tests.js';
   import { getSeriesIIModules } from '../lib/content/workshops2.js';
-  import { progress } from '../lib/stores/progress.js';
-
-  export let onNavigate;
-
-  let runId = 0;
-  let finished = false;
-  let score = 0;
-  let total = 0;
-  let bestStreak = 0;
-  let challenge = null; // { interactions, timeLimitSec } — active randomized run
-  let test = null; // interactions[] — active strict-assessment run (Test mode)
-  let running = false;  // false = browse the module grid; true = a workshop is open
-  let activeTrack = 'computer';
-  let activeModuleBySubject = {
-    mathematics: 'line-core',
-    computer: 'binary-data',
-    chemistry: 'chemistry-core',
-    physics: 'units-dimensions'
-  };
 
   const COMPUTER_MODULES = getComputerWorkshopModules();
   const PHYSICS_MODULES = getPhysicsWorkshopModules();
@@ -391,6 +371,55 @@
       ]
     }
   };
+
+  /** Workshop modules attached to a topic path (for PathView's practise section). */
+  export function getWorkshopsForPath(pathId) {
+    const out = [];
+    for (const [tid, trk] of Object.entries(TRACKS)) {
+      for (const m of trk.modules) {
+        if (m.pathId === pathId) out.push({ id: m.id, title: m.title, sub: m.sub, track: tid, trackLabel: trk.label });
+      }
+    }
+    return out;
+  }
+</script>
+
+<script>
+  import Workshop from '../lib/components/assessments/Workshop.svelte';
+  import { getChallengeForModule } from '../lib/content/challenges.js';
+  import { getTestForModule } from '../lib/content/tests.js';
+  import { progress } from '../lib/stores/progress.js';
+
+  export let onNavigate;
+  export let openTarget = null; // module id to open immediately (deep link from a topic page)
+
+  let runId = 0;
+  let finished = false;
+  let score = 0;
+  let total = 0;
+  let bestStreak = 0;
+  let challenge = null; // { interactions, timeLimitSec } — active randomized run
+  let test = null; // interactions[] — active strict-assessment run (Test mode)
+  let running = false;  // false = browse the module grid; true = a workshop is open
+  let activeTrack = 'computer';
+  let activeModuleBySubject = {
+    mathematics: 'line-core',
+    computer: 'binary-data',
+    chemistry: 'chemistry-core',
+    physics: 'units-dimensions'
+  };
+
+  // Deep link from a topic page: land with the target module already open.
+  if (openTarget) {
+    for (const [tid, trk] of Object.entries(TRACKS)) {
+      if (trk.modules.some((m) => m.id === openTarget)) {
+        activeTrack = tid;
+        activeModuleBySubject = { ...activeModuleBySubject, [tid]: openTarget };
+        running = true;
+        break;
+      }
+    }
+  }
 
   $: track = TRACKS[activeTrack];
   $: moduleTabs = track.modules || [];

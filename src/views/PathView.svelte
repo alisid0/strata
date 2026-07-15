@@ -5,11 +5,15 @@
   import { getBoard, fetchBoardsByNumbers } from '../lib/content/dynamicBoards.js';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxButton from '../lib/components/qubix/QxButton.svelte';
+  import { getWorkshopsForPath } from './WorkshopLab.svelte';
 
   export let pathId = '';
   export let onNavigate; // (view, args?) => void
 
   $: manifest = PATHS[pathId];
+  // Reading is the map; the workshops are the territory. Surface every
+  // workshop parallel to this topic so practice is one tap from the boards.
+  $: topicWorkshops = pathId ? getWorkshopsForPath(pathId) : [];
   $: state = manifest ? progress.getPathState(pathId, manifest) : null;
   $: pct = state && state.boardsTotal ? Math.round((state.boardsRead / state.boardsTotal) * 100) : 0;
 
@@ -122,6 +126,22 @@
         {/each}
       </div>
 
+      {#if topicWorkshops.length}
+        <div class="practise-block">
+          <div class="practise-title">Learn it by doing</div>
+          {#each topicWorkshops as w (w.id)}
+            <button class="practise-row" on:click={() => onNavigate?.('workshop', w.id)}>
+              <span class="practise-icon">🛠</span>
+              <span class="practise-info">
+                <span class="practise-name">{w.title}</span>
+                <span class="practise-sub">{w.sub}</span>
+              </span>
+              <span class="practise-chev">›</span>
+            </button>
+          {/each}
+        </div>
+      {/if}
+
       <div class="footer">
         <button class="cta-primary" on:click={() => openReader(nextBoardNumber)}>
           Continue · Board {cards.findIndex(c => c.number === nextBoardNumber) + 1}
@@ -197,4 +217,24 @@
 
   .loading-row { text-align: center; color: var(--qx-text-faint); padding: 32px 0; font-size: 14px; }
   .retry-btn { background: none; border: none; color: var(--qx-accent); font-family: var(--qx-font); font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: underline; }
+
+  .practise-block { margin: 4px 0 18px; }
+  .practise-title {
+    font-size: 11px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--qx-text-faint); margin: 0 0 8px 2px;
+  }
+  .practise-row {
+    width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 12px;
+    border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-accent);
+    background: var(--qx-accent-soft); cursor: pointer; text-align: left;
+    font-family: var(--qx-font); margin-bottom: 8px; transition: background 0.1s;
+  }
+  .practise-icon { font-size: 18px; flex-shrink: 0; }
+  .practise-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .practise-name { font-size: 14px; font-weight: 800; color: var(--qx-accent-text); line-height: 1.3; }
+  .practise-sub {
+    font-size: 12px; font-weight: 550; color: var(--qx-text-dim);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .practise-chev { font-size: 18px; color: var(--qx-accent-text); }
 </style>
