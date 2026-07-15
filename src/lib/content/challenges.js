@@ -939,6 +939,24 @@ const CHALLENGES = {
   'forces': { build: physicsChallenge, timeLimitSec: 120 },
   'si-scale': { build: physicsChallenge, timeLimitSec: 120 },
   'scale-estimation': { build: physicsChallenge, timeLimitSec: 120 },
+  // Series II modules reuse the topic-matched generators.
+  'functions-2': { build: functionsChallenge, timeLimitSec: 150 },
+  'trig-2': { build: trigChallenge, timeLimitSec: 150 },
+  'coord-geometry-2': { build: lineChallenge, timeLimitSec: 150 },
+  'linear-graphs-2': { build: lineChallenge, timeLimitSec: 150 },
+  'binary-2': { build: binaryChallenge, timeLimitSec: 120 },
+  'logic-2': { build: logicChallenge, timeLimitSec: 150 },
+  'atomic-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'bonding-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'mole-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'counting-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'biomolecules-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'motion-2': { build: motionChallenge, timeLimitSec: 150 },
+  'forces-2': { build: physicsChallenge, timeLimitSec: 120 },
+  'electricity-2': { build: circuitChallenge, timeLimitSec: 150 },
+  'momentum-2': { build: physicsChallenge, timeLimitSec: 120 },
+  'si-2': { build: physicsChallenge, timeLimitSec: 120 },
+  'thermo-2': { build: physicsChallenge, timeLimitSec: 120 },
 };
 
 /** Fresh randomized challenge for a WorkshopLab module, or null if none exists. */

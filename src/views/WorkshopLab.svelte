@@ -43,6 +43,7 @@
   } from '../lib/content/topicExpansionWorkshops.js';
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
+  import { getSeriesIIModules } from '../lib/content/workshops2.js';
   import { progress } from '../lib/stores/progress.js';
 
   export let onNavigate;
@@ -161,7 +162,8 @@
           sub: 'Reason about the value a function approaches, even where it breaks.',
           pathId: 'MATH_LIMITS',
           getWorkshop: getMathLimitsWorkshop
-        }
+        },
+        ...getSeriesIIModules('mathematics')
       ]
     },
     computer: {
@@ -191,7 +193,8 @@
           sub: 'Tokens, weights, training vs use, and why models hallucinate.',
           pathId: 'COMP_AI_BEHIND',
           getWorkshop: getCompAiBehindWorkshop
-        }
+        },
+        ...getSeriesIIModules('computer')
       ]
     },
     chemistry: {
@@ -296,7 +299,8 @@
           sub: 'See why carbon builds life, and assemble the molecules of respiration.',
           pathId: 'CHEM_BIOMOLECULES',
           getWorkshop: getChemBiomoleculesWorkshop
-        }
+        },
+        ...getSeriesIIModules('chemistry')
       ]
     },
     physics: {
@@ -382,7 +386,8 @@
           sub: 'Trace rays, reason through mirrors, refraction, lenses, and Snell law.',
           pathId: 'PHY_OPTICS',
           getWorkshop: getPhysicsOpticsWorkshop
-        }
+        },
+        ...getSeriesIIModules('physics')
       ]
     }
   };
