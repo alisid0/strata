@@ -2991,6 +2991,124 @@ export const CHEM_BIOMOLECULES_WORKSHOP = [
 ];
 export function getChemBiomoleculesWorkshop() { return cloneInteractions(CHEM_BIOMOLECULES_WORKSHOP); }
 
+// ── Tier B: Forces & Newton (reuses ForceBalance) ──
+export const PHY_FORCES_WORKSHOP = [
+  { type: 'forcebalance', prompt: 'Balance the cart so it stays perfectly still.',
+    target: 'balanced', startLeft: 2, startRight: 3,
+    correctFeedback: 'Locked. Equal and opposite pushes give zero net force, so the cart does not accelerate.',
+    incorrectFeedback: 'The two pushes must match. Any imbalance sends the cart accelerating one way.' },
+  S('A puck slides across frictionless ice with nothing pushing it. What does its motion do?',
+    [O('same', 'Keeps going at the same speed and direction', true), O('slow', 'Slows down and stops on its own', false)],
+    'Correct. Newton’s first law: with no net force, motion just continues unchanged.',
+    'With no net force there is nothing to change the motion — it keeps going steadily (Newton’s first law).'),
+  { type: 'forcebalance', prompt: 'Now make the cart accelerate to the right.',
+    target: 'right', startLeft: 2, startRight: 2,
+    correctFeedback: 'Yes. A stronger push on the left leaves a net rightward force, so the cart accelerates right.',
+    incorrectFeedback: 'For rightward acceleration the net force must point right — make the left push bigger.' },
+  S('You push a loaded cart and an empty cart with exactly the same force. Which speeds up faster?',
+    [O('empty', 'The lighter, empty cart', true), O('loaded', 'The heavier, loaded cart', false)],
+    'Correct. a = F / m: for the same force, less mass means more acceleration.',
+    'Acceleration is force divided by mass, so the lighter cart accelerates more.'),
+  S('You push on a wall and it does not move. What is the wall doing to your hand?',
+    [O('back', 'Pushing back on you with an equal, opposite force', true), O('none', 'Nothing — only you exert a force', false)],
+    'Correct. Newton’s third law: every push has an equal and opposite push back.',
+    'Forces come in pairs — the wall pushes back on you just as hard (Newton’s third law).')
+];
+export function getPhysForcesWorkshop() { return cloneInteractions(PHY_FORCES_WORKSHOP); }
+
+// ── Tier B: SI units & scale (reuses UnitCheck) ──
+export const PHY_SI_SCALE_WORKSHOP = [
+  S('Every physical measurement needs two things: a number and a…',
+    [O('unit', 'unit', true), O('name', 'name', false)],
+    'Correct. “5” means nothing until you say 5 metres, 5 seconds, 5 kilograms.',
+    'A bare number is meaningless in physics — it needs a unit.'),
+  { type: 'unitcheck', prompt: 'Cancel the units. What does distance divided by time give?',
+    expression: 'm / s', target: 'A runner covers a distance in a certain time.',
+    options: [
+      { id: 'ms', label: 'm/s', note: 'speed' },
+      { id: 'm', label: 'm', note: 'distance' },
+      { id: 's', label: 's', note: 'time' }
+    ],
+    correctOption: 'ms',
+    correctFeedback: 'Yes. Metres per second is a speed.',
+    incorrectFeedback: 'Distance over time leaves metres per second — a speed.' },
+  S('The prefix “kilo” multiplies a unit by…',
+    [O('1000', '1000', true), O('100', '100', false)],
+    'Correct. A kilometre is 1000 metres; a kilogram is 1000 grams.',
+    '“Kilo” means one thousand.'),
+  S('One millimetre is one _____ of a metre.',
+    [O('th', 'thousandth', true), O('h', 'hundredth', false)],
+    'Correct. Milli means a thousandth: 1000 mm make a metre.',
+    '“Milli” means a thousandth, so 1000 mm = 1 m.'),
+  { type: 'unitcheck', prompt: 'Cancel the units. What does length times length give?',
+    expression: 'm x m', target: 'Tile a square patch of floor.',
+    options: [
+      { id: 'm2', label: 'm²', note: 'area' },
+      { id: 'm', label: 'm', note: 'length' },
+      { id: 'm3', label: 'm³', note: 'volume' }
+    ],
+    correctOption: 'm2',
+    correctFeedback: 'Yes. Metres times metres is square metres — an area.',
+    incorrectFeedback: 'Two lengths multiplied give square metres, an area.' }
+];
+export function getPhysSiScaleWorkshop() { return cloneInteractions(PHY_SI_SCALE_WORKSHOP); }
+
+// ── Tier B: Scale, estimation & errors (reuses UnitCheck) ──
+export const PHY_SCALE_WORKSHOP = [
+  S('An order-of-magnitude estimate rounds each quantity to the nearest…',
+    [O('pow', 'power of ten', true), O('int', 'whole number', false)],
+    'Correct. You care about the number of zeros, not the exact digits.',
+    'Order of magnitude means the nearest power of ten.'),
+  S('You estimate a crowd at 3×10⁴ when the true count is 2.8×10⁴. This estimate is…',
+    [O('good', 'good — right to an order of magnitude', true), O('bad', 'useless because it is not exact', false)],
+    'Correct. For a quick estimate, being in the right ballpark of ten-thousands is a success.',
+    'It lands in the right power of ten, which is exactly what an estimate is for.'),
+  { type: 'unitcheck', prompt: 'Cancel the units. Speed multiplied by time gives what?',
+    expression: '(m/s) x s', target: 'A car drives at a steady speed for a while.',
+    options: [
+      { id: 'm', label: 'm', note: 'distance' },
+      { id: 's', label: 's', note: 'time' },
+      { id: 'ms', label: 'm/s', note: 'speed' }
+    ],
+    correctOption: 'm',
+    correctFeedback: 'Yes. The seconds cancel, leaving metres — a distance.',
+    incorrectFeedback: 'The s on the bottom cancels the s you multiply by, leaving metres.' },
+  S('A length written as 4.50 cm claims precision to the nearest…',
+    [O('h', 'hundredth of a centimetre', true), O('cm', 'whole centimetre', false)],
+    'Correct. The trailing zero is meaningful: it says the measurement is good to 0.01 cm.',
+    'The last written digit shows the precision — here, hundredths of a centimetre.'),
+  S('Rounded to one significant figure, 47,000 becomes…',
+    [O('5', '50,000', true), O('4', '40,000', false)],
+    'Correct. The leading 4.7 rounds up to 5, giving 50,000.',
+    'One significant figure keeps only the first digit, rounded: 4.7 → 5, so 50,000.')
+];
+export function getPhysScaleWorkshop() { return cloneInteractions(PHY_SCALE_WORKSHOP); }
+
+// ── Tier B: Limits (conceptual, scenario-driven) ──
+export const MATH_LIMITS_WORKSHOP = [
+  S('As x gets closer and closer to 2, f(x) gets closer and closer to 5. The limit of f as x → 2 is…',
+    [O('5', '5', true), O('2', '2', false)],
+    'Correct. The limit is the output value the function heads toward, which is 5.',
+    'The limit is the value f(x) approaches, not the value x approaches — here that is 5.'),
+  S('A limit describes the value a function…',
+    [O('appr', 'approaches as the input nears a point', true), O('reach', 'must actually reach at that point', false)],
+    'Correct. A limit is about the approach; the function need not even be defined at the point.',
+    'A limit is about what the function approaches, not what it necessarily reaches.'),
+  S('f(x) = (x²−1)/(x−1) is undefined at x = 1 (it gives 0/0). Can the limit as x → 1 still exist?',
+    [O('yes', 'Yes — it approaches 2 from both sides', true), O('no', 'No — undefined there means no limit', false)],
+    'Correct. This is why limits matter: they describe the approach even where the formula breaks.',
+    'A limit can exist even where the function is undefined — here it approaches 2.'),
+  S('Approaching from the left gives 3; approaching from the right gives 7. The two-sided limit…',
+    [O('dne', 'does not exist', true), O('avg', 'is the average, 5', false)],
+    'Correct. For a two-sided limit to exist, both sides must agree. They do not, so it does not exist.',
+    'The two sides disagree, so there is no single two-sided limit (it is not their average).'),
+  S('A function is continuous at a point when the limit there equals…',
+    [O('val', 'the function’s value at that point', true), O('zero', 'zero', false)],
+    'Correct. Continuity means no jump: the limit and the actual value line up.',
+    'Continuity means the limit matches the function’s value at that point — no gap or jump.')
+];
+export function getMathLimitsWorkshop() { return cloneInteractions(MATH_LIMITS_WORKSHOP); }
+
 // ── Chemistry: Atom Foundry (docs/ATOM-FOUNDRY-WORKSHOP-DESIGN.md) ──
 
 export const CHEM_FOUNDRY_WORKSHOP = [

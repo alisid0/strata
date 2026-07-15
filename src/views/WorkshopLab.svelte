@@ -16,6 +16,10 @@
     getChemMoleWorkshop,
     getChemMoleCountingWorkshop,
     getChemBiomoleculesWorkshop,
+    getPhysForcesWorkshop,
+    getPhysSiScaleWorkshop,
+    getPhysScaleWorkshop,
+    getMathLimitsWorkshop,
     getComputerWorkshopModule,
     getComputerWorkshopModules,
     getLineCoreWorkshop,
@@ -143,6 +147,14 @@
           sub: 'Build y = mx + c and feel how slope and intercept move a line.',
           pathId: 'MATH_LINEAR_GRAPHS',
           getWorkshop: getMathLinearGraphsWorkshop
+        },
+        {
+          id: 'limits',
+          label: 'Limits',
+          title: 'Limits and continuity',
+          sub: 'Reason about the value a function approaches, even where it breaks.',
+          pathId: 'MATH_LIMITS',
+          getWorkshop: getMathLimitsWorkshop
         }
       ]
     },
@@ -290,6 +302,30 @@
           sub: 'Crash two carts, share momentum, and watch kinetic energy grow with speed.',
           pathId: 'PHY_ENERGY_MOMENTUM',
           getWorkshop: getPhysMomentumWorkshop
+        },
+        {
+          id: 'forces',
+          label: 'Forces',
+          title: 'Forces and Newton',
+          sub: 'Balance pushes, then break the balance, and feel all three of Newton’s laws.',
+          pathId: 'PHY_FORCES',
+          getWorkshop: getPhysForcesWorkshop
+        },
+        {
+          id: 'si-scale',
+          label: 'SI units',
+          title: 'SI units and scale',
+          sub: 'Cancel units, read prefixes, and keep measurements honest.',
+          pathId: 'PHY_SI_SCALE',
+          getWorkshop: getPhysSiScaleWorkshop
+        },
+        {
+          id: 'scale-estimation',
+          label: 'Estimation',
+          title: 'Scale, estimation and errors',
+          sub: 'Round to powers of ten, estimate fast, and read significant figures.',
+          pathId: 'PHY_SCALE',
+          getWorkshop: getPhysScaleWorkshop
         },
         {
           id: 'electricity',

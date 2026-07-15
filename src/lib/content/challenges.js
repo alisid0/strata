@@ -936,6 +936,9 @@ const CHALLENGES = {
   'mole-reactions': { build: chemistryChallenge, timeLimitSec: 180 },
   'counting-atoms': { build: chemistryChallenge, timeLimitSec: 180 },
   'biomolecules': { build: chemistryChallenge, timeLimitSec: 180 },
+  'forces': { build: physicsChallenge, timeLimitSec: 120 },
+  'si-scale': { build: physicsChallenge, timeLimitSec: 120 },
+  'scale-estimation': { build: physicsChallenge, timeLimitSec: 120 },
 };
 
 /** Fresh randomized challenge for a WorkshopLab module, or null if none exists. */
