@@ -20,6 +20,10 @@
     getPhysSiScaleWorkshop,
     getPhysScaleWorkshop,
     getMathLimitsWorkshop,
+    getPhysMeasurementLimitsWorkshop,
+    getPhysFoundationsWorkshop,
+    getCompAiEraWorkshop,
+    getCompAiBehindWorkshop,
     getComputerWorkshopModule,
     getComputerWorkshopModules,
     getLineCoreWorkshop,
@@ -164,11 +168,29 @@
       sub: 'Practice the foundations first, then code, hardware, networks, systems, and AI.',
       icon: '/icons/gateways/bit.png',
       pathId: 'BIT_001',
-      modules: COMPUTER_MODULES.map((module) => ({
-        ...module,
-        pathId: COMPUTER_MODULE_PATHS[module.id] || 'BIT_001',
-        getWorkshop: () => getComputerWorkshopModule(module.id).interactions
-      }))
+      modules: [
+        ...COMPUTER_MODULES.map((module) => ({
+          ...module,
+          pathId: COMPUTER_MODULE_PATHS[module.id] || 'BIT_001',
+          getWorkshop: () => getComputerWorkshopModule(module.id).interactions
+        })),
+        {
+          id: 'ai-era',
+          label: 'AI era',
+          title: 'AI-era computing',
+          sub: 'Sort rule-writing from machine learning, and see what changed.',
+          pathId: 'COMP_AI_ERA',
+          getWorkshop: getCompAiEraWorkshop
+        },
+        {
+          id: 'ai-behind',
+          label: 'AI inside',
+          title: 'AI behind the curtain',
+          sub: 'Tokens, weights, training vs use, and why models hallucinate.',
+          pathId: 'COMP_AI_BEHIND',
+          getWorkshop: getCompAiBehindWorkshop
+        }
+      ]
     },
     chemistry: {
       label: 'Chemistry',
@@ -326,6 +348,22 @@
           sub: 'Round to powers of ten, estimate fast, and read significant figures.',
           pathId: 'PHY_SCALE',
           getWorkshop: getPhysScaleWorkshop
+        },
+        {
+          id: 'measurement-limits',
+          label: 'Measure',
+          title: 'Measurement limits',
+          sub: 'Sort random from systematic error, and see why precision is bounded.',
+          pathId: 'PHY_MEASUREMENT_LIMITS',
+          getWorkshop: getPhysMeasurementLimitsWorkshop
+        },
+        {
+          id: 'foundations',
+          label: 'Foundations',
+          title: 'Foundations and frontiers',
+          sub: 'Sort phenomena by scale and see how models earn (and lose) trust.',
+          pathId: 'PHY_INTRO',
+          getWorkshop: getPhysFoundationsWorkshop
         },
         {
           id: 'electricity',

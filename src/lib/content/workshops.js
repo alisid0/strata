@@ -3109,6 +3109,128 @@ export const MATH_LIMITS_WORKSHOP = [
 ];
 export function getMathLimitsWorkshop() { return cloneInteractions(MATH_LIMITS_WORKSHOP); }
 
+// ── Tier B final: conceptual topics (scenario + sorting) ──
+
+// Physics · Measurement limits
+export const PHY_MEASUREMENT_LIMITS_WORKSHOP = [
+  S('A scale reads 72.4 kg every single time, but a trusted reference says you are 70.0 kg. The scale is…',
+    [O('prec', 'precise but not accurate', true), O('acc', 'accurate but not precise', false)],
+    'Correct. Precise means repeatable; accurate means close to the true value. It repeats well but sits off-target.',
+    'Consistent readings that are consistently wrong are precise but not accurate.'),
+  { type: 'sorting',
+    boxes: [ { id: 'random', label: 'Random error' }, { id: 'systematic', label: 'Systematic error' } ],
+    items: [
+      { id: 'zero', label: 'A balance never zeroed, reading 2 g high every time', box: 'systematic' },
+      { id: 'noise', label: 'Tiny fluctuations that scatter repeated readings', box: 'random' },
+      { id: 'ruler', label: 'A ruler printed 1% too short', box: 'systematic' },
+      { id: 'angle', label: 'Reading the meniscus from a slightly different angle each time', box: 'random' }
+    ] },
+  S('You measure a length as 3.2 cm with a ruler marked in millimetres. The uncertainty is about…',
+    [O('half', 'half a millimetre', true), O('cm', 'a whole centimetre', false)],
+    'Correct. Resolution limits you to roughly half the smallest division.',
+    'The finest division sets the floor — about half a millimetre here.'),
+  S('Averaging many repeated readings mainly reduces…',
+    [O('rand', 'random error', true), O('sys', 'systematic error', false)],
+    'Correct. Random scatter averages out; a built-in offset does not.',
+    'Averaging cancels random scatter but cannot remove a systematic offset.'),
+  S('Why can no measurement ever be infinitely precise?',
+    [O('lim', 'Every instrument has a finite resolution', true), O('lazy', 'Only because people are careless', false)],
+    'Correct. There is always a smallest step the instrument can resolve.',
+    'Instruments have a finite smallest division, so precision is always bounded.')
+];
+export function getPhysMeasurementLimitsWorkshop() { return cloneInteractions(PHY_MEASUREMENT_LIMITS_WORKSHOP); }
+
+// Physics · Foundations & frontiers
+export const PHY_FOUNDATIONS_WORKSHOP = [
+  S('Physics explains the world by building…',
+    [O('models', 'testable models that predict what happens', true), O('op', 'opinions about how things ought to be', false)],
+    'Correct. A model earns trust by making predictions you can check against reality.',
+    'Physics works through testable, predictive models, not opinion.'),
+  { type: 'sorting',
+    boxes: [ { id: 'small', label: 'Quantum / tiny' }, { id: 'human', label: 'Everyday' }, { id: 'cosmic', label: 'Astronomical' } ],
+    items: [
+      { id: 'electron', label: 'An electron inside an atom', box: 'small' },
+      { id: 'ball', label: 'A thrown cricket ball', box: 'human' },
+      { id: 'galaxy', label: 'A spiral galaxy', box: 'cosmic' },
+      { id: 'photon', label: 'A single photon of light', box: 'small' },
+      { id: 'phone', label: 'A phone sliding off a table', box: 'human' },
+      { id: 'bh', label: 'A black hole', box: 'cosmic' }
+    ] },
+  S('When a well-tested theory disagrees with a careful experiment, physicists trust…',
+    [O('exp', 'the experiment, and revise the theory', true), O('th', 'the theory, and discard the experiment', false)],
+    'Correct. Experiment is the final referee; theories bend to fit the evidence.',
+    'Evidence wins — a theory that conflicts with careful measurement must change.'),
+  S('Newton’s laws still work for cars and planets even though relativity is “more correct.” Why keep them?',
+    [O('good', 'They are accurate enough in everyday conditions', true), O('wrong', 'They are simply wrong and should be dropped', false)],
+    'Correct. Older models survive as excellent approximations within their range.',
+    'They remain great approximations at everyday speeds and scales.'),
+  S('A “frontier” in physics is best described as…',
+    [O('open', 'a question current models cannot yet fully answer', true), O('done', 'a topic that is completely finished', false)],
+    'Correct. Frontiers are the open edges — dark matter, quantum gravity, and the rest.',
+    'Frontiers are the unresolved questions at the edge of current understanding.')
+];
+export function getPhysFoundationsWorkshop() { return cloneInteractions(PHY_FOUNDATIONS_WORKSHOP); }
+
+// Computing · AI-era computing
+export const COMP_AI_ERA_WORKSHOP = [
+  S('Traditional programming gives the computer explicit rules. Machine learning instead gives it…',
+    [O('data', 'examples, and lets it learn the pattern', true), O('rules', 'even more detailed rules', false)],
+    'Correct. ML learns patterns from data instead of being told every rule by hand.',
+    'Machine learning is trained on examples rather than hand-written rules.'),
+  { type: 'sorting',
+    boxes: [ { id: 'rules', label: 'Write explicit rules' }, { id: 'ml', label: 'Train on examples' } ],
+    items: [
+      { id: 'tax', label: 'Calculate income tax from fixed brackets', box: 'rules' },
+      { id: 'spam', label: 'Tell spam from real email', box: 'ml' },
+      { id: 'sort', label: 'Sort a list of numbers', box: 'rules' },
+      { id: 'face', label: 'Recognise a face in a photo', box: 'ml' },
+      { id: 'trans', label: 'Translate a sentence between languages', box: 'ml' },
+      { id: 'pin', label: 'Check a typed PIN matches the stored one', box: 'rules' }
+    ] },
+  S('Why has AI advanced so fast recently, beyond what the algorithms alone explain?',
+    [O('scale', 'Huge datasets and powerful hardware to train on them', true), O('magic', 'The computers became conscious', false)],
+    'Correct. Scale — data plus compute — drove most of the recent leap.',
+    'The jump came mostly from massive data and fast hardware, not sentience.'),
+  S('A model that scores brilliantly on its training data but fails on new data has…',
+    [O('over', 'overfit — memorised instead of generalised', true), O('under', 'simply not trained long enough', false)],
+    'Correct. Overfitting is memorising the training set rather than learning the pattern.',
+    'That is overfitting: it memorised examples instead of learning to generalise.'),
+  S('In the AI era, a crucial new skill is judging an AI’s output, because models can be…',
+    [O('conf', 'confidently wrong', true), O('never', 'never mistaken', false)],
+    'Correct. Models can state false things fluently, so verification matters.',
+    'AI can be fluent and wrong at once — checking its output is essential.')
+];
+export function getCompAiEraWorkshop() { return cloneInteractions(COMP_AI_ERA_WORKSHOP); }
+
+// Computing · AI behind the curtain
+export const COMP_AI_BEHIND_WORKSHOP = [
+  S('A large language model generates text by repeatedly predicting…',
+    [O('next', 'the next most likely token (chunk of text)', true), O('whole', 'the whole answer in one exact lookup', false)],
+    'Correct. It predicts one token at a time, each based on all the text so far.',
+    'It works token by token, predicting the next chunk from everything before it.'),
+  S('During training, a neural network learns by adjusting its…',
+    [O('weights', 'weights, nudged to reduce prediction error', true), O('clock', 'clock speed', false)],
+    'Correct. Learning is tuning millions of weights to make better predictions.',
+    'Training adjusts the network’s weights to lower its error.'),
+  { type: 'sorting',
+    boxes: [ { id: 'train', label: 'Training time' }, { id: 'use', label: 'Using the model' } ],
+    items: [
+      { id: 'update', label: 'Weights are updated from examples', box: 'train' },
+      { id: 'prompt', label: 'You type a prompt and read a reply', box: 'use' },
+      { id: 'gpu', label: 'Huge compute crunches a giant dataset', box: 'train' },
+      { id: 'fixed', label: 'The weights stay fixed, just running forward', box: 'use' }
+    ] },
+  S('Why can a model “hallucinate” a confident but false answer?',
+    [O('pred', 'It predicts plausible text, not verified truth', true), O('bug', 'A rare software crash', false)],
+    'Correct. It optimises for likely-sounding text, which is not always true.',
+    'It generates plausible-sounding text, which can be fluent yet false.'),
+  S('A model’s “knowledge” is essentially…',
+    [O('pat', 'patterns compressed into its weights from training data', true), O('db', 'a live database it searches each time', false)],
+    'Correct. It is patterns baked into weights, not a lookup of stored facts.',
+    'It holds patterns in its weights rather than searching a database of facts.')
+];
+export function getCompAiBehindWorkshop() { return cloneInteractions(COMP_AI_BEHIND_WORKSHOP); }
+
 // ── Chemistry: Atom Foundry (docs/ATOM-FOUNDRY-WORKSHOP-DESIGN.md) ──
 
 export const CHEM_FOUNDRY_WORKSHOP = [
