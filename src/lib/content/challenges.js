@@ -957,6 +957,19 @@ const CHALLENGES = {
   'momentum-2': { build: physicsChallenge, timeLimitSec: 120 },
   'si-2': { build: physicsChallenge, timeLimitSec: 120 },
   'thermo-2': { build: physicsChallenge, timeLimitSec: 120 },
+  // Series III modules with topic-matched generators.
+  'line-2': { build: lineChallenge, timeLimitSec: 150 },
+  'matrices-2': { build: matricesChallenge, timeLimitSec: 120 },
+  'coord-maps-2': { build: lineChallenge, timeLimitSec: 150 },
+  'isotopes-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'bonding-types-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'arch-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'quant-2': { build: chemistryChallenge, timeLimitSec: 180 },
+  'units-2': { build: physicsChallenge, timeLimitSec: 120 },
+  'optics-2': { build: physicsChallenge, timeLimitSec: 120 },
+  'waves-2': { build: physicsChallenge, timeLimitSec: 120 },
+  'estimation-2': { build: physicsChallenge, timeLimitSec: 120 },
+  'measure-2': { build: physicsChallenge, timeLimitSec: 120 },
 };
 
 /** Fresh randomized challenge for a WorkshopLab module, or null if none exists. */

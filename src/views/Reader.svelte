@@ -8,6 +8,7 @@
   import { progress } from '../lib/stores/progress.js';
   import { getVideoForCard, getDiagramForCard } from '../lib/content/media.js';
   import { getFloorMedia } from '../lib/content/boardMedia.js';
+  import { getWorkshopsForPath } from './WorkshopLab.svelte';
   import VideoPlayer from '../lib/components/VideoPlayer.svelte';
   import ChalkDiagram from '../lib/components/ChalkDiagram.svelte';
   import ThreeScene from '../lib/components/media/ThreeScene.svelte';
@@ -27,6 +28,7 @@
   export let numbers = [];
   export let startNumber = 1;
   export let onBack = null;
+  export let onNavigate = null; // for the last-floor practise exit-funnel
   export let pathId = '';   // the topic id, for checkpoint-quiz question banks
 
   let idx = 0;
@@ -159,6 +161,10 @@
   function isSwipeCard(i, d) {
     return d === 0 && !!floor0Img(i);
   }
+
+  // Exit-funnel: the topic's first parallel workshop, offered on a board's
+  // deepest floor — the highest-traffic moment to convert reading into doing.
+  $: topicWorkshop = pathId ? (getWorkshopsForPath(pathId)[0] || null) : null;
 
   function floorNumber(i, d) {
     const floors = railFloors(i);
@@ -577,6 +583,16 @@
                         {/if}
                       </div>
                     {/if}
+                    {#if topicWorkshop && floorNumber(i, d) === floorTotal(i) && floorTotal(i) > 1}
+                      <button class="practise-cta" on:click|stopPropagation={() => onNavigate?.('workshop', topicWorkshop.id)}>
+                        <span class="practise-cta-icon">🛠</span>
+                        <span class="practise-cta-text">
+                          <span class="practise-cta-label">Bottom floor — now practise it</span>
+                          <span class="practise-cta-name">{topicWorkshop.title}</span>
+                        </span>
+                        <span class="practise-cta-chev">›</span>
+                      </button>
+                    {/if}
                   </div>
                 {/key}
               </div>
@@ -830,6 +846,25 @@
      scrolls). Interactive media (3D/video/diagram) keeps a fixed box since it
      has no intrinsic height. */
   .floor-media { flex: 0 0 auto; margin: 14px 0 4px; }
+
+  .practise-cta {
+    width: 100%; display: flex; align-items: center; gap: 11px;
+    margin: 14px 0 4px; padding: 12px 13px; box-sizing: border-box;
+    border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-accent);
+    background: var(--qx-accent-soft); cursor: pointer; text-align: left;
+    font-family: var(--qx-font);
+  }
+  .practise-cta-icon { font-size: 18px; flex-shrink: 0; }
+  .practise-cta-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .practise-cta-label {
+    font-size: 10px; font-weight: 900; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--qx-text-faint);
+  }
+  .practise-cta-name {
+    font-size: 14px; font-weight: 850; color: var(--qx-accent-text);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .practise-cta-chev { font-size: 18px; color: var(--qx-accent-text); flex-shrink: 0; }
   .floor-media.interactive { height: min(46vh, 340px); }
   .media-card {
     position: relative; width: 100%; padding: 0; display: block;

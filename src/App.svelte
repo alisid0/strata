@@ -182,6 +182,7 @@
         numbers={readerNumbers}
         startNumber={readerStart}
         pathId={currentPathId}
+        onNavigate={navigate}
         onBack={() => currentPathId ? navigate('topicDetail', currentPathId) : navigate('topics')}
       />
     </div>
