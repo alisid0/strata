@@ -119,6 +119,18 @@
 
   <SettingsMenu open={settingsOpen} onClose={() => settingsOpen = false} onNavigate={onNavigate} />
 
+  <!-- Daily Workout: the coach. Always available — composed from recall-due
+       topics, the weakest tested topic, and one new thing. -->
+  <button class="workout-card" on:click={() => onNavigate?.('workout')}>
+    <span class="workout-bolt">⚡</span>
+    <span class="session-info">
+      <span class="workout-label">DAILY WORKOUT</span>
+      <span class="workout-title">Your 5-minute mix</span>
+      <span class="workout-meta">recall · weak spots · something new</span>
+    </span>
+    <span class="workout-cta">Start</span>
+  </button>
+
   <!-- Today's session: due recalls first (time-sensitive), else caught-up /
        start states. Either this or Continue counts as the day's streak. -->
   {#if dueCandidates.length}
@@ -246,6 +258,26 @@
     background: var(--qx-accent); color: #fff; font-size: 13px; font-weight: 850;
   }
   .session-arrow { font-size: 20px; font-weight: 900; color: var(--qx-text-faint); }
+
+  /* Daily Workout — the primary card, accent-filled so it reads as THE action */
+  .workout-card {
+    width: 100%; display: flex; align-items: center; gap: 12px; text-align: left;
+    padding: 15px 14px; border-radius: var(--qx-radius-lg); margin-bottom: 10px;
+    border: none; background: var(--qx-accent); cursor: pointer;
+    font-family: var(--qx-font); box-sizing: border-box;
+  }
+  .workout-bolt {
+    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; font-size: 18px;
+    background: rgba(255, 255, 255, 0.18); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .workout-label { font-size: 10px; font-weight: 850; letter-spacing: 0.07em; color: rgba(255, 255, 255, 0.75); }
+  .workout-title { font-size: 15px; font-weight: 850; color: #fff; line-height: 1.25; }
+  .workout-meta { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.78); }
+  .workout-cta {
+    flex-shrink: 0; padding: 8px 16px; border-radius: 999px;
+    background: #fff; color: var(--qx-accent); font-size: 13px; font-weight: 900;
+  }
 
   /* Recall self-check overlay */
   .recall-overlay {

@@ -573,6 +573,18 @@ function createProgressStore() {
       });
     },
 
+    /** Daily Workout finished: activity tick + one W bundle per day (score+5,
+     *  keyed by day so repeat rounds are for love, not farming). */
+    recordWorkoutComplete(score, total) {
+      update(data => {
+        normalizeState(data);
+        data.activity[dayKey()] = (data.activity[dayKey()] || 0) + 1;
+        if (total > 0) grantWs(data, 'workout', dayKey(), score + 5, { bonus: true });
+        persist(data);
+        return data;
+      });
+    },
+
     recordQuizResult(pathId, score, total) {
       update(data => {
         normalizeState(data);

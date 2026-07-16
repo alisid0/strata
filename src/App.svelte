@@ -14,6 +14,7 @@
   import Home from './views/Home.svelte';
   import Path from './views/Path.svelte';
   import WorkshopLab from './views/WorkshopLab.svelte';
+  import DailyWorkout from './views/DailyWorkout.svelte';
   import PathView from './views/PathView.svelte';
   import WScore from './views/WScore.svelte';
   import Snippets from './views/Snippets.svelte';
@@ -33,7 +34,7 @@
 
   const TAB_VIEWS = ['home', 'path', 'workshop', 'wscore'];
   const TAB_ORDER = ['home', 'path', 'workshop', 'wscore'];
-  const PUSH_VIEWS = ['topicDetail', 'reader', 'quiz', 'author', 'snippetMode'];
+  const PUSH_VIEWS = ['topicDetail', 'reader', 'quiz', 'author', 'snippetMode', 'workout'];
   // Old view ids still used by callers/deep-links → their streamlined homes.
   const LEGACY_VIEWS = { topics: 'path', stats: 'wscore', map: 'path', snippets: 'snippetMode', leaderboard: 'wscore', otherUserStats: 'wscore' };
 
@@ -168,6 +169,11 @@
   {:else if currentView === 'topicDetail'}
     <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
       <PathView pathId={currentPathId} onNavigate={navigate} />
+    </div>
+
+  {:else if currentView === 'workout'}
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <DailyWorkout onNavigate={navigate} />
     </div>
 
   {:else if currentView === 'reader'}
