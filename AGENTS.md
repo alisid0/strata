@@ -4,6 +4,10 @@ This repository is the source of truth for Qubix. Read
 `docs/ENVIRONMENTS.md` before changing authentication, Supabase, Vercel, or
 the release process.
 
+For the current Google Play, authentication, production, Android packaging,
+and public-launch status, read `docs/LAUNCH-HANDOVER.md`. It is the primary
+launch checklist and supersedes older launch-status notes where they conflict.
+
 ## Current environment state (2026-07-18)
 
 - Public code branch: `main`.
@@ -62,4 +66,3 @@ paths, board lists, the multi-floor reader, the Function Machine workshop,
 daily workouts, signup validation, and the recovery screen. Existing Svelte
 accessibility and large-chunk build warnings are non-blocking but remain useful
 cleanup work.
-
