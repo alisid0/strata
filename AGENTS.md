@@ -8,6 +8,10 @@ For the current Google Play, authentication, production, Android packaging,
 and public-launch status, read `docs/LAUNCH-HANDOVER.md`. It is the primary
 launch checklist and supersedes older launch-status notes where they conflict.
 
+For positioning, beta acquisition, SEO migration, analytics, launch assets,
+channels, and the current marketing action order, read
+`docs/MARKETING-SETUP.md`.
+
 ## Current environment state (2026-07-18)
 
 - Public code branch: `main`.

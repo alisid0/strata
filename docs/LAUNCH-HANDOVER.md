@@ -7,6 +7,9 @@ Android closed beta and then a public release. Read `AGENTS.md` and
 `docs/ENVIRONMENTS.md` before changing authentication, Supabase, Vercel, DNS,
 or the release process.
 
+Marketing positioning, conversion, channel, asset, analytics, and acquisition
+work is tracked separately in `docs/MARKETING-SETUP.md`.
+
 ## Executive state
 
 - The application is a Vite/Svelte PWA backed by Supabase.
