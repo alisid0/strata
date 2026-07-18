@@ -1217,10 +1217,6 @@ export const COMPUTER_WORKSHOP_MODULES = [
     title: 'Binary and data lab',
     sub: 'Switch bits into numbers, letters, pixels, colour, and sound.',
     interactions: [
-      {
-        type: 'bitmachine',
-        prompt: 'Use a tiny machine to build a number, handle a carry, and run instructions.'
-      },
       ...BIT_DATA_WORKSHOP,
       {
         type: 'bitsnumber', mode: 'build',
@@ -1586,10 +1582,6 @@ export function getBitDataWorkshop() {
 }
 
 export const PHYSICS_UNITS_WORKSHOP = [
-  {
-    type: 'unitforge',
-    prompt: 'Measure, convert, forge, and judge units before trusting a physics answer.'
-  },
   { type: 'sorting', boxes: [
     { id: 'base', label: 'Base unit' },
     { id: 'derived', label: 'Derived unit' }
@@ -1903,10 +1895,6 @@ export function getPhysicsCoreWorkshop() {
 
 export const CHEMISTRY_CORE_WORKSHOP = [
   {
-    type: 'bondlab',
-    prompt: 'Place atoms on the bench and form stable compounds by sharing or transferring electrons.'
-  },
-  {
     type: 'atombuilder',
     prompt: 'Build neutral oxygen. Protons set the element; electrons set the charge.',
     targetName: 'Oxygen',
@@ -2039,6 +2027,51 @@ export const MATHS_EXP_LOGS_WORKSHOP = [
 export function getMathsExpLogsWorkshop() {
   return cloneInteractions(MATHS_EXP_LOGS_WORKSHOP);
 }
+
+export const MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP = [
+  S('A function is best thought of as:',
+    [O('rule','A reliable input-output rule',true), O('random','A random answer generator',false), O('shape','Only a curved graph',false)],
+    'Correct. A function takes an input and gives one reliable output.',
+    'Not quite. The important idea is reliability: each allowed input has one output.'),
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'broken', label: 'Not a function' }
+  ], items: [
+    { id: 'double', label: 'n goes to 2n', box: 'function' },
+    { id: 'plus3', label: 'n goes to n + 3', box: 'function' },
+    { id: 'split2', label: '2 goes to 5 and 9', box: 'broken' },
+    { id: 'coin', label: 'n goes to heads or tails', box: 'broken' }
+  ]},
+  S('If f(x) = 2x + 1, what is f(4)?',
+    [O('9','9',true), O('8','8',false), O('7','7',false)],
+    'Yes. Put 4 into the rule: 2 x 4 + 1 = 9.',
+    'Close, but remember the +1 after doubling the input.'),
+  S('A domain tells you:',
+    [O('inputs','Which inputs are allowed',true), O('outputs','Only the final outputs',false), O('slope','Only whether the graph is steep',false)],
+    'Exactly. The domain is the safe input set for the function.',
+    'Not quite. Domain is about allowed inputs. Range is about possible outputs.'),
+  { type: 'sorting', boxes: [
+    { id: 'linear', label: 'Linear' },
+    { id: 'exponential', label: 'Exponential' },
+    { id: 'quadratic', label: 'Quadratic' }
+  ], items: [
+    { id: 'add', label: 'Adds the same amount each step', box: 'linear' },
+    { id: 'multiply', label: 'Multiplies by the same factor each step', box: 'exponential' },
+    { id: 'u', label: 'Makes a U-shaped curve', box: 'quadratic' }
+  ]},
+  S('A graph fails the vertical line test when:',
+    [O('two','One x-value has two y-values',true), O('steep','The graph is very steep',false), O('negative','The graph goes below zero',false)],
+    'Correct. One input cannot produce two outputs.',
+    'Not quite. The test is about whether one input has more than one output.'),
+  S('If g(x) = x + 5, the inverse machine does what?',
+    [O('minus','Subtracts 5',true), O('plus','Adds 5 again',false), O('square','Squares the output',false)],
+    'Right. The inverse undoes the rule.',
+    'Not quite. To reverse adding 5, subtract 5.'),
+  S('If f(x) = 2x and g(x) = x + 3, what is f(g(4))?',
+    [O('14','14',true), O('11','11',false), O('10','10',false)],
+    'Yes. First g(4) = 7, then f(7) = 14.',
+    'Composition runs one function, then feeds that output into the next.')
+];
 
 export const PHYSICS_ELECTRICITY_WORKSHOP = [
   { type: 'sorting', boxes: [
@@ -2583,7 +2616,10 @@ export const MATHS_FUNCTIONS_WORKSHOP = [
 ];
 
 export function getMathsFunctionsWorkshop() {
-  return cloneInteractions(MATHS_FUNCTIONS_WORKSHOP);
+  return cloneInteractions([
+    ...MATHS_FUNCTIONS_WORKSHOP,
+    ...MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP
+  ]);
 }
 
 // ── Maths: Unit Circle (Trigonometry signature lab) ──

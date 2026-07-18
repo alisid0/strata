@@ -46,6 +46,18 @@
 
   const COMPUTER_MODULES = getComputerWorkshopModules();
   const PHYSICS_MODULES = getPhysicsWorkshopModules();
+  const getBitMachineWorkshop = () => [{
+    type: 'bitmachine',
+    prompt: 'Use a tiny machine to build a number, handle a carry, and run instructions.'
+  }];
+  const getUnitForgeWorkshop = () => [{
+    type: 'unitforge',
+    prompt: 'Measure, convert, forge, and judge units before trusting a physics answer.'
+  }];
+  const getBondLabWorkshop = () => [{
+    type: 'bondlab',
+    prompt: 'Place atoms on the bench and form stable compounds by sharing or transferring electrons.'
+  }];
   const COMPUTER_MODULE_PATHS = {
     'binary-data': 'BIT_001',
     'logic-gates': 'BIT_001',
@@ -74,8 +86,8 @@
         {
           id: 'functions',
           label: 'Functions',
-          title: 'Function Machine',
-          sub: 'Feed inputs, repair rules, read graphs, and chain machines.',
+          title: 'Function machine',
+          sub: 'Test input-output rules, notation, domains, graphs, inverses, and composites.',
           pathId: 'MATH_FUNCTIONS',
           getWorkshop: getMathsFunctionsWorkshop
         },
@@ -153,6 +165,14 @@
       icon: '/icons/gateways/bit.png',
       pathId: 'BIT_001',
       modules: [
+        {
+          id: 'bit-machine',
+          label: 'Machine',
+          title: 'Bit machine lab',
+          sub: 'Build numbers, carry bits, and run tiny machine instructions.',
+          pathId: 'BIT_001',
+          getWorkshop: getBitMachineWorkshop
+        },
         ...COMPUTER_MODULES.map((module) => ({
           ...module,
           pathId: COMPUTER_MODULE_PATHS[module.id] || 'BIT_001',
@@ -191,6 +211,14 @@
           sub: 'Forge a nucleus, fill the shells, and strip electrons into ions.',
           pathId: 'ATOM_001',
           getWorkshop: getChemFoundryWorkshop
+        },
+        {
+          id: 'bond-lab',
+          label: 'Bond lab',
+          title: 'Bond bench',
+          sub: 'Place atoms on the bench and form compounds by sharing or transferring electrons.',
+          pathId: 'CHEM_STRUCTURE_REACTIONS',
+          getWorkshop: getBondLabWorkshop
         },
         {
           id: 'chemistry-core',
@@ -290,6 +318,14 @@
       icon: '/icons/gateways/unit.png',
       pathId: 'PHYS_001',
       modules: [
+        {
+          id: 'unit-forge',
+          label: 'Unit forge',
+          title: 'Unit forge lab',
+          sub: 'Measure, convert, build derived units, and catch impossible answers.',
+          pathId: 'PHYS_001',
+          getWorkshop: getUnitForgeWorkshop
+        },
         ...PHYSICS_MODULES.map((module) => ({
           ...module,
           pathId: module.pathId || 'PHYS_001',

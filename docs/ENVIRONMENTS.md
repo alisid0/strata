@@ -42,7 +42,8 @@ pnpm run dev:production      # explicit production connection; use carefully
 
 ## Vercel setup
 
-Add the following variables to the Vercel **Preview** environment only:
+For a dedicated staging project, add the following variables to both its
+Vercel **Production** and **Preview** scopes:
 
 ```text
 VITE_APP_ENV=staging
@@ -57,14 +58,19 @@ VITE_ENABLE_PHONE_AUTH=false
 
 The build script detects `VERCEL_ENV=preview` or `VITE_APP_ENV=staging` and
 automatically makes a staging build. This supports either branch previews in the
-production project or a dedicated `qubix-staging` Vercel project. For a dedicated
-project, add the staging variables to both its Production and Preview scopes.
+production project or the current dedicated `qubix-staging` Vercel project.
 Production deployments keep using `.env.production`; Vercel Production variables
 can override those committed public values later.
 
 Use a persistent branch such as `staging` for the test app. Protect its Vercel
 deployment with Deployment Protection or a password before sharing it. Merge
 tested changes into `main` to release them to users.
+
+Current state: `qubix-staging.vercel.app` is isolated correctly but its Vercel
+project still follows `main`. Moving that project to a persistent `staging`
+branch is the next release-process improvement. Until then, a push to `main`
+updates staging automatically, while the public production deployment remains
+manual through `pnpm run deploy`.
 
 ## Release workflow
 
@@ -76,3 +82,18 @@ tested changes into `main` to release them to users.
 
 Public media assets may still be read from the production Storage CDN. Staging
 authentication, profiles, progress and other database writes remain isolated.
+
+## Refreshing public content in staging
+
+Git does not promote dynamic rows stored in Supabase. To produce idempotent SQL
+chunks containing public card content only, run:
+
+```bash
+pnpm run content:export-staging-sql
+```
+
+The command reads the public production catalog and writes reviewed SQL chunks
+under the ignored `.playwright-session/staging-content-sync/` directory. It does
+not write to either database and never exports users, progress, sessions, or
+other personal data. Review the chunks, apply them to the staging SQL editor,
+run `chunk-final.sql`, and verify the resulting count before testing the app.
