@@ -20,6 +20,12 @@ or the release process.
 - The Google Play organisation developer account has been created for Arcave
   Technologies. Play Console developer account ID:
   `6992886775198578677`.
+- Ownership of `arcavetech.co.uk` has been verified in Google Search Console
+  through a DNS TXT record, and the Play Console website-verification blocker
+  has cleared. Do not remove the Search Console verification record from DNS.
+- The official Companies House company certificate was ordered and paid for on
+  2026-07-18. Confirm the issued document has been downloaded before using the
+  original, unedited file for Google organisation/identity verification.
 - Google Play currently blocks app creation until the remaining account
   verification tasks are completed.
 
@@ -27,9 +33,11 @@ or the release process.
 
 Complete these in Play Console before attempting to create the Android app:
 
-1. Upload the requested unedited official organisation document.
-2. Wait for Google to approve the organisation and identity verification.
-3. Verify ownership of `arcavetech.co.uk`.
+1. Download and check the paid Companies House company certificate when it is
+   issued.
+2. Upload the original, unedited official organisation document requested by
+   Google.
+3. Wait for Google to approve the organisation and identity verification.
 4. Verify the organisation and public developer phone numbers.
 5. Clear any remaining account-level issues shown by Play Console.
 
@@ -185,7 +193,8 @@ release.
 
 ## Ordered next actions
 
-1. Submit the Play Console identity document.
+1. Download the paid Companies House certificate and submit the original,
+   unedited document for Play Console identity verification.
 2. Create the permanent `staging` branch and point staging Vercel at it.
 3. Configure production SMTP and Google OAuth in Supabase.
 4. Implement full account deletion.
@@ -203,4 +212,3 @@ Full audio coverage, an illustration for every lesson, advanced gamification,
 leaderboards, push notifications, subscriptions, referrals, teacher tools, an
 AI tutor, and large new curriculum branches can wait until after the first
 closed beta.
-
