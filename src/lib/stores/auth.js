@@ -37,9 +37,12 @@ export async function initAuth() {
  */
 export async function signUp(email, password, displayName) {
   const { data, error } = await supabase.auth.signUp({
-    email,
+    email: email.trim().toLowerCase(),
     password,
-    options: { data: { display_name: displayName } }
+    options: {
+      data: { display_name: displayName.trim() },
+      emailRedirectTo: `${window.location.origin}/?auth=confirmed`
+    }
   });
   if (error) throw error;
   return data;
@@ -49,7 +52,10 @@ export async function signUp(email, password, displayName) {
  * Log in with email + password.
  */
 export async function logIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.trim().toLowerCase(),
+    password
+  });
   if (error) throw error;
   return data;
 }
@@ -70,7 +76,7 @@ export async function logOut() {
 export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin }
+    options: { redirectTo: `${window.location.origin}/?auth=oauth` }
   });
   if (error) throw error;
   return data;
@@ -79,8 +85,11 @@ export async function signInWithGoogle() {
 /**
  * Sign in with phone (send OTP).
  */
-export async function signInWithPhone(phone) {
-  const { data, error } = await supabase.auth.signInWithOtp({ phone });
+export async function signInWithPhone(phone, shouldCreateUser = false) {
+  const { data, error } = await supabase.auth.signInWithOtp({
+    phone,
+    options: { shouldCreateUser }
+  });
   if (error) throw error;
   return data;
 }
@@ -93,6 +102,34 @@ export async function verifyPhoneOtp(phone, token) {
     phone,
     token,
     type: 'sms'
+  });
+  if (error) throw error;
+  return data;
+}
+
+/** Send an email recovery link. The link returns to the password form in-app. */
+export async function requestPasswordReset(email) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(
+    email.trim().toLowerCase(),
+    { redirectTo: `${window.location.origin}/?auth=reset` }
+  );
+  if (error) throw error;
+  return data;
+}
+
+/** Set a new password after Supabase has established a recovery session. */
+export async function updatePassword(password) {
+  const { data, error } = await supabase.auth.updateUser({ password });
+  if (error) throw error;
+  return data;
+}
+
+/** Resend the email-confirmation link without creating another account. */
+export async function resendConfirmation(email) {
+  const { data, error } = await supabase.auth.resend({
+    type: 'signup',
+    email: email.trim().toLowerCase(),
+    options: { emailRedirectTo: `${window.location.origin}/?auth=confirmed` }
   });
   if (error) throw error;
   return data;

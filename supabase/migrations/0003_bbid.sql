@@ -31,5 +31,10 @@ create index if not exists cards_bbid_idx on public.cards (bbid);
 --    wired as the column default. Ingest may still set bbid explicitly (for a
 --    re-ingest carrying a stamped bbid); omit it and a fresh one is minted.
 create sequence if not exists public.cards_bbid_seq owned by public.cards.bbid;
-select setval('public.cards_bbid_seq', (select coalesce(max(bbid), 0) from public.cards));
+select setval(
+  'public.cards_bbid_seq',
+  greatest(coalesce(max(bbid), 0), 1),
+  max(bbid) is not null
+)
+from public.cards;
 alter table public.cards alter column bbid set default nextval('public.cards_bbid_seq');

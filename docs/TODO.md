@@ -46,9 +46,13 @@ strata-nine-pi.vercel.app.
     lightbox pan so a zoomed image can't be dragged off-screen.
 
 ## When ready to go PUBLIC (not yet — gate stays for now)
+- Production/staging code separation is implemented. Before using the test app,
+  create the staging Supabase project and add its public URL/anon key to Vercel
+  Preview variables; follow `docs/ENVIRONMENTS.md`.
 - Supabase Auth dashboard: enable email signup + confirm-email/SMTP; add the prod
-  URL to Site URL + redirect allowlist; verify Google provider; configure an SMS
-  provider for phone OTP **or** hide the phone option.
+  URL to Site URL + redirect allowlist; verify Google provider. Phone OTP is
+  hidden by default; configure an SMS provider, then set
+  `VITE_ENABLE_PHONE_AUTH=true` to expose it.
 - Then the one switch: remove the `BASIC_AUTH_PASSWORD` Vercel env var → public +
   indexable (SEO pages/sitemap/splash are already ready).
 

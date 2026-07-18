@@ -4,8 +4,11 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && node scripts/build-seo-pages.mjs",
+    "dev": "vite --mode staging",
+    "dev:production": "vite --mode production",
+    "build": "node scripts/build-app.mjs",
+    "build:production": "node scripts/build-app.mjs production",
+    "build:staging": "node scripts/build-app.mjs staging",
     "preview": "vite preview",
     "deploy": "node scripts/deploy.mjs"
   },

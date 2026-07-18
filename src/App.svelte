@@ -23,6 +23,7 @@
   import Author from './views/Author.svelte';
   import BottomNav from './lib/components/qubix/BottomNav.svelte';
   import WToast from './lib/components/qubix/WToast.svelte';
+  import { appEnvironment } from './lib/environment.js';
 
   // loading | auth | onboarding | home | topics | topicDetail | stats | leaderboard | otherUserStats | snippets | reader | quiz | author
   let currentView = 'loading';
@@ -30,6 +31,7 @@
   let workshopTarget = null; // module id the workshop tab should open directly
   let readerNumbers = [];
   let readerStart = 1;
+  let authInitialMode = 'welcome';
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
 
   const TAB_VIEWS = ['home', 'path', 'workshop', 'wscore'];
@@ -65,6 +67,14 @@
 
     // SEO deep-link: ?path=P12 → open that topic directly
     const params = new URLSearchParams(location.search);
+    if (params.get('auth') === 'reset') {
+      authInitialMode = 'reset-password';
+      currentView = 'auth';
+      return;
+    }
+    if (params.get('auth') === 'confirmed' || params.get('auth') === 'oauth') {
+      history.replaceState({}, '', location.pathname);
+    }
     const pathParam = params.get('path');
     if (pathParam && PATHS[pathParam]) {
       currentView = 'topicDetail';
@@ -103,11 +113,15 @@
 
   async function handleAuthed(isNewUser) {
     const profileData = await profile.init();
+    if (new URLSearchParams(location.search).has('auth')) {
+      history.replaceState({}, '', location.pathname);
+    }
     currentView = isNewUser || !profileData.onboardingCompleted ? 'onboarding' : 'home';
   }
 
   function navigate(view, arg) {
     view = LEGACY_VIEWS[view] || view;
+    if (view === 'author' && !appEnvironment.testToolsEnabled) return;
     // Slide direction: push views slide in from the right; back-to-tab slides
     // from the left; tab→tab follows the tab order.
     if (PUSH_VIEWS.includes(view)) {
@@ -134,6 +148,12 @@
 </script>
 
 <div class="app-shell">
+  {#if appEnvironment.isTest}
+    <div class="environment-badge" title="This deployment uses test data and services">
+      {appEnvironment.name} environment
+    </div>
+  {/if}
+
   {#if currentView === 'loading'}
     <div class="view-layer qx-shell loading-screen" in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
       <div class="loading-brand">QUBIX</div>
@@ -142,7 +162,7 @@
 
   {:else if currentView === 'auth'}
     <div class="view-layer scrollable-layer">
-      <Auth onSkip={skipAuth} onChoose={handleGateway} onAuthed={handleAuthed} />
+      <Auth onSkip={skipAuth} onAuthed={handleAuthed} initialMode={authInitialMode} />
     </div>
 
   {:else if currentView === 'onboarding'}
@@ -196,7 +216,7 @@
       />
     </div>
 
-  {:else if currentView === 'author'}
+  {:else if currentView === 'author' && appEnvironment.testToolsEnabled}
     <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
       <Author onNavigate={navigate} />
     </div>
@@ -212,6 +232,13 @@
 
 <style>
   .app-shell { height: 100%; width: 100%; position: relative; overflow: hidden; }
+  .environment-badge {
+    position: fixed; top: max(6px, env(safe-area-inset-top)); left: 50%; z-index: 10000;
+    transform: translateX(-50%); pointer-events: none;
+    padding: 4px 10px; border-radius: 999px;
+    background: #F2B84B; color: #231A08; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    font-size: 10px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase;
+  }
 
   /* Every top-level screen is its own absolutely-positioned layer, so during a
      transition the outgoing and incoming views overlap and cross-slide cleanly

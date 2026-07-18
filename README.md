@@ -13,6 +13,11 @@ npm run build     # production build to dist/
 npm run preview   # preview the production build
 ```
 
+Local development now uses the isolated staging configuration. Copy
+`.env.staging.example` to `.env.staging.local` and add the test Supabase URL and
+anon key before running `npm run dev`. See [docs/ENVIRONMENTS.md](docs/ENVIRONMENTS.md)
+for the production/staging workflow and Vercel setup.
+
 ## Structure
 
 ```
@@ -79,4 +84,5 @@ All copy lives in the `DECK` array in `src/lib/content/deck.js`. Cards are numbe
 
 - Handwritten fonts (Kalam, Patrick Hand, Architects Daughter) load from Google Fonts at runtime — needs internet on first load, then cached.
 - Images are landscape; cards are portrait-ish. They're set to `contain` (whole image always visible, may letterbox) rather than `cover` (fills, crops). Change `.card-image { background-size }` in `Reader.svelte` to switch.
-- Supabase project URL/anon key live in `src/lib/supabase.js` (anon key is safe to expose client-side; access is governed by Supabase RLS policies, not key secrecy).
+- Supabase project URL/anon key are selected through environment variables; production
+  and staging must use separate projects. See `docs/ENVIRONMENTS.md`.
