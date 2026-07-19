@@ -10,6 +10,7 @@
     "build:production": "node scripts/build-app.mjs production",
     "build:staging": "node scripts/build-app.mjs staging",
     "content:export-staging-sql": "node scripts/export-staging-content-sql.mjs",
+    "test:rls": "node --env-file=.env.staging.local scripts/test-rls-isolation.mjs",
     "preview": "vite preview",
     "deploy": "node scripts/deploy.mjs"
   },
