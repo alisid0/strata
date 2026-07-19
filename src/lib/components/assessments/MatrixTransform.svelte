@@ -1,4 +1,5 @@
 <script>
+  import { formatMathText } from '../../content/mathFormat.js';
   export let prompt = 'Send the point through the matrix machine.';
   export let matrix = [[2, 0], [0, 1]];
   export let inputPoint = [2, 3];
@@ -53,7 +54,7 @@
 </script>
 
 <div class="matrix-transform">
-  <div class="prompt">{prompt}</div>
+  <div class="prompt">{@html formatMathText(prompt)}</div>
 
   <div class="machine">
     <div class="matrix">

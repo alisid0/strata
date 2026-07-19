@@ -2,6 +2,7 @@
   // Workshop — steps through interactive assessment interactions
   import { onDestroy } from 'svelte';
   import { fly } from 'svelte/transition';
+  import { formatMathText } from '../../content/mathFormat.js';
   import SortingDesk from './SortingDesk.svelte';
   import TapErase from './TapErase.svelte';
   import BitPattern from './BitPattern.svelte';
@@ -390,7 +391,7 @@
         />
       {:else if current.type === 'scenario'}
         <div class="scenario">
-          <div class="scenario-prompt">{current.prompt}</div>
+          <div class="scenario-prompt">{@html formatMathText(current.prompt)}</div>
           {#if current.image}
             <div class="scenario-image">{current.image}</div>
           {/if}
@@ -410,7 +411,7 @@
                   interactions = [...interactions];
                 }}
               >
-                {opt.label}
+                {@html formatMathText(opt.label)}
                 {#if !assess && current._answered && opt.correct}<span class="check"> ✓</span>{/if}
                 {#if !assess && current._answered && current._chosen === opt.id && !opt.correct}<span class="check"> ✗</span>{/if}
               </button>
@@ -421,7 +422,7 @@
               <div class="scenario-feedback">Answer locked in. You’ll see your score at the end.</div>
             {:else}
               <div class="scenario-feedback" class:correct={current._correct} class:incorrect={!current._correct}>
-                {current._feedback}
+                {@html formatMathText(current._feedback)}
               </div>
             {/if}
             <button class="continue-btn" on:click={() => handleInteractionDone(current._correct ? 1 : 0, 1)}>Continue</button>

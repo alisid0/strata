@@ -1,4 +1,5 @@
 <script>
+  import { formatMathText } from '../../content/mathFormat.js';
   // SortingDesk — sort items into category boxes.
   // Works two ways: drag-and-drop (desktop mouse) AND tap-to-place (tap an
   // item, then tap a box) so it's fully usable on touch screens, where HTML5
@@ -122,7 +123,7 @@
         on:drop={(e) => handleDrop(e, box.id)}
         on:dragover={handleDragOver}
       >
-        <div class="box-label">{box.label}</div>
+        <div class="box-label">{@html formatMathText(box.label)}</div>
         <div class="box-items">
           {#each shuffledItems.filter(i => placed[i.id] === box.id) as item (item.id)}
             <button
@@ -133,7 +134,7 @@
               title={submitted ? '' : 'Tap to take back'}
               on:click|stopPropagation={() => tapPlaced(item.id)}
             >
-              {item.label}
+              {@html formatMathText(item.label)}
               {#if submitted}
                 <span class="check">{item.box === box.id ? '✓' : '✗'}</span>
               {/if}
@@ -157,7 +158,7 @@
         on:click={() => tapItem(item.id)}
         in:fly={{ y: 10, duration: 200 }}
       >
-        {item.label}
+        {@html formatMathText(item.label)}
       </button>
     {/each}
   </div>

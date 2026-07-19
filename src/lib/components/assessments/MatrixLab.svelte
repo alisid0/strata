@@ -1,4 +1,5 @@
 <script>
+  import { formatMathText } from '../../content/mathFormat.js';
   export let mode = 'fill';
   export let prompt = 'Complete the matrix.';
   export let matrix = [[1, null], [0, 1]];
@@ -95,7 +96,7 @@
 </script>
 
 <div class="matrix-lab">
-  <div class="prompt">{prompt}</div>
+  <div class="prompt">{@html formatMathText(prompt)}</div>
 
   {#if mode === 'fill'}
     <div class="matrix-shell">
@@ -103,7 +104,7 @@
         {#each safeMatrix as row, r}
           {#each row as value, c}
             <span class:blank={`${r}-${c}` === blankKey}>
-              {`${r}-${c}` === blankKey ? (selected === null ? '?' : displayValue(selected)) : value}
+              {@html formatMathText(`${r}-${c}` === blankKey ? (selected === null ? '?' : displayValue(selected)) : value)}
             </span>
           {/each}
         {/each}
@@ -118,7 +119,7 @@
           class:wrong={submitted && isSelected(opt) && String(opt) !== String(correctValue)}
           on:click={() => { if (!submitted) selected = opt; }}
         >
-          {displayValue(opt)}
+          {@html formatMathText(displayValue(opt))}
         </button>
       {/each}
     </div>
@@ -131,11 +132,11 @@
           class:wrong={submitted && selected?.index === item.index && item.index !== correctIndex}
           on:click={() => { if (!submitted) selected = item; }}
         >
-          <span>{item.label}</span>
+          <span>{@html formatMathText(item.label)}</span>
           <div class="mini-matrix" style={`--cols:${matrixRows(item)[0]?.length || 1};`}>
             {#each matrixRows(item) as row}
               {#each row as value}
-                <i>{value}</i>
+                <i>{@html formatMathText(value)}</i>
               {/each}
             {/each}
           </div>
@@ -170,11 +171,11 @@
           on:click={() => { if (!submitted) selected = choice; }}
         >
           {#if choice.matrix}
-            <span>{choice.label}</span>
+            <span>{@html formatMathText(choice.label)}</span>
             <div class="mini-matrix" style={`--cols:${choice.matrix[0]?.length || 1};`}>
               {#each choice.matrix as row}
                 {#each row as value}
-                  <i>{value}</i>
+                  <i>{@html formatMathText(value)}</i>
                 {/each}
               {/each}
             </div>

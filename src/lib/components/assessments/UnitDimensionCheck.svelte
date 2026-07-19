@@ -1,4 +1,5 @@
 <script>
+  import { formatMathText } from '../../content/mathFormat.js';
   export let prompt = 'Check the units before trusting the answer.';
   export let expression = '';
   export let target = '';
@@ -50,11 +51,11 @@
 </script>
 
 <div class="unit-check">
-  <div class="prompt">{prompt}</div>
+  <div class="prompt">{@html formatMathText(prompt)}</div>
 
   <div class="equation-card">
     <span class="label">Unit test</span>
-    <strong>{expression}</strong>
+    <strong>{@html formatMathText(expression)}</strong>
     <small>{target}</small>
   </div>
 
@@ -66,7 +67,7 @@
         class:wrong={submitted && selected === opt.id && opt.id !== correctOption}
         on:click={() => choose(opt.id)}
       >
-        <span>{opt.label}</span>
+        <span>{@html formatMathText(opt.label)}</span>
         {#if opt.note}<small>{opt.note}</small>{/if}
       </button>
     {/each}
