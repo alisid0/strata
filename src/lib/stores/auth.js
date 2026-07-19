@@ -134,3 +134,31 @@ export async function resendConfirmation(email) {
   if (error) throw error;
   return data;
 }
+
+/**
+ * Fetch a full JSON export of everything stored for the signed-in user
+ * (profile, progress, attempts, W events, activity, reports). Returns the
+ * parsed object; the caller decides how to deliver it.
+ * Backed by the export_my_data() RPC (migration 0005).
+ */
+export async function exportMyData() {
+  const { data, error } = await supabase.rpc('export_my_data');
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Permanently delete the signed-in user's account: the Supabase Auth identity
+ * and — via ON DELETE CASCADE — every row of their personal data. Irreversible.
+ * Backed by the delete_my_account() RPC (migration 0005). Clears the local
+ * session afterwards so the app returns to a signed-out state.
+ */
+export async function deleteAccount() {
+  const { error } = await supabase.rpc('delete_my_account');
+  if (error) throw error;
+  // The auth row is gone; drop the now-orphaned local session. signOut may
+  // itself error against a deleted user, so ignore its result.
+  try { await supabase.auth.signOut(); } catch (_) {}
+  user.set(null);
+  session.set(null);
+}
