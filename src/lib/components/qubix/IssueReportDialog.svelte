@@ -59,8 +59,10 @@
     }, screenshotFile);
     loading = false;
 
-    if (result.queued) {
-      status = 'Saved locally. It will send after the support database is live or the connection improves.';
+    if (result.requiresSignIn) {
+      error = 'Sign in to send a report. Reports are linked to your account so we can follow up.';
+    } else if (result.queued) {
+      status = 'Saved locally. It will send when the connection improves.';
     } else {
       status = 'Sent. Thank you - this helps us fix Qubix faster.';
     }

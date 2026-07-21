@@ -16,8 +16,10 @@
   let learnerType = '';
   let saving = false;
 
+  // Qubix requires a minimum age of 13 (UK GDPR consent age) and is declared
+  // as not targeted at children on Google Play. Do not re-add an under-13 band
+  // without a verifiable parental-consent flow — see migration 0005.
   const AGE_BANDS = [
-    { id: 'under_13', label: 'Under 13' },
     { id: '13_15', label: '13-15' },
     { id: '16_17', label: '16-17' },
     { id: '18_plus', label: '18+' },

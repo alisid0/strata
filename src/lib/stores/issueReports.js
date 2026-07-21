@@ -50,6 +50,18 @@ async function uploadScreenshot(file) {
 }
 
 export async function submitIssueReport(report, screenshotFile = null) {
+  // Migration 0005 restricted issue_reports inserts to authenticated users —
+  // the anonymous path was an unauthenticated write endpoint on the public
+  // anon key. A guest report can never succeed, so fail fast rather than
+  // queueing it for a retry loop that will never drain.
+  if (!get(user)) {
+    return {
+      queued: false,
+      requiresSignIn: true,
+      error: new Error('Sign in to send a report.')
+    };
+  }
+
   let screenshotPath = null;
   try {
     screenshotPath = await uploadScreenshot(screenshotFile);
@@ -71,13 +83,29 @@ export async function submitIssueReport(report, screenshotFile = null) {
 
 export async function retryIssueReportQueue() {
   const queue = queuedReports();
-  if (!queue.length) return { sent: 0, remaining: 0 };
+  if (!queue.length) return { sent: 0, remaining: 0, discarded: 0 };
 
+  const currentUser = get(user);
+  if (!currentUser) return { sent: 0, remaining: queue.length, discarded: 0 };
+
+  // Reports queued before sign-in (or under a different account) carry a
+  // user_id the current session cannot insert. Re-stamp them to the signed-in
+  // user; drop any that are unusable so the queue always drains.
   const remaining = [];
   let sent = 0;
+  let discarded = 0;
+
   for (const item of queue) {
+    const { queued_at, screenshot_queued_locally, ...payload } = item;
+
+    if (!payload.message) {
+      discarded += 1;
+      continue;
+    }
+
+    payload.user_id = currentUser.id;
+
     try {
-      const { queued_at, screenshot_queued_locally, ...payload } = item;
       const { error } = await supabase.from('issue_reports').insert(payload);
       if (error) throw error;
       sent += 1;
@@ -85,8 +113,9 @@ export async function retryIssueReportQueue() {
       remaining.push(item);
     }
   }
+
   saveQueue(remaining);
-  return { sent, remaining: remaining.length };
+  return { sent, remaining: remaining.length, discarded };
 }
 
 export function getQueuedIssueCount() {
