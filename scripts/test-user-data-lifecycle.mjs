@@ -361,13 +361,15 @@ async function main() {
     assert(!!crossReadErr, "user A cannot download user B's screenshot",
       crossReadErr ? undefined : 'download SUCCEEDED — storage policy is open');
 
-    // The call IS the detection — invoking twice would be a second deletion.
-    const { name: rpcName, error: delErr } = await callDeletionRpc(clientB);
-    if (!rpcName) {
-      fail('no deletion RPC found (tried delete_my_account, delete_my_user_data)');
-    } else {
-      ok(`deletion RPC in use: ${rpcName}()`);
-      assert(!delErr, `${rpcName}() completed`, delErr?.message);
+    // Exercise the same full deletion path as the app. The Edge Function first
+    // removes private Storage objects, then calls the relational-data RPC, and
+    // finally removes the auth identity with its service-role client.
+    const { error: delErr } = await clientB.functions.invoke('delete-account', {
+      body: { confirm: 'DELETE MY ACCOUNT' },
+    });
+    assert(!delErr, 'delete-account Edge Function completed', delErr?.message);
+
+    if (!delErr) {
 
       // F-05 — the storage object must be gone, not orphaned.
       const { data: listed } = await admin.storage
@@ -417,26 +419,6 @@ async function main() {
         stillThere?.user ? 'auth.users row survives — this is not full deletion' : undefined);
     }
   }
-}
-
-/**
- * Call whichever deletion RPC this database exposes, exactly once.
- *
- * The competing migrations name it differently — feature/account-deletion uses
- * delete_my_account(), 0005_launch_hardening uses delete_my_user_data(). There
- * is no way to probe for existence without calling it, and calling it deletes,
- * so the first name that is not "function not found" is both the answer and the
- * execution. Never loop past a call that ran.
- */
-async function callDeletionRpc(client) {
-  const MISSING = /could not find|does not exist|PGRST202/i;
-  for (const name of ['delete_my_account', 'delete_my_user_data']) {
-    const { error } = await client.rpc(name);
-    if (!error) return { name, error: null };
-    if (!MISSING.test(error.message)) return { name, error };
-    // Function genuinely absent — nothing ran, safe to try the next name.
-  }
-  return { name: null, error: null };
 }
 
 /**

@@ -286,10 +286,8 @@ begin
   delete from public.user_path_progress       where user_id = uid;
   delete from public.user_board_progress      where user_id = uid;
 
-  -- Erase: uploaded screenshots may show anything on the user's screen.
-  delete from storage.objects
-  where bucket_id = 'issue-screenshots'
-    and (storage.foldername(name))[1] = uid::text;
+  -- Uploaded screenshots are erased by the delete-account Edge Function via
+  -- the Storage API. Supabase rejects direct deletes from storage.objects.
 
   -- Anonymise: keep the defect, drop the reporter.
   update public.issue_reports

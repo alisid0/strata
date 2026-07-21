@@ -13,6 +13,7 @@ Correct order: **staging SQL → staging QA → production deploy → production
 | File | Change |
 |---|---|
 | `supabase/migrations/0005_launch_hardening.sql` | Schema, RLS, and privacy fixes |
+| `supabase/migrations/0006_delete_account_storage_fix.sql` | Repairs databases that received the original 0005 storage-table deletion |
 | `supabase/functions/delete-account/index.ts` | Edge Function for full account deletion |
 | `src/lib/supabase.js` | Removed 4 dead functions; added `deleteAccount()` / `exportMyData()` |
 | `src/lib/stores/issueReports.js` | Guests fail fast; retry queue re-stamps `user_id` |
@@ -31,12 +32,17 @@ Correct order: **staging SQL → staging QA → production deploy → production
 Then deploy the Edge Function:
 
 ```bash
-supabase secrets set SERVICE_ROLE_KEY=<staging service role key> --project-ref atmmfkhjsdqqwnhqifxm
 supabase functions deploy delete-account --project-ref atmmfkhjsdqqwnhqifxm
 ```
 
-The service-role key goes in Supabase secrets only. Never in `.env`, never in a
-`VITE_*` variable, never committed.
+Hosted Edge Functions receive `SUPABASE_SERVICE_ROLE_KEY` automatically. Do not
+create a custom copy of it. Never put a service-role key in `.env`, a `VITE_*`
+variable, or Git.
+
+If a database received the original version of 0005 (the version that directly
+deleted from `storage.objects`), apply
+`supabase/migrations/0006_delete_account_storage_fix.sql` once. Fresh databases
+only need the current 0005.
 
 ## 2. Run the verification queries
 
@@ -67,7 +73,6 @@ pnpm run build:production
 pnpm run deploy
 # smoke-test the public URL, then:
 # apply 0005_launch_hardening.sql in the production SQL editor
-supabase secrets set SERVICE_ROLE_KEY=<production service role key> --project-ref <production ref>
 supabase functions deploy delete-account --project-ref <production ref>
 ```
 
@@ -99,6 +104,6 @@ This migration closes the database-side launch gates. Not covered:
   — done, set to `admin@arcavetech.co.uk`
 - ~~Privacy policy updated to match: 13+ minimum, what deletion removes, the
   export route, and that usernames are no longer email-derived~~ — done
-- An in-app UI for `deleteAccount()` and `exportMyData()` — the functions exist,
-  nothing calls them yet
+- ~~An in-app UI for `deleteAccount()` and `exportMyData()`~~ — done in Settings
+  → Your data
 - Dropping the `_deprecated_0005` tables once confirmed unused in production
