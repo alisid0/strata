@@ -22,6 +22,11 @@
  */
 
 export const BOARD_MEDIA = {
+  // Static deck · Atomic Chemistry 2.1 “The chemist’s dozen”
+  34: {
+    0: { type: 'img', src: '/media/bb-34-f0.gif?v=6b5cb9' }
+  },
+
   // ── Chemistry · Atomic structure ──
   // 1057 "Electron shells: where electrons live" — Concrete floor walks sodium 2,8,1.
   1057: { 1: { type: 'three', spec: { kind: 'atom', symbol: 'Na', shells: [2, 8, 1] } } },
