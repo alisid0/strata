@@ -45,6 +45,109 @@ Paste messages **from Codex to Claude** here, newest first.
 
 <!-- Paste new messages below this line. -->
 
+### MSG-20260721-001 — Platform architecture and user-data security programme
+
+From: Codex
+To: Claude
+Status: OPEN
+Priority: SECURITY
+Branch: Create `claude/platform-security-hardening` from the latest agreed remote base
+Commit: N/A
+Files in scope: `supabase/`, `src/lib/`, authentication/account settings code,
+environment and deployment configuration, automated tests, CI configuration,
+and engineering documentation
+
+Context:
+The app now needs a thorough engineering pass that is deliberately separate
+from BB writing, educational content, illustrations, and media production. The
+goal is to make the repository easier for future engineers and agents to
+navigate while proving that user data is isolated, exportable, and deletable as
+documented. Treat current behavior and claims as unverified until supported by
+code, migrations, tests, and deployment evidence.
+
+Request:
+Own the following programme end to end on your branch. Make reviewable commits
+for each phase and keep an evidence-based handoff.
+
+1. Establish the actual architecture.
+   - Inventory runtime entry points, shared libraries, Supabase clients, edge
+     functions, migrations, environment handling, deployment configuration,
+     generated outputs, archives, and apparent dead files.
+   - Trace authentication, profile creation, learning-progress writes, data
+     export, account deletion, and sign-out from UI to database.
+   - Produce a concise architecture map and identify duplicated or ambiguous
+     sources of truth.
+
+2. Audit Supabase and user-data security.
+   - Review every table, view, function, trigger, storage bucket, RPC, and edge
+     function represented in the repository.
+   - Review grants, RLS enablement, every RLS policy, `SECURITY DEFINER`
+     functions, search paths, ownership checks, JWT assumptions, CORS, and
+     service-role usage.
+   - Check that browser code receives only the public anonymous key and that no
+     secret or privileged credential is committed, logged, bundled, or exposed
+     by an endpoint.
+   - Compare implemented retention, export, and deletion behavior with the
+     current legal/user-facing claims. Flag mismatches; do not silently rewrite
+     legal claims to conceal an implementation gap.
+
+3. Add executable security evidence.
+   - Build automated tests using anonymous access, user A, and user B.
+   - Prove user A cannot read, insert, update, or delete user B's records.
+   - Test unauthorized RPC/function calls, storage access where applicable,
+     deletion, export completeness, and expected cascading behavior.
+   - Make tests deterministic, safe for staging, and unable to target production
+     accidentally.
+   - Document exact commands, prerequisites, expected output, and cleanup.
+
+4. Improve repository organisation safely.
+   - Propose the target layout before broad moves.
+   - Separate runtime source, database infrastructure, tests, generated files,
+     operational documentation, archives, and content/media work.
+   - Confirm import and script references before moving or removing anything.
+   - Prefer deprecation markers or a dedicated archive for uncertain material.
+   - Do not perform cosmetic churn that obscures the security diff.
+
+5. Add engineering gates.
+   - Ensure staging and production builds are reproducible.
+   - Add or improve focused CI checks for migrations, RLS isolation, accidental
+     secrets, environment separation, and build integrity where practical.
+   - Document which warnings pre-existed and which findings are introduced by
+     this review.
+
+6. Deliver a cross-review package.
+   - Add a dated report under `docs/engineering/` containing severity-ranked
+     findings, evidence, fixes made, open risks, migration state, staging state,
+     and rollback/recovery notes.
+   - Include a file-by-file change summary and a checklist for Codex's independent
+     review.
+   - Reference exact commits rather than saying only that work is "done".
+
+Constraints:
+- Do not change BB/floor educational content, `content-drafts/`, illustration
+  prompts, GIF/media assets, or visual teaching decisions.
+- Do not apply migrations to production, deploy production, rotate credentials,
+  delete data, merge to `main`, or weaken a security control without explicit
+  user approval.
+- Do not paste or commit secrets, tokens, passwords, personal data, database
+  exports, or real user records.
+- Use staging or isolated test infrastructure only. Add an unmistakable
+  production-target guard to destructive test tooling.
+- Preserve unrelated work and use small, descriptive commits.
+- Stop and report any critical exposure immediately; do not include exploitable
+  secret values in the report.
+
+Checks already run:
+Codex has run the current staging and production application builds successfully.
+They emit existing Svelte accessibility and large-chunk warnings. This is not
+evidence that Supabase isolation or account lifecycle behavior is secure.
+
+Response needed:
+Return the branch name, base commit, architecture report path, security test
+commands/results, severity-ranked findings, migrations added or changed,
+individual commit hashes, and anything requiring user approval. Leave the branch
+unmerged for Codex cross-review.
+
 ## Responses
 
 Paste responses here, newest first. State which message is being answered.
