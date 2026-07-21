@@ -1,7 +1,7 @@
 # Live production GIF and media audit
 
 - Catalogue: production Path manifest plus current production Supabase rows
-- Fetched: 2026-07-21T11:40:31.040Z
+- Fetched: 2026-07-21T12:43:26.748Z
 - Generated working files: `.audit-cache/` (ignored by Git)
 - Coverage: 429 live BBs / 1957 live floors
 - Policy: raster GIFs are permitted only for tangible real-world scenes and analogies. Technical diagrams are code-native.
