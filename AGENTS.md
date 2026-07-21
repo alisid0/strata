@@ -1,72 +1,81 @@
 # Qubix agent handoff
 
-This repository is the source of truth for Qubix. Read
-`docs/ENVIRONMENTS.md` before changing authentication, Supabase, Vercel, or
-the release process.
+Read `docs/SOURCE-OF-TRUTH.md` before inspecting, planning, or changing BB
+content or media. Its hierarchy overrides old draft inventories and handoffs.
 
-For the current Google Play, authentication, production, Android packaging,
-and public-launch status, read `docs/LAUNCH-HANDOVER.md`. It is the primary
-launch checklist and supersedes older launch-status notes where they conflict.
+Then read:
 
-For positioning, beta acquisition, SEO migration, analytics, launch assets,
-channels, and the current marketing action order, read
-`docs/MARKETING-SETUP.md`.
+1. `docs/ENVIRONMENTS.md` before authentication, Supabase, Vercel, staging, or
+   release work.
+2. `docs/LAUNCH-HANDOVER.md` for the public-launch checklist.
+3. `docs/RELEASE-MODEL.md` for how code, Supabase content, schema, and the
+   Android shell reach users.
 
-## Current environment state (2026-07-18)
+## Non-negotiable source rules
+
+- `src/lib/content/paths.js` defines live course membership in a deployed
+  build.
+- Production Supabase defines the current text/floors for those dynamic BBs.
+- Bundled topic-board modules are fallbacks, not a second live inventory.
+- `content-drafts/`, prompt banks, old exports, and archived plans are never a
+  production inventory.
+- Before reporting catalogue or media coverage, run `pnpm run
+  audit:live-media`. If it was not run in the current task, call the numbers a
+  dated snapshot.
+- Do not infer the production deployment from Git. Fetch before comparing local
+  and remote branches; verify production separately.
+
+## Current environment state
 
 - Public code branch: `main`.
-- Test app: `https://qubix-staging.vercel.app`.
-- Test Vercel project: `qubix-staging` in the `qubixprod` team.
-- Test Supabase project ref: `atmmfkhjsdqqwnhqifxm` (`Qubix Staging`).
-- Staging uses isolated auth and user-data tables. Never copy production users,
+- Public production URL: `https://strata-nine-pi.vercel.app` until the planned
+  domain migration is complete.
+- Staging URL: `https://qubix-staging.vercel.app`.
+- Staging Supabase project ref: `atmmfkhjsdqqwnhqifxm`.
+- Staging uses isolated auth and user data. Never copy production users,
   progress, sessions, or other personal data into it.
-- Staging contains the complete public production card catalog as of the date
-  above: 1,145 production cards plus two staging-only seed cards.
-- The staging Vercel project currently follows `main`. A dedicated `staging`
-  branch is the next recommended release-process improvement.
-- Production deployment is still manual through `pnpm run deploy`; pushing
-  Git alone does not run that production deploy script.
+- Staging currently follows `main`; a dedicated `staging` branch remains a
+  release-process improvement.
+- Production deploy is manual. Pushing Git does not update the public app.
+- Dynamic Supabase BB content is independent of Git and Vercel deployment.
 
-Do not commit `.env.staging.local`, Supabase service-role keys, Vercel tokens,
-or any other secret. `VITE_*` variables are public client configuration and
-must never contain a service-role key.
+Never commit `.env.staging.local`, Supabase service-role keys, Vercel tokens, or
+other secrets. `VITE_*` values are public client configuration and must never
+contain a service-role key.
 
-## Safe working defaults
+## Safe commands
 
 ```bash
 pnpm run dev
 pnpm run build:staging
 pnpm run build:production
+pnpm run audit:live-media
 ```
 
 `pnpm run dev` uses staging. Treat `pnpm run dev:production` as exceptional
-because it connects the local app to production services.
+because it connects local code to production services.
 
-Before releasing code:
+## Release flow
 
 1. Work on a feature branch.
 2. Build and test against staging.
-3. Merge the approved code into `main`.
+3. Merge approved code into `main`.
 4. Run `pnpm run build:production`.
-5. Run `pnpm run deploy` and smoke-test the public URL.
+5. Run `pnpm run deploy` from a clean worktree.
+6. Smoke-test the public URL and affected media URLs.
 
-Dynamic Supabase card content is not promoted by Git. Use
-`pnpm run content:export-staging-sql` to create idempotent, content-only SQL
-chunks from the public production catalog when refreshing staging. Review the
-generated files before running them. This tool intentionally does not copy
-users or user data and does not write to either database itself.
+Supabase content changes do not follow this Git flow; verify them directly in
+the live app. Schema/RLS changes are higher risk and must be tested on staging
+first.
 
-## Authentication status
+## Visual-media rule
 
-The app has an auth gateway, email/password flows, recovery handling,
-environment-specific redirects, and test/production isolation. Before public
-launch, configure and test production SMTP/email delivery and any enabled OAuth
-provider (for example Google) end to end. Phone auth is intentionally disabled.
+- Raster illustrations/GIFs: visible real-world scenes and narrative analogies
+  only.
+- Technical visuals: deterministic Manim, SVG, canvas, or Three.js only.
+- Never generate raster formulae, graphs, particle diagrams, bonds, circuits,
+  labels, quantities, or exact technical geometry.
 
-## Verification notes
-
-The staging app was manually smoke-tested for guest entry, all four subject
-paths, board lists, the multi-floor reader, the Function Machine workshop,
-daily workouts, signup validation, and the recovery screen. Existing Svelte
-accessibility and large-chunk build warnings are non-blocking but remain useful
-cleanup work.
+Preserve unrelated working-tree changes. Existing build warnings about Svelte
+accessibility and large chunks are known but should not be silently treated as
+new failures.

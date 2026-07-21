@@ -1,5 +1,9 @@
 # Qubix environments
 
+For live BB membership, floor text, and media authority, read
+`docs/SOURCE-OF-TRUTH.md` first. Environment configuration does not make a
+draft catalogue authoritative.
+
 Qubix uses one codebase with isolated configuration for the public app and the
 test app. Test accounts and test writes must never go to the production
 Supabase project.
@@ -11,6 +15,11 @@ Supabase project.
 | Production | `production` | Production Supabase | On | On | Allowed | Off |
 | Staging/test | `staging` | Separate staging Supabase | Off | Off | Blocked | On |
 | Local test | `staging` | Separate staging Supabase | Off | Off | Blocked | On |
+
+Current public URLs:
+
+- Production: `https://strata-nine-pi.vercel.app`
+- Staging: `https://qubix-staging.vercel.app`
 
 Staging builds display a yellow environment badge. The build also refuses to
 run if its Supabase URL matches the production URL.

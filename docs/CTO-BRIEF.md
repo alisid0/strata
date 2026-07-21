@@ -1,5 +1,9 @@
 # CTO Brief — Strata
 
+> **DATED HISTORICAL BRIEF.** Counts, architecture, visual direction, and
+> missing-media claims below are not current. Use
+> `docs/SOURCE-OF-TRUTH.md` and rerun `pnpm run audit:live-media`.
+
 Welcome. You're the CTO. You don't need to know how to code to do this job well — you need to understand *what we're making, where we are, what's left, and where the risks are*. This document explains all of it in plain English. Nothing here assumes you know the jargon. Where a technical word is unavoidable, it's explained the first time.
 
 Take your time with it. It's long on purpose — you asked for every aspect.

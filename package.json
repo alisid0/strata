@@ -10,6 +10,8 @@
     "build:production": "node scripts/build-app.mjs production",
     "build:staging": "node scripts/build-app.mjs staging",
     "content:export-staging-sql": "node scripts/export-staging-content-sql.mjs",
+    "audit:live-catalogue": "node scripts/export-live-path-catalogue.mjs",
+    "audit:live-media": "node scripts/export-live-path-catalogue.mjs && node scripts/build-gif-eligibility-audit.mjs",
     "preview": "vite preview",
     "deploy": "node scripts/deploy.mjs"
   },

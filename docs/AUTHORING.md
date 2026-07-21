@@ -39,11 +39,43 @@ AI marks what's right, what's close, and what's missing — then moves to Instan
 
 ## Instance 2 — textbook definition + Q&A
 
-AI gives the clean, single-sentence textbook definition of the topic plus the formula (if one exists).
+AI gives the author the clean, single-sentence textbook definition plus the formula (if
+one exists). This is author learning, not permission to put the formula on the learner's
+first floor. The author must first be able to explain the relationship without notation.
 
 Author asks any questions until it clicks. AI answers plainly — no hype, no over-explaining.
 
 When the author says **"done"**, both Instance 1 and Instance 2 are marked complete.
+
+### Turning a formula into learner floors
+
+A formula is the compressed ending of an explanation, not the beginning. When notation
+may be unfamiliar, draft the BB in this order:
+
+| Stage | Purpose |
+|---|---|
+| Experience/question | Pose an observable situation the learner can predict |
+| Visual model | Show which quantities exist and what changes |
+| Plain language | State the relationship without mathematical symbols |
+| Notation decode | Reveal one symbol at a time, linked to the visual model |
+| Worked example | Substitute small values in visible steps, including units |
+| Misconception check | Contrast the correct meaning with the tempting wrong interpretation |
+| Transfer/synthesis | Apply the same relationship to a slightly different case |
+
+Stages may share a floor when the idea is genuinely simple, but experience, visual
+model, and plain language must precede unfamiliar notation. A formula on Floor 0 or
+Floor 1 requires an explicit reason that the target learner already has the intuition.
+
+For every formula BB, record the prerequisite, concrete model, plain-language
+relationship, symbol decoding, worked example, likely misconception, and required
+interaction. Verify the current live BB and floor first with `pnpm run
+audit:live-media`; working exports belong in ignored `.audit-cache/`, not in a
+committed draft inventory.
+
+Example: for a limit, animate a point approaching a hole in a graph, then show a small
+input/output table, then say “as x gets closer to 2, f(x) gets closer to 4.” Only then
+build `lim(x→2) f(x) = 4`. A later floor must show that the value at `x = 2` can differ
+from the value being approached.
 
 ---
 

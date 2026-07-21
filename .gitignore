@@ -26,6 +26,9 @@ media/videos/
 # Playwright browser session (local only)
 .playwright-session/
 
+# Read-only production catalogue/media audit exports (regenerate; never authoritative)
+.audit-cache/
+
 # Debug screenshots (one-off inspection)
 el-screenshot.png
 

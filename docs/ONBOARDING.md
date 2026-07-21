@@ -1,5 +1,9 @@
 # Onboarding — Strata
 
+> **ARCHIVED ARCHITECTURE.** This describes the retired single-file/static
+> app. Start with `README.md`, `AGENTS.md`, and
+> `docs/SOURCE-OF-TRUTH.md`.
+
 Two briefs below. **Person A** = system design engineer (architecture, data model, decisions). **Person B** = full-stack intern (what's built, how to run it, what to pick up). Read your own first, skim the other.
 
 The canonical reference for everything is **STRATA-BRIEF.md**; this onboarding orients you to it.

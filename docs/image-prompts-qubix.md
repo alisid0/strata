@@ -1,4 +1,6 @@
 # Image prompts — Qubix merged style (BBs 85+)
+# LEGACY PROMPT BANK — NOT LIVE INVENTORY OR CURRENT TECHNICAL-MEDIA POLICY.
+# Run `pnpm run audit:live-media`; technical diagrams must be code-native.
 # Style: flat vector + textbook precision + touch of cartoon warmth
 #
 # Reusable style core (paste at end of every prompt):

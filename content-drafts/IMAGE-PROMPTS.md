@@ -1,4 +1,8 @@
 # IMAGE-PROMPTS.md
+
+> **AUTHORING ARCHIVE — NOT A LIVE QUEUE.** Verify BB/floor presence with
+> `pnpm run audit:live-media`. Do not generate technical diagrams from these
+> raster prompts; technical media must be deterministic/code-native.
 ## Pixel-art image prompts for all live BBs — every floor
 
 **Style baseline for every frame (include at start of each prompt):**

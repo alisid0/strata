@@ -1,5 +1,9 @@
 # Claude + Copilot Image Pipeline — Split of Duties
 
+> **RETIRED WORKFLOW. DO NOT EXECUTE.** It incorrectly proposes raster GIFs
+> for every floor and treats prompt drafts as live inventory. Use
+> `pnpm run audit:live-media` and `docs/SOURCE-OF-TRUTH.md`.
+
 This is the instruction file for Claude (the other AI) to collaborate with GitHub Copilot on generating pixel-art GIFs for every BB in the Qubix/Strata app.
 
 ---

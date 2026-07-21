@@ -1,5 +1,9 @@
 # Image prompts — all 37 BBs
 
+> **LEGACY STATIC-DECK PROMPTS.** These are not a live catalogue or current
+> visual policy. Technical diagrams must be code-native; see
+> `docs/SOURCE-OF-TRUTH.md`.
+
 Chalkboard illustrations, **~2 per BB**. Every prompt is grounded in what that BB actually teaches. Cards 1–11 already have images (listed here too, so you can regenerate to 1:1 if you want consistency); 12–37 are the priority — they have none.
 
 ## How to use

@@ -5,7 +5,8 @@ Last updated: 2026-07-21
 How a change reaches a Qubix user, why most changes need no Play Store update,
 and what actually differs between the staging app and the version end users get.
 
-Companion documents: `docs/ENVIRONMENTS.md` (configuration),
+Companion documents: `docs/SOURCE-OF-TRUTH.md` (live catalogue and media authority),
+`docs/ENVIRONMENTS.md` (configuration),
 `docs/LAUNCH-HANDOVER.md` (launch checklist), `AGENTS.md` (working defaults).
 
 ---
@@ -124,7 +125,7 @@ difference is entirely environment variables plus a few build-time guards.
 
 | | Production | Staging |
 |---|---|---|
-| URL | `qubix.arcavetech.co.uk` (once moved) | `qubix-staging.vercel.app` |
+| URL | `strata-nine-pi.vercel.app` (current; custom domain planned) | `qubix-staging.vercel.app` |
 | Vite mode | `production` | `staging` |
 | Supabase project | Production | `Qubix Staging` (`atmmfkhjsdqqwnhqifxm`) |
 | Users & progress | Real | Isolated test accounts only |

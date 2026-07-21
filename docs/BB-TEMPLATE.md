@@ -1,12 +1,14 @@
 # BB Authoring Template
 
 Submit one BB at a time. Fill all fields. Follow the editorial voice in `CONTENT.md`.
+Before assigning a path or reviewing media, read `docs/SOURCE-OF-TRUTH.md`.
 
 ## Format
 
 Copy this whole block, fill it in, and submit via:
 - **App:** https://strata-nine-pi.vercel.app/ → Author tab
-- **GitHub PR:** add to `src/lib/content/deck.js`
+- **GitHub PR:** add a reviewed batch/fallback only when the ingestion workflow
+  calls for it; new live dynamic BB copy normally belongs in Supabase, not `deck.js`
 - **Form:** [Google Sheets → Apps Script → Supabase]
 
 ---
@@ -26,7 +28,7 @@ Copy this whole block, fill it in, and submit via:
     "<p>Floor 3 (In action): Where it's applied, what it predicts, what it explains. Real-world examples.</p>",
     "<p>Floor 4 (The law / bedrock): Full formal statement, formula box, edge cases. Not every BB needs all 5 floors. Use null to skip.</p>"
   ],
-  "imagePrompt": "Describe the chalkboard illustration. Landscape. Chalk on dark green board. Keep it to one clear diagram."
+  "mediaBrief": "Optional: real-world scene, code-native technical visual, evidence, or no media."
 }
 ```
 
@@ -62,12 +64,19 @@ Use `null` to skip floors. A BB can be complete at floor 1 or 2.
 | `tier` | always g0 for now | `"g0"` |
 | `buildsOn` | prerequisite card labels | `["Card 06", "Card 21"]` |
 
-## Image prompt guide
+## Media brief guide
 
-Describe what the chalkboard illustration should show. Use the established style:
-> Hand-drawn white chalk on dark green chalkboard (#1f3b30). Rough imperfect lines with faint dust. Simple, clear, diagrammatic — a teacher's quick board sketch. Off-white chalk for main lines; pale yellow (#f2d585) and pale green (#a9d6a0) for emphasis. No photography, no realism. Flat educational diagram. Generous empty board space. 1:1 square.
+Choose one treatment only when it adds teaching value:
 
-Specify the content: "A chalk number line with 0 at centre, a point at 3 labelled in yellow, and a point at -1 labelled in green."
+- **Scene illustration/GIF:** a visible real-world action or narrative analogy;
+  no generated labels, formulae, quantities, or technical geometry.
+- **Technical visual:** specify the exact Manim/SVG/canvas/Three.js construction,
+  values, labels, and reduced-motion end state. Do not request a generated image.
+- **Evidence:** name the real photograph, artefact, or source and record rights.
+- **None:** valid whenever media would merely repeat the paragraph.
+
+Run `pnpm run audit:live-media` before producing anything so the BB number,
+current floor text, and existing media are verified against production.
 
 ## Card numbering
 

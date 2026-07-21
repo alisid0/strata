@@ -1,5 +1,9 @@
 # STRATA — complete project brief (single source of truth)
 
+> **ARCHIVED — NOT A SOURCE OF TRUTH.** The static chalkboard application
+> described here is retired. Use `README.md` and
+> `docs/SOURCE-OF-TRUTH.md` for current architecture and media policy.
+
 > **For Claude Code:** read this whole file first. It contains everything — what the project is, how the code works, the full content map, the design system, the editorial voice, and the planned mastery system. You should not need any other file to get oriented. (Other `.md` files in the repo are legacy/partial; this one supersedes them.)
 >
 > **Naming:** the locked vocabulary is in **NOMENCLATURE.md** — use those terms (BB, Floor, Tier, Path, Subject, Topic) and no synonyms. Note two things settled there: a "card/board" is now officially a **BB**; a depth-step inside it is a **Floor**; and **"Act" is removed** — paths are the sections, and the reader eyebrow should show the path name (a flagged code change, not yet done).

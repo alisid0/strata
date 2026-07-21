@@ -1,5 +1,9 @@
 # Design system — Strata
 
+> **LEGACY — QUIZ ONLY.** This chalk system is not the current app/Reader
+> design and must not be used for new BB media. The main UI uses
+> `qubix-tokens.css`. Read `CLAUDE.md` and `docs/SOURCE-OF-TRUTH.md` first.
+
 The visual identity is **hand-drawn white chalk on a dark green chalkboard**, in a wooden frame. Everything new — cards, controls, future pages, generated illustrations — must match this. Do not introduce gradients-as-decoration, drop shadows beyond what's defined, rounded "app" UI, or sans-serif body text. When in doubt, it should look like a good teacher's board, not a SaaS dashboard.
 
 ## Colour tokens (CSS variables, already in `:root`)
