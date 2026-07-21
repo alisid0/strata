@@ -159,6 +159,13 @@ begin
     return new;
   end if;
 
+  -- Account deletion anonymises reports by nulling user_id and the identifying
+  -- columns. RLS blocks that transition for a normal client, so it can only
+  -- arrive here from the security-definer delete_my_user_data(). Allow it.
+  if old.user_id is not null and new.user_id is null then
+    return new;
+  end if;
+
   if new.message is distinct from old.message
      or new.category is distinct from old.category
      or new.route is distinct from old.route
@@ -224,18 +231,44 @@ create trigger issue_reports_guard_rate
 commit;
 
 -- ---------------------------------------------------------------------------
--- 6. Complete user data deletion
+-- 6. User data deletion — erase personal data, retain what is legitimately
+--    retainable
 -- ---------------------------------------------------------------------------
--- Now covers issue_reports, the screenshot storage objects, and the profile
--- row. Still cannot remove the auth.users identity — that requires the
--- service-role Edge Function, which calls this first.
+-- UK GDPR Article 17 requires erasure of personal data, not destruction of
+-- everything a user ever touched. Two categories are treated differently:
+--
+--   ERASED — learning progress, attempts, rewards, activity, sessions, the
+--   profile row, uploaded screenshots, and (via the Edge Function) the auth
+--   identity. All of it is personal data with no retention justification.
+--
+--   ANONYMISED — issue reports. The bug itself is operational data we have a
+--   legitimate interest in keeping: a report may be mid-investigation, and
+--   destroying it means losing the defect, not just the reporter. So the row
+--   survives with every identifying element stripped — user_id, user_agent,
+--   viewport and screenshot are cleared, leaving category, message, route and
+--   bbid. Once detached from an account and a device fingerprint, that is no
+--   longer personal data and Article 17 does not reach it.
+--
+-- The free-text message is the one risk: a user may have typed personal
+-- information into it. It is preserved because a report stripped of its
+-- description is useless, and the privacy policy tells users not to put
+-- personal information in reports. If you would rather not carry that risk,
+-- change the update below to also null out `message`.
+--
+-- Still cannot remove the auth.users identity — that requires the service-role
+-- Edge Function, which calls this first.
 
 begin;
 
+-- security definer: the anonymisation step sets issue_reports.user_id to null,
+-- which the row's own RLS WITH CHECK (auth.uid() = user_id) forbids. Every
+-- statement below is explicitly scoped to `uid`, which is read from the JWT, so
+-- a caller can still only ever affect their own rows.
 create or replace function public.delete_my_user_data()
 returns void
 language plpgsql
-security invoker
+security definer
+set search_path = public, storage
 as $$
 declare
   uid uuid := auth.uid();
@@ -244,6 +277,7 @@ begin
     raise exception 'delete_my_user_data() requires an authenticated session';
   end if;
 
+  -- Erase: personal learning data, no retention basis.
   delete from public.user_w_events            where user_id = uid;
   delete from public.user_workshop_attempts   where user_id = uid;
   delete from public.user_quiz_attempts       where user_id = uid;
@@ -251,13 +285,22 @@ begin
   delete from public.user_engagement_sessions where user_id = uid;
   delete from public.user_path_progress       where user_id = uid;
   delete from public.user_board_progress      where user_id = uid;
-  delete from public.issue_reports            where user_id = uid;
 
-  -- Screenshots are stored under a folder named for the user id.
+  -- Erase: uploaded screenshots may show anything on the user's screen.
   delete from storage.objects
   where bucket_id = 'issue-screenshots'
     and (storage.foldername(name))[1] = uid::text;
 
+  -- Anonymise: keep the defect, drop the reporter.
+  update public.issue_reports
+  set user_id         = null,
+      user_agent      = null,
+      screenshot_path = null,
+      viewport        = '{}'::jsonb,
+      metadata        = '{}'::jsonb
+  where user_id = uid;
+
+  -- Erase: the profile row itself.
   delete from public.user_profiles where user_id = uid;
 end;
 $$;
@@ -372,6 +415,49 @@ end
 $$;
 
 commit;
+
+-- ---------------------------------------------------------------------------
+-- 8b. Retention policy — what survives deletion, and why
+-- ---------------------------------------------------------------------------
+-- Recorded here so the policy sits next to the code enforcing it. Keep
+-- public/privacy.html in sync with this table.
+--
+--   Data                        On account deletion   Basis
+--   --------------------------  --------------------  --------------------------
+--   auth identity (email)       erased                Art. 17
+--   user_profiles               erased                Art. 17
+--   board / path progress       erased                Art. 17
+--   quiz / workshop attempts    erased                Art. 17
+--   w_events, daily_activity    erased                Art. 17
+--   engagement_sessions         erased                Art. 17
+--   issue-screenshots objects   erased                Art. 17
+--   issue_reports rows          anonymised, retained  Art. 6(1)(f) — service
+--                                                     integrity; no longer
+--                                                     personal data once
+--                                                     detached
+--   Vercel aggregate analytics  retained              already anonymous,
+--                                                     Art. 17 does not apply
+--   Provider backups            expire on rollover    Art. 17(1) "without
+--                                                     undue delay" — document
+--                                                     the cycle, do not
+--                                                     surgically edit backups
+--
+-- Deliberately NOT implemented, and worth a decision before wide launch:
+--
+--   * Soft-delete grace period. A 30-day window would let users recover an
+--     accidental deletion and would deter ban evasion by immediate re-signup.
+--     It also means holding personal data after a deletion request, which is
+--     defensible under Art. 17(1) "without undue delay" but must be disclosed
+--     in the privacy policy. Current behaviour is immediate and irreversible.
+--
+--   * Deletion audit log. Retaining a record that an account was deleted (and
+--     when) helps demonstrate compliance. It must not store anything that
+--     re-identifies the person — a bare timestamp is safe, a user id hash is
+--     arguably still personal data.
+--
+--   * Legal hold. If an account is subject to a dispute or investigation,
+--     deletion should be blocked rather than silently completed. Not needed
+--     pre-launch; needed once there is money or moderation involved.
 
 -- ---------------------------------------------------------------------------
 -- 9. Verification

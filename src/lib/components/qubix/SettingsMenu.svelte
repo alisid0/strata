@@ -3,6 +3,7 @@
   import { textSize } from '../../stores/textSize.js';
   import { displayName, logOut } from '../../stores/auth.js';
   import IssueReportDialog from './IssueReportDialog.svelte';
+  import AccountDataDialog from './AccountDataDialog.svelte';
 
   export let open = false;
   export let onClose = () => {};
@@ -10,9 +11,19 @@
 
   const SIZE_LABEL = { s: 'Small', m: 'Default', l: 'Large', xl: 'X-Large' };
   let reportOpen = false;
+  let accountDataOpen = false;
 
   async function handleLogout() {
     try { await logOut(); } catch (_) {}
+    onClose();
+    onNavigate('auth');
+  }
+
+  // The Edge Function signs the user out once the account is gone; clear local
+  // state and send them back to the auth screen.
+  function handleDeleted() {
+    accountDataOpen = false;
+    try { localStorage.clear(); } catch (_) {}
     onClose();
     onNavigate('auth');
   }
@@ -48,12 +59,18 @@
       <a class="row link" href="/terms.html" target="_blank" rel="noopener">Terms and Conditions<span class="chev">›</span></a>
       <a class="row link" href="/privacy.html" target="_blank" rel="noopener">Privacy Policy<span class="chev">›</span></a>
       <button class="row link" on:click={() => reportOpen = true}>Report a problem<span class="chev">›</span></button>
+      <button class="row link" on:click={() => accountDataOpen = true}>Your data<span class="chev">›</span></button>
       <button class="row link danger" on:click={handleLogout}>Log out</button>
 
       <div class="version">Qubix</div>
     </div>
   </div>
   <IssueReportDialog open={reportOpen} onClose={() => reportOpen = false} />
+  <AccountDataDialog
+    open={accountDataOpen}
+    onClose={() => accountDataOpen = false}
+    onDeleted={handleDeleted}
+  />
 {/if}
 
 <style>
