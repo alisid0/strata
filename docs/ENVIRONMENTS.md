@@ -21,12 +21,20 @@ Current public URLs:
 - Production: `https://strata-nine-pi.vercel.app`
 - Staging: `https://qubix-staging.vercel.app`
 
+Current Supabase projects:
+
+- Production: `Qubix Production` (`wmetdmfsniqrshuaoodc`), London (`eu-west-2`)
+- Staging: `Qubix Staging` (`atmmfkhjsdqqwnhqifxm`)
+- Retired legacy production ref: `xzesbcrlnbesmvxmgotp`; do not use it in
+  application configuration, migrations, media URLs, or tests.
+
 Staging builds display a yellow environment badge. The build also refuses to
 run if its Supabase URL matches the production URL.
 
 ## One-time Supabase setup
 
-1. Create a second Supabase project named `qubix-staging` (or similar).
+1. Use the two projects listed above; do not create another environment unless
+   the environment map and this document are updated in the same change.
 2. Run `supabase/schema.sql` in its SQL editor, followed by the files in
    `supabase/migrations/` in numeric order. Use `supabase/seed.sql` only for
    disposable sample data.
@@ -89,8 +97,24 @@ manual through `pnpm run deploy`.
 4. Merge the approved change into `main`.
 5. Deploy production and run a short smoke test.
 
-Public media assets may still be read from the production Storage CDN. Staging
-authentication, profiles, progress and other database writes remain isolated.
+Runtime media is bundled under `public/`; no app media may depend on the retired
+legacy Supabase project. Staging authentication, profiles, progress and other
+database writes remain isolated.
+
+## Production backend baseline (2026-07-21)
+
+The clean production project has schema/RLS migrations through
+`0005_launch_hardening.sql` plus `0007_explicit_api_grants.sql`. Migration 0006
+was an incremental repair for databases that had the earlier 0005 and is not
+part of a fresh bootstrap. The `delete-account` Edge Function is deployed and
+validates the bearer token itself before using server-only privileges.
+
+The production `cards` table contains 1,145 reviewed public rows. Only public
+catalogue content was migrated from the retired project; users, identities,
+progress, sessions, reports, and screenshots were deliberately not copied.
+Production Authentication has Site URL and redirect allowlisting set to
+`https://strata-nine-pi.vercel.app`. Production SMTP and Google OAuth remain
+separate launch checks and must not be assumed configured.
 
 ## Refreshing public content in staging
 

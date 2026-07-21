@@ -127,7 +127,7 @@ difference is entirely environment variables plus a few build-time guards.
 |---|---|---|
 | URL | `strata-nine-pi.vercel.app` (current; custom domain planned) | `qubix-staging.vercel.app` |
 | Vite mode | `production` | `staging` |
-| Supabase project | Production | `Qubix Staging` (`atmmfkhjsdqqwnhqifxm`) |
+| Supabase project | `Qubix Production` (`wmetdmfsniqrshuaoodc`) | `Qubix Staging` (`atmmfkhjsdqqwnhqifxm`) |
 | Users & progress | Real | Isolated test accounts only |
 | Service worker | On | **Off** |
 | Analytics | On | Off |
@@ -163,7 +163,9 @@ snapshot — 1,145 production cards as of 2026-07-18 — refreshed manually via
 `pnpm run content:export-staging-sql`. Staging content drifts from production
 between refreshes. Staging is not a preview of live content.
 
-**Media may come from production.** Public assets can still be read from the
+**Media ships with the app.** Runtime assets must not be read from the retired
+legacy Supabase project. Public assets can be bundled under `public/` or, after
+an explicit storage review, read from the current production project.
 production Storage CDN. Only database writes are isolated.
 
 ---

@@ -30,6 +30,9 @@ Then read:
 - Public code branch: `main`.
 - Public production URL: `https://strata-nine-pi.vercel.app` until the planned
   domain migration is complete.
+- Production Supabase: `Qubix Production`, ref `wmetdmfsniqrshuaoodc`, London.
+  This is the only production database authority. The legacy project ref
+  `xzesbcrlnbesmvxmgotp` is retired and must not be restored in runtime config.
 - Staging URL: `https://qubix-staging.vercel.app`.
 - Staging Supabase project ref: `atmmfkhjsdqqwnhqifxm`.
 - Staging uses isolated auth and user data. Never copy production users,
@@ -38,6 +41,9 @@ Then read:
   release-process improvement.
 - Production deploy is manual. Pushing Git does not update the public app.
 - Dynamic Supabase BB content is independent of Git and Vercel deployment.
+- Production was rebuilt cleanly on 2026-07-21 with the reviewed schema,
+  explicit API grants, account-deletion Edge Function, and 1,145 public cards.
+  No legacy users or private learning data were migrated.
 
 Never commit `.env.staging.local`, Supabase service-role keys, Vercel tokens, or
 other secrets. `VITE_*` values are public client configuration and must never

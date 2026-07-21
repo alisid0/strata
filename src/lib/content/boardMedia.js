@@ -102,9 +102,9 @@ export const BOARD_MEDIA = {
   },
 
   // ── Maths · Coordinate geometry ──
-  // Manim GIFs on Supabase. Rendered with STRATA_THEME=light.
-  1035: { 0: { type: 'img', src: 'https://xzesbcrlnbesmvxmgotp.supabase.co/storage/v1/object/public/card-audio/bb-1035-number-line.gif' } },
-  1036: { 0: { type: 'img', src: 'https://xzesbcrlnbesmvxmgotp.supabase.co/storage/v1/object/public/card-audio/bb-1036-second-axis.gif' } },
+  // Manim GIFs bundled with the app. Rendered with STRATA_THEME=light.
+  1035: { 0: { type: 'img', src: '/media/board-gifs/bb-1035-number-line.gif' } },
+  1036: { 0: { type: 'img', src: '/media/board-gifs/bb-1036-second-axis.gif' } },
   // 1038 "Every point has an address" — interactive coordinate plane (SVG, themed).
   1038: { 0: { type: 'coord-plane', spec: {
     xRange: [0, 6], yRange: [0, 2.5],

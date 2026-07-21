@@ -1,6 +1,6 @@
 # Qubix launch handover
 
-Last updated: 2026-07-18
+Last updated: 2026-07-21
 
 This is the current technical handover for taking Qubix from staging to an
 Android closed beta and then a public release. Read `AGENTS.md` and
@@ -17,6 +17,12 @@ work is tracked separately in `docs/MARKETING-SETUP.md`.
 - The isolated test application is live at `https://qubix-staging.vercel.app`.
 - Staging uses the Supabase project `Qubix Staging`, ref
   `atmmfkhjsdqqwnhqifxm`, and must never receive production user data.
+- Production uses `Qubix Production`, ref `wmetdmfsniqrshuaoodc`, in London.
+  It was clean-bootstrapped on 2026-07-21 with reviewed RLS/API grants, the
+  account-deletion function, and 1,145 public cards. No legacy users or private
+  learner data were copied.
+- The legacy production ref `xzesbcrlnbesmvxmgotp` is retired and is not a
+  runtime or content authority.
 - Production deployment remains manual through `pnpm run deploy`.
 - `qubix.arcavetech.co.uk` is currently attached to the staging Vercel project.
   Move it to the dedicated production project before making it public.
@@ -88,15 +94,17 @@ Before public launch:
 
 1. Configure production SMTP/transactional email in Supabase.
 2. Configure and verify Google OAuth for production and staging.
-3. Set the final Site URL and redirect allowlists in both Supabase projects.
+3. Production Site URL and redirect allowlisting are set to
+   `https://strata-nine-pi.vercel.app`; re-check staging separately whenever its
+   URL changes.
 4. Test sign-up, email confirmation, login, logout, password recovery, expired
    links, and Google OAuth end to end on web and Android.
 5. Audit Row Level Security for every user-data table.
-6. Add an in-app full account deletion flow. The existing
-   `delete_my_user_data()` database function removes learning data but does not
-   remove the Supabase Auth identity. Full deletion requires a secure
-   server-side function using a service-role key after explicit confirmation.
-7. Add a user data export or documented data-request route before wide release.
+6. The in-app full account deletion flow and server-side `delete-account` Edge
+   Function are implemented. Run the destructive lifecycle test against
+   staging after any auth, storage, RLS, or function change.
+7. The authenticated user-data export RPC is implemented; verify its output as
+   part of launch QA.
 
 No separate authentication platform is required for the initial launch.
 Supabase Auth is the selected service. Qubix login should remain email/password

@@ -25,6 +25,11 @@ function sqlJson(value) {
   return value == null ? 'null' : `${sqlText(JSON.stringify(value))}::jsonb`;
 }
 
+function csvCell(value) {
+  if (value == null) return '';
+  return `"${String(value).replaceAll('"', '""')}"`;
+}
+
 const env = parseEnv(await readFile(resolve(root, '.env.production'), 'utf8'));
 const url = env.VITE_SUPABASE_URL;
 const key = env.VITE_SUPABASE_ANON_KEY;
@@ -47,6 +52,23 @@ for (let offset = 0; ; offset += 1000) {
 }
 
 await mkdir(outputDir, { recursive: true });
+const csvColumns = ['sort_order', 'act', 'kicker', 'title', 'layers', 'img_url', 'tags', 'bbid'];
+const csvRows = cards.map(card => [
+  card.sort_order,
+  card.act,
+  card.kicker,
+  card.title,
+  JSON.stringify(card.layers),
+  card.img_url,
+  JSON.stringify(card.tags),
+  card.sort_order
+].map(csvCell).join(','));
+await writeFile(
+  resolve(outputDir, 'cards.csv'),
+  `${csvColumns.join(',')}\n${csvRows.join('\n')}\n`,
+  'utf8'
+);
+
 const chunkSize = 75;
 for (let offset = 0; offset < cards.length; offset += chunkSize) {
   const chunk = cards.slice(offset, offset + chunkSize);
@@ -83,5 +105,4 @@ from public.cards;
 `, 'utf8');
 
 console.log(`Exported ${cards.length} public cards in ${Math.ceil(cards.length / chunkSize)} chunks.`);
-console.log(`Review the generated SQL in ${outputDir}`);
-
+console.log(`Review the generated SQL and cards.csv in ${outputDir}`);
