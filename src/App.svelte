@@ -29,6 +29,7 @@
   let currentView = 'loading';
   let currentPathId = '';
   let workshopTarget = null; // module id the workshop tab should open directly
+  let pathFocusSubject = null; // gateway id to scroll to when Path opens from a Home door
   let readerNumbers = [];
   let readerStart = 1;
   let authInitialMode = 'welcome';
@@ -135,6 +136,7 @@
     }
 
     if (view === 'topicDetail') { currentPathId = arg; currentView = 'topicDetail'; }
+    else if (view === 'path') { pathFocusSubject = arg || null; currentView = 'path'; }
     else if (view === 'workshop') { workshopTarget = arg || null; currentView = 'workshop'; }
     else if (view === 'reader') {
       readerNumbers = arg?.numbers || Array.from({ length: 84 }, (_, i) => i + 1);
@@ -176,7 +178,7 @@
         {#if currentView === 'home'}
           <Home onNavigate={navigate} />
         {:else if currentView === 'path'}
-          <Path onNavigate={navigate} />
+          <Path onNavigate={navigate} focusSubject={pathFocusSubject} />
         {:else if currentView === 'workshop'}
           <WorkshopLab onNavigate={navigate} openTarget={workshopTarget} />
         {:else if currentView === 'wscore'}

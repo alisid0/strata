@@ -2,10 +2,22 @@
   // Path tab — the four gateways (Line / Atom / Bit / Unit), each with its
   // covered (live) topics and greyed future topics from ROADMAP. Replaces the
   // old flat Topics browser (blueprint §5.4).
+  import { onMount } from 'svelte';
   import { PATHS, PATH_GROUPS, ROADMAP } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
 
   export let onNavigate;
+  export let focusSubject = null; // gateway id to scroll into view on open (from a Home door)
+
+  // When opened for a specific subject, land on that subject's section rather
+  // than the top of the stacked list. Two frames let the view transition settle
+  // first so the target lands at the top of the scroll area.
+  onMount(() => {
+    if (!focusSubject) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.getElementById(`gw-${focusSubject}`)?.scrollIntoView({ block: 'start' });
+    }));
+  });
 
   const GATEWAY_META = {
     line: { icon: '/icons/gateways/line.png', tagline: 'Space & abstraction' },
@@ -37,7 +49,7 @@
   </div>
 
   {#each gateways as g (g.gid)}
-    <section class="gateway-block">
+    <section class="gateway-block" id={`gw-${g.gid}`}>
       <div class="gw-head">
         <img class="gw-icon" src={g.icon} alt={g.name} />
         <div class="gw-info">

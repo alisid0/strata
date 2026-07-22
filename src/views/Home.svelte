@@ -92,8 +92,9 @@
   }));
 
   function openDoor(door) {
-    if (door.read > 0) onNavigate?.('path');
-    else onNavigate?.('topicDetail', door.firstTopic);
+    // Always land on the Path page focused on the chosen subject's section,
+    // rather than the top of the stacked list.
+    onNavigate?.('path', door.gid);
   }
 </script>
 
