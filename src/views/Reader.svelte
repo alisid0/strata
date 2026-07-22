@@ -4,6 +4,10 @@
   import { cubicOut } from 'svelte/easing';
   import { getBoard, fetchSnippets } from '../lib/content/dynamicBoards.js';
   import { formatMath } from '../lib/content/mathFormat.js';
+  // F-01: board HTML comes from Supabase and is rendered raw. Sanitise LAST,
+  // after formatMath, since formatMath emits markup of its own and passes
+  // untrusted markup through by design.
+  import { sanitizeBoardHtml } from '../lib/content/sanitizeHtml.js';
   import { pathsForCard } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { getVideoForCard, getDiagramForCard } from '../lib/content/media.js';
@@ -553,7 +557,7 @@
                         <button class="audio-btn" disabled title="Audio coming soon"><QxIcon name="volume" size={14} /></button>
                       {/if}
                     </div>
-                    <div class="floor-text">{@html formatMath(floorBodyHTML(i, d))}</div>
+                    <div class="floor-text">{@html sanitizeBoardHtml(formatMath(floorBodyHTML(i, d)))}</div>
                     {#if media}
                       <div class="floor-media" class:interactive={media.type !== 'img'}>
                         {#if media.type === 'img'}
@@ -617,7 +621,7 @@
           <div class="snippet-item" class:divided={si > 0}>
             <div class="snippet-overlay-kicker">{s.kicker}</div>
             <div class="snippet-overlay-title">{s.title}</div>
-            <div class="snippet-overlay-body">{@html s.layers?.[0] || ''}</div>
+            <div class="snippet-overlay-body">{@html sanitizeBoardHtml(s.layers?.[0] || '')}</div>
           </div>
         {/each}
       </div>

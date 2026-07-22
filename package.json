@@ -9,6 +9,7 @@
     "build": "node scripts/build-app.mjs",
     "build:production": "node scripts/build-app.mjs production",
     "build:staging": "node scripts/build-app.mjs staging",
+    "test:security": "node scripts/test-sanitize-html.mjs",
     "content:export-staging-sql": "node scripts/export-staging-content-sql.mjs",
     "audit:live-catalogue": "node scripts/export-live-path-catalogue.mjs",
     "audit:live-media": "node scripts/export-live-path-catalogue.mjs && node scripts/build-gif-eligibility-audit.mjs",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "jsdom": "^26.1.0",
     "nodemailer": "^9.0.3",
     "playwright": "^1.61.1",
     "sharp": "^0.35.3",

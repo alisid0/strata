@@ -3,6 +3,8 @@
   import { fly } from 'svelte/transition';
   import { DECK } from '../lib/content/deck.js';
   import { fetchSnippets } from '../lib/content/dynamicBoards.js';
+  // F-01: snippet bodies come from Supabase and are rendered raw.
+  import { sanitizeBoardHtml } from '../lib/content/sanitizeHtml.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
   export const onNavigate = undefined;
@@ -156,7 +158,7 @@
       </div>
       <div class="card-body">
         {#if current.layers?.[0]}
-          {@html current.layers[0]}
+          {@html sanitizeBoardHtml(current.layers[0])}
         {/if}
       </div>
       <div class="card-actions">
