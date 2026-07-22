@@ -1,7 +1,11 @@
 # Production SMTP and Google OAuth runbook
 
-Last updated: 2026-07-21
-Status: **not yet performed** — both remain unverified in production.
+Last updated: 2026-07-22
+Status: **COMPLETE (2026-07-22).** Production SMTP is configured and email
+delivery is confirmed. Google OAuth is configured and sign-in tested end to end.
+Obsolete credentials from the setup were revoked. This document is retained as
+the record of how it was configured and how to reproduce or re-verify it — the
+verification checklists below now read as regression checks, not open work.
 
 Configuration steps for production transactional email and Google sign-in.
 Everything here is dashboard and console work; nothing in this file is applied

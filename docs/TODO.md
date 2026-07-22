@@ -49,10 +49,11 @@ strata-nine-pi.vercel.app.
 - Production/staging code separation is implemented. Before using the test app,
   create the staging Supabase project and add its public URL/anon key to Vercel
   Preview variables; follow `docs/ENVIRONMENTS.md`.
-- Supabase Auth dashboard: enable email signup + confirm-email/SMTP; add the prod
-  URL to Site URL + redirect allowlist; verify Google provider. Phone OTP is
-  hidden by default; configure an SMS provider, then set
-  `VITE_ENABLE_PHONE_AUTH=true` to expose it.
+- DONE (2026-07-22): Supabase Auth email signup + confirm-email/SMTP configured
+  and delivery confirmed; prod URL set in Site URL + redirect allowlist; Google
+  provider configured and sign-in tested end to end; obsolete credentials
+  revoked. Phone OTP remains hidden by default; to expose it later, configure an
+  SMS provider, then set `VITE_ENABLE_PHONE_AUTH=true`.
 - Then the one switch: remove the `BASIC_AUTH_PASSWORD` Vercel env var → public +
   indexable (SEO pages/sitemap/splash are already ready).
 

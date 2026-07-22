@@ -113,8 +113,9 @@ The production `cards` table contains 1,145 reviewed public rows. Only public
 catalogue content was migrated from the retired project; users, identities,
 progress, sessions, reports, and screenshots were deliberately not copied.
 Production Authentication has Site URL and redirect allowlisting set to
-`https://strata-nine-pi.vercel.app`. Production SMTP and Google OAuth remain
-separate launch checks and must not be assumed configured.
+`https://strata-nine-pi.vercel.app`. Production SMTP is configured and email
+delivery is confirmed; Google OAuth is configured and sign-in tested end to end.
+Obsolete credentials from the setup were revoked. (Verified 2026-07-22.)
 
 ## Refreshing public content in staging
 
