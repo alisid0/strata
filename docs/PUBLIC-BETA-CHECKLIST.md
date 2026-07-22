@@ -57,10 +57,10 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 | Status | Item | Evidence |
 |---|---|---|
 | ✅ | Sanitiser unit/adversarial suite (47 cases) | `test-sanitize-html.mjs`, run green |
-| 🟡 | RLS isolation test (7 tables) on the release line | ported to `origin/staging` `dd76d84` — not yet executed against staging by me |
+| 🟡 | RLS isolation test (7 tables) on the release line | fail-closed staging guard hardened; not yet executed against staging |
 | 🟡 | User-data lifecycle test (F-03–F-07, storage) | on `main`; guards verified, not yet run against staging by me |
 | ⬜ | Both DB tests executed green against staging | needs `SUPABASE_SERVICE_ROLE_KEY` in-shell |
-| ⬜ | RLS isolation test guard hardened (see Risks) | Codex's file; flagged, not rewritten |
+| ✅ | RLS isolation test guard hardened | explicit `--staging`, production rejection, exact staging-host match, guarded dynamic import |
 
 ## 5. Legal & trust
 
@@ -121,10 +121,6 @@ be settled before *wide* launch but do not block a closed beta on the current
 ## Open risks carried into beta
 
 - **CSP is report-only.** F-02 is latent, not active, until the enforce flip.
-- **RLS isolation test guard is weak.** It keys on `SUPABASE_URL_LABEL`, a no-op
-  when unset, and imports Supabase before the guard runs. An unlabelled
-  `SUPABASE_URL` pointed at production would not be refused. Harden it against
-  the four-gate pattern in `test-user-data-lifecycle.mjs` before anyone runs it.
 - **Neither DB test has been executed against staging in this workstream** — I
   have no `SUPABASE_SERVICE_ROLE_KEY`. Guards and syntax are verified; live runs
   are not.

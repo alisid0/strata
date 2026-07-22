@@ -8,14 +8,15 @@
 // self-scoped. Cleans up both accounts at the end.
 //
 // Run against STAGING first (after migrations 0004 + 0005 are applied):
-//   node --env-file=.env.staging.local scripts/test-rls-isolation.mjs
-// Then repeat against production before launch. Exits non-zero on any failure.
+//   node --env-file=.env.staging.local scripts/test-rls-isolation.mjs --staging
+// This destructive test is staging-only. Exits non-zero on any failure.
 //
 // Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (setup/teardown + neutral
 // verification only — never used for the RLS assertions themselves), and
 // SUPABASE_ANON_KEY (the key real clients hold). VITE_-prefixed variants are
-// accepted as fallbacks.
-import { createClient } from '@supabase/supabase-js';
+// accepted as fallbacks. Optional: QUBIX_STAGING_HOST to pin the expected
+// staging host independently of the loaded env file.
+import { readFileSync } from 'node:fs';
 
 const URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -23,13 +24,82 @@ const ANON = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
 
 if (!URL || !SERVICE || !ANON) {
   console.error('Missing env. Need SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY.');
-  console.error('Run with: node --env-file=.env.staging.local scripts/test-rls-isolation.mjs');
+  console.error('Run with: node --env-file=.env.staging.local scripts/test-rls-isolation.mjs --staging');
   process.exit(2);
 }
 
-// Guard: refuse to touch a project that looks like production unless forced.
-if (/prod/i.test(process.env.SUPABASE_URL_LABEL || '') && !process.env.RLS_ALLOW_PROD) {
-  console.error('Refusing to run against a production-labelled project without RLS_ALLOW_PROD=1.');
+// This script creates and deletes accounts. Fail closed unless all four gates
+// pass: explicit staging intent, a parseable target, target != production, and
+// target == the configured staging host. RLS_ALLOW_PROD is deliberately not
+// supported; production isolation must be verified with non-destructive checks.
+const normaliseHost = (value) => {
+  const cleaned = String(value ?? '').replace(/[\r\n]/g, '').trim().replace(/^['"]|['"]$/g, '');
+  if (!cleaned) return '';
+  try {
+    return new globalThis.URL(cleaned).host.toLowerCase();
+  } catch (_) {
+    try {
+      return new globalThis.URL(`https://${cleaned}`).host.toLowerCase();
+    } catch (_) {
+      return '';
+    }
+  }
+};
+
+function readEnvValue(file, key) {
+  try {
+    const contents = readFileSync(new globalThis.URL(file, import.meta.url), 'utf8');
+    const line = contents.split(/\r?\n/).find((entry) => entry.startsWith(`${key}=`));
+    return line ? line.slice(key.length + 1) : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+if (!process.argv.includes('--staging')) {
+  console.error('Refusing to run without an explicit --staging flag.');
+  console.error('This script creates and deletes accounts. It must never target production.');
+  process.exit(2);
+}
+
+const targetHost = normaliseHost(URL);
+if (!targetHost) {
+  console.error('Refusing to run: could not parse a hostname from SUPABASE_URL.');
+  process.exit(2);
+}
+
+const productionRaw = readEnvValue('../.env.production', 'VITE_SUPABASE_URL');
+if (!productionRaw) {
+  console.error('Refusing to run: could not read VITE_SUPABASE_URL from .env.production.');
+  process.exit(2);
+}
+if (targetHost === normaliseHost(productionRaw)) {
+  console.error('REFUSING TO RUN: target matches the production Supabase host.');
+  console.error(`  target: ${targetHost}`);
+  process.exit(2);
+}
+
+const stagingRaw =
+  process.env.QUBIX_STAGING_HOST || readEnvValue('../.env.staging.local', 'VITE_SUPABASE_URL');
+if (!stagingRaw) {
+  console.error('Refusing to run: no expected staging host available.');
+  console.error('Set QUBIX_STAGING_HOST, or provide .env.staging.local with VITE_SUPABASE_URL.');
+  process.exit(2);
+}
+const stagingHost = normaliseHost(stagingRaw);
+if (!stagingHost || targetHost !== stagingHost) {
+  console.error('REFUSING TO RUN: target is not the configured staging host.');
+  console.error(`  target:   ${targetHost}`);
+  console.error(`  expected: ${stagingHost || '(invalid)'}`);
+  process.exit(2);
+}
+
+let createClient;
+try {
+  ({ createClient } = await import('@supabase/supabase-js'));
+} catch (e) {
+  console.error('Could not load @supabase/supabase-js. Run `pnpm install` first.');
+  console.error(e.message);
   process.exit(2);
 }
 
