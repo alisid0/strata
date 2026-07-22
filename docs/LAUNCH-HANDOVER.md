@@ -12,6 +12,14 @@ work is tracked separately in `docs/MARKETING-SETUP.md`.
 
 ## Executive state
 
+> **Status reconciliation (2026-07-22).** Since this section was first written,
+> production was clean-bootstrapped, account deletion/export shipped and were
+> verified through the app, production SMTP and Google OAuth were configured and
+> verified, legal pages were corrected, and the F-01 XSS sanitiser plus F-02
+> security headers were written and staged. The single-page authoritative view
+> of what remains is `docs/PUBLIC-BETA-CHECKLIST.md`. Where older prose below
+> conflicts with that checklist, the checklist wins.
+
 - The application is a Vite/Svelte PWA backed by Supabase.
 - GitHub `main` is the production source branch.
 - The isolated test application is live at `https://qubix-staging.vercel.app`.
@@ -204,17 +212,34 @@ release.
 
 ## Ordered next actions
 
+Reconciled 2026-07-22. Items struck through are complete; see
+`docs/PUBLIC-BETA-CHECKLIST.md` for the authoritative live status of every gate.
+
 1. Download the paid Companies House certificate and submit the original,
-   unedited document for Play Console identity verification.
-2. Create the permanent `staging` branch and point staging Vercel at it.
-3. Configure production SMTP and Google OAuth in Supabase.
-4. Implement full account deletion.
-5. Replace legal-page contact placeholders.
-6. Decide whether launch content requires KaTeX and implement it if needed.
-7. Finalise the production Vercel project and move the custom domain.
-8. Create the Android Trusted Web Activity and signed `.aab`.
-9. Run authentication, progress, workshop, device, and security QA on staging.
-10. Upload to Play Console internal testing, fix findings, then begin a closed
+   unedited document for Play Console identity verification. **(In progress —
+   certificate ordered; the one external, long-lead dependency.)**
+2. ~~Create the permanent `staging` branch and point staging Vercel at it.~~
+   Branch exists (`origin/staging`). Confirm the `qubix-staging` Vercel project
+   follows it rather than `main`.
+3. ~~Configure production SMTP and Google OAuth in Supabase.~~ Done and verified
+   2026-07-22 — SMTP delivery confirmed, Google sign-in tested end to end,
+   obsolete credentials revoked.
+4. ~~Implement full account deletion.~~ Done — `delete-account` Edge Function
+   plus `delete_my_user_data()`/`export_my_user_data()`, applied to production,
+   verified through the app.
+5. ~~Replace legal-page contact placeholders.~~ Done — `admin@arcavetech.co.uk`
+   on privacy and terms; privacy policy rewritten to match actual processing.
+6. Merge `origin/staging` into `main` and deploy: this carries the F-01 HTML
+   sanitiser and the F-02 security headers (CSP report-only) to production.
+7. Stand up the CSP reporting endpoint (`docs/engineering/CSP-REPORTING.md`),
+   observe for 1–2 weeks, then flip the CSP from report-only to enforcing.
+8. Decide whether launch content requires KaTeX and implement it if needed.
+9. Finalise the production Vercel project and move `qubix.arcavetech.co.uk` to
+   it; update the auth Site URL to match.
+10. Create the Android Trusted Web Activity and signed `.aab`.
+11. Run authentication, progress, workshop, device, and security QA on staging,
+    including the two data-security test scripts.
+12. Upload to Play Console internal testing, fix findings, then begin a closed
     beta.
 
 ## Not launch blockers for internal testing
