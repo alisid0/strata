@@ -51,8 +51,19 @@ def main():
     meta.keywords = PDF_METADATA["keywords"]
     meta.generator = "WeasyPrint via docs/build-admin-guide.py"
 
-    doc.write_pdf(OUT)
-    print(f"Wrote {OUT} ({len(doc.pages)} pages)")
+    # Accessibility: request PDF/UA-1, which produces a tagged (accessible) PDF
+    # with a document structure tree. WeasyPrint 69 supports this via
+    # pdf_variant. If the installed version does not, fall back to an untagged
+    # PDF and report it, rather than failing the build.
+    try:
+        doc.write_pdf(OUT, pdf_variant="pdf/ua-1")
+        tagged = True
+    except TypeError:
+        doc.write_pdf(OUT)
+        tagged = False
+
+    print(f"Wrote {OUT} ({len(doc.pages)} pages; "
+          f"{'PDF/UA tagged' if tagged else 'untagged — PDF/UA unsupported by this WeasyPrint'})")
 
 
 if __name__ == "__main__":

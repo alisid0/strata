@@ -114,11 +114,11 @@
   <tr><td>Document owner</td><td>Ali (founder / primary operator) <span class="lbl v-app">REQUIRES APPROVAL</span> to change ownership</td></tr>
   <tr><td>Authoring / technical reviewer</td><td>Claude (drafting) &amp; Codex (cross-review), under Ali's direction</td></tr>
   <tr><td>Last code verification</td><td>2026-07-22, against <span class="mono">origin/main = origin/staging = 2f3238f</span></td></tr>
-  <tr><td>Last live verification</td><td>2026-07-22 — homepage &amp; legal pages HTTP 200; security headers confirmed by Ali post-deploy</td></tr>
+  <tr><td>Last live verification</td><td>2026-07-22 — homepage &amp; legal pages HTTP 200; security headers verified post-deploy by Codex under Ali's authorisation</td></tr>
   <tr><td>Production commit / deploy</td><td><span class="mono">2f3238f</span> / Vercel <span class="mono">dpl_84E64sJmRPzABzm9LpDDPg1Tp8rq</span></td></tr>
   <tr><td>Next review due</td><td>On the next production deploy, or 2026-10-22, whichever is first</td></tr>
 </table>
-<p class="small"><b>Revision history.</b> v1.0 (2026-07-22) — first 14-page guide. v2.0 (2026-07-22) — operator-grade rewrite: corrected release/DB/server facts, added full schema/API appendix, disaster recovery, 12 incident playbooks, secret-rotation, CSP completion, support/privacy workflows, one-page emergency card, verification labels.</p>
+<p class="small"><b>Revision history.</b> v1.0 (2026-07-22) — first 14-page guide. v2.0 (2026-07-22) — operator-grade rewrite: corrected release/DB/server facts, added full schema/API appendix, disaster recovery, 12 incident playbooks, secret-rotation, CSP completion, support/privacy workflows, one-page emergency card, verification labels. v2.1 (2026-07-22) — Codex cross-review corrections: split fresh-bootstrap from the 0006 repair (0006 not applied to a fresh DB); PowerShell-first destructive-test commands; corrected live-verification attribution (Codex under Ali's authorisation); removed unverified provider-plan backup claims; PDF/UA tagging where supported.</p>
 
 <h3>Precedence of sources</h3>
 <p>When two sources disagree, trust them in this order. The running system always wins.</p>
@@ -260,19 +260,25 @@
 </table>
 
 <h3>Migration &amp; bootstrap order <span class="lbl v-ver">VERIFIED</span></h3>
-<p>To rebuild a Supabase project from scratch, run in this order in the SQL editor. Distinguish the base bootstrap from incremental repairs.</p>
+<p>Two distinct sequences. Per <code>docs/ENVIRONMENTS.md</code>, a fresh clean bootstrap is <b>schema → 0002 → 0003 → 0004 → 0005 → 0007</b> (plus the Edge Function). <b>0006 is NOT part of a fresh bootstrap</b> — it is an incremental repair for a database that already had the earlier broken 0005.</p>
+<h4>Fresh bootstrap (rebuild from scratch)</h4>
 <table>
   <tr><th>Step</th><th>File</th><th>Role</th></tr>
-  <tr><td>1</td><td><code>supabase/schema.sql</code></td><td>Base bootstrap: cards, legacy progress, first policies, set_updated_at</td></tr>
-  <tr><td>2</td><td><code>0002_storage_buckets.sql</code></td><td>Bootstrap: the 3 buckets</td></tr>
-  <tr><td>3</td><td><code>0003_bbid.sql</code></td><td>Incremental</td></tr>
-  <tr><td>4</td><td><code>0004_secure_user_data.sql</code></td><td>Bootstrap of the user-data model: all user_* tables, RLS, profile trigger</td></tr>
-  <tr><td>5</td><td><code>0005_launch_hardening.sql</code></td><td>Repair: F-03,04,06,07,08,09; export fn</td></tr>
-  <tr><td>6</td><td><code>0006_delete_account_storage_fix.sql</code></td><td>Repair: screenshot deletion (F-05)</td></tr>
-  <tr><td>7</td><td><code>0007_explicit_api_grants.sql</code></td><td>Repair: explicit role grants; revoke default execute</td></tr>
-  <tr><td>8</td><td>deploy <code>delete-account</code> + set <code>SUPABASE_SERVICE_ROLE_KEY</code> secret</td><td>Edge Function</td></tr>
+  <tr><td>1</td><td><code>supabase/schema.sql</code></td><td>Base: cards, legacy progress, first policies, set_updated_at</td></tr>
+  <tr><td>2</td><td><code>0002_storage_buckets.sql</code></td><td>The 3 buckets</td></tr>
+  <tr><td>3</td><td><code>0003_bbid.sql</code></td><td>Board-id handling</td></tr>
+  <tr><td>4</td><td><code>0004_secure_user_data.sql</code></td><td>User-data model: all user_* tables, RLS, profile trigger</td></tr>
+  <tr><td>5</td><td><code>0005_launch_hardening.sql</code></td><td>F-03,04,06,07,08,09; export fn; defines <code>delete_my_user_data()</code></td></tr>
+  <tr><td>6</td><td><code>0007_explicit_api_grants.sql</code></td><td>Explicit role grants; revoke default execute</td></tr>
+  <tr><td>7</td><td>deploy <code>delete-account</code> Edge Fn + set its <code>SUPABASE_SERVICE_ROLE_KEY</code> secret</td><td>The Edge Function removes screenshots via the Storage API</td></tr>
 </table>
-<div class="callout"><p><span class="lbl v-ver">VERIFIED</span> from migration contents. <span class="lbl v-unv">UNVERIFIED</span> which exact steps were applied to the current production project vs done during its clean bootstrap — reconcile against the Supabase migration history in the dashboard before a from-scratch rebuild.</p></div>
+<div class="callout warn"><p><b>Do NOT apply <code>0006</code> on a fresh bootstrap.</b> On a clean build the corrected <code>delete_my_user_data()</code> is already in place from 0005 as combined with the Edge Function, and screenshot deletion is handled by the Edge Function — not by SQL. Applying 0006 to a fresh DB is unnecessary and misleading about where the fix lives.</p></div>
+<h4>Conditional upgrade / repair — earlier-0005 databases only</h4>
+<table>
+  <tr><th>File</th><th>When to apply</th></tr>
+  <tr><td><code>0006_delete_account_storage_fix.sql</code></td><td><b>Only</b> to a database that had the earlier 0005 whose <code>delete_my_user_data()</code> tried to delete from <code>storage.objects</code> directly (which Supabase rejects). It replaces that function with the corrected version. Not needed on a fresh bootstrap.</td></tr>
+</table>
+<div class="callout"><p><span class="lbl v-ver">VERIFIED</span> against migration contents and <code>docs/ENVIRONMENTS.md</code>. Before any from-scratch rebuild, reconcile against the Supabase project's actual migration history in the dashboard.</p></div>
 
 <!-- ============================ C ============================ -->
 <h2>C · Normal release runbook</h2>
@@ -315,7 +321,7 @@ pnpm run deploy                 # manual — this changes the live site
   <tr><td>Console / network</td><td>No severe errors, no failed requests</td></tr>
   <tr><td>Security headers</td><td>See below</td></tr>
 </table>
-<p><b>Expected headers now</b> <span class="lbl v-ver">VERIFIED by Ali post-deploy 2026-07-22</span>: CSP <i>report-only</i> present; enforcing CSP <b>absent</b> (by design); HSTS; <code>X-Frame-Options: DENY</code>; <code>X-Content-Type-Options: nosniff</code>; <code>Referrer-Policy: strict-origin-when-cross-origin</code>.</p>
+<p><b>Expected headers now</b> <span class="lbl v-ver">verified post-deploy 2026-07-22 by Codex under Ali's authorisation</span>: CSP <i>report-only</i> present; enforcing CSP <b>absent</b> (by design); HSTS; <code>X-Frame-Options: DENY</code>; <code>X-Content-Type-Options: nosniff</code>; <code>Referrer-Policy: strict-origin-when-cross-origin</code>.</p>
 
 <h3>Go / No-Go</h3>
 <table>
@@ -344,9 +350,14 @@ pnpm run deploy                 # manual — this changes the live site
 </ol>
 
 <h3>Running the destructive staging tests safely</h3>
-<p>Both scripts create and delete accounts. They refuse anything but staging via a four-gate fail-closed guard.</p>
-<pre># provide the service-role key in-shell for the run only; never write it to a file
-export SUPABASE_SERVICE_ROLE_KEY='...staging service role...'
+<p>Both scripts create and delete accounts. They refuse anything but staging via a four-gate fail-closed guard. Provide the staging service-role key in-shell for the run only — <b>never</b> write it to a file or into this guide.</p>
+<h4>Windows PowerShell (Ali's environment)</h4>
+<pre>$env:SUPABASE_SERVICE_ROLE_KEY = '&lt;staging service role key&gt;'
+node --env-file=.env.staging.local scripts/test-rls-isolation.mjs --staging
+node --env-file=.env.staging.local scripts/test-user-data-lifecycle.mjs --staging
+Remove-Item Env:SUPABASE_SERVICE_ROLE_KEY</pre>
+<h4>Bash / macOS / Linux (equivalent)</h4>
+<pre>export SUPABASE_SERVICE_ROLE_KEY='&lt;staging service role key&gt;'
 node --env-file=.env.staging.local scripts/test-rls-isolation.mjs --staging
 node --env-file=.env.staging.local scripts/test-user-data-lifecycle.mjs --staging
 unset SUPABASE_SERVICE_ROLE_KEY</pre>
@@ -374,7 +385,7 @@ unset SUPABASE_SERVICE_ROLE_KEY</pre>
 <h3>Capability status by system</h3>
 <table>
   <tr><th>System</th><th>Capability</th><th>Status</th><th>Admin check / gap</th></tr>
-  <tr><td>Supabase Postgres</td><td>Automated backups / Point-in-Time Recovery</td><td><span class="lbl v-unv">UNVERIFIED</span></td><td>Dashboard → Database → Backups. Free tier ≈ daily, limited retention; PITR is a paid add-on. Confirm tier, retention window, and whether PITR is on.</td></tr>
+  <tr><td>Supabase Postgres</td><td>Automated backups / Point-in-Time Recovery</td><td><span class="lbl v-unv">UNVERIFIED</span></td><td>Dashboard → Database → Backups: record the plan, backup frequency, retention window, PITR availability/status, last successful backup, and the restore procedure. (Provider plan features change — do not assume; check and date the finding.)</td></tr>
   <tr><td>Supabase schema/functions/policies</td><td>Reproducible from Git migrations</td><td><span class="lbl v-ver">VERIFIED</span></td><td>Migrations 0002–0007 + schema.sql rebuild it</td></tr>
   <tr><td>Public catalogue (cards)</td><td>Exportable via script</td><td><span class="lbl v-ver">VERIFIED</span></td><td><code>content:export-staging-sql</code> / catalogue audit</td></tr>
   <tr><td>Storage objects</td><td>Backup</td><td><span class="lbl v-unv">UNVERIFIED</span></td><td>Not covered by DB backup. Decide: are card-images/audio reproducible from source, and are user screenshots worth backing up? (They are deletable personal data.)</td></tr>
