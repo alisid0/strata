@@ -14,27 +14,22 @@ Single source of truth for where this work stands. Supersedes earlier versions.
 | Production build | ✅ **passes** — I ran it |
 | Staging build | ✅ passes |
 | Automated playthrough test | ✅ passes, zero console errors |
-| Commit `1e05d61` on `claude/solve-first-port` | ✅ created locally |
-| **Pushed to GitHub** | ❌ **not yet — one click** |
-| Deployed | ❌ not yet, and correctly gated |
+| Merged to `staging` | ✅ fast-forward, no conflicts |
+| **Pushed to GitHub** | ✅ **done — `origin/staging` = `756739f`** |
+| Production deployed | 🔴 **not done, and production is currently broken** |
 
 ---
 
-## Step 1 · Publish the branch ← **you are here**
+## Step 1 · Push ✅ DONE
 
-The commit exists locally. GitHub Desktop is installed and the repo is added.
+`origin/staging` is at `756739f`. Verified against the remote tree: all five
+workshops, the registry, the topology/support components, the test suite, and
+the security work (`sanitizeHtml.js`, `environment.js`, `AccountDataDialog`,
+`IssueReportDialog`) are all present, and the Terms page carries the real
+contact email.
 
-In GitHub Desktop:
-
-1. Confirm the branch selector (top-left) reads **`claude/solve-first-port`**.
-2. Click **`Publish branch`** (top-right). If it says `Push origin`, that's the
-   same thing.
-
-Nothing is being committed — the commit is already made. This only uploads it.
-
-I cannot do this myself: GitHub Desktop's window renders as a blank rectangle to
-screen capture (an Electron/GPU quirk), so I can't see its buttons, and I won't
-click blind inside a git client.
+`qubix-staging` auto-deploys from GitHub, so `qubix.arcavetech.co.uk` should be
+picking this up on its own — a free preview of the whole change.
 
 ---
 

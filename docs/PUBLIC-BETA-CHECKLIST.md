@@ -46,10 +46,34 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 | ✅ | F-07 report details immutable after submit | `0005` |
 | ✅ | F-08 under-13 age band removed | `0005` + Onboarding |
 | ✅ | F-09 legacy tables retired | `0005` |
-| 🟡 | F-01 HTML sanitiser at all DB render sites | `origin/staging`, 47 tests pass — **not yet on main/prod** |
-| 🟡 | F-02 security headers (CSP report-only, HSTS, frame-deny, nosniff) | `origin/staging` — **not yet on main/prod** |
-| 🟡 | F-10 immutable asset caching | `origin/staging` — **not yet on main/prod** |
-| ⬜ | CSP reporting endpoint stood up | `api/csp-report.js` drafted dormant; `CSP-REPORTING.md` |
+| 🔴 | F-01 HTML sanitiser at all DB render sites | in `main`/`staging`, 47 tests pass. Deployed 2026-07-22 (`dpl_84E64sJmRPzABzm9LpDDPg1Tp8rq`) but **NOT live now** — see the regression note below |
+| 🔴 | F-02 security headers (CSP report-only, HSTS, frame-deny, nosniff, referrer) | same: shipped 2026-07-22, **not live now** |
+| 🔴 | F-10 immutable asset caching | same: shipped 2026-07-22, **not live now** |
+
+> ### 🔴 Production regression — detected 2026-07-25
+>
+> **Production is not serving the tracked repo's code.** A deploy was made from
+> the untracked parent `Strata` folder, which overwrote the 22 July release.
+>
+> Evidence: the live Terms page returns a literal
+> `<CONTACT_EMAIL_PLACEHOLDER>`. Every tracked branch — `main`, `staging`,
+> release `7678004` — contains the real address `admin@arcavetech.co.uk`.
+> Only the untracked `Strata` copy still has the placeholder. Therefore
+> live ≠ `main`.
+>
+> The `Strata` folder does not contain `sanitizeHtml.js`, `environment.js`,
+> `AccountDataDialog.svelte` or `IssueReportDialog.svelte`, so F-01, F-02 and
+> F-10 are almost certainly absent from the running build, along with account
+> deletion (a GDPR obligation) and issue reporting.
+>
+> **Fix:** deploy from `strata-github-live`, never the parent folder —
+> `pnpm run deploy`. Confirm by reloading `/terms.html`: the placeholder must be
+> gone. Then restore these three rows to ✅.
+>
+> Both `deploy.mjs` scripts have been corrected so this cannot recur: the legacy
+> copy is blocked from claiming the production alias, and the tracked deploy
+> builds production explicitly instead of inferring the mode.
+| ⬜ | CSP reporting endpoint stood up | `api/csp-report.js` shipped dormant; `CSP-REPORTING.md` |
 | ⬜ | CSP flipped report-only → enforcing after observation | after endpoint + 1–2 wk watch |
 
 ## 4. Tests
@@ -103,13 +127,17 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 
 Most items above are parallel. The chain that actually gates a closed beta:
 
-1. **Merge `origin/staging` → `main`, deploy.** Ships F-01/F-02/F-10 to
-   production. (Codex — client + docs only, no migration.)
+1. **Redeploy production from `strata-github-live`.** ← **now the top item.**
+   The 2026-07-22 merge and deploy did happen (`main` at `2f3238f`, deploy
+   `dpl_84E64sJmRPzABzm9LpDDPg1Tp8rq`), but a later deploy from the untracked
+   `Strata` folder overwrote it, so F-01/F-02/F-10 are no longer live. See the
+   regression note in section 3. `staging` is now at `756739f` and carries the
+   security work plus the Solve First workshops; deploying it closes both.
 2. **Stand up the CSP reporting endpoint, observe, then enforce.** Until the
    flip, the sanitiser is the only active XSS defence — acceptable for a closed
-   beta, not for a wide launch.
-3. **Execute both DB security tests against staging**, green. Harden the RLS
-   test's guard first (Risks).
+   beta, not for a wide launch. **This is now the top open security item.**
+3. **Execute both DB security tests against staging**, green. Guard is now
+   hardened; needs a service-role key in-shell.
 4. **Companies House → Play verification.** The long pole; everything Android is
    behind it. Already in motion.
 5. **TWA + signed `.aab` → Play internal testing → closed beta.**

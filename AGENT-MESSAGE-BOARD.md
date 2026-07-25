@@ -48,9 +48,17 @@ database migrations, expose secrets, or merge branches.
 - **Builds now verified.** `build-app.mjs production` and `staging` both pass
   (961 modules, 9 SEO pages). This closes the long-standing "no agent can build"
   gap recorded further down this board.
-- **Open work:** branch `claude/solve-first-port`, commit `1e05d61`, committed
-  locally and **not yet pushed** — pending one `Publish branch` click in GitHub
-  Desktop. Not merged, not deployed.
+- **Pushed 2026-07-25.** `origin/staging` = `756739f`, carrying the Solve First
+  port and the operational doc updates. Merged fast-forward, no conflicts.
+  Contents verified against the remote tree.
+- 🔴 **PRODUCTION REGRESSION, open.** Live production is serving a build from the
+  untracked parent `Strata` folder, not from git. The live Terms page returns a
+  literal `<CONTACT_EMAIL_PLACEHOLDER>`; every tracked branch has the real
+  address. `Strata` lacks `sanitizeHtml.js`, `environment.js`,
+  `AccountDataDialog` and `IssueReportDialog`, so F-01/F-02/F-10, account
+  deletion and issue reporting are almost certainly not live. The 2026-07-22
+  release was correct and has since been overwritten. Fix: `pnpm run deploy`
+  **from `strata-github-live`**. Details in `docs/PUBLIC-BETA-CHECKLIST.md`.
 - Current operational doc: `docs/ACTION-REQUIRED.md`. Review verdict:
   `docs/RELEASE-REVIEW.md`.
 - **Release hazard fixed:** both `deploy.mjs` scripts previously aliased the same
