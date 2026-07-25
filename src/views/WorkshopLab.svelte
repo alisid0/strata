@@ -58,6 +58,10 @@
     type: 'bondlab',
     prompt: 'Place atoms on the bench and form stable compounds by sharing or transferring electrons.'
   }];
+  const getEquationBalancerWorkshop = () => [{
+    type: 'equationbalancer',
+    prompt: 'Balance each equation: adjust the coefficients until every element matches on both sides.'
+  }];
   const COMPUTER_MODULE_PATHS = {
     'binary-data': 'BIT_001',
     'logic-gates': 'BIT_001',
@@ -219,6 +223,14 @@
           sub: 'Place atoms on the bench and form compounds by sharing or transferring electrons.',
           pathId: 'CHEM_STRUCTURE_REACTIONS',
           getWorkshop: getBondLabWorkshop
+        },
+        {
+          id: 'equation-balancer',
+          label: 'Balancer',
+          title: 'Equation Balancer',
+          sub: 'Adjust coefficients and watch each element balance on both sides, live.',
+          pathId: 'CHEM_STRUCTURE_REACTIONS',
+          getWorkshop: getEquationBalancerWorkshop
         },
         {
           id: 'chemistry-core',
