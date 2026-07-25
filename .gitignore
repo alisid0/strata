@@ -34,3 +34,4 @@ el-screenshot.png
 
 # Work mode (local state)
 .mode
+tests/solve-first/.out

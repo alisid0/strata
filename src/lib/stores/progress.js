@@ -51,6 +51,7 @@ function emptyState() {
     boards: {},
     paths: {},
     quizzes: {},
+    discoveries: {},
     activity: {},
     ws: { total: 0, events: [], granted: {}, week: { key: weekKey(), earned: 0 } },
     sync: { attempts: [] }
@@ -64,6 +65,9 @@ function normalizeState(data) {
   data.boards = data.boards || {};
   data.paths = data.paths || {};
   data.quizzes = data.quizzes || {};
+  // Solve First discovery records. Added defensively so saved progress from
+  // before the Solve First port loads unchanged.
+  data.discoveries = data.discoveries || {};
   data.activity = data.activity || {};
   data.ws = data.ws || fallback.ws;
   data.ws.total = data.ws.total || 0;
@@ -111,6 +115,7 @@ function hasProgress(data) {
     Object.keys(data.boards || {}).length ||
     Object.keys(data.paths || {}).length ||
     Object.keys(data.activity || {}).length ||
+    Object.keys(data.discoveries || {}).length ||
     (data.ws?.events || []).length ||
     (data.sync?.attempts || []).length
   );
@@ -182,6 +187,28 @@ function mergeStates(localState, remoteState) {
       const key = `${attempt.completedAt}:${attempt.score}:${attempt.total}`;
       if (!seen.has(key)) merged.quizzes[pathId].push(attempt);
     }
+  }
+
+  // Discoveries: keep the strongest record on each side. There is no remote
+  // discoveries table yet, so `remote.discoveries` is normally empty — taking
+  // the max on every field means a cloud pull can never erase local Solve First
+  // progress.
+  merged.discoveries = { ...(remote.discoveries || {}) };
+  for (const [id, rec] of Object.entries(local.discoveries || {})) {
+    const other = merged.discoveries[id];
+    if (!other) { merged.discoveries[id] = rec; continue; }
+    merged.discoveries[id] = {
+      firstCompletedAt: [other.firstCompletedAt, rec.firstCompletedAt].filter(Boolean).sort()[0] || rec.firstCompletedAt,
+      lastCompletedAt: [other.lastCompletedAt, rec.lastCompletedAt].filter(Boolean).sort().pop() || rec.lastCompletedAt,
+      attempts: Math.max(other.attempts || 0, rec.attempts || 0),
+      bestReasoningScore: Math.max(other.bestReasoningScore || 0, rec.bestReasoningScore || 0),
+      evidenceCount: Math.max(other.evidenceCount || 0, rec.evidenceCount || 0),
+      explained: !!(other.explained || rec.explained),
+      patternFound: !!(other.patternFound || rec.patternFound),
+      compared: !!(other.compared || rec.compared),
+      transferFirstTry: !!(other.transferFirstTry || rec.transferFirstTry),
+      independent: !!(other.independent || rec.independent)
+    };
   }
 
   const eventMap = new Map();
@@ -514,6 +541,43 @@ function createProgressStore() {
         b.deepestFloorCompletedAt = b.deepestFloorCompletedAt || now;
         data.boards[cardNumber] = b;
         grantWs(data, 'deep_floor', cardNumber, 2);
+        persist(data);
+        return data;
+      });
+    },
+
+    /** Solve First completion.
+     * Rewards careful evidence, explanation and transfer, not speed. The W
+     * award is one-time (grantWs dedupes by ref) while the learner's best
+     * reasoning record can improve on a replay. */
+    recordDiscoveryComplete(discoveryId, result = {}) {
+      update(data => {
+        if (!discoveryId) return data;
+        normalizeState(data);
+        const now = new Date().toISOString();
+        const previous = data.discoveries[discoveryId] || {};
+        const reasoningScore =
+          Math.min(result.evidenceCount || 0, 4) +
+          (result.patternFound || result.explained ? 2 : 0) +
+          (result.compared ? 1 : 0) +
+          (result.transferFirstTry ? 2 : result.transferred ? 1 : 0) +
+          (result.usedHint ? 0 : 1);
+
+        data.discoveries[discoveryId] = {
+          firstCompletedAt: previous.firstCompletedAt || now,
+          lastCompletedAt: now,
+          attempts: (previous.attempts || 0) + 1,
+          bestReasoningScore: Math.max(previous.bestReasoningScore || 0, reasoningScore),
+          evidenceCount: Math.max(previous.evidenceCount || 0, result.evidenceCount || 0),
+          explained: previous.explained || !!result.explained,
+          patternFound: previous.patternFound || !!result.patternFound,
+          compared: previous.compared || !!result.compared,
+          transferFirstTry: previous.transferFirstTry || !!result.transferFirstTry,
+          independent: previous.independent || !result.usedHint
+        };
+
+        data.activity[dayKey()] = (data.activity[dayKey()] || 0) + 1;
+        grantWs(data, 'discovery', discoveryId, result.reward || 0, { bonus: true });
         persist(data);
         return data;
       });

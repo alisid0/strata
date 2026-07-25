@@ -422,8 +422,14 @@
 
 <script>
   import Workshop from '../lib/components/assessments/Workshop.svelte';
+  import SolveFirst from '../lib/components/assessments/SolveFirst.svelte';
+  import SolveFirstForces from '../lib/components/assessments/SolveFirstForces.svelte';
+  import SolveFirstCoordinates from '../lib/components/assessments/SolveFirstCoordinates.svelte';
+  import SolveFirstLimits from '../lib/components/assessments/SolveFirstLimits.svelte';
+  import SolveFirstNetworks from '../lib/components/assessments/SolveFirstNetworks.svelte';
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
+  import { getFeaturedSolveFirst, getSolveFirst } from '../lib/content/solveFirst.js';
   import { progress } from '../lib/stores/progress.js';
 
   export let onNavigate;
@@ -436,6 +442,8 @@
   let bestStreak = 0;
   let challenge = null; // { interactions, timeLimitSec } — active randomized run
   let test = null; // interactions[] — active strict-assessment run (Test mode)
+  let solveFirst = null; // active Solve First discovery config (problem-led, no lesson first)
+  const FEATURED_SOLVE_FIRST = getFeaturedSolveFirst();
   let running = false;  // false = browse the module grid; true = a workshop is open
   let activeTrack = 'computer';
   let activeModuleBySubject = {
@@ -461,19 +469,22 @@
   $: moduleTabs = track.modules || [];
   $: activeModuleId = activeModuleBySubject[activeTrack] || moduleTabs[0]?.id;
   $: activeModule = moduleTabs.find((item) => item.id === activeModuleId) || moduleTabs[0];
-  $: workshopTitle = test ? `${activeModule?.title || track.title} — test`
+  $: workshopTitle = solveFirst ? solveFirst.title
+    : test ? `${activeModule?.title || track.title} — test`
     : challenge ? `${activeModule?.title || track.title} — challenge`
     : (activeModule?.title || track.title);
-  $: workshopSub = test ? 'One attempt per question, nothing revealed until the end. This one counts.'
+  $: workshopSub = solveFirst ? solveFirst.sub
+    : test ? 'One attempt per question, nothing revealed until the end. This one counts.'
     : challenge ? 'Randomized targets, one run against the clock. Every attempt is different.'
     : (activeModule?.sub || track.sub);
   $: activePathId = activeModule?.pathId || track.pathId;
   $: practiceInteractions = activeModule?.getWorkshop ? activeModule.getWorkshop() : [];
   $: interactions = test ? test : challenge ? challenge.interactions : practiceInteractions;
-  $: workshopRunKey = `${activeTrack}-${activeModuleId}-${test ? 'test' : challenge ? 'challenge' : 'practice'}-${runId}`;
+  $: workshopRunKey = `${activeTrack}-${activeModuleId}-${solveFirst ? 'solve-first' : test ? 'test' : challenge ? 'challenge' : 'practice'}-${runId}`;
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
   $: hasChallenge = !!getChallengeForModule(activeModuleId);
   $: hasTest = !!getTestForModule(activeModuleId, practiceInteractions);
+  $: hasSolveFirst = !!getSolveFirst(activeModuleId);
   // Was this module ever completed? (recordWorkshopComplete grants a one-time
   // 'workshop:<id>' W, so its presence in granted marks the module done.)
   const moduleDone = (id) => !!$progress?.ws?.granted?.[`workshop:${id}`];
@@ -542,6 +553,36 @@
     finished = false;
   }
 
+  // Solve First: a problem-led discovery run. It replaces the practice surface
+  // entirely while active, so challenge/test state is cleared on entry.
+  function startSolveFirst(config = getSolveFirst(activeModuleId)) {
+    if (!config) return;
+    if (config.track) activeTrack = config.track;
+    if (config.moduleId) {
+      activeModuleBySubject = { ...activeModuleBySubject, [config.track || activeTrack]: config.moduleId };
+    }
+    challenge = null;
+    test = null;
+    solveFirst = config;
+    running = true;
+    runId += 1;
+    score = 0;
+    total = 0;
+    bestStreak = 0;
+    finished = false;
+  }
+
+  function finishSolveFirst(result) {
+    if (!result?.id) return;
+    progress.recordDiscoveryComplete(result.id, { ...result, transferred: true });
+  }
+
+  function exitSolveFirst() {
+    solveFirst = null;
+    runId += 1;
+    finished = false;
+  }
+
   // Tapping a grid tile opens that workshop. Every subject's tiles are on the
   // page at once (Topics-style), so the tile carries its own track.
   function openModule(trackId, id) {
@@ -549,6 +590,7 @@
     activeModuleBySubject = { ...activeModuleBySubject, [trackId]: id };
     challenge = null;
     test = null;
+    solveFirst = null;
     running = true;
     replay();
   }
@@ -557,6 +599,7 @@
     running = false;
     challenge = null;
     test = null;
+    solveFirst = null;
     finished = false;
   }
 </script>
@@ -572,6 +615,18 @@
   </div>
 
   {#if !running}
+    <!-- Solve First entry point. Without this the discovery experiences are only
+         reachable from inside a module, which hides them almost completely. -->
+    <section class="solve-feature">
+      <div class="solve-feature-mark" aria-hidden="true"><span></span><span></span></div>
+      <div class="solve-feature-copy">
+        <span>Solve First · New</span>
+        <strong>{FEATURED_SOLVE_FIRST.title}</strong>
+        <small>No lesson. Test an unknown system, explain its rule, then uncover the formal idea.</small>
+      </div>
+      <button on:click={() => startSolveFirst(FEATURED_SOLVE_FIRST)}>Enter</button>
+    </section>
+
     <!-- Browse: every subject stacked as its own section + grid (matches the Topics page) -->
     {#each Object.entries(TRACKS) as [tid, trk] (tid)}
       <section class="ws-block">
@@ -591,6 +646,7 @@
               <span class="ws-tile-sub">{item.sub}</span>
               <span class="ws-tile-foot">
                 <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Practice'}</span>
+                {#if getSolveFirst(item.id)}<span class="ws-bolt" title="Solve First discovery available">🔍</span>{/if}
                 {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">⚡</span>{/if}
                 {#if getTestForModule(item.id, item.getWorkshop ? item.getWorkshop() : [])}<span class="ws-bolt" title="Scored test available">📋</span>{/if}
               </span>
@@ -613,7 +669,19 @@
       <button on:click={() => onNavigate?.('topicDetail', activePathId)}>Open path</button>
     </section>
 
-    {#if !challenge && !test && (hasChallenge || hasTest)}
+    {#if hasSolveFirst && !challenge && !test && !solveFirst}
+      <div class="solve-bar">
+        <div>
+          <strong>No lesson first</strong>
+          <small>Work the problem, prove the rule yourself, and only then see what it is called.</small>
+        </div>
+        <div class="mode-buttons">
+          <button on:click={() => startSolveFirst()}>Solve First</button>
+        </div>
+      </div>
+    {/if}
+
+    {#if !challenge && !test && !solveFirst && (hasChallenge || hasTest)}
       <div class="challenge-bar">
         <div>
           <strong>Done practising?</strong>
@@ -630,8 +698,22 @@
       <button class="challenge-exit" on:click={exitChallenge}>← Back to practice</button>
     {/if}
 
-  <div class="workshop-card" class:challenge-active={!!challenge || !!test}>
-    {#if finished}
+  <div class="workshop-card" class:challenge-active={!!challenge || !!test} class:solve-active={!!solveFirst}>
+    {#if solveFirst}
+      {#key workshopRunKey}
+        {#if solveFirst.kind === 'force-lab'}
+          <SolveFirstForces config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'coordinate-signal'}
+          <SolveFirstCoordinates config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'limit-probe'}
+          <SolveFirstLimits config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'network-routing'}
+          <SolveFirstNetworks config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else}
+          <SolveFirst config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {/if}
+      {/key}
+    {:else if finished}
       <div class="done-state">
         <div class="score-ring" class:pass={test && scorePct >= 80} class:fail={test && scorePct < 80}>{scorePct}%</div>
         <h2>{score}/{total} locked in</h2>
@@ -1013,6 +1095,106 @@
 
   .workshop-card.challenge-active {
     border-color: var(--qx-accent);
+  }
+
+  /* Solve First takes over the card: the discovery component supplies its own
+     header, progress rail and padding. Green distinguishes discovery from the
+     accent-coloured challenge/test modes. */
+  .workshop-card.solve-active {
+    border-color: var(--qx-green);
+    padding-top: 13px;
+  }
+
+  .solve-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1.5px solid var(--qx-green);
+    background: var(--qx-green-soft);
+    border-radius: 8px;
+    padding: 11px 13px;
+    margin: 0 0 10px;
+  }
+
+  .solve-bar strong { display: block; font-size: 13px; color: var(--qx-green-text); }
+  .solve-bar small { display: block; font-size: 11.5px; color: var(--qx-text-dim); margin-top: 2px; }
+  .solve-bar button {
+    min-height: 36px;
+    border: 0;
+    border-radius: 999px;
+    padding: 0 15px;
+    background: var(--qx-green);
+    color: #fff;
+    font: 900 12px var(--qx-font);
+    cursor: pointer;
+  }
+
+  /* Grid-level Solve First entry point */
+  .solve-feature {
+    display: grid;
+    grid-template-columns: 46px 1fr auto;
+    align-items: center;
+    gap: 11px;
+    border-radius: 14px;
+    padding: 13px;
+    margin-bottom: 12px;
+    background: var(--qx-text);
+    box-shadow: var(--qx-shadow-card);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .solve-feature::after {
+    content: '';
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border: 18px solid var(--qx-accent);
+    border-radius: 50%;
+    opacity: .12;
+    right: -48px;
+    top: -45px;
+  }
+
+  .solve-feature-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--qx-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .solve-feature-mark span {
+    width: 7px;
+    height: 24px;
+    border-radius: 5px;
+    background: #fff;
+  }
+
+  .solve-feature-mark span:last-child { height: 32px; }
+  .solve-feature-copy { min-width: 0; display: flex; flex-direction: column; }
+  .solve-feature-copy > span { color: var(--qx-accent); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .09em; }
+  .solve-feature-copy strong { color: var(--qx-bg); font-size: 15px; }
+  .solve-feature-copy small { color: var(--qx-bg); opacity: .74; font-size: 10.5px; line-height: 1.3; margin-top: 2px; }
+  .solve-feature > button {
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 0;
+    background: var(--qx-accent);
+    color: #fff;
+    font: 900 12px var(--qx-font);
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  @media (max-width: 380px) {
+    .solve-feature { grid-template-columns: 40px 1fr; }
+    .solve-feature > button { grid-column: 1 / -1; width: 100%; }
   }
 
   .streak-badge {
