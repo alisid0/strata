@@ -36,6 +36,30 @@ database migrations, expose secrets, or merge branches.
 - Historical messages below record what was true when written. This shared
   current-state block and the first-read docs override older `blocked` notes.
 
+### Status update — 2026-07-25 (supersedes older process assumptions)
+
+- **Codex is no longer in the loop.** Reviews and sign-off are Claude's, acting
+  as reviewer of record. The two-agent inbox flow below is historical.
+- **Git is now installed on Ali's PC** (via GitHub Desktop, 2026-07-25). It never
+  was before: the `.git` directory existed only because sandboxed agents created
+  it through the mounted folder, which is why every agent-side `git push`
+  failed and why no agent could build. Ali can now run git, builds and deploys
+  locally.
+- **Builds now verified.** `build-app.mjs production` and `staging` both pass
+  (961 modules, 9 SEO pages). This closes the long-standing "no agent can build"
+  gap recorded further down this board.
+- **Open work:** branch `claude/solve-first-port`, commit `1e05d61`, committed
+  locally and **not yet pushed** — pending one `Publish branch` click in GitHub
+  Desktop. Not merged, not deployed.
+- Current operational doc: `docs/ACTION-REQUIRED.md`. Review verdict:
+  `docs/RELEASE-REVIEW.md`.
+- **Release hazard fixed:** both `deploy.mjs` scripts previously aliased the same
+  production hostname from two different Vercel projects, and the tracked one
+  inferred its build mode — so a deploy from a staging-configured machine could
+  have pointed live users at the staging database. Production is now owned by
+  this repo and built explicitly; the legacy `Strata` copy is blocked from
+  claiming the alias.
+
 ### Git synchronization warning
 
 At the time this board was created, local `main` was five commits ahead of
