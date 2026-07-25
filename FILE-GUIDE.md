@@ -1,52 +1,133 @@
-# FILE-GUIDE.md — what's where
+# FILE-GUIDE.md — what's where, and where it should go
 
-The root used to have ~70 loose files from every phase of this project. Reorganized 2026-06-23. This is the map.
+Last updated: 2026-07-25. Supersedes the 2026-06-23 cleanup map (which was
+stale: it predates ~40 new docs, the 55-script `scripts/` folder, the launch
+security programme, and the media dirs).
 
-## Live app (untouched)
+This is two things:
+1. **Current map** — where everything lives today, so any engineer or agent can
+   navigate the repo.
+2. **Proposed target layout + migration plan** — how to tidy it *safely*. The
+   moves are proposed, not yet executed: repo reorganisation is item 4 of the
+   MSG-001 security programme, which mandates *propose the target layout before
+   broad moves*, and there is currently an approved staging line waiting to
+   merge plus in-flight auth WIP. Broad moves now would create conflicts and
+   obscure review diffs. Execute in the phases below, one branch at a time,
+   after the staging line lands.
 
-- `src/` — the real Svelte app. Everything that actually runs.
-- `public/` — the real static assets (images, icons, videos, manifest, service worker) the Vite build serves. If you're looking for a card image, it's here, not at the root.
-- `supabase/` — schema, seed, and the storage-bucket migration for the `cards` table.
-- `scripts/` — `ingest-bbs.mjs`, the BB ingestion script.
-- `manim_anims/` — Manim source for the generated card animations/GIFs.
-- `CLAUDE.md`, `README.md`, `package.json`, `vite.config.js`, `svelte.config.js`, `vercel.json`, `.gitignore` — standard project root files, left in place.
+---
 
-## `docs/`
+## 1. Current map
 
-Planning and reference docs — read these to understand *why* the app is shaped the way it is, not how to run it. Mix of still-accurate specs (`DESIGN.md`, `PATHS.md`, `NOMENCLATURE.md`, `AUTHORING.md`, `BB-TEMPLATE.md`, `CONTENT.md`) and curriculum-planning docs of varying staleness (`CONTENT-MAP.md`, `CURRICULUM.md`, `HUBS.md`, `BRIDGES.md`, `PYRAMIDS.md`, `GROUND-ZERO.md`, `FLOOR-LAYOUT-SPEC.md`, `IMAGE-PROMPTS.md`, `MECHANICS.md`, `COORDINATE-GEOMETRY.md`, `ELECTRICITY.md`, `MATRICES.md`, `CTO-BRIEF.md`, `STRATA-BRIEF.md`, `ONBOARDING.md`). The two `_deepseek_completion_*.md` files are a recorded disagreement between the author and DeepSeek over build order — historical, not a live spec.
+### Runtime — the app that actually ships
+- `src/` — the Svelte app. `views/` (13 screens), `lib/components/` (49, incl.
+  `assessments/` workshops and `media/` renderers), `lib/content/` (18 data
+  modules: decks, workshops, paths, questions, tests), `lib/stores/` (9: auth,
+  progress, profile, theme…), `lib/styles/`, `assets/`, `content-seo/`.
+- `public/` — the static assets Vite serves (icons, images, videos, GIFs,
+  manifest, `sw.js`). The real ones. Card images live here, not at the root.
+- `api/csp-report.js` — the Vercel serverless CSP report collector (dormant;
+  see `docs/engineering/CSP-REPORTING.md`).
+- `supabase/` — `migrations/` (0002–0007), schema/seed, storage buckets.
+- `index.html`, `package.json`, `vite.config.js`, `svelte.config.js`,
+  `vercel.json`, `.gitignore` — project root config, standard, stay put.
 
-## `content-drafts/`
+### Tooling
+- `scripts/` — **55** `.mjs` build/ops scripts: `build-app.mjs`, `deploy.mjs`,
+  content ingestion, audits, RLS/lifecycle tests, staging export. This has
+  grown into a grab-bag and is the strongest candidate for sub-foldering.
 
-BB batches that exist but haven't been ingested yet, in two different formats:
+### Content & media source (not shipped as-is)
+- `content-drafts/` — **96** items: BB batches in old and current formats,
+  awaiting ingestion. Authoring material, never a production inventory
+  (`docs/SOURCE-OF-TRUTH.md`).
+- `source-material/` — textbooks fed to the pipeline (gitignored PDFs).
+- `authoring-tools/` — DeepSeek drafting scripts + the Google Apps Script.
+- `1945_BBs/` (7 tracked), `images/` (30), `media/` (29), `manim_anims/` (7) —
+  content batches and media/animation source.
 
-- **Old format** (`COORDINATE-GEOMETRY-DRAFT.js`, `ELECTRICITY-DRAFT.js`, `MATRICES-DRAFT.js`, `deepseek-drafts-electricity-*.md`) — drafted before the Supabase pipeline existed, in the pre-Svelte DECK-array shape. Real content (200+ BBs between them), but needs reformatting into the JSON shape `scripts/ingest-bbs.mjs` expects before it's usable.
-- **Current format** (`verma-batch-01.md`, `verma-batch-01.json`, `verma-batch-02.md`) — the live pipeline's shape. `verma-batch-01` is converted and ready to ingest once `.env.local` exists; `verma-batch-02` is still a draft, not yet converted.
+### Documentation
+- `docs/` — **49 flat `.md`** + `docs/engineering/` + `docs/archive/`. A wide
+  mix: launch/ops (`LAUNCH-HANDOVER`, `PUBLIC-BETA-CHECKLIST`, `SOURCE-OF-TRUTH`,
+  `ENVIRONMENTS`, `RELEASE-MODEL`, `GIT-OPERATIONS`), content/curriculum specs
+  (`CONTENT`, `CURRICULUM`, `PATHS`, `AUTHORING`, `MECHANICS`…), design
+  (`DESIGN`, `DESIGN-ANIMATION-BRIEF`), and marketing (`MARKETING-SETUP`).
+- **Root markdowns (12)** — mixed provenance, none referenced by `AGENTS.md`,
+  `CLAUDE.md`, or `README.md`: `AGENT-MESSAGE-BOARD.md`, `AGENTS.md`,
+  `CLAUDE.md`, `README.md` (these four belong at root), plus strays that do not:
+  `DEEPSEEK-COLLAB.md`, `DESIGN-UPGRADE.md`, `FOUR-STARTING-POINTS.md`,
+  `QUBIX-BLUEPRINT.md`, `FILE-GUIDE.md`, and three `final-draft-*.md`.
 
-## `source-material/`
+### Legacy & local-only
+- `legacy/` — dead pre-Svelte prototypes. Nothing in `src/` imports it.
+- Not in git (local clutter, correctly ignored): `__pycache__/`, `dist/`,
+  `node_modules/`, `audio/`. Also stray at root: `el-screenshot.png`,
+  `lockhart_extract.txt`.
 
-Textbooks fed into the content pipeline. `verma_vol1.pdf` (H.C. Verma, *Concepts of Physics Vol 1*) lives here now — gitignored, never committed (copyrighted scan). Future books go here too.
+---
 
-## `authoring-tools/`
+## 2. Proposed target layout
 
-Scripts that help generate or publish content, separate from the app itself:
+Keep the four load-bearing root files (`README.md`, `AGENTS.md`, `CLAUDE.md`,
+`AGENT-MESSAGE-BOARD.md`) at root. Everything else finds a home:
 
-- `deepseek-helper.py`, `deepseek-batch-draft.py`, `deepseek-cli.py` — DeepSeek API tooling for drafting BBs.
-- `strata-sheets-script.js` — a Google Apps Script (Forms → Sheet → "Publish to Supabase" menu) that writes to the same `cards` table `scripts/ingest-bbs.mjs` does. Older, manual, still functional, not part of the JSON pipeline.
+```
+/                       README, AGENTS, CLAUDE, AGENT-MESSAGE-BOARD, config
+  src/                  (unchanged — never move runtime source casually)
+  public/  api/  supabase/   (unchanged)
+  scripts/
+    build/              build-app, deploy
+    content/            ingestion, staging export, kicker/media migration
+    audit/              audit:live-media, GIF eligibility
+    test/               RLS isolation, user-data lifecycle, sanitizer
+  docs/
+    launch/             LAUNCH-HANDOVER, PUBLIC-BETA-CHECKLIST, RELEASE-MODEL,
+                        ENVIRONMENTS, GIT-OPERATIONS, SOURCE-OF-TRUTH
+    content/            CONTENT, CURRICULUM, PATHS, AUTHORING, BB-TEMPLATE, specs
+    design/             DESIGN, DESIGN-ANIMATION-BRIEF, IMAGE-PROMPTS
+    marketing/          MARKETING-SETUP
+    engineering/        (exists) audits, runbooks, CSP
+    archive/            (exists) superseded plans + the root strays + _deepseek_*
+  content/              content-drafts/, source-material/, authoring-tools/,
+                        1945_BBs/  (consolidate the content-pipeline inputs)
+  assets-source/        images/, media/, manim_anims/  (raw media source)
+  archive/              legacy/
+```
 
-## `legacy/`
+---
 
-Dead code and superseded prototypes from before the Svelte rewrite. Nothing here is imported by `src/` — kept for reference only, safe to ignore or delete wholesale if you never need it:
+## 3. Safe migration plan (execute later, in this order)
 
-- `draft/`, `index-legacy.html` — the old single-file DECK app.
-- `replace_deck.py` — wrote BBs into that old DECK array.
-- `progress-store.js`, `paths-manifest.js`, `subject-mark.js`, `quiz-engine.js`, `quiz-style.css` — pre-Svelte equivalents of what's now `src/lib/stores/progress.js`, `src/lib/content/paths.js`, `SubjectMark.svelte`, `src/lib/content/questions.js`.
-- `graph-data.js`, `graph-layout.js`, `graph-render.js`, `graph-style.css`, `map-style.css`, `MAP.html` — a curriculum-graph visualizer, never wired into the live app.
-- `diagram-engine.js`, `diagram-specs.js`, `interactive-specs.js`, `COORDINATE-GEOMETRY-REVIEW.html` — the review tool for the old-format Coordinate Geometry draft batch (see `content-drafts/`).
-- `architecture.html`, `unit-circle-prototype.html`, `QUIZ-TIER0.html`, `QUIZ-TIER1.html` — standalone prototypes/diagrams from earlier phases.
-- `content-database.csv` — a CSV export of the 84-card deck, gitignored, not regenerated.
-- `design/` — old `.dc.html` design mockups (Auth, Map, SubjectMark) that predate the Qubix redesign.
+**Rule for every phase:** move with `git mv` (preserves history), then
+grep the repo for the old path and update every reference, then
+`npm run build:staging` before committing. One phase per branch/PR.
 
-## Deleted in this cleanup (not moved anywhere)
+- **Phase 0 — zero-risk now:** confirm `__pycache__/`, `dist/`, `audio/` are
+  gitignored (they are); delete root strays `el-screenshot.png`,
+  `lockhart_extract.txt` if truly unused. No references, no build impact.
+- **Phase 1 — docs.** Move the 49 flat docs + the root stray markdowns into the
+  `docs/` sub-tree above. **Check first:** `AGENTS.md`, `SOURCE-OF-TRUTH.md`, and
+  cross-doc links reference exact `docs/*.md` paths — every move must update
+  those links. Coordinate with the in-flight `docs/git-governance-reorg` branch
+  so the two don't fight. No code imports docs, so the build is unaffected.
+- **Phase 2 — scripts.** Sub-folder `scripts/` into build/content/audit/test.
+  **Check first:** `package.json` scripts call these by path (`node
+  scripts/build-app.mjs`…); update every `package.json` entry and any
+  script-to-script `import`/`require`. Build + run one script per group to
+  verify.
+- **Phase 3 — content & media source.** Consolidate `content-drafts/`,
+  `source-material/`, `authoring-tools/`, `1945_BBs/` under `content/`, and
+  `images/`, `media/`, `manim_anims/` under `assets-source/`. **Check first:**
+  ingestion/audit scripts and any `boardMedia.js`/media refs that point at these
+  paths; `.gitignore` patterns.
+- **Never in a casual reorg:** `src/`. Moving runtime source rewrites import
+  graphs across ~140 files and is the easiest way to break the build. Only
+  restructure `src/` as its own deliberate, separately-reviewed change.
 
-- Root `images/`, `icons/`, `videos/`, `manifest.webmanifest`, `sw.js` — exact, stale duplicates of what `public/` already has. The app never read these; `public/` is what actually ships.
-- `elevenlabs-session.json`, `.tmp_strata_menu_design.html`, `bb-preview.html`, `bb-sample.json` — gitignored scratch/reference files with no remaining use.
+## 4. Why not just do it now
+
+Repo reorg is owned by MSG-001 item 4 (propose-first). There is an approved
+staging→main merge pending and uncommitted auth WIP in the tree; a broad move
+would conflict with both and bury the security diff reviewers are watching. The
+safe sequence is: land the staging line → commit/land the auth WIP → then run
+the phases above, one reviewed branch at a time, updating references as you go.
