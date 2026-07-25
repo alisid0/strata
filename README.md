@@ -17,6 +17,9 @@ Staging: `https://qubix-staging.vercel.app`
 Do not use `content-drafts/` or archived exports to count live BBs or floors.
 Run `pnpm run audit:live-media` first.
 
+Company Git, branch, release, rollback, and repository-ownership policy is in
+`docs/GIT-OPERATIONS.md`.
+
 ## Run locally
 
 ```bash
@@ -75,8 +78,9 @@ ignored `.audit-cache/`; the human-readable snapshot is
 
 ## Release
 
-Pushing `main` updates the current staging deployment. Production remains a
-manual release:
+Reviewed feature branches merge into `staging`; the dedicated staging
+deployment follows that branch. After QA, the exact tested commit is
+fast-forwarded into `main`. Production remains a manual release:
 
 ```bash
 pnpm run build:production
@@ -84,4 +88,5 @@ pnpm run deploy
 ```
 
 Deploy from a clean worktree so unrelated local changes cannot be uploaded.
-See `docs/RELEASE-MODEL.md` for service-worker and Android-shell considerations.
+See `docs/GIT-OPERATIONS.md` for the company workflow and
+`docs/RELEASE-MODEL.md` for service-worker and Android-shell considerations.

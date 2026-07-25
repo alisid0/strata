@@ -4,6 +4,9 @@ For live BB membership, floor text, and media authority, read
 `docs/SOURCE-OF-TRUTH.md` first. Environment configuration does not make a
 draft catalogue authoritative.
 
+For branch ownership, promotion, deployment, and recovery, follow
+`docs/GIT-OPERATIONS.md`.
+
 Qubix uses one codebase with isolated configuration for the public app and the
 test app. Test accounts and test writes must never go to the production
 Supabase project.
@@ -79,23 +82,22 @@ production project or the current dedicated `qubix-staging` Vercel project.
 Production deployments keep using `.env.production`; Vercel Production variables
 can override those committed public values later.
 
-Use a persistent branch such as `staging` for the test app. Protect its Vercel
-deployment with Deployment Protection or a password before sharing it. Merge
-tested changes into `main` to release them to users.
+The persistent GitHub `staging` branch exists and is the staging release line.
+The `qubix-staging` Vercel project must follow that branch. Protect the
+deployment with Deployment Protection or a password before sharing it.
 
-Current state: `qubix-staging.vercel.app` is isolated correctly but its Vercel
-project still follows `main`. Moving that project to a persistent `staging`
-branch is the next release-process improvement. Until then, a push to `main`
-updates staging automatically, while the public production deployment remains
-manual through `pnpm run deploy`.
+The branch is verified in Git; the Vercel branch setting must still be checked
+directly whenever release automation or project ownership is audited.
+Production remains manual through `pnpm run deploy` from the tracked repository.
 
 ## Release workflow
 
 1. Build or edit on a feature branch.
 2. Preview it against the staging Supabase project.
 3. Test authentication, scripts, content and writes with test accounts.
-4. Merge the approved change into `main`.
-5. Deploy production and run a short smoke test.
+4. Merge the approved change into `staging` and verify the staging deployment.
+5. Fast-forward the tested staging commit into `main`.
+6. Deploy production from a clean checkout and run a short smoke test.
 
 Runtime media is bundled under `public/`; no app media may depend on the retired
 legacy Supabase project. Staging authentication, profiles, progress and other

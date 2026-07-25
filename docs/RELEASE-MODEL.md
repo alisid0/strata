@@ -1,12 +1,13 @@
 # Qubix release model — shipping changes without app updates
 
-Last updated: 2026-07-21
+Last updated: 2026-07-25
 
 How a change reaches a Qubix user, why most changes need no Play Store update,
 and what actually differs between the staging app and the version end users get.
 
 Companion documents: `docs/SOURCE-OF-TRUTH.md` (live catalogue and media authority),
 `docs/ENVIRONMENTS.md` (configuration),
+`docs/GIT-OPERATIONS.md` (branch and deployment authority),
 `docs/LAUNCH-HANDOVER.md` (launch checklist), `AGENTS.md` (working defaults).
 
 ---
@@ -135,7 +136,7 @@ difference is entirely environment variables plus a few build-time guards.
 | Page title | `Qubix` | `[STAGING] Qubix` |
 | Author/test tools | Off | On |
 | Env badge | None | Yellow |
-| Deploy trigger | Manual `pnpm run deploy` | Auto on push to `main` |
+| Deploy trigger | Manual `pnpm run deploy` | Staging project follows `staging` |
 
 ### What this actually means
 
@@ -170,26 +171,22 @@ production Storage CDN. Only database writes are isolated.
 
 ---
 
-## 5. Known gap in the current setup
+## 5. Git promotion and deployment ownership
 
-Staging follows `main`, which is also the production source branch. So a merge
-to `main` updates staging *after* the code is already on the release branch —
-staging validates what you have already committed to ship, rather than gating
-it.
+The persistent `staging` branch exists and carries the release candidate.
+The staging Vercel project must follow that branch; verify the project setting
+directly before relying on automatic deployment.
 
-The intended flow, per `docs/LAUNCH-HANDOVER.md`:
+The promotion flow is:
 
 ```text
 feature branch → staging branch → staging web QA → Android internal test
 → main → production deploy
 ```
 
-Fix: create a persistent `staging` branch and repoint the `qubix-staging`
-Vercel project at it. This is item 2 in the launch handover's ordered actions.
-
 Production deploys stay manual by design — pushing Git alone does not release
-to users. Keep it that way. It is the only gate between a merge and the public
-app.
+to users. Only this tracked repository may own the stable production alias.
+See `docs/GIT-OPERATIONS.md` for promotion, rollback, and evidence requirements.
 
 ---
 
@@ -204,9 +201,10 @@ app.
 2. `pnpm run dev` (staging config) and test.
 3. If `sw.js` or shell files changed, bump the `CACHE` version.
 4. If offline or caching behaviour changed, test `pnpm run build:production && pnpm run preview` locally.
-5. Merge to `main`; verify on `qubix-staging.vercel.app`.
-6. `pnpm run build:production` then `pnpm run deploy`.
-7. Smoke-test the public URL: load, sign in, open a board, run a workshop.
+5. Merge to `staging`; verify on `qubix-staging.vercel.app`.
+6. Fast-forward the tested staging commit into `main`.
+7. From a clean checkout, run `pnpm run deploy`.
+8. Smoke-test the public URL: load, sign in, open a board, run a workshop.
 
 **Schema change**
 1. Apply to staging Supabase; test.

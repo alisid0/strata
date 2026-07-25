@@ -1,135 +1,71 @@
-# Current state and what's left
+# Current release actions
 
-Last updated: 2026-07-25, end of the Solve First port session.
-Single source of truth for where this work stands. Supersedes earlier versions.
+Last reconciled: 2026-07-25
+Authority for Git procedure: `docs/GIT-OPERATIONS.md`
 
----
+This page is a short action list, not a historical handoff.
 
-## Where things stand
+## Verified current state
 
-| | Status |
+| Item | Status |
 |---|---|
-| Solve First port into the tracked repo | ✅ done |
-| Networks blockers 1 & 2 | ✅ fixed and verified |
-| Production build | ✅ **passes** — I ran it |
-| Staging build | ✅ passes |
-| Automated playthrough test | ✅ passes, zero console errors |
-| Commit `1e05d61` on `claude/solve-first-port` | ✅ created locally |
-| **Pushed to GitHub** | ❌ **not yet — one click** |
-| Deployed | ❌ not yet, and correctly gated |
+| Solve First port committed | Done — `1e05d61` |
+| Solve First present on `origin/staging` | Done |
+| Staging deployment shows Solve First | Verified 2026-07-25 |
+| Networks automated playthrough | Pass |
+| Production and staging builds for the port | Reported pass |
+| Deploy script explicitly forces production mode | Done on `staging` |
+| Duplicate production-alias hazard guarded | Done on `staging` |
+| `staging` promoted to `main` | Not done |
+| Tracked repository released to production | Not done |
 
----
+The former instruction to “Publish branch” is obsolete. The commit is already
+on GitHub and already part of `origin/staging`.
 
-## Step 1 · Publish the branch ← **you are here**
+## Required before promotion
 
-The commit exists locally. GitHub Desktop is installed and the repo is added.
-
-In GitHub Desktop:
-
-1. Confirm the branch selector (top-left) reads **`claude/solve-first-port`**.
-2. Click **`Publish branch`** (top-right). If it says `Push origin`, that's the
-   same thing.
-
-Nothing is being committed — the commit is already made. This only uploads it.
-
-I cannot do this myself: GitHub Desktop's window renders as a blank rectangle to
-screen capture (an Electron/GPU quirk), so I can't see its buttons, and I won't
-click blind inside a git client.
-
----
-
-## Step 2 · Playtest in a browser (10 min)
-
-The only correctness check I could not run. Everything else is verified.
+1. Playtest all five Solve First experiences at phone width:
+   - Crack the Lockers;
+   - Stop the Cart;
+   - Find the Signal;
+   - Recover the Reading;
+   - Save the Broadcast.
+2. Check light and dark themes, touch targets, horizontal overflow, back
+   navigation, retry, completion, and reward recording.
+3. Run:
 
 ```bash
-pnpm install
-pnpm run dev
+pnpm run test:solve-first
+pnpm run build:staging
+pnpm run build:production
 ```
 
-Open a Computer Science → Networks workshop → **Solve First**. Confirm:
+4. Confirm staging uses Supabase ref `atmmfkhjsdqqwnhqifxm`.
+5. Review the exact `origin/main..origin/staging` diff.
+6. Confirm the tracked repository is the only project permitted to own
+   `strata-nine-pi.vercel.app`.
 
-- it mounts with no console errors;
-- the workshop grid shows the "Solve First · New" card and 🔍 tile markers;
-- **clinic:** 2 town / 3 hill leaves Dispatch **disabled** with the launch-plan
-  panel; 3 town / 2 hill strands a segment and reaches the reveal;
-- **resilience:** no route selector exists, and the policy choice stays locked
-  until a locked run strands *and* an open run reroutes;
-- readable in light and dark, no sideways scrolling at phone width.
+## Promotion
 
-The logic behind all of this is already proven by an automated playthrough
-(`pnpm run test:solve-first`). What needs human eyes is pixels and legibility.
+Follow `docs/GIT-OPERATIONS.md`. The intended result is a fast-forward from the
+tested staging commit to `main`. If a fast-forward is not possible, stop and
+reconcile the branch graph rather than creating an unreviewed merge.
 
----
+Production deployment remains a separate manual action from a clean checkout
+of the approved `main` commit.
 
-## Step 3 · Merge and deploy
+## Verify after production deployment
 
-Only after Steps 1 and 2.
+- Public URL loads and has no staging badge.
+- Public bundle uses Supabase ref `wmetdmfsniqrshuaoodc`.
+- Staging continues to use `atmmfkhjsdqqwnhqifxm`.
+- Sign-in, guest access, one reading path, one standard workshop, and one Solve
+  First workshop work.
+- No severe console or network errors appear.
+- The release record includes the deployed commit and rollback target.
 
-```bash
-git checkout staging
-git merge claude/solve-first-port
-git status                 # must be clean
-pnpm run deploy
-```
+## Existing local work not included
 
-`deploy.mjs` now builds production explicitly, so it can no longer ship a
-staging bundle to the live alias.
-
-**Never run `pnpm run deploy` from the parent `Strata` folder.** It is guarded
-and will refuse, but the rule stands.
-
----
-
-## Step 4 · Verify live (2 min)
-
-Open `https://strata-nine-pi.vercel.app`, devtools → Network, check the Supabase
-host:
-
-- `wmetdmfsniqrshuaoodc` = production ✅
-- `atmmfkhjsdqqwnhqifxm` = staging ❌ stop and rebuild
-
----
-
-## What I completed this session
-
-- Ported the five Solve First games into the tracked repo (they existed only in
-  an untracked working copy — unversioned and undeployable).
-- Merged the discovery reward contract into `progress.js` without losing
-  Supabase sync; added defensive normalisation so existing saved progress loads
-  unchanged.
-- Merged `WorkshopLab.svelte`, keeping Series II modules and Test mode.
-- Fixed both Networks blockers; proved them with an exhaustive sweep of all 32
-  clinic route configurations (0 deadlocks) and an automated playthrough.
-- Found and fixed three of my own defects on review: a dropped grid entry point,
-  wrong visual language on the Solve First bar, and an unclamped reward.
-- **Ran the production and staging builds** — the check that had been open
-  since the Networks work began.
-- Added `pnpm run test:solve-first`, the first automated test for these games.
-- Fixed two release hazards: the duplicate production alias, and `deploy.mjs`
-  inferring its build mode (which could have shipped a staging bundle, pointed
-  at the staging database, to live users).
-
----
-
-## Two things worth knowing
-
-**Git was never installed on this PC.** That was discovered late and explains a
-lot of earlier friction. The `.git` folder existed only because sandboxed agents
-created it through the mounted folder. Installing GitHub Desktop fixed this — you
-now have git locally for the first time, which is what makes Steps 2 and 3
-possible at all.
-
-**The parent `Strata` folder is redundant and risky.** No git, a second Vercel
-project, and it is where the code split originated. Once this merges, rename it
-to something like `Strata-legacy-DO-NOT-DEPLOY` so no future session edits the
-untracked copy again.
-
----
-
-## Still uncommitted (yours, deliberately untouched)
-
-- `docs/PUBLIC-BETA-CHECKLIST.md` (modified)
-- `public/images/card-34-floor0-v1.png` (untracked)
-
-Neither belonged in a port commit. Decide whether they ride the next one.
+The primary checkout contains unrelated, unfinished authentication changes and
+untracked files. Preserve them. Do not use that dirty checkout for a production
+deployment.

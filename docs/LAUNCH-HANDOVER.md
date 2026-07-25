@@ -1,11 +1,11 @@
 # Qubix launch handover
 
-Last updated: 2026-07-21
+Last updated: 2026-07-25
 
 This is the current technical handover for taking Qubix from staging to an
 Android closed beta and then a public release. Read `AGENTS.md` and
-`docs/ENVIRONMENTS.md` before changing authentication, Supabase, Vercel, DNS,
-or the release process.
+`docs/GIT-OPERATIONS.md` and `docs/ENVIRONMENTS.md` before changing branches,
+authentication, Supabase, Vercel, DNS, or the release process.
 
 Marketing positioning, conversion, channel, asset, analytics, and acquisition
 work is tracked separately in `docs/MARKETING-SETUP.md`.
@@ -70,10 +70,10 @@ feature branch -> staging branch -> staging web QA -> Android internal test
 -> main -> production deploy
 ```
 
-One release-process task remains: create a persistent `staging` branch and
-configure the `qubix-staging` Vercel project to follow it instead of `main`.
-Until that is done, a push to `main` updates staging automatically while the
-public production deployment remains manual.
+The persistent `staging` branch exists and carries the current release
+candidate. Confirm directly in Vercel that the `qubix-staging` project follows
+it. Public production deployment remains manual and must run only from the
+tracked repository.
 
 Safe commands:
 
@@ -218,9 +218,9 @@ Reconciled 2026-07-22. Items struck through are complete; see
 1. Download the paid Companies House certificate and submit the original,
    unedited document for Play Console identity verification. **(In progress —
    certificate ordered; the one external, long-lead dependency.)**
-2. ~~Create the permanent `staging` branch and point staging Vercel at it.~~
-   Branch exists (`origin/staging`). Confirm the `qubix-staging` Vercel project
-   follows it rather than `main`.
+2. Confirm the `qubix-staging` Vercel project follows the existing
+   `origin/staging` branch. The dashboard remains authoritative for that
+   setting.
 3. ~~Configure production SMTP and Google OAuth in Supabase.~~ Done and verified
    2026-07-22 — SMTP delivery confirmed, Google sign-in tested end to end,
    obsolete credentials revoked.
@@ -229,8 +229,9 @@ Reconciled 2026-07-22. Items struck through are complete; see
    verified through the app.
 5. ~~Replace legal-page contact placeholders.~~ Done — `admin@arcavetech.co.uk`
    on privacy and terms; privacy policy rewritten to match actual processing.
-6. Merge `origin/staging` into `main` and deploy: this carries the F-01 HTML
-   sanitiser and the F-02 security headers (CSP report-only) to production.
+6. Complete staging QA, fast-forward the approved `origin/staging` commit into
+   `main`, and deploy from a clean tracked checkout. This also carries the
+   Solve First port and deployment-safety guards.
 7. Stand up the CSP reporting endpoint (`docs/engineering/CSP-REPORTING.md`),
    observe for 1–2 weeks, then flip the CSP from report-only to enforcing.
 8. Decide whether launch content requires KaTeX and implement it if needed.

@@ -5,10 +5,12 @@ content or media. Its hierarchy overrides old draft inventories and handoffs.
 
 Then read:
 
-1. `docs/ENVIRONMENTS.md` before authentication, Supabase, Vercel, staging, or
+1. `docs/GIT-OPERATIONS.md` before branch, merge, push, worktree, or deployment
+   work.
+2. `docs/ENVIRONMENTS.md` before authentication, Supabase, Vercel, staging, or
    release work.
-2. `docs/LAUNCH-HANDOVER.md` for the public-launch checklist.
-3. `docs/RELEASE-MODEL.md` for how code, Supabase content, schema, and the
+3. `docs/LAUNCH-HANDOVER.md` for the public-launch checklist.
+4. `docs/RELEASE-MODEL.md` for how code, Supabase content, schema, and the
    Android shell reach users.
 
 ## Non-negotiable source rules
@@ -37,8 +39,10 @@ Then read:
 - Staging Supabase project ref: `atmmfkhjsdqqwnhqifxm`.
 - Staging uses isolated auth and user data. Never copy production users,
   progress, sessions, or other personal data into it.
-- Staging currently follows `main`; a dedicated `staging` branch remains a
-  release-process improvement.
+- GitHub has a persistent `staging` branch. The staging Vercel project must
+  follow it; verify the dashboard setting before changing release automation.
+- This tracked repository is the only permitted owner of the stable production
+  Vercel alias. Never deploy from a legacy or untracked copy.
 - Production deploy is manual. Pushing Git does not update the public app.
 - Dynamic Supabase BB content is independent of Git and Vercel deployment.
 - Production was rebuilt cleanly on 2026-07-21 with the reviewed schema,
@@ -64,11 +68,11 @@ because it connects local code to production services.
 ## Release flow
 
 1. Work on a feature branch.
-2. Build and test against staging.
-3. Merge approved code into `main`.
-4. Run `pnpm run build:production`.
-5. Run `pnpm run deploy` from a clean worktree.
-6. Smoke-test the public URL and affected media URLs.
+2. Merge reviewed work into `staging`.
+3. Build and test against the staging app and services.
+4. Fast-forward the approved staging commit into `main`.
+5. Run `pnpm run deploy` from a clean checkout of that `main` commit.
+6. Smoke-test the public URL, Supabase ref, and affected media URLs.
 
 Supabase content changes do not follow this Git flow; verify them directly in
 the live app. Schema/RLS changes are higher risk and must be tested on staging
