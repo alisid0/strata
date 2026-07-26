@@ -63,6 +63,17 @@ const SOLVE_FIRST = {
     title: 'Save the Broadcast',
     sub: 'No lesson first. Rebuild a live picture, keep its pieces organised, and survive a broken route.',
     rewardLabel: 'Route Architect'
+  },
+  'matrices': {
+    id: 'matrices-warp-the-grid',
+    moduleId: 'matrices',
+    pathId: 'MATH_MATRICES',
+    track: 'mathematics',
+    kind: 'matrix-warp',
+    eyebrow: 'Unmarked problem 06',
+    title: 'Warp the Grid',
+    sub: 'No lesson first. Bend a shape with two guide arrows, prove they decide where every point lands, then name the machine.',
+    rewardLabel: 'Space Bender'
   }
 };
 

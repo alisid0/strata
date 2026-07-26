@@ -427,6 +427,7 @@
   import SolveFirstCoordinates from '../lib/components/assessments/SolveFirstCoordinates.svelte';
   import SolveFirstLimits from '../lib/components/assessments/SolveFirstLimits.svelte';
   import SolveFirstNetworks from '../lib/components/assessments/SolveFirstNetworks.svelte';
+  import SolveFirstMatrices from '../lib/components/assessments/SolveFirstMatrices.svelte';
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
   import { getSolveFirst, getAllSolveFirst } from '../lib/content/solveFirst.js';
@@ -723,6 +724,8 @@
           <SolveFirstLimits config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'network-routing'}
           <SolveFirstNetworks config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'matrix-warp'}
+          <SolveFirstMatrices config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else}
           <SolveFirst config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {/if}
