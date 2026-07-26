@@ -134,3 +134,30 @@ export async function resendConfirmation(email) {
   if (error) throw error;
   return data;
 }
+
+// One identity provider per email is enforced without probing for account
+// existence (Supabase deliberately masks that to prevent user enumeration).
+// The policy surfaces through two error paths instead:
+//  - signUp's "User already registered" error (handled in friendlyError)
+//  - the OAuth callback error fragment (App.svelte → friendlyOAuthError)
+// plus the dashboard setting "Automatically link identities" turned OFF
+// (see docs/engineering/SUPABASE-IDENTITY-LINKING.md).
+
+/**
+ * Translate Supabase OAuth callback errors into user-facing messages.
+ * Called by App.svelte when the OAuth redirect lands with an error fragment.
+ */
+export function friendlyOAuthError(raw) {
+  const msg = (raw || '').toLowerCase();
+  if (/already registered|already exists|already.*account|identity.*already/i.test(msg)) {
+    return 'An account already exists with this email. Please log in with your password.';
+  }
+  if (/access denied|user cancelled|user.*denied/i.test(msg)) {
+    return 'Google sign-in was cancelled.';
+  }
+  if (/provider.*email|email.*provider|different provider/i.test(msg)) {
+    return 'An account already exists with this email. Please log in with your password.';
+  }
+  // Fallback: show the raw message but sanitised
+  return raw.length < 120 ? raw : 'Google sign-in could not complete. Please try again or use email.';
+}

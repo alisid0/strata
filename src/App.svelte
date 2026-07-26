@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import { fly, fade } from 'svelte/transition';
-  import { initAuth, isAuthenticated } from './lib/stores/auth.js';
+  import { initAuth, isAuthenticated, friendlyOAuthError } from './lib/stores/auth.js';
   import { profile } from './lib/stores/profile.js';
   import { progress } from './lib/stores/progress.js';
   import { engagement } from './lib/stores/engagement.js';
@@ -33,6 +33,7 @@
   let readerNumbers = [];
   let readerStart = 1;
   let authInitialMode = 'welcome';
+  let authInitialError = '';
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
 
   const TAB_VIEWS = ['home', 'path', 'workshop', 'wscore'];
@@ -72,6 +73,21 @@
       authInitialMode = 'reset-password';
       currentView = 'auth';
       return;
+    }
+    // OAuth callback may carry an error in the fragment (Supabase returns
+    // #error=...&error_description=... when Google sign-in is denied — e.g. the
+    // email belongs to a password-only account). Read the fragment BEFORE
+    // cleaning the URL, since replaceState to the pathname drops the hash too.
+    if (params.get('auth') === 'oauth' && location.hash) {
+      const hashParams = new URLSearchParams(location.hash.slice(1));
+      const oauthError = hashParams.get('error_description') || hashParams.get('error') || '';
+      if (oauthError) {
+        history.replaceState({}, '', location.pathname);
+        authInitialMode = 'oauth-error';
+        authInitialError = friendlyOAuthError(oauthError);
+        currentView = 'auth';
+        return;
+      }
     }
     if (params.get('auth') === 'confirmed' || params.get('auth') === 'oauth') {
       history.replaceState({}, '', location.pathname);
@@ -164,7 +180,7 @@
 
   {:else if currentView === 'auth'}
     <div class="view-layer scrollable-layer">
-      <Auth onSkip={skipAuth} onAuthed={handleAuthed} initialMode={authInitialMode} />
+      <Auth onSkip={skipAuth} onAuthed={handleAuthed} initialMode={authInitialMode} initialError={authInitialError} />
     </div>
 
   {:else if currentView === 'onboarding'}

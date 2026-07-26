@@ -193,8 +193,10 @@ is not — it remains in history and in every clone.
 2. Which mailbox receives `admin@arcavetech.co.uk`, and is it monitored? It is
    the published route for data-deletion requests, so it carries a legal
    obligation.
-3. Should a Google sign-in be linkable to an existing email/password account
-   with the same address, or stay separate? Silent linking is convenient and a
-   known account-takeover pattern if the provider's email is unverified.
-4. Confirm the final production origin before setting Site URL — changing it
-   later invalidates in-flight recovery links.
+3. ~~Should a Google sign-in be linkable to an existing email/password account
+   with the same address, or stay separate?~~ **DECIDED (2026-07-22): one
+   identity provider per email.** A Google-signed-up account stays Google-only;
+   a password account stays password-only. Trying the wrong method shows a
+   clear redirect message. To enforce this in Supabase, disable automatic
+   identity linking: Dashboard → Authentication → Settings → uncheck
+   "Automatically link identities" (or set it to manual-only).

@@ -1,5 +1,5 @@
 <script>
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import {
     signUp,
     logIn,
@@ -17,6 +17,7 @@
   export let onSkip = () => {};
   export let onAuthed = () => {};
   export let initialMode = 'welcome';
+  export let initialError = '';
 
   let mode = initialMode;
   let authTab = 'login';
@@ -34,6 +35,13 @@
   let resendTimer = 30;
   let interval;
   let showPassword = false;
+
+  onMount(() => {
+    mode = initialMode;
+    if (initialError) {
+      error = initialError;
+    }
+  });
 
   $: emailValid = validEmail(email);
   $: phoneValid = validPhone();
@@ -89,7 +97,7 @@
     const message = e?.message || fallback;
     if (/invalid login credentials/i.test(message)) return 'Email or password is incorrect.';
     if (/email not confirmed/i.test(message)) return 'Confirm your email before logging in.';
-    if (/user already registered/i.test(message)) return 'An account already exists for this email. Try logging in.';
+    if (/user already registered/i.test(message)) return 'An account already exists for this email. If you originally signed up with Google, tap "Continue with Google" below. Otherwise, log in with your password.';
     if (/rate limit|too many requests/i.test(message)) return 'Too many attempts. Please wait a moment and try again.';
     if (/auth session missing|session.*missing/i.test(message)) return 'This recovery link is invalid or expired. Request a new one.';
     return message;
@@ -138,6 +146,10 @@
     error = '';
     try {
       await signInWithGoogle();
+      // On success, Supabase redirects to Google — control leaves here.
+      // If this line is reached, something went wrong (e.g. popup blocked).
+      error = 'Google sign-in could not start. Please allow pop-ups for this site.';
+      loading = false;
     } catch (e) {
       error = friendlyError(e, 'Google sign-in could not start.');
       loading = false;
@@ -288,6 +300,19 @@
 
       <button class="link skip-link" on:click={onSkip}>Continue as guest</button>
       <div class="legal-note">By continuing, you agree to our <a href="/terms.html" target="_blank" rel="noopener">Terms</a> and acknowledge our <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+    </div>
+
+  {:else if mode === 'oauth-error'}
+    <div class="screen form-screen">
+      <button class="back-chev" on:click={goBack} aria-label="Back to login">‹</button>
+      <div class="verify-glyph" aria-hidden="true">⎔</div>
+      <h2>Account found</h2>
+      {#if error}
+        <p>{error}</p>
+      {:else}
+        <p>An account already exists with this email. Please log in with the method you originally used.</p>
+      {/if}
+      <QxButton variant="primary" on:click={goBack}>Back to sign in</QxButton>
     </div>
 
   {:else if mode === 'forgot'}
