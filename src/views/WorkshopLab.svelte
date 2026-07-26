@@ -429,7 +429,7 @@
   import SolveFirstNetworks from '../lib/components/assessments/SolveFirstNetworks.svelte';
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
-  import { getFeaturedSolveFirst, getSolveFirst } from '../lib/content/solveFirst.js';
+  import { getSolveFirst, getAllSolveFirst } from '../lib/content/solveFirst.js';
   import { progress } from '../lib/stores/progress.js';
 
   export let onNavigate;
@@ -443,7 +443,7 @@
   let challenge = null; // { interactions, timeLimitSec } — active randomized run
   let test = null; // interactions[] — active strict-assessment run (Test mode)
   let solveFirst = null; // active Solve First discovery config (problem-led, no lesson first)
-  const FEATURED_SOLVE_FIRST = getFeaturedSolveFirst();
+  const ALL_SOLVE_FIRST = getAllSolveFirst();
   let running = false;  // false = browse the module grid; true = a workshop is open
   let activeTrack = 'computer';
   let activeModuleBySubject = {
@@ -615,16 +615,30 @@
   </div>
 
   {#if !running}
-    <!-- Solve First entry point. Without this the discovery experiences are only
-         reachable from inside a module, which hides them almost completely. -->
-    <section class="solve-feature">
-      <div class="solve-feature-mark" aria-hidden="true"><span></span><span></span></div>
-      <div class="solve-feature-copy">
-        <span>Solve First · New</span>
-        <strong>{FEATURED_SOLVE_FIRST.title}</strong>
-        <small>No lesson. Test an unknown system, explain its rule, then uncover the formal idea.</small>
+    <!-- Solve First: its own category. Problem-led discovery experiences where
+         the concept is revealed only after the learner cracks the system. -->
+    <section class="ws-block solve-block">
+      <div class="ws-block-head">
+        <span class="solve-block-mark" aria-hidden="true"><span></span><span></span></span>
+        <div class="ws-block-info">
+          <div class="ws-block-name">Solve First</div>
+          <div class="ws-block-sub">No lesson first — crack the system, then the concept reveals itself.</div>
+        </div>
+        <span class="ws-block-progress">{ALL_SOLVE_FIRST.length}</span>
       </div>
-      <button on:click={() => startSolveFirst(FEATURED_SOLVE_FIRST)}>Enter</button>
+      <div class="ws-grid">
+        {#each ALL_SOLVE_FIRST as sf (sf.id)}
+          <button class="ws-tile solve-tile" on:click={() => startSolveFirst(sf)}>
+            <span class="solve-eyebrow">{sf.eyebrow}</span>
+            <span class="ws-tile-name">{sf.title}</span>
+            <span class="ws-tile-sub">{sf.sub}</span>
+            <span class="ws-tile-foot">
+              <span class="solve-track-chip">{TRACKS[sf.track]?.label || sf.track}</span>
+              {#if moduleDone(sf.moduleId)}<span class="ws-chip done">Done ✓</span>{/if}
+            </span>
+          </button>
+        {/each}
+      </div>
     </section>
 
     <!-- Browse: every subject stacked as its own section + grid (matches the Topics page) -->
@@ -1131,6 +1145,24 @@
   }
 
   /* Grid-level Solve First entry point */
+  /* Solve First category — a distinct, dark, accented section */
+  .solve-block .ws-block-head { align-items: center; }
+  .solve-block-mark {
+    width: 34px; height: 34px; flex-shrink: 0; border-radius: 9px;
+    background: var(--qx-text); display: flex; align-items: center; justify-content: center; gap: 3px;
+  }
+  .solve-block-mark span { width: 4px; border-radius: 2px; background: var(--qx-accent); height: 12px; }
+  .solve-block-mark span:last-child { height: 20px; }
+  .solve-tile { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
+  .solve-eyebrow {
+    font-size: 9.5px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--qx-accent-text);
+  }
+  .solve-track-chip {
+    font-size: 10.5px; font-weight: 800; color: var(--qx-accent-text);
+    background: var(--qx-surface); border-radius: 999px; padding: 3px 9px;
+  }
+
   .solve-feature {
     display: grid;
     grid-template-columns: 46px 1fr auto;

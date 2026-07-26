@@ -74,3 +74,8 @@ export function getSolveFirst(moduleId) {
 export function getFeaturedSolveFirst() {
   return { ...SOLVE_FIRST['logic-gates'] };
 }
+
+/** All Solve First experiences, for the dedicated "Solve First" category. */
+export function getAllSolveFirst() {
+  return Object.values(SOLVE_FIRST).map((x) => ({ ...x }));
+}
