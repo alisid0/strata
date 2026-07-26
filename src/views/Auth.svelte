@@ -95,7 +95,11 @@
 
   function friendlyError(e, fallback) {
     const message = e?.message || fallback;
-    if (/invalid login credentials/i.test(message)) return 'Email or password is incorrect.';
+    // Also covers the "signed up with Google, now typing a password" case:
+    // Supabase can't distinguish it from a wrong password (it masks account
+    // existence to prevent enumeration), so we nudge toward Google without
+    // confirming anything — this message shows for every failed login.
+    if (/invalid login credentials/i.test(message)) return 'Email or password is incorrect. If you signed up with Google, use "Continue with Google" instead.';
     if (/email not confirmed/i.test(message)) return 'Confirm your email before logging in.';
     if (/user already registered/i.test(message)) return 'An account already exists for this email. If you originally signed up with Google, tap "Continue with Google" below. Otherwise, log in with your password.';
     if (/rate limit|too many requests/i.test(message)) return 'Too many attempts. Please wait a moment and try again.';
