@@ -66,6 +66,10 @@
     type: 'asymptotelab',
     prompt: 'A wall where the denominator hits zero; a floor where the curve fades out.'
   }];
+  const getRateIntervalWorkshop = () => [{
+    type: 'rateinterval',
+    prompt: 'Average speed over an interval is the slope of the line joining its two ends.'
+  }];
   const getEquationBalancerWorkshop = () => [{
     type: 'equationbalancer',
     prompt: 'Balance each equation: adjust the coefficients until every element matches on both sides.'
@@ -142,6 +146,14 @@
           sub: 'Use slopes, rules, units, and rates without guesswork.',
           pathId: 'MATH_DIFF',
           getWorkshop: getMathsDifferentiationWorkshop
+        },
+        {
+          id: 'rate-interval',
+          label: 'Avg rate',
+          title: 'Rate over an interval',
+          sub: 'Drag an interval on a distance–time curve and read its average speed as a secant slope.',
+          pathId: 'MATH_DIFF',
+          getWorkshop: getRateIntervalWorkshop
         },
         {
           id: 'coord-geometry',
