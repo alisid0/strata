@@ -91,9 +91,10 @@
     return { gid, name: g.name, firstTopic: g.firstTopic, ...GATEWAY_META[gid], read, total };
   }));
 
+  // A subject door always opens that subject's hub — same destination every
+  // time. Progress changes what the hub recommends, never where the door leads.
   function openDoor(door) {
-    if (door.read > 0) onNavigate?.('path');
-    else onNavigate?.('topicDetail', door.firstTopic);
+    onNavigate?.('subject', door.gid);
   }
 </script>
 
