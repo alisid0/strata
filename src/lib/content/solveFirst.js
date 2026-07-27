@@ -74,6 +74,17 @@ const SOLVE_FIRST = {
     title: 'Warp the Grid',
     sub: 'No lesson first. Bend a shape with two guide arrows, prove they decide where every point lands, then name the machine.',
     rewardLabel: 'Space Bender'
+  },
+  'probability': {
+    id: 'probability-trust-the-detector',
+    moduleId: 'probability',
+    pathId: 'MATH_PROBABILITY',
+    track: 'mathematics',
+    kind: 'bayes-screen',
+    eyebrow: 'Unmarked problem 07',
+    title: 'Trust the Detector',
+    sub: 'No lesson first. Sweep a treasure field, predict whether a beep is really gold, then watch the rare truth split from a crowd of false alarms.',
+    rewardLabel: 'Base-Rate Reader'
   }
 };
 

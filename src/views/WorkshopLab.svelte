@@ -512,6 +512,7 @@
   import SolveFirstLimits from '../lib/components/assessments/SolveFirstLimits.svelte';
   import SolveFirstNetworks from '../lib/components/assessments/SolveFirstNetworks.svelte';
   import SolveFirstMatrices from '../lib/components/assessments/SolveFirstMatrices.svelte';
+  import SolveFirstBayes from '../lib/components/assessments/SolveFirstBayes.svelte';
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
   import { getSolveFirst, getAllSolveFirst } from '../lib/content/solveFirst.js';
@@ -822,6 +823,8 @@
           <SolveFirstNetworks config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'matrix-warp'}
           <SolveFirstMatrices config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'bayes-screen'}
+          <SolveFirstBayes config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else}
           <SolveFirst config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {/if}
