@@ -431,6 +431,7 @@
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
   import { getSolveFirst, getAllSolveFirst } from '../lib/content/solveFirst.js';
+  import { PATHS } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
 
   export let onNavigate;
@@ -479,6 +480,9 @@
     : challenge ? 'Randomized targets, one run against the clock. Every attempt is different.'
     : (activeModule?.sub || track.sub);
   $: activePathId = activeModule?.pathId || track.pathId;
+  // Reading material for this workshop's topic — drives the Workshop -> Read link.
+  // Only topics that exist in PATHS have supporting boards to read.
+  $: topicMeta = PATHS[activePathId] || null;
   $: practiceInteractions = activeModule?.getWorkshop ? activeModule.getWorkshop() : [];
   $: interactions = test ? test : challenge ? challenge.interactions : practiceInteractions;
   $: workshopRunKey = `${activeTrack}-${activeModuleId}-${solveFirst ? 'solve-first' : test ? 'test' : challenge ? 'challenge' : 'practice'}-${runId}`;
@@ -681,7 +685,9 @@
         <strong>{workshopTitle}</strong>
         <small>{workshopSub}</small>
       </div>
-      <button on:click={() => onNavigate?.('topicDetail', activePathId)}>Open path</button>
+      {#if topicMeta && !solveFirst}
+        <button on:click={() => onNavigate?.('topicDetail', activePathId)}>Read this topic</button>
+      {/if}
     </section>
 
     {#if hasSolveFirst && !challenge && !test && !solveFirst}
