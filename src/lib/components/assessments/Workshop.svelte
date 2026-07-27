@@ -32,6 +32,7 @@
   import MomentumLab from './MomentumLab.svelte';
   import EquationBalancer from './EquationBalancer.svelte';
   import FunctionLab from './FunctionLab.svelte';
+  import AsymptoteLab from './AsymptoteLab.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -397,6 +398,11 @@
         />
       {:else if current.type === 'functionlab'}
         <FunctionLab
+          prompt={current.prompt}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'asymptotelab'}
+        <AsymptoteLab
           prompt={current.prompt}
           onDone={handleInteractionDone}
         />

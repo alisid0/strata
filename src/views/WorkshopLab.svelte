@@ -62,6 +62,10 @@
     type: 'functionlab',
     prompt: 'One rule reshapes any function: y = a·f(x − c) + d. You just proved it on two shapes.'
   }];
+  const getAsymptoteLabWorkshop = () => [{
+    type: 'asymptotelab',
+    prompt: 'A wall where the denominator hits zero; a floor where the curve fades out.'
+  }];
   const getEquationBalancerWorkshop = () => [{
     type: 'equationbalancer',
     prompt: 'Balance each equation: adjust the coefficients until every element matches on both sides.'
@@ -170,6 +174,14 @@
           sub: 'Reason about the value a function approaches, even where it breaks.',
           pathId: 'MATH_LIMITS',
           getWorkshop: getMathLimitsWorkshop
+        },
+        {
+          id: 'asymptote-lab',
+          label: 'Asymptotes',
+          title: 'Asymptote lab',
+          sub: 'Read where a curve blows up and where it levels off — place the walls and floors.',
+          pathId: 'MATH_LIMITS',
+          getWorkshop: getAsymptoteLabWorkshop
         },
         ...getSeriesIIModules('mathematics')
       ]
