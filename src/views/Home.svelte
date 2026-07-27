@@ -82,6 +82,34 @@
 
   $: continuePct = continuePath ? Math.round((continuePath.state.boardsRead / continuePath.state.boardsTotal) * 100) : 0;
 
+  // ── One "Continue now" action ──────────────────────────────────────────────
+  // The single Home card, in place of the old workout/session/continue trio.
+  // Priority: boards due for review (time-sensitive for memory) -> resume the
+  // in-progress topic -> the Daily Workout as the default coach pick. Progress
+  // decides WHICH is shown, never buries the others: a persistent link keeps
+  // the 5-minute mix reachable whenever it is not already the primary.
+  $: primary = dueCandidates.length
+    ? {
+        kind: 'review', icon: '🔥', label: 'CONTINUE NOW',
+        title: `${dueCandidates.length} ${dueCandidates.length === 1 ? 'board' : 'boards'} due for review`,
+        meta: `~${dueMinutes} min · keeps your streak`,
+        cta: 'Review', run: startSession
+      }
+    : continuePath
+      ? {
+          kind: 'continue', icon: '▶', label: 'CONTINUE NOW',
+          title: `Continue ${continuePath.manifest.name}`,
+          meta: `${continuePath.state.boardsRead} / ${continuePath.state.boardsTotal} boards · ${continuePct}%`,
+          cta: 'Continue', run: () => onNavigate?.('topicDetail', continuePath.id)
+        }
+      : {
+          kind: 'workout', icon: '⚡',
+          label: overall.read === 0 ? 'START HERE' : 'CONTINUE NOW',
+          title: overall.read === 0 ? 'Start with a 5-minute mix' : 'Your 5-minute mix',
+          meta: 'recall · weak spots · something new',
+          cta: 'Start', run: () => onNavigate?.('workout')
+        };
+
   // The four doors: per-gateway progress; an untouched gateway opens its
   // first topic directly, a started one opens the Path tab.
   $: doors = ($progress, Object.entries(PATH_GROUPS).map(([gid, g]) => {
@@ -120,61 +148,23 @@
 
   <SettingsMenu open={settingsOpen} onClose={() => settingsOpen = false} onNavigate={onNavigate} />
 
-  <!-- Daily Workout: the coach. Always available — composed from recall-due
-       topics, the weakest tested topic, and one new thing. -->
-  <button class="workout-card" on:click={() => onNavigate?.('workout')}>
-    <span class="workout-bolt">⚡</span>
-    <span class="session-info">
-      <span class="workout-label">DAILY WORKOUT</span>
-      <span class="workout-title">Your 5-minute mix</span>
-      <span class="workout-meta">recall · weak spots · something new</span>
-    </span>
-    <span class="workout-cta">Start</span>
-  </button>
-
-  <!-- Today's session: due recalls first (time-sensitive), else caught-up /
-       start states. Either this or Continue counts as the day's streak. -->
-  {#if dueCandidates.length}
-    <button class="session-card due" on:click={startSession}>
-      <span class="session-icon"><QxIcon name="flame" size={18} /></span>
-      <span class="session-info">
-        <span class="session-label">TODAY'S SESSION</span>
-        <span class="session-title">{dueCandidates.length} {dueCandidates.length === 1 ? 'board' : 'boards'} due for review</span>
-        <span class="session-meta">~{dueMinutes} min · +5 W each</span>
+  <!-- One state-aware "Continue now" card: due review -> resume the in-progress
+       topic -> the Daily Workout default. Replaces the old always-on trio so
+       Home answers "what now?" with a single confident action. -->
+  <div class="focus-card">
+    <button class="focus-main" on:click={primary.run}>
+      <span class="focus-bolt">{primary.icon}</span>
+      <span class="focus-copy">
+        <span class="focus-label">{primary.label}</span>
+        <span class="focus-title">{primary.title}</span>
+        <span class="focus-meta">{primary.meta}</span>
       </span>
-      <span class="session-cta">Review</span>
+      <span class="focus-cta">{primary.cta}</span>
     </button>
-  {:else if overall.read === 0}
-    <div class="session-card start">
-      <span class="session-info">
-        <span class="session-label">START LEARNING</span>
-        <span class="session-title">Pick a door below to begin</span>
-      </span>
-      <span class="session-arrow">↓</span>
-    </div>
-  {:else}
-    <div class="session-card done">
-      <span class="session-info">
-        <span class="session-title">All caught up ✓</span>
-        <span class="session-meta">Nothing due for review today</span>
-      </span>
-    </div>
-  {/if}
-
-  <!-- Continue card (only once something is in progress) -->
-  {#if continuePath}
-    <div class="continue-card">
-      <div class="continue-ring" style="background:conic-gradient(var(--qx-accent) {continuePct * 3.6}deg, var(--qx-surface-2) 0)">
-        <div class="ring-inner">{continuePct}%</div>
-      </div>
-      <div class="continue-info">
-        <div class="continue-label">CONTINUE</div>
-        <div class="continue-title">{continuePath.manifest.name}</div>
-        <div class="continue-meta">{continuePath.state.boardsRead} / {continuePath.state.boardsTotal} boards</div>
-      </div>
-      <button class="continue-chev" on:click={() => onNavigate?.('topicDetail', continuePath.id)}>&rsaquo;</button>
-    </div>
-  {/if}
+    {#if primary.kind !== 'workout'}
+      <button class="focus-alt" on:click={() => onNavigate?.('workout')}>or do your 5-minute mix ›</button>
+    {/if}
+  </div>
 
   {#if recallActive}
     {#key recallActive.cardNumber}
@@ -234,51 +224,33 @@
     font-size: 14px; font-weight: 900; white-space: nowrap;
   }
 
-  /* Today's session card */
-  .session-card {
+  /* One "Continue now" card — accent-filled so it reads as THE action */
+  .focus-card { margin-bottom: 20px; }
+  .focus-main {
     width: 100%; display: flex; align-items: center; gap: 12px; text-align: left;
-    padding: 14px; border-radius: var(--qx-radius-lg); margin-bottom: 14px;
-    border: 1.5px solid var(--qx-border); background: var(--qx-surface);
-    font-family: var(--qx-font); box-sizing: border-box;
-  }
-  button.session-card { cursor: pointer; }
-  .session-card.due { border-color: var(--qx-accent); background: var(--qx-accent-soft); }
-  .session-card.done { border-color: var(--qx-green); background: var(--qx-green-soft); }
-  .session-icon {
-    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
-    background: var(--qx-surface); color: var(--qx-accent-text);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .session-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .session-label { font-size: 10px; font-weight: 800; letter-spacing: 0.06em; color: var(--qx-text-faint); }
-  .session-title { font-size: 15px; font-weight: 800; color: var(--qx-text); line-height: 1.25; }
-  .session-card.done .session-title { color: var(--qx-green-text); }
-  .session-meta { font-size: 12px; font-weight: 600; color: var(--qx-text-dim); }
-  .session-cta {
-    flex-shrink: 0; padding: 8px 16px; border-radius: 999px;
-    background: var(--qx-accent); color: #fff; font-size: 13px; font-weight: 850;
-  }
-  .session-arrow { font-size: 20px; font-weight: 900; color: var(--qx-text-faint); }
-
-  /* Daily Workout — the primary card, accent-filled so it reads as THE action */
-  .workout-card {
-    width: 100%; display: flex; align-items: center; gap: 12px; text-align: left;
-    padding: 15px 14px; border-radius: var(--qx-radius-lg); margin-bottom: 10px;
+    padding: 15px 14px; border-radius: var(--qx-radius-lg);
     border: none; background: var(--qx-accent); cursor: pointer;
     font-family: var(--qx-font); box-sizing: border-box;
   }
-  .workout-bolt {
+  .focus-bolt {
     width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; font-size: 18px;
     background: rgba(255, 255, 255, 0.18); color: #fff;
     display: flex; align-items: center; justify-content: center;
   }
-  .workout-label { font-size: 10px; font-weight: 850; letter-spacing: 0.07em; color: rgba(255, 255, 255, 0.75); }
-  .workout-title { font-size: 15px; font-weight: 850; color: #fff; line-height: 1.25; }
-  .workout-meta { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.78); }
-  .workout-cta {
+  .focus-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .focus-label { font-size: 10px; font-weight: 850; letter-spacing: 0.07em; color: rgba(255, 255, 255, 0.75); }
+  .focus-title { font-size: 15px; font-weight: 850; color: #fff; line-height: 1.25; }
+  .focus-meta { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.78); }
+  .focus-cta {
     flex-shrink: 0; padding: 8px 16px; border-radius: 999px;
     background: #fff; color: var(--qx-accent); font-size: 13px; font-weight: 900;
   }
+  .focus-alt {
+    display: block; width: 100%; text-align: center; margin-top: 8px; padding: 6px;
+    background: none; border: none; cursor: pointer; font-family: var(--qx-font);
+    font-size: 12.5px; font-weight: 750; color: var(--qx-text-dim);
+  }
+  .focus-alt:hover { color: var(--qx-accent-text); }
 
   /* Recall self-check overlay */
   .recall-overlay {
@@ -315,27 +287,6 @@
     font-family: var(--qx-font); padding: 0 0 6px;
   }
   .menu-btn.icon-btn { padding: 0; }
-
-  /* Continue card */
-  .continue-card {
-    display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: var(--qx-radius-lg);
-    border: 1.5px solid var(--qx-border); background: var(--qx-surface); margin-bottom: 20px;
-  }
-  .continue-ring {
-    position: relative; width: 50px; height: 50px; flex-shrink: 0; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .ring-inner {
-    width: 40px; height: 40px; border-radius: 50%; background: var(--qx-surface);
-    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--qx-text);
-  }
-  .continue-info { flex: 1; min-width: 0; }
-  .continue-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); letter-spacing: 0.04em; margin-bottom: 3px; }
-  .continue-title { font-size: 15px; font-weight: 800; color: var(--qx-text); line-height: 1.2; }
-  .continue-meta { font-size: 12px; font-weight: 500; color: var(--qx-text-dim); margin-top: 3px; }
-  .continue-chev {
-    background: none; border: none; font-size: 24px; color: var(--qx-text-faint); cursor: pointer; padding: 4px;
-  }
 
   /* The four doors */
   .doors-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); letter-spacing: 0.05em; margin-bottom: 10px; text-transform: uppercase; }
