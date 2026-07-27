@@ -36,6 +36,7 @@
   import RateIntervalBench from './RateIntervalBench.svelte';
   import LocalLinearityStudio from './LocalLinearityStudio.svelte';
   import SecantTangentStudio from './SecantTangentStudio.svelte';
+  import ProbabilityLab from './ProbabilityLab.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -421,6 +422,11 @@
         />
       {:else if current.type === 'secanttangent'}
         <SecantTangentStudio
+          prompt={current.prompt}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'probability'}
+        <ProbabilityLab
           prompt={current.prompt}
           onDone={handleInteractionDone}
         />

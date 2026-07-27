@@ -78,6 +78,10 @@
     type: 'secanttangent',
     prompt: 'A slope at a point is a secant squeezed until the gap vanishes — and those slopes make a new curve.'
   }];
+  const getProbabilityWorkshop = () => [{
+    type: 'probability',
+    prompt: 'A few spins are wild, but over the long run the rate settles on favourable ÷ total.'
+  }];
   const getEquationBalancerWorkshop = () => [{
     type: 'equationbalancer',
     prompt: 'Balance each equation: adjust the coefficients until every element matches on both sides.'
@@ -178,6 +182,14 @@
           sub: 'Squeeze a secant to h→0 to get the tangent slope, then paint the derivative graph.',
           pathId: 'MATH_DIFF',
           getWorkshop: getSecantTangentWorkshop
+        },
+        {
+          id: 'probability',
+          label: 'Chance',
+          title: 'The long run',
+          sub: 'Read the odds off a spinner, then spin it and watch the rate settle on the theory.',
+          pathId: 'MATH_PROBABILITY',
+          getWorkshop: getProbabilityWorkshop
         },
         {
           id: 'coord-geometry',
