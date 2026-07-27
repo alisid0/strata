@@ -35,3 +35,10 @@ el-screenshot.png
 # Work mode (local state)
 .mode
 tests/solve-first/.out
+
+# Transient Vite config-load temp files
+vite.config.js.timestamp-*.mjs
+
+# Stray pnpm artifacts from a failed install (repo is npm/package-lock.json)
+pnpm-lock.yaml
+pnpm-workspace.yaml
