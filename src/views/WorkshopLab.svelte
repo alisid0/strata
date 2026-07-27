@@ -74,6 +74,10 @@
     type: 'locallinearity',
     prompt: 'Up close, a smooth curve looks like a straight line; a corner never does.'
   }];
+  const getSecantTangentWorkshop = () => [{
+    type: 'secanttangent',
+    prompt: 'A slope at a point is a secant squeezed until the gap vanishes — and those slopes make a new curve.'
+  }];
   const getEquationBalancerWorkshop = () => [{
     type: 'equationbalancer',
     prompt: 'Balance each equation: adjust the coefficients until every element matches on both sides.'
@@ -166,6 +170,14 @@
           sub: 'Zoom into a curve until it straightens — or stays a sharp corner.',
           pathId: 'MATH_DIFF',
           getWorkshop: getLocalLinearityWorkshop
+        },
+        {
+          id: 'secant-tangent',
+          label: 'Tangent',
+          title: 'Secant to tangent',
+          sub: 'Squeeze a secant to h→0 to get the tangent slope, then paint the derivative graph.',
+          pathId: 'MATH_DIFF',
+          getWorkshop: getSecantTangentWorkshop
         },
         {
           id: 'coord-geometry',
