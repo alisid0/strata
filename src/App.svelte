@@ -16,6 +16,7 @@
   import WorkshopLab from './views/WorkshopLab.svelte';
   import DailyWorkout from './views/DailyWorkout.svelte';
   import PathView from './views/PathView.svelte';
+  import SubjectView from './views/SubjectView.svelte';
   import WScore from './views/WScore.svelte';
   import Snippets from './views/Snippets.svelte';
   import Reader from './views/Reader.svelte';
@@ -28,6 +29,7 @@
   // loading | auth | onboarding | home | topics | topicDetail | stats | leaderboard | otherUserStats | snippets | reader | quiz | author
   let currentView = 'loading';
   let currentPathId = '';
+  let currentSubjectId = 'line'; // gateway id for the Subject hub view
   let workshopTarget = null; // module id the workshop tab should open directly
   let readerNumbers = [];
   let readerStart = 1;
@@ -36,7 +38,7 @@
 
   const TAB_VIEWS = ['home', 'path', 'workshop', 'wscore'];
   const TAB_ORDER = ['home', 'path', 'workshop', 'wscore'];
-  const PUSH_VIEWS = ['topicDetail', 'reader', 'quiz', 'author', 'snippetMode', 'workout'];
+  const PUSH_VIEWS = ['topicDetail', 'subject', 'reader', 'quiz', 'author', 'snippetMode', 'workout'];
   // Old view ids still used by callers/deep-links → their streamlined homes.
   const LEGACY_VIEWS = { topics: 'path', stats: 'wscore', map: 'path', snippets: 'snippetMode', leaderboard: 'wscore', otherUserStats: 'wscore' };
 
@@ -135,6 +137,7 @@
     }
 
     if (view === 'topicDetail') { currentPathId = arg; currentView = 'topicDetail'; }
+    else if (view === 'subject') { currentSubjectId = arg || 'line'; currentView = 'subject'; }
     else if (view === 'workshop') { workshopTarget = arg || null; currentView = 'workshop'; }
     else if (view === 'reader') {
       readerNumbers = arg?.numbers || Array.from({ length: 84 }, (_, i) => i + 1);
@@ -189,6 +192,11 @@
   {:else if currentView === 'topicDetail'}
     <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
       <PathView pathId={currentPathId} onNavigate={navigate} />
+    </div>
+
+  {:else if currentView === 'subject'}
+    <div class="view-layer" in:fly={flyIn(1)} out:fly={flyOut(1)}>
+      <SubjectView gid={currentSubjectId} onNavigate={navigate} />
     </div>
 
   {:else if currentView === 'workout'}
