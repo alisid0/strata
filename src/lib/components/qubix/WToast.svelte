@@ -7,12 +7,19 @@
   import { playAward, playBonus } from '../../sfx.js';
 
   let visible = null;   // { id, amount, bonus }
+  let playedId = null;  // last toast id we chimed for — tracked SEPARATELY from
+                        // `visible` so hiding the toast can't retrigger the sound
   let hideTimer = null;
 
   const reduceMotion = typeof matchMedia !== 'undefined'
     && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  $: if ($wtoast && $wtoast.id !== visible?.id) {
+  // Fire once per NEW toast id. Guarding on `playedId` (not `visible?.id`) is
+  // deliberate: the hide-timer sets `visible = null`, and if the condition read
+  // `visible?.id` that reset would re-satisfy it every 1.4s and loop the chime
+  // forever. `playedId` only changes here, so a hidden toast never replays.
+  $: if ($wtoast && $wtoast.id !== playedId) {
+    playedId = $wtoast.id;
     visible = $wtoast;
     ($wtoast.bonus ? playBonus : playAward)();
     if (hideTimer) clearTimeout(hideTimer);
