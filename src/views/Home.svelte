@@ -1,5 +1,5 @@
 <script>
-  import { PATHS, PATH_GROUPS, totalBoards, pathsForCard } from '../lib/content/paths.js';
+  import { PATHS, PATH_GROUPS, pathsForCard } from '../lib/content/paths.js';
   import { getBoard } from '../lib/content/dynamicBoards.js';
   import { progress } from '../lib/stores/progress.js';
   import { displayName } from '../lib/stores/auth.js';
@@ -10,8 +10,6 @@
 
   export let onNavigate; // (view, args?) => void
   let settingsOpen = false;
-
-  const TOTAL_BOARDS = totalBoards();
 
   const GATEWAY_META = {
     line: { icon: '/icons/gateways/line.png', tagline: 'Numbers, space & patterns' },
@@ -110,13 +108,13 @@
           cta: 'Start', run: () => onNavigate?.('workout')
         };
 
-  // The four doors: per-gateway progress; an untouched gateway opens its
-  // first topic directly, a started one opens the Path tab.
-  $: doors = ($progress, Object.entries(PATH_GROUPS).map(([gid, g]) => {
-    const states = g.paths.filter(id => PATHS[id]).map(id => progress.getPathState(id, PATHS[id]));
-    const read = states.reduce((a, s) => a + (s.boardsRead || 0), 0);
-    const total = states.reduce((a, s) => a + (s.boardsTotal || 0), 0);
-    return { gid, name: g.name, firstTopic: g.firstTopic, ...GATEWAY_META[gid], read, total };
+  // Home is for choosing a direction, not inspecting inventory. Keep each
+  // subject door's useful description stable instead of replacing it with a
+  // raw board count once the learner has started.
+  const doors = Object.entries(PATH_GROUPS).map(([gid, g]) => ({
+    gid,
+    name: g.name,
+    ...GATEWAY_META[gid]
   }));
 
   // A subject door always opens that subject's hub — same destination every
@@ -194,7 +192,7 @@
       <button class="door" on:click={() => openDoor(door)}>
         <img class="door-icon" src={door.icon} alt={door.name} />
         <span class="door-name">{door.name}</span>
-        <span class="door-sub">{door.read > 0 ? `${door.read}/${door.total} boards` : door.tagline}</span>
+        <span class="door-sub">{door.tagline}</span>
       </button>
     {/each}
   </div>
