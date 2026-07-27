@@ -58,6 +58,10 @@
     type: 'bondlab',
     prompt: 'Place atoms on the bench and form stable compounds by sharing or transferring electrons.'
   }];
+  const getFunctionLabWorkshop = () => [{
+    type: 'functionlab',
+    prompt: 'One rule reshapes any function: y = a·f(x − c) + d. You just proved it on two shapes.'
+  }];
   const getEquationBalancerWorkshop = () => [{
     type: 'equationbalancer',
     prompt: 'Balance each equation: adjust the coefficients until every element matches on both sides.'
@@ -94,6 +98,14 @@
           sub: 'Test input-output rules, notation, domains, graphs, inverses, and composites.',
           pathId: 'MATH_FUNCTIONS',
           getWorkshop: getMathsFunctionsWorkshop
+        },
+        {
+          id: 'transformation-lab',
+          label: 'Transforms',
+          title: 'Transformation lab',
+          sub: 'Drag a curve onto its target: translate, stretch, and flip any function.',
+          pathId: 'MATH_FUNCTIONS',
+          getWorkshop: getFunctionLabWorkshop
         },
         {
           id: 'exp-logs',

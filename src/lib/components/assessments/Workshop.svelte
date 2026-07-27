@@ -31,6 +31,7 @@
   import MotionLab from './MotionLab.svelte';
   import MomentumLab from './MomentumLab.svelte';
   import EquationBalancer from './EquationBalancer.svelte';
+  import FunctionLab from './FunctionLab.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -391,6 +392,11 @@
         />
       {:else if current.type === 'equationbalancer'}
         <EquationBalancer
+          prompt={current.prompt}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'functionlab'}
+        <FunctionLab
           prompt={current.prompt}
           onDone={handleInteractionDone}
         />
