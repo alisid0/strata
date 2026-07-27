@@ -85,6 +85,17 @@ const SOLVE_FIRST = {
     title: 'Trust the Detector',
     sub: 'No lesson first. Sweep a treasure field, predict whether a beep is really gold, then watch the rare truth split from a crowd of false alarms.',
     rewardLabel: 'Base-Rate Reader'
+  },
+  'motion': {
+    id: 'motion-trajectory',
+    moduleId: 'motion',
+    pathId: 'PHY_MOTION_FOUNDATIONS',
+    track: 'physics',
+    kind: 'projectile-arc',
+    eyebrow: 'Unmarked problem 08',
+    title: 'Trajectory',
+    sub: 'No lesson first. Aim a launcher, arc shots onto flags and over walls, then discover why 45° flies farthest.',
+    rewardLabel: 'Range Master'
   }
 };
 
