@@ -683,7 +683,7 @@
   }
 </script>
 
-<div class="qx-shell workshop-lab">
+<div class="qx-shell workshop-lab" class:coord-arcade={solveFirst?.kind === 'coordinate-signal'}>
   <div class="lab-header">
     <div>
       <div class="kicker">Exercises</div>
@@ -755,6 +755,7 @@
     <!-- Running a workshop -->
     <button class="ws-back" on:click={backToGrid}>← All workshops</button>
 
+    {#if !solveFirst || solveFirst.kind !== 'coordinate-signal'}
     <section class="spotlight">
       <div class="spotlight-copy">
         <span>{track.label}</span>
@@ -765,6 +766,7 @@
         <button on:click={() => onNavigate?.('topicDetail', activePathId)}>Read this topic</button>
       {/if}
     </section>
+    {/if}
 
     {#if hasSolveFirst && !challenge && !test && !solveFirst}
       <div class="solve-bar">
@@ -1379,6 +1381,13 @@
 
     .spotlight button {
       width: 100%;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .workshop-lab.coord-arcade .lab-header,
+    .workshop-lab.coord-arcade .ws-back {
+      display: none;
     }
   }
 </style>

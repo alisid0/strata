@@ -31,7 +31,20 @@
 </script>
 
 <svg class="signal-grid" viewBox="0 0 240 240" role="img" aria-label={caption || 'Rescue map'}>
-  <rect x="0" y="0" width="240" height="240" rx="10" fill="var(--qx-surface-elevated)" />
+  <defs>
+    <linearGradient id="gridBackdrop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--qx-surface-elevated)" />
+      <stop offset="0.55" stop-color="var(--qx-surface-2)" />
+      <stop offset="1" stop-color="var(--qx-accent-soft)" />
+    </linearGradient>
+    <radialGradient id="gridRadar">
+      <stop offset="0" stop-color="var(--qx-accent)" stop-opacity=".18" />
+      <stop offset="1" stop-color="var(--qx-accent)" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="240" height="240" rx="14" fill="url(#gridBackdrop)" />
+  <circle cx="120" cy="120" r="108" fill="url(#gridRadar)" />
+  <rect x="1" y="1" width="238" height="238" rx="13" fill="none" stroke="var(--qx-border-2)" stroke-width="1.5" />
 
   <!-- block grid -->
   {#each Array(2 * R + 1) as _, i}
@@ -83,6 +96,8 @@
   <!-- signals -->
   {#each signals as s}
     <g class="signal" class:found={s.found} opacity={s.faint ? 0.55 : 1}>
+      <circle class="signal-pulse" cx={gx(s.x)} cy={gy(s.y)} r="10"
+        fill="none" stroke={s.found ? 'var(--qx-green)' : 'var(--qx-danger)'} stroke-width="1" />
       <circle cx={gx(s.x)} cy={gy(s.y)} r={s.found ? 6 : 5}
         fill={s.found ? 'var(--qx-green)' : 'var(--qx-danger)'}
         stroke="var(--qx-surface-elevated)" stroke-width="2" />
@@ -103,6 +118,9 @@
   <!-- drone -->
   {#if drone}
     <g class="drone">
+      <circle class="drone-ring" cx={gx(drone.x)} cy={gy(drone.y)} r="13" fill="none" stroke="var(--qx-accent)" stroke-width="1" />
+      <line x1={gx(drone.x) - 12} y1={gy(drone.y)} x2={gx(drone.x) + 12} y2={gy(drone.y)} stroke="var(--qx-accent)" stroke-width=".8" />
+      <line x1={gx(drone.x)} y1={gy(drone.y) - 12} x2={gx(drone.x)} y2={gy(drone.y) + 12} stroke="var(--qx-accent)" stroke-width=".8" />
       <circle cx={gx(drone.x)} cy={gy(drone.y)} r="8" fill="var(--qx-accent-soft)" stroke="var(--qx-accent)" stroke-width="1.6" />
       <circle cx={gx(drone.x)} cy={gy(drone.y)} r="3" fill="var(--qx-accent)" />
     </g>
@@ -110,10 +128,21 @@
 </svg>
 
 <style>
-  .signal-grid { display: block; width: 100%; max-width: 300px; margin: 0 auto; border-radius: var(--qx-radius-md); }
+  .signal-grid { display: block; width: 100%; max-width: 330px; margin: 0 auto; border-radius: 14px; filter: drop-shadow(0 14px 24px color-mix(in srgb, var(--qx-accent) 12%, transparent)); }
   .drone { transition: transform .3s ease; }
+  .drone-ring { transform-origin: center; animation: radar-spin 2.4s linear infinite; stroke-dasharray: 6 5; }
+  .signal-pulse { transform-origin: center; animation: signal-pulse 1.8s ease-out infinite; }
   .signal circle { transition: fill .2s ease; }
+  @keyframes signal-pulse {
+    0% { opacity: .8; transform: scale(.6); }
+    75%, 100% { opacity: 0; transform: scale(1.7); }
+  }
+  @keyframes radar-spin { to { transform: rotate(360deg); } }
+  @media (max-width: 430px) {
+    .signal-grid { max-width: 250px; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .drone { transition: none; }
+    .drone-ring, .signal-pulse { animation: none; }
   }
 </style>

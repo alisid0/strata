@@ -13,7 +13,9 @@
   // No formal vocabulary before the reveal. No written explanation. No timer.
   // Lucky single hits never skip the contrasting-evidence gates.
   import { fly, fade } from 'svelte/transition';
+  import ArcadeShell from './ArcadeShell.svelte';
   import SignalGrid from './SignalGrid.svelte';
+  import { playAward, playBonus } from '../../sfx.js';
 
   export let config;
   export let onDone = () => {};
@@ -25,6 +27,10 @@
   let usedHint = false;
   let activeHint = '';
   let recorded = false;
+  let arcadeScore = 0;
+  let combo = 0;
+  let attempts = 0;
+  let awarded = new Set();
 
   // chapter 1 — one tunnel
   let ew1 = 0;
@@ -98,62 +104,112 @@
   // reward
   $: evidenceScore = runs1.length >= 4 && miss4 <= 2 ? 4 : 3;
   $: reward = Math.min(15, 6 + evidenceScore + (transferFirstTry ? 3 : 1) + (usedHint ? 0 : 2));
+  $: rank = arcadeScore >= 9000 ? 'S' : arcadeScore >= 6500 ? 'A' : arcadeScore >= 4000 ? 'B' : 'C';
 
   function bump(setter, val, delta) { return clamp(val + delta); }
   function showHint(key) { usedHint = true; activeHint = activeHint === key ? '' : key; }
+  function award(key, points, major = false) {
+    if (awarded.has(key)) {
+      arcadeScore += 20;
+      return;
+    }
+    awarded = new Set([...awarded, key]);
+    combo += 1;
+    arcadeScore += points * Math.max(1, combo);
+    if (major) playBonus();
+    else playAward();
+  }
+  function miss(penalty = 25) {
+    combo = 0;
+    arcadeScore = Math.max(0, arcadeScore - penalty);
+  }
 
   // ---- chapter 1 ----
   function send1() {
+    attempts += 1;
     drone1 = { x: ew1, y: 0 };
     const dir = ew1 === 0 ? 'home' : ew1 > 0 ? 'east' : 'west';
     const hit = ew1 === EAST_RELAY ? 'East relay' : ew1 === WEST_RELAY ? 'West relay' : null;
     runs1 = [...runs1, { ew: ew1, dir, landed: ew1, hit }];
     seen1 = { ...seen1, [dir]: true };
+    award(`tunnel-${dir}`, hit ? 180 : 100, !!hit);
     if (seen1.home && seen1.east && seen1.west) signedShown = true;
   }
 
   // ---- chapter 2 ----
   function probeColumn() {
+    attempts += 1;
     drone2 = { x: ew2, y: 0 };
     columnProbed = ew2 === COL2_X;
+    if (columnProbed) award('column', 300, true);
+    else miss();
   }
   function restoreSecond() { secondControlOn = true; }
   function send2() {
+    attempts += 1;
     drone2 = { x: ew2, y: ns2 };
-    if (ew2 === COL2_TARGET.x && ns2 === COL2_TARGET.y) columnSolved = true;
+    if (ew2 === COL2_TARGET.x && ns2 === COL2_TARGET.y) {
+      columnSolved = true;
+      award('exact-point', 450, true);
+    } else {
+      miss();
+    }
   }
 
   // ---- chapter 3 ----
   function send3() {
+    attempts += 1;
     drone3 = { x: first3, y: second3 };
     trace3 = [{ x: 0, y: 0 }, { x: first3, y: 0 }, { x: first3, y: second3 }];
-    if (first3 === 3 && second3 === 1) gotA = true;
-    if (first3 === 1 && second3 === 3) gotB = true;
+    if (first3 === 3 && second3 === 1) {
+      gotA = true;
+      award('order-a', 400);
+    } else if (first3 === 1 && second3 === 3) {
+      gotB = true;
+      award('order-b', 400);
+    } else {
+      miss();
+    }
   }
   function fixRepair(slot, delta) {
     if (slot === 'first') repairFirst = clamp(repairFirst + delta);
     else repairSecond = clamp(repairSecond + delta);
   }
   function submitRepair() {
-    if (repairFirst === 3 && repairSecond === 1) repaired = true;
+    attempts += 1;
+    if (repairFirst === 3 && repairSecond === 1) {
+      repaired = true;
+      award('repair', 500, true);
+    } else {
+      miss(35);
+    }
   }
 
   // ---- chapter 4 ----
   function send4() {
+    attempts += 1;
     drone4 = { x: ew4, y: ns4 };
     const hit = SECTORS.find((s) => s.x === ew4 && s.y === ns4);
-    if (hit) found4 = { ...found4, [hit.key]: true };
-    else miss4 += 1;
+    if (hit) {
+      found4 = { ...found4, [hit.key]: true };
+      award(`sector-${hit.key}`, 450, true);
+    } else {
+      miss4 += 1;
+      miss();
+    }
   }
 
   // ---- chapter 5 ----
   function retrieve(crate) {
+    attempts += 1;
     const ok = aisle === crate.x && shelf === crate.y;
     crateTries = { ...crateTries, [crate.key]: (crateTries[crate.key] || 0) + 1 };
     if (ok) {
       retrieved = { ...retrieved, [crate.key]: true };
       crateMsg = `${crate.label} retrieved.`;
+      award(`crate-${crate.key}`, 500);
     } else {
+      miss(35);
       const aisleWrong = aisle !== crate.x;
       const shelfWrong = shelf !== crate.y;
       crateMsg = aisleWrong && shelfWrong
@@ -162,12 +218,20 @@
     }
   }
   function pickReverse(key) {
+    if (reversePick === key) return;
+    attempts += 1;
     reverseTries += 1;
     reversePick = key;
+    if (key === 'r2') award('reverse', 650, true);
+    else miss(40);
   }
   function pickRoute(key) {
+    if (routePick === key) return;
+    attempts += 1;
     routeTries += 1;
     routePick = key;
+    if (key === 'plus3-minus4') award('displacement', 900, true);
+    else miss(50);
   }
 
   function finishDiscovery() {
@@ -182,7 +246,10 @@
         patternFound: true,
         compared: true,
         transferFirstTry,
-        usedHint
+        usedHint,
+        arcadeScore,
+        arcadeRank: rank,
+        attempts
       });
     }
   }
@@ -194,25 +261,24 @@
     first3 = 0; second3 = 0; drone3 = null; trace3 = []; gotA = false; gotB = false; repairFirst = 1; repairSecond = 3; repaired = false;
     ew4 = 0; ns4 = 0; drone4 = null; found4 = {}; miss4 = 0;
     aisle = 0; shelf = 0; retrieved = {}; crateTries = {}; crateMsg = ''; reversePick = ''; reverseTries = 0; routePick = ''; routeTries = 0;
+    arcadeScore = 0; combo = 0; attempts = 0; awarded = new Set();
   }
 
   const PHASES = ['oneline', 'column', 'order', 'sectors', 'warehouse', 'reveal'];
   $: phaseIndex = phase === 'brief' ? 0 : PHASES.indexOf(phase) + 1;
+  $: arcadeLevel = phase === 'reveal' ? 5 : Math.min(5, phaseIndex);
 </script>
 
 <div class="solve-first">
-  <header class="mode-head">
-    <button class="exit" on:click={onExit} aria-label="Return to workshop practice">←</button>
-    <div><span>{config.eyebrow}</span><strong>Solve First</strong></div>
-    <div class="phase-count">{phaseIndex}/6</div>
-  </header>
-
-  <div class="phase-line" aria-label="Discovery progress">
-    {#each PHASES as item, i}
-      <span class:active={phase === item} class:done={phaseIndex > i + 1}></span>
-    {/each}
-  </div>
-
+  <ArcadeShell
+    eyebrow={`${config.eyebrow} · Arcade mission`}
+    title="Find the Signal"
+    level={arcadeLevel}
+    totalLevels={5}
+    score={arcadeScore}
+    streak={combo}
+    {onExit}
+  >
   {#key phase}
     <section class="phase" in:fly={{ x: 28, duration: 240 }} out:fade={{ duration: 90 }}>
 
@@ -227,7 +293,7 @@
             <strong>Restore the map one control at a time, recover every rescue signal, and prove the location codes still work.</strong>
           </div>
           <div class="brief-rules">
-            <span>Failed searches are free</span>
+            <span>Retries never lock you out</span>
             <span>Evidence unlocks controls</span>
             <span>Map language comes last</span>
           </div>
@@ -588,6 +654,11 @@
               <div><span>Discovery distinction</span><strong>{config.rewardLabel}</strong></div>
               <b>+{reward} W</b>
             </div>
+            <div class="arcade-result">
+              <div><span>Arcade score</span><strong>{arcadeScore.toLocaleString()}</strong></div>
+              <div><span>Navigator rank</span><strong>{rank}</strong></div>
+              <div><span>Searches</span><strong>{attempts}</strong></div>
+            </div>
             <div class="reward-skills">
               <span class:earned={sectors4Ready}>Evidence</span>
               <span class:earned={true}>Pattern</span>
@@ -605,20 +676,11 @@
       {/if}
     </section>
   {/key}
+  </ArcadeShell>
 </div>
 
 <style>
-  .solve-first { width: 100%; max-width: 410px; margin: 0 auto; color: var(--qx-text); }
-  .mode-head { display: grid; grid-template-columns: 36px 1fr auto; gap: 10px; align-items: center; margin-bottom: 11px; }
-  .exit { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--qx-border); background: var(--qx-surface-2); color: var(--qx-text); font-size: 17px; cursor: pointer; }
-  .mode-head div:nth-child(2) { display: flex; flex-direction: column; }
-  .mode-head span { color: var(--qx-accent); font-size: 9px; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
-  .mode-head strong { font-size: 17px; font-weight: 900; }
-  .phase-count { color: var(--qx-text-faint); font-size: 11px; font-weight: 900; font-variant-numeric: tabular-nums; }
-  .phase-line { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 18px; }
-  .phase-line span { height: 4px; border-radius: 4px; background: var(--qx-surface-3); }
-  .phase-line span.active { background: var(--qx-accent); }
-  .phase-line span.done { background: var(--qx-green); }
+  .solve-first { width: 100%; max-width: 430px; margin: 0 auto; color: var(--qx-text); }
   .phase { min-height: 420px; display: flex; flex-direction: column; }
 
   .brief { text-align: center; display: flex; flex-direction: column; align-items: center; }
@@ -749,15 +811,32 @@
   .reward-top span { font-size: 9px; color: var(--qx-green-text); font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
   .reward-top strong { font-size: 15px; color: var(--qx-text); }
   .reward-top b { color: var(--qx-green-text); font-size: 21px; }
+  .arcade-result { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 6px; margin: 10px 0; }
+  .arcade-result > div { border: 1px solid color-mix(in srgb, var(--qx-green) 42%, var(--qx-border)); border-radius: 9px; padding: 7px 8px; background: var(--qx-surface); display: flex; flex-direction: column; }
+  .arcade-result span { color: var(--qx-text-faint); font-size: 8px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+  .arcade-result strong { color: var(--qx-text); font-size: 15px; font-weight: 950; font-variant-numeric: tabular-nums; }
   .reward-skills { display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0 7px; }
   .reward-skills span { border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-text-faint); border-radius: 999px; padding: 4px 8px; font-size: 9px; font-weight: 850; }
   .reward-skills span.earned { color: var(--qx-green-text); border-color: var(--qx-green); }
   .reward-panel small { color: var(--qx-text-dim); font-size: 9.5px; line-height: 1.35; display: block; }
   .reveal-actions { width: 100%; display: grid; gap: 7px; }
 
+  @media (max-width: 430px) {
+    .phase { min-height: calc(100dvh - 235px); }
+    .section-title { margin-bottom: 9px; }
+    .section-title h2 { font-size: 19px; margin-top: 5px; }
+    .section-title p { font-size: 12px; line-height: 1.4; }
+    .controls { gap: 7px; }
+    .control { padding: 8px 6px; }
+    .control button, .slot button { width: 42px; height: 42px; }
+    .run-list { display: none; }
+    .warehouse { padding: 8px; }
+  }
+
   @media (max-width: 360px) {
     .solve-first { max-width: 100%; }
     .phase { min-height: 400px; }
     h2 { font-size: 21px; }
+    .arcade-result { grid-template-columns: 1fr 1fr 1fr; }
   }
 </style>
