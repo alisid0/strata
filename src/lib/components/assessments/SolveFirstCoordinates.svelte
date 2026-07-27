@@ -22,6 +22,14 @@
   export let onExit = () => {};
 
   const clamp = (v) => Math.max(-4, Math.min(4, v));
+  function radarStatus(drone, targets) {
+    if (!drone) return 'SCANNING';
+    const distance = Math.min(...targets.map((target) => Math.hypot(drone.x - target.x, drone.y - target.y)));
+    if (distance === 0) return 'LOCKED';
+    if (distance <= 1.5) return 'HOT';
+    if (distance <= 3) return 'NEAR';
+    return 'FAINT';
+  }
 
   let phase = 'brief';
   let usedHint = false;
@@ -308,6 +316,7 @@
         </div>
 
         <SignalGrid drone={drone1} mode={signedShown ? 'signed' : 'plain'}
+          scanStatus={radarStatus(drone1, [{ x: EAST_RELAY, y: 0 }, { x: WEST_RELAY, y: 0 }])}
           signals={[{ x: EAST_RELAY, y: 0, label: 'East relay', found: seen1.east && drone1?.x === EAST_RELAY },
                     { x: WEST_RELAY, y: 0, label: 'West relay', found: seen1.west && drone1?.x === WEST_RELAY }]}
           caption={drone1 ? `Drone ${drone1.x === 0 ? 'at home' : drone1.x > 0 ? drone1.x + ' east' : (-drone1.x) + ' west'}` : 'Drone at home'} />
@@ -363,6 +372,7 @@
         </div>
 
         <SignalGrid drone={drone2} mode="signed" showColumn={columnProbed && !secondControlOn ? COL2_X : null}
+          scanStatus={radarStatus(drone2, [COL2_TARGET])}
           signals={[{ x: COL2_TARGET.x, y: COL2_TARGET.y, label: 'Upper', found: columnSolved },
                     { x: COL2_DECOY.x, y: COL2_DECOY.y, label: 'Lower', faint: true }]}
           caption={secondControlOn ? 'Two controls active' : 'One control only'} />
@@ -423,6 +433,7 @@
         </div>
 
         <SignalGrid drone={drone3} mode="signed" trace={trace3}
+          scanStatus={radarStatus(drone3, [{ x: 3, y: 1 }, { x: 1, y: 3 }])}
           signals={[{ x: 3, y: 1, label: 'Signal A', found: gotA }, { x: 1, y: 3, label: 'Signal B', found: gotB }]}
           caption="Order test" />
 
@@ -480,6 +491,7 @@
         </div>
 
         <SignalGrid drone={drone4} mode="signed"
+          scanStatus={radarStatus(drone4, SECTORS)}
           signals={SECTORS.map((s) => ({ x: s.x, y: s.y, label: s.label, found: !!found4[s.key] }))}
           caption="Four-sector recovery" />
 
@@ -577,7 +589,7 @@
         {#if cratesDone}
           <div class="reverse">
             <div class="reverse-head">Last check — read it backwards. Which code reaches the highlighted bin?</div>
-            <SignalGrid drone={null} mode="signed"
+            <SignalGrid drone={null} mode="signed" scanStatus="TARGET"
               signals={[{ x: REVERSE_BIN.x, y: REVERSE_BIN.y, label: 'this bin', found: true }]}
               caption="Reverse read target" />
             <div class="reverse-options">
@@ -626,7 +638,7 @@
           <h2>You rebuilt the coordinate plane.</h2>
           <p>Every control you restored has a formal name. Here is the map you operated.</p>
 
-          <SignalGrid drone={null} mode="formal"
+          <SignalGrid drone={null} mode="formal" scanStatus="RESTORED"
             signals={SECTORS.map((s) => ({ x: s.x, y: s.y, label: s.label, found: true }))}
             caption="Restored coordinate map" />
 

@@ -12,6 +12,7 @@
   export let mode = 'plain';      // 'plain' | 'signed' | 'formal'
   export let showColumn = null;   // highlight a whole vertical tunnel at this x
   export let caption = '';        // accessible description of the current state
+  export let scanStatus = 'SCANNING';
 
   const R = 4;                    // grid spans -4..4
   const CX = 120, CY = 120, CELL = 26;
@@ -41,6 +42,14 @@
       <stop offset="0" stop-color="var(--qx-accent)" stop-opacity=".18" />
       <stop offset="1" stop-color="var(--qx-accent)" stop-opacity="0" />
     </radialGradient>
+    <linearGradient id="radarBeam" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="var(--qx-green)" stop-opacity=".04" />
+      <stop offset=".72" stop-color="var(--qx-green)" stop-opacity=".18" />
+      <stop offset="1" stop-color="var(--qx-green)" stop-opacity=".45" />
+    </linearGradient>
+    <clipPath id="radarClip">
+      <rect x="4" y="4" width="232" height="232" rx="11" />
+    </clipPath>
   </defs>
   <rect x="0" y="0" width="240" height="240" rx="14" fill="url(#gridBackdrop)" />
   <circle cx="120" cy="120" r="108" fill="url(#gridRadar)" />
@@ -51,6 +60,23 @@
     <line x1={gx(i - R)} y1={gy(-R)} x2={gx(i - R)} y2={gy(R)} stroke="var(--qx-border)" stroke-width="0.6" opacity="0.5" />
     <line x1={gx(-R)} y1={gy(i - R)} x2={gx(R)} y2={gy(i - R)} stroke="var(--qx-border)" stroke-width="0.6" opacity="0.5" />
   {/each}
+
+  <!-- active 2D radar layer -->
+  <g class="range-rings" aria-hidden="true">
+    {#each [26, 52, 78, 104] as radius}
+      <circle cx="120" cy="120" r={radius} fill="none" stroke="var(--qx-green)" stroke-width=".7" stroke-dasharray="3 5" opacity=".22" />
+    {/each}
+  </g>
+  <g class="radar-sweep" clip-path="url(#radarClip)" aria-hidden="true">
+    <path d="M120 120 L120 12 A108 108 0 0 1 218 74 Z" fill="url(#radarBeam)" />
+    <line x1="120" y1="120" x2="120" y2="12" stroke="var(--qx-green)" stroke-width="1.2" opacity=".72" />
+  </g>
+  <g class="scan-chip" aria-hidden="true">
+    <rect x="8" y="8" width="64" height="18" rx="7" fill="var(--qx-surface)" stroke="var(--qx-green)" stroke-width=".8" />
+    <circle cx="18" cy="17" r="2.5" fill="var(--qx-green)" />
+    <text x="25" y="20" font-size="7" font-weight="800" letter-spacing=".5"
+      fill="var(--qx-green-text)" font-family="var(--qx-font)">{scanStatus}</text>
+  </g>
 
   {#if quadrants.length}
     {#each quadrants as q}
@@ -130,6 +156,8 @@
 <style>
   .signal-grid { display: block; width: 100%; max-width: 330px; margin: 0 auto; border-radius: 14px; filter: drop-shadow(0 14px 24px color-mix(in srgb, var(--qx-accent) 12%, transparent)); }
   .drone { transition: transform .3s ease; }
+  .radar-sweep { transform-origin: 120px 120px; animation: radar-sweep 3.4s linear infinite; }
+  .scan-chip circle { animation: scan-led 1s ease-in-out infinite alternate; }
   .drone-ring { transform-origin: center; animation: radar-spin 2.4s linear infinite; stroke-dasharray: 6 5; }
   .signal-pulse { transform-origin: center; animation: signal-pulse 1.8s ease-out infinite; }
   .signal circle { transition: fill .2s ease; }
@@ -138,11 +166,13 @@
     75%, 100% { opacity: 0; transform: scale(1.7); }
   }
   @keyframes radar-spin { to { transform: rotate(360deg); } }
+  @keyframes radar-sweep { to { transform: rotate(360deg); } }
+  @keyframes scan-led { to { opacity: .35; } }
   @media (max-width: 430px) {
     .signal-grid { max-width: 250px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .drone { transition: none; }
-    .drone-ring, .signal-pulse { animation: none; }
+    .radar-sweep, .scan-chip circle, .drone-ring, .signal-pulse { animation: none; }
   }
 </style>
