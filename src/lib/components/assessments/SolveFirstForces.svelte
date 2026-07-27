@@ -28,7 +28,7 @@
   let deliverRun = null;
   let hintUsed = false;
   let activeHint = '';
-  let transfer = { tug: '', ramp: '' };
+  let transfer = { tug: '', ramp: '', resultant: '' };
   let transferMistakes = 0;
   let recorded = false;
 
@@ -38,7 +38,10 @@
   $: shift = Math.max(-30, Math.min(30, net * 10));
   $: steadyReady = seen.still && seen.left && seen.right;
   $: deliverReady = deliveredRight && deliveredLeft;
-  $: transferReady = transfer.tug === 'equal' && transfer.ramp === 'stronger';
+  $: transferReady =
+    transfer.tug === 'equal' &&
+    transfer.ramp === 'stronger' &&
+    transfer.resultant === '3-right';
   $: transferFirstTry = transferReady && transferMistakes === 0;
   $: evidenceScore = runs.length >= 4 && steadyReady ? 4 : 3;
   $: reward = Math.min(15, 6 + evidenceScore + (transferFirstTry ? 3 : 1) + (hintUsed ? 0 : 2));
@@ -67,7 +70,7 @@
   }
 
   function answerTransfer(scene, value) {
-    const correct = scene === 'tug' ? 'equal' : 'stronger';
+    const correct = scene === 'tug' ? 'equal' : scene === 'ramp' ? 'stronger' : '3-right';
     if (value !== correct) transferMistakes += 1;
     transfer = { ...transfer, [scene]: value };
   }
@@ -101,7 +104,7 @@
     deliverRun = null;
     hintUsed = false;
     activeHint = '';
-    transfer = { tug: '', ramp: '' };
+    transfer = { tug: '', ramp: '', resultant: '' };
     transferMistakes = 0;
     recorded = false;
   }
@@ -311,8 +314,33 @@
           </div>
         </div>
 
+        <div class="policy-card synthesis-card">
+          <div class="policy-icon" aria-hidden="true">5−2</div>
+          <div class="policy-copy">
+            <small>Control-room prediction</small>
+            <strong>A left thruster pushes 5 units right while the opposite thruster pushes 2 units left. Predict the exact remaining push.</strong>
+          </div>
+          <div class="policy-options three">
+            <button
+              class:selected={transfer.resultant === '7-right'}
+              class:wrong={transfer.resultant === '7-right'}
+              on:click={() => answerTransfer('resultant', '7-right')}
+            >7 units right</button>
+            <button
+              class:selected={transfer.resultant === '3-right'}
+              class:correct={transfer.resultant === '3-right'}
+              on:click={() => answerTransfer('resultant', '3-right')}
+            >3 units right</button>
+            <button
+              class:selected={transfer.resultant === '3-left'}
+              class:wrong={transfer.resultant === '3-left'}
+              on:click={() => answerTransfer('resultant', '3-left')}
+            >3 units left</button>
+          </div>
+        </div>
+
         <button class="primary" disabled={!transferReady} on:click={finishDiscovery}>
-          {transferReady ? 'Reveal the physics' : 'Call both outcomes'}
+          {transferReady ? 'Reveal the physics' : 'Call both outcomes and calculate the remaining push'}
         </button>
 
       {:else if phase === 'reveal'}
@@ -336,6 +364,13 @@
 
           <div class="tie-back">
             When your thrusters matched, the cart stayed put — zero resultant. When one was bigger, the cart headed toward it. That difference is the net force.
+          </div>
+
+          <div class="insight-ladder">
+            <strong>What you actually proved</strong>
+            <span><b>Evidence:</b> equal pushes produced no change; unequal pushes produced a repeatable direction.</span>
+            <span><b>Rule:</b> opposite forces subtract, so 5 right and 2 left leave a resultant of 3 right.</span>
+            <span><b>Deeper build:</b> resultant force predicts acceleration, not motion by itself. Next, connect this difference to mass with <em>F = ma</em>.</span>
           </div>
 
           <div class="reward-panel">
@@ -448,6 +483,8 @@
   .policy-options button { min-height: 46px; border: 1.5px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-dim); font: 800 10.5px/1.25 var(--qx-font); padding: 7px; cursor: pointer; }
   .policy-options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .policy-options button.wrong { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
+  .policy-options.three { grid-template-columns: repeat(3, 1fr); }
+  .synthesis-card { border-color: var(--qx-accent); }
 
   .reveal { text-align: center; display: flex; flex-direction: column; align-items: center; }
   .reveal h2 { font-size: 21px; }
@@ -458,6 +495,10 @@
   .law-reveals article > strong { font-size: 12px; margin-top: 7px; }
   .law-reveals article > span { color: var(--qx-text-dim); font-size: 9.5px; line-height: 1.35; margin-top: 3px; min-height: 40px; }
   .tie-back { width: 100%; box-sizing: border-box; border: 1px solid var(--qx-border); border-radius: 12px; padding: 11px 13px; background: var(--qx-surface); color: var(--qx-text-dim); font-size: 11.5px; line-height: 1.5; text-align: left; margin-bottom: 13px; }
+  .insight-ladder { width: 100%; box-sizing: border-box; display: grid; gap: 7px; border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px 12px; margin-bottom: 13px; background: var(--qx-accent-soft); text-align: left; }
+  .insight-ladder > strong { color: var(--qx-accent-text); font-size: 12px; }
+  .insight-ladder span { color: var(--qx-text-dim); font-size: 10.5px; line-height: 1.4; }
+  .insight-ladder b { color: var(--qx-text); }
 
   .reward-panel { width: 100%; box-sizing: border-box; border: 1.5px solid var(--qx-green); border-radius: 14px; background: var(--qx-green-soft); padding: 12px; text-align: left; margin-bottom: 13px; }
   .reward-top { display: flex; justify-content: space-between; align-items: center; }

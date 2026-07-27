@@ -74,3 +74,11 @@ export function getSolveFirst(moduleId) {
 export function getFeaturedSolveFirst() {
   return { ...SOLVE_FIRST['logic-gates'] };
 }
+
+/**
+ * The complete launch batch, in its intended discovery order.
+ * Return clones so a running workshop can never mutate the registry.
+ */
+export function getSolveFirstBatch() {
+  return Object.values(SOLVE_FIRST).map((item) => ({ ...item }));
+}

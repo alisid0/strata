@@ -56,13 +56,19 @@
   let bridgePick = '';
   let streamSamples = [];
   let streamPick = '';
+  let stabilityPick = '';
   let transferMistakes = 0;
   $: bridgeLeft = new Set(bridgeSamples.filter((r) => r.side === 'left').map((r) => r.distance));
   $: bridgeRight = new Set(bridgeSamples.filter((r) => r.side === 'right').map((r) => r.distance));
   $: bridgeEvidenceReady = bridgeLeft.size >= 2 && bridgeRight.size >= 2;
   $: streamSides = new Set(streamSamples.map((r) => r.side));
   $: streamEvidenceReady = streamSides.has('left') && streamSides.has('right');
-  $: transferReady = bridgeEvidenceReady && bridgePick === '12' && streamEvidenceReady && streamPick === 'refuse';
+  $: transferReady =
+    bridgeEvidenceReady &&
+    bridgePick === '12' &&
+    streamEvidenceReady &&
+    streamPick === 'refuse' &&
+    stabilityPick === 'closer';
   $: transferFirstTry = transferReady && transferMistakes === 0;
 
   $: convergePlot = convergeRuns.map((r, i) => ({
@@ -164,6 +170,10 @@
     if (value !== 'refuse') transferMistakes += 1;
     streamPick = value;
   }
+  function pickStability(value) {
+    if (value !== 'closer') transferMistakes += 1;
+    stabilityPick = value;
+  }
 
   function showHint(key) {
     hintUsed = true;
@@ -210,6 +220,7 @@
     bridgePick = '';
     streamSamples = [];
     streamPick = '';
+    stabilityPick = '';
     transferMistakes = 0;
   }
 </script>
@@ -434,8 +445,21 @@
           </div>
         {/if}
 
+        {#if streamPick === 'refuse'}
+          <div class="transfer-card synthesis-card">
+            <div class="transfer-head"><span>Engineering forecast</span><strong>Joint A’s nearest readings are 11.9 and 12.1. If both probes move closer again, what should strong evidence do?</strong></div>
+            <div class="decision">
+              <div class="wide">
+                <button class:selected={stabilityPick === 'closer'} class:correct={stabilityPick === 'closer'} on:click={() => pickStability('closer')}>Narrow closer around 12</button>
+                <button class:selected={stabilityPick === 'same'} class:wrong={stabilityPick === 'same'} on:click={() => pickStability('same')}>Keep the same gap</button>
+                <button class:selected={stabilityPick === 'apart'} class:wrong={stabilityPick === 'apart'} on:click={() => pickStability('apart')}>Move farther apart</button>
+              </div>
+            </div>
+          </div>
+        {/if}
+
         <button class="primary" disabled={!transferReady} on:click={finishDiscovery}>
-          {transferReady ? 'Reveal the mathematics' : 'Resolve both bridge joints'}
+          {transferReady ? 'Reveal the mathematics' : 'Resolve both joints and forecast the next evidence'}
         </button>
 
       {:else if phase === 'reveal'}
@@ -463,6 +487,13 @@
             <li><strong>Point value:</strong> f(a) may be missing or different; the nearby limit can still exist.</li>
             <li><strong>No limit:</strong> when one side heads to 3 and the other to 7, there is no single two-sided limit.</li>
           </ul>
+
+          <div class="insight-ladder">
+            <strong>What you actually proved</strong>
+            <span><b>Evidence:</b> a credible destination became more stable as probes moved closer from both sides.</span>
+            <span><b>Rule:</b> agreement near the point matters; the reading at the point can be missing or different.</span>
+            <span><b>Deeper build:</b> the shrinking gap around 12 is the intuition behind tolerance: make the input close enough and the output can be forced as close to 12 as required. That leads to continuity and the formal ε–δ definition.</span>
+          </div>
 
           <div class="reward-panel">
             <div class="reward-top">
@@ -561,6 +592,7 @@
   .hint { border-radius: 10px; padding: 9px 11px; color: var(--qx-accent-text); background: var(--qx-accent-soft); font-size: 11px; line-height: 1.4; }
 
   .transfer-card { border: 1.5px solid var(--qx-border); border-radius: 14px; padding: 11px; background: var(--qx-surface-2); display: grid; gap: 8px; }
+  .synthesis-card { border-color: var(--qx-accent); }
   .transfer-head { display: flex; flex-direction: column; gap: 2px; }
   .transfer-head span { color: var(--qx-accent); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .07em; }
   .transfer-head strong { font-size: 13px; }
@@ -584,6 +616,10 @@
   .reveal-list { list-style: none; text-align: left; width: 100%; margin: 0; padding: 0; display: grid; gap: 6px; }
   .reveal-list li { border: 1px solid var(--qx-border); border-radius: 9px; padding: 9px 11px; background: var(--qx-surface-2); font-size: 11.5px; line-height: 1.4; color: var(--qx-text-dim); }
   .reveal-list strong { color: var(--qx-text); }
+  .insight-ladder { width: 100%; box-sizing: border-box; display: grid; gap: 7px; border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px 12px; background: var(--qx-accent-soft); text-align: left; }
+  .insight-ladder > strong { color: var(--qx-accent-text); font-size: 12px; }
+  .insight-ladder span { color: var(--qx-text-dim); font-size: 10.5px; line-height: 1.4; }
+  .insight-ladder b { color: var(--qx-text); }
 
   .reward-panel { width: 100%; box-sizing: border-box; border: 1.5px solid var(--qx-green); border-radius: 14px; background: var(--qx-green-soft); padding: 12px; text-align: left; }
   .reward-top { display: flex; justify-content: space-between; align-items: center; }

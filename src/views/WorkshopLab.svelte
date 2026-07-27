@@ -429,7 +429,7 @@
   import SolveFirstNetworks from '../lib/components/assessments/SolveFirstNetworks.svelte';
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
-  import { getFeaturedSolveFirst, getSolveFirst } from '../lib/content/solveFirst.js';
+  import { getSolveFirst, getSolveFirstBatch } from '../lib/content/solveFirst.js';
   import { progress } from '../lib/stores/progress.js';
 
   export let onNavigate;
@@ -443,7 +443,7 @@
   let challenge = null; // { interactions, timeLimitSec } — active randomized run
   let test = null; // interactions[] — active strict-assessment run (Test mode)
   let solveFirst = null; // active Solve First discovery config (problem-led, no lesson first)
-  const FEATURED_SOLVE_FIRST = getFeaturedSolveFirst();
+  const SOLVE_FIRST_BATCH = getSolveFirstBatch();
   let running = false;  // false = browse the module grid; true = a workshop is open
   let activeTrack = 'computer';
   let activeModuleBySubject = {
@@ -488,6 +488,8 @@
   // Was this module ever completed? (recordWorkshopComplete grants a one-time
   // 'workshop:<id>' W, so its presence in granted marks the module done.)
   const moduleDone = (id) => !!$progress?.ws?.granted?.[`workshop:${id}`];
+  const discoveryDone = (id) => !!$progress?.discoveries?.[id]?.firstCompletedAt;
+  $: solveFirstCompleted = SOLVE_FIRST_BATCH.filter((item) => discoveryDone(item.id)).length;
 
   function finishWorkshop(finalScore, finalTotal, finalStreak = 0) {
     score = finalScore;
@@ -615,16 +617,32 @@
   </div>
 
   {#if !running}
-    <!-- Solve First entry point. Without this the discovery experiences are only
-         reachable from inside a module, which hides them almost completely. -->
-    <section class="solve-feature">
-      <div class="solve-feature-mark" aria-hidden="true"><span></span><span></span></div>
-      <div class="solve-feature-copy">
-        <span>Solve First · New</span>
-        <strong>{FEATURED_SOLVE_FIRST.title}</strong>
-        <small>No lesson. Test an unknown system, explain its rule, then uncover the formal idea.</small>
+    <section class="solve-batch" aria-labelledby="solve-batch-title">
+      <div class="solve-batch-head">
+        <div>
+          <span>Solve First · New batch</span>
+          <strong id="solve-batch-title">Five problems. No lesson first.</strong>
+          <small>Experiment, prove the hidden rule, then reveal the formal idea.</small>
+        </div>
+        <b>{solveFirstCompleted}/{SOLVE_FIRST_BATCH.length}</b>
       </div>
-      <button on:click={() => startSolveFirst(FEATURED_SOLVE_FIRST)}>Enter</button>
+      <div class="solve-batch-grid">
+        {#each SOLVE_FIRST_BATCH as item, index (item.id)}
+          <button
+            class="solve-batch-card"
+            class:done={discoveryDone(item.id)}
+            data-testid={`solve-first-${item.id}`}
+            on:click={() => startSolveFirst(item)}
+          >
+            <span class="solve-batch-number">{String(index + 1).padStart(2, '0')}</span>
+            <span class="solve-batch-copy">
+              <small>{TRACKS[item.track]?.label || 'Workshop'}</small>
+              <strong>{item.title}</strong>
+            </span>
+            <span class="solve-batch-state">{discoveryDone(item.id) ? 'Replay ✓' : 'Solve →'}</span>
+          </button>
+        {/each}
+      </div>
     </section>
 
     <!-- Browse: every subject stacked as its own section + grid (matches the Topics page) -->
@@ -1130,71 +1148,116 @@
     cursor: pointer;
   }
 
-  /* Grid-level Solve First entry point */
-  .solve-feature {
-    display: grid;
-    grid-template-columns: 46px 1fr auto;
-    align-items: center;
-    gap: 11px;
-    border-radius: 14px;
-    padding: 13px;
-    margin-bottom: 12px;
+  /* Launch rail for the complete Solve First batch. */
+  .solve-batch {
+    border: 1.5px solid var(--qx-text);
+    border-radius: 12px;
+    padding: 14px;
+    margin: 2px 0 22px;
     background: var(--qx-text);
     box-shadow: var(--qx-shadow-card);
-    overflow: hidden;
-    position: relative;
   }
-
-  .solve-feature::after {
-    content: '';
-    position: absolute;
-    width: 90px;
-    height: 90px;
-    border: 18px solid var(--qx-accent);
-    border-radius: 50%;
-    opacity: .12;
-    right: -48px;
-    top: -45px;
-  }
-
-  .solve-feature-mark {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--qx-accent);
+  .solve-batch-head {
     display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .solve-batch-head > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .solve-batch-head span {
+    color: var(--qx-accent);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+  .solve-batch-head strong { color: var(--qx-bg); font-size: 16px; line-height: 1.2; }
+  .solve-batch-head small { color: var(--qx-bg); opacity: .72; font-size: 10.5px; line-height: 1.35; margin-top: 3px; }
+  .solve-batch-head > b {
+    flex: 0 0 auto;
+    border-radius: var(--qx-radius-pill);
+    padding: 5px 9px;
+    background: color-mix(in srgb, var(--qx-bg) 14%, transparent);
+    color: var(--qx-bg);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .solve-batch-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .solve-batch-card {
+    min-width: 0;
+    min-height: 67px;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    gap: 1px 8px;
     align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
-
-  .solve-feature-mark span {
-    width: 7px;
-    height: 24px;
-    border-radius: 5px;
-    background: #fff;
-  }
-
-  .solve-feature-mark span:last-child { height: 32px; }
-  .solve-feature-copy { min-width: 0; display: flex; flex-direction: column; }
-  .solve-feature-copy > span { color: var(--qx-accent); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .09em; }
-  .solve-feature-copy strong { color: var(--qx-bg); font-size: 15px; }
-  .solve-feature-copy small { color: var(--qx-bg); opacity: .74; font-size: 10.5px; line-height: 1.3; margin-top: 2px; }
-  .solve-feature > button {
-    min-height: 36px;
-    padding: 0 14px;
-    border-radius: 999px;
-    border: 0;
-    background: var(--qx-accent);
-    color: #fff;
-    font: 900 12px var(--qx-font);
+    border: 1px solid color-mix(in srgb, var(--qx-bg) 24%, transparent);
+    border-radius: 9px;
+    padding: 9px;
+    background: color-mix(in srgb, var(--qx-bg) 8%, transparent);
+    color: var(--qx-bg);
+    font-family: var(--qx-font);
+    text-align: left;
     cursor: pointer;
-    z-index: 1;
+    transition: border-color .15s, background .15s, transform .15s;
   }
+  .solve-batch-card:hover {
+    border-color: var(--qx-accent);
+    background: color-mix(in srgb, var(--qx-bg) 13%, transparent);
+    transform: translateY(-1px);
+  }
+  .solve-batch-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .solve-batch-card:focus-visible { outline: 2px solid var(--qx-accent); outline-offset: 2px; }
+  .solve-batch-card.done { border-color: color-mix(in srgb, var(--qx-green) 65%, transparent); }
+  .solve-batch-number {
+    grid-row: 1 / 3;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--qx-bg);
+    color: var(--qx-text);
+    font-size: 10px;
+    font-weight: 950;
+    font-variant-numeric: tabular-nums;
+  }
+  .solve-batch-card.done .solve-batch-number { background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .solve-batch-copy { min-width: 0; display: flex; flex-direction: column; }
+  .solve-batch-copy small {
+    color: var(--qx-accent);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .solve-batch-copy strong {
+    overflow: hidden;
+    color: var(--qx-bg);
+    font-size: 11.5px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .solve-batch-state {
+    color: var(--qx-bg);
+    opacity: .65;
+    font-size: 9px;
+    font-weight: 850;
+  }
+  .solve-batch-card.done .solve-batch-state { color: var(--qx-green); opacity: 1; }
 
   @media (max-width: 380px) {
-    .solve-feature { grid-template-columns: 40px 1fr; }
-    .solve-feature > button { grid-column: 1 / -1; width: 100%; }
+    .solve-batch-grid { grid-template-columns: 1fr; }
   }
 
   .streak-badge {
