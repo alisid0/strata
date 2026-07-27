@@ -9,7 +9,9 @@
   // No written explanation, no lucky-success skip, no timer. Same reward
   // contract as the Crack the Lockers reference so the modes stay consistent.
   import { fly, fade } from 'svelte/transition';
+  import ArcadeShell from './ArcadeShell.svelte';
   import ForceEvidence from './ForceEvidence.svelte';
+  import { playAward, playBonus } from '../../sfx.js';
 
   export let config;
   export let onDone = () => {};
@@ -31,11 +33,15 @@
   let transfer = { tug: '', ramp: '', resultant: '' };
   let transferMistakes = 0;
   let recorded = false;
+  let arcadeScore = 0;
+  let combo = 0;
+  let attempts = 0;
+  let launchToken = 0;
 
   // The left-side thruster pushes right; the right-side thruster pushes left.
   $: net = left - right;
   $: outcome = net === 0 ? 'still' : net > 0 ? 'right' : 'left';
-  $: shift = Math.max(-30, Math.min(30, net * 10));
+  $: shift = Math.max(-118, Math.min(118, net * 34));
   $: steadyReady = seen.still && seen.left && seen.right;
   $: deliverReady = deliveredRight && deliveredLeft;
   $: transferReady =
@@ -45,23 +51,74 @@
   $: transferFirstTry = transferReady && transferMistakes === 0;
   $: evidenceScore = runs.length >= 4 && steadyReady ? 4 : 3;
   $: reward = Math.min(15, 6 + evidenceScore + (transferFirstTry ? 3 : 1) + (hintUsed ? 0 : 2));
+  $: level = phase === 'brief' ? 0 : phase === 'steady' ? 1 : phase === 'deliver' ? 2 : phase === 'transfer' ? 3 : 4;
+  $: rank = arcadeScore >= 7500 ? 'S' : arcadeScore >= 5200 ? 'A' : arcadeScore >= 3000 ? 'B' : 'C';
 
   function bump(side, delta) {
     if (side === 'left') left = Math.max(0, Math.min(MAX, left + delta));
     else right = Math.max(0, Math.min(MAX, right + delta));
   }
 
+  function award(points, major = false) {
+    combo += 1;
+    arcadeScore += points * Math.max(1, combo);
+    if (major) playBonus();
+    else playAward();
+  }
+
+  function miss(penalty = 25) {
+    combo = 0;
+    arcadeScore = Math.max(0, arcadeScore - penalty);
+  }
+
   function runSteady() {
+    const alreadySeen = seen[outcome];
+    const wasReady = steadyReady;
     const result = { left, right, outcome };
     lastRun = result;
     runs = [...runs, result];
     seen = { ...seen, [outcome]: true };
+    attempts += 1;
+    launchToken += 1;
+    if (alreadySeen) {
+      arcadeScore += 20;
+    } else {
+      award(100);
+    }
+    if (!wasReady && Object.values({ ...seen, [outcome]: true }).every(Boolean)) {
+      award(180, true);
+    }
   }
 
   function runDeliver() {
-    deliverRun = { left, right, outcome };
-    if (outcome === 'right') deliveredRight = true;
-    if (outcome === 'left') deliveredLeft = true;
+    const result = net === 2
+      ? 'east-perfect'
+      : net === -2
+        ? 'west-perfect'
+        : net === 0
+          ? 'stalled'
+          : net > 2
+            ? 'east-overshoot'
+            : net > 0
+              ? 'east-short'
+              : net < -2
+                ? 'west-overshoot'
+                : 'west-short';
+    deliverRun = { left, right, outcome, result };
+    attempts += 1;
+    launchToken += 1;
+
+    if (result === 'east-perfect') {
+      if (!deliveredRight) award(220, true);
+      else arcadeScore += 20;
+      deliveredRight = true;
+    } else if (result === 'west-perfect') {
+      if (!deliveredLeft) award(220, true);
+      else arcadeScore += 20;
+      deliveredLeft = true;
+    } else {
+      miss();
+    }
   }
 
   function showHint(key) {
@@ -71,7 +128,14 @@
 
   function answerTransfer(scene, value) {
     const correct = scene === 'tug' ? 'equal' : scene === 'ramp' ? 'stronger' : '3-right';
-    if (value !== correct) transferMistakes += 1;
+    const previous = transfer[scene];
+    if (previous === value) return;
+    if (value !== correct) {
+      transferMistakes += 1;
+      miss(35);
+    } else if (previous !== correct) {
+      award(scene === 'resultant' ? 240 : 160, scene === 'resultant');
+    }
     transfer = { ...transfer, [scene]: value };
   }
 
@@ -87,7 +151,10 @@
         patternFound: true,
         compared: true,
         transferFirstTry,
-        usedHint: hintUsed
+        usedHint: hintUsed,
+        arcadeScore,
+        arcadeRank: rank,
+        attempts
       });
     }
   }
@@ -107,54 +174,50 @@
     transfer = { tug: '', ramp: '', resultant: '' };
     transferMistakes = 0;
     recorded = false;
+    arcadeScore = 0;
+    combo = 0;
+    attempts = 0;
+    launchToken = 0;
   }
 </script>
 
 <div class="solve-first">
-  <header class="mode-head">
-    <button class="exit" on:click={onExit} aria-label="Return to workshop practice">←</button>
-    <div>
-      <span>{config.eyebrow}</span>
-      <strong>Solve First</strong>
-    </div>
-    <div class="phase-count">
-      {phase === 'brief' ? '0' : phase === 'steady' ? '1' : phase === 'deliver' ? '2' : phase === 'transfer' ? '3' : '4'}/4
-    </div>
-  </header>
-
-  <div class="phase-line" aria-label="Discovery progress">
-    {#each ['steady', 'deliver', 'transfer', 'reveal'] as item}
-      <span
-        class:active={phase === item}
-        class:done={
-          (item === 'steady' && ['deliver','transfer','reveal'].includes(phase)) ||
-          (item === 'deliver' && ['transfer','reveal'].includes(phase)) ||
-          (item === 'transfer' && phase === 'reveal')
-        }
-      ></span>
-    {/each}
-  </div>
+  <ArcadeShell
+    eyebrow={`${config.eyebrow} · Arcade mission`}
+    title="Stop the Cart"
+    {level}
+    totalLevels={4}
+    score={arcadeScore}
+    streak={combo}
+    {onExit}
+  >
 
   {#key phase}
     <section class="phase" in:fly={{ x: 28, duration: 240 }} out:fade={{ duration: 90 }}>
       {#if phase === 'brief'}
         <div class="brief">
-          <div class="cart-mark" aria-hidden="true">
-            <i class="thrust"></i><span class="box"></span><i class="thrust"></i>
+          <div class="brief-hero" aria-hidden="true">
+            <span class="hero-kicker">Dock 07 · Control offline</span>
+            <div class="hero-cart">
+              <i class="hero-flame left"></i>
+              <span class="hero-cargo"></span>
+              <i class="hero-flame right"></i>
+            </div>
+            <span class="hero-alert">!</span>
           </div>
           <div class="micro-label">Loading dock · Runaway cart</div>
           <h2>Stop the Cart</h2>
-          <p>A loaded service cart is drifting across the dock. Two thrusters are all you have. Nobody left instructions.</p>
+          <p>A loaded service cart is drifting across Dock 07. Take manual control, learn its physics and land it safely.</p>
           <div class="mission">
             <span>Your mission</span>
-            <strong>Work out what makes the cart move or hold still, then steer it into the bays on demand.</strong>
+            <strong>Complete three live missions: stabilise the cart, calibrate both bays, then pass the control-room test.</strong>
           </div>
           <div class="brief-rules">
-            <span>Failed runs are free</span>
-            <span>Evidence unlocks progress</span>
-            <span>The rule is named at the end</span>
+            <span>Accuracy builds score</span>
+            <span>Clean runs build combo</span>
+            <span>Physics unlocks at the end</span>
           </div>
-          <button class="primary" on:click={() => phase = 'steady'}>Enter the dock</button>
+          <button class="primary launch-primary" on:click={() => phase = 'steady'}>Take manual control</button>
         </div>
 
       {:else if phase === 'steady'}
@@ -164,16 +227,30 @@
           <p>Set the two thrusters and run the cart. Find out exactly what decides which way it goes — or whether it goes at all.</p>
         </div>
 
-        <div class="stage" class:still={lastRun && lastRun.outcome === 'still'}>
+        <div class="stage" class:still={lastRun && lastRun.outcome === 'still'} class:active-run={!!lastRun}>
+          <div class="stage-vignette" aria-hidden="true"></div>
+          <span class="dock-id">DOCK 07</span>
           <div class="thruster left" style={`--power:${left};`} aria-hidden="true"></div>
           <div class="track">
             <span class="bay left-bay">W</span>
             <span class="bay right-bay">E</span>
-            <div class="cart" style={`transform: translateX(${lastRun ? shift : 0}px);`}>
-              <b></b>
-            </div>
+            {#key launchToken}
+              <div
+                class="cart"
+                class:run-left={lastRun?.outcome === 'left'}
+                class:run-right={lastRun?.outcome === 'right'}
+                class:run-still={lastRun?.outcome === 'still'}
+                style={`--shift:${lastRun ? shift : 0}px;`}
+              >
+                <span class="cargo"></span>
+                <i class="nozzle nozzle-left"></i>
+                <i class="nozzle nozzle-right"></i>
+                <b></b><em></em>
+              </div>
+            {/key}
           </div>
           <div class="thruster right" style={`--power:${right};`} aria-hidden="true"></div>
+          {#if lastRun}<div class="result-flash">{lastRun.outcome === 'still' ? 'STABLE' : lastRun.outcome === 'right' ? 'EASTBOUND' : 'WESTBOUND'}</div>{/if}
         </div>
 
         <div class="readout">
@@ -220,21 +297,45 @@
           <p>Now aim it. Land the cart in the east bay and, on another run, the west bay. Prove you control the direction, not just luck.</p>
         </div>
 
-        <div class="stage" class:still={deliverRun && deliverRun.outcome === 'still'}>
+        <div class="stage delivery-stage" class:still={deliverRun && deliverRun.outcome === 'still'} class:active-run={!!deliverRun}>
+          <div class="stage-vignette" aria-hidden="true"></div>
+          <span class="dock-id">CALIBRATION RUN</span>
           <div class="thruster left" style={`--power:${left};`} aria-hidden="true"></div>
           <div class="track">
-            <span class="bay left-bay" class:hit={deliveredLeft}>W ✓</span>
-            <span class="bay right-bay" class:hit={deliveredRight}>E ✓</span>
-            <div class="cart" style={`transform: translateX(${deliverRun ? shift : 0}px);`}>
-              <b></b>
-            </div>
+            <span class="bay left-bay" class:hit={deliveredLeft}>W · −2 {deliveredLeft ? '✓' : ''}</span>
+            <span class="bay right-bay" class:hit={deliveredRight}>E · +2 {deliveredRight ? '✓' : ''}</span>
+            {#key launchToken}
+              <div
+                class="cart"
+                class:run-left={deliverRun?.outcome === 'left'}
+                class:run-right={deliverRun?.outcome === 'right'}
+                class:run-still={deliverRun?.outcome === 'still'}
+                style={`--shift:${deliverRun ? shift : 0}px;`}
+              >
+                <span class="cargo"></span>
+                <i class="nozzle nozzle-left"></i>
+                <i class="nozzle nozzle-right"></i>
+                <b></b><em></em>
+              </div>
+            {/key}
           </div>
           <div class="thruster right" style={`--power:${right};`} aria-hidden="true"></div>
+          {#if deliverRun}
+            <div class="result-flash" class:perfect={deliverRun.result?.includes('perfect')}>
+              {deliverRun.result === 'east-perfect' || deliverRun.result === 'west-perfect'
+                ? 'PERFECT DOCK'
+                : deliverRun.result === 'stalled'
+                  ? 'NO MOVEMENT'
+                  : deliverRun.result?.includes('overshoot')
+                    ? 'OVERSHOOT'
+                    : 'SHORT'}
+            </div>
+          {/if}
         </div>
 
         <div class="deliver-goals">
-          <div class:done={deliveredRight}><b>{deliveredRight ? '✓' : '○'}</b> East bay (right)</div>
-          <div class:done={deliveredLeft}><b>{deliveredLeft ? '✓' : '○'}</b> West bay (left)</div>
+          <div class:done={deliveredRight}><b>{deliveredRight ? '✓' : '○'}</b> East bay · difference +2</div>
+          <div class:done={deliveredLeft}><b>{deliveredLeft ? '✓' : '○'}</b> West bay · difference −2</div>
         </div>
 
         <div class="controls">
@@ -259,10 +360,18 @@
         <button class="test-button" on:click={runDeliver}>Launch delivery</button>
 
         {#if deliverRun && !deliverReady}
-          <div class="nudge">{deliverRun.outcome === 'still' ? 'It held still — a balanced cart goes nowhere. Make one side stronger to send it.' : `Landed in the ${deliverRun.outcome === 'right' ? 'east' : 'west'} bay. Now aim for the other one by making the other thruster win.`}</div>
+          <div class="nudge">
+            {deliverRun.result === 'stalled'
+              ? 'The pushes cancelled. The calibration bay needs a difference of exactly 2.'
+              : deliverRun.result?.includes('overshoot')
+                ? 'Too much difference—the cart overshot. Reduce the winning side until the difference is exactly 2.'
+                : deliverRun.result?.includes('perfect')
+                  ? 'Perfect dock. Reverse the winning side and reproduce a difference of 2 for the other bay.'
+                  : 'Correct direction, but not enough difference. The calibration target is exactly 2.'}
+          </div>
         {/if}
         <button class="hint-link" on:click={() => showHint('deliver')}>{activeHint === 'deliver' ? 'Hide clue' : 'Need a clue?'}</button>
-        {#if activeHint === 'deliver'}<div class="hint">A stronger push from the left sends the cart right. A stronger push from the right sends it left.</div>{/if}
+        {#if activeHint === 'deliver'}<div class="hint">For east, make the left push exactly 2 greater. For west, make the right push exactly 2 greater.</div>{/if}
         <button class="primary" disabled={!deliverReady} on:click={() => phase = 'transfer'}>
           {deliverReady ? 'Control proven · Apply it' : 'Deliver to both bays'}
         </button>
@@ -366,6 +475,16 @@
             When your thrusters matched, the cart stayed put — zero resultant. When one was bigger, the cart headed toward it. That difference is the net force.
           </div>
 
+          <div class="arcade-result">
+            <div class="rank-orb" class:s-rank={rank === 'S'}>{rank}</div>
+            <div>
+              <span>Mission score</span>
+              <strong>{arcadeScore.toLocaleString()} points</strong>
+              <small>{attempts} live runs · {transferMistakes} control-room {transferMistakes === 1 ? 'error' : 'errors'}</small>
+            </div>
+            <b>{rank === 'S' ? 'Master controller' : rank === 'A' ? 'Precision pilot' : rank === 'B' ? 'Dock qualified' : 'Mission complete'}</b>
+          </div>
+
           <div class="insight-ladder">
             <strong>What you actually proved</strong>
             <span><b>Evidence:</b> equal pushes produced no change; unequal pushes produced a repeatable direction.</span>
@@ -395,26 +514,125 @@
       {/if}
     </section>
   {/key}
+  </ArcadeShell>
 </div>
 
 <style>
-  .solve-first { width: 100%; max-width: 410px; margin: 0 auto; color: var(--qx-text); }
-  .mode-head { display: grid; grid-template-columns: 36px 1fr auto; gap: 10px; align-items: center; margin-bottom: 11px; }
-  .exit { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--qx-border); background: var(--qx-surface-2); color: var(--qx-text); font-size: 17px; cursor: pointer; }
-  .mode-head div:nth-child(2) { display: flex; flex-direction: column; }
-  .mode-head span { color: var(--qx-accent); font-size: 9px; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
-  .mode-head strong { font-size: 17px; font-weight: 900; }
-  .phase-count { color: var(--qx-text-faint); font-size: 11px; font-weight: 900; font-variant-numeric: tabular-nums; }
-  .phase-line { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 20px; }
-  .phase-line span { height: 4px; border-radius: 4px; background: var(--qx-surface-3); }
-  .phase-line span.active { background: var(--qx-accent); }
-  .phase-line span.done { background: var(--qx-green); }
-  .phase { min-height: 410px; display: flex; flex-direction: column; }
+  .solve-first { width: 100%; max-width: 720px; margin: 0 auto; color: var(--qx-text); }
+  .phase { min-height: 520px; display: flex; flex-direction: column; }
 
   .brief { text-align: center; display: flex; flex-direction: column; align-items: center; }
-  .cart-mark { width: 118px; height: 74px; border-radius: 18px; margin: 8px 0 18px; background: var(--qx-text); display: grid; grid-template-columns: 16px 1fr 16px; align-items: center; gap: 9px; padding: 0 14px; box-shadow: var(--qx-shadow-card); }
-  .cart-mark .thrust { height: 6px; border-radius: 999px; background: var(--qx-accent); }
-  .cart-mark .box { height: 34px; border-radius: 7px; background: var(--qx-bg); }
+  .brief-hero {
+    position: relative;
+    width: 100%;
+    min-height: 230px;
+    overflow: hidden;
+    border: 1px solid rgba(115, 148, 255, .45);
+    border-radius: 18px;
+    margin: 0 0 18px;
+    background:
+      linear-gradient(180deg, rgba(5, 10, 32, .05), rgba(5, 10, 32, .55)),
+      url('/images/games/stop-the-cart-dock-v1.webp') center 58% / cover;
+    box-shadow: 0 18px 40px rgba(10, 16, 42, .22);
+  }
+  .brief-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 72%, rgba(76, 111, 255, .25), transparent 35%);
+    pointer-events: none;
+  }
+  .hero-kicker {
+    position: absolute;
+    top: 13px;
+    left: 13px;
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: rgba(7, 12, 35, .72);
+    color: #dfe7ff;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    backdrop-filter: blur(7px);
+  }
+  .hero-alert {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+    z-index: 2;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 155, 103, .8);
+    border-radius: 50%;
+    background: rgba(179, 54, 46, .82);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 950;
+    box-shadow: 0 0 0 6px rgba(229, 107, 111, .15);
+    animation: alertPulse 1.25s ease-in-out infinite;
+  }
+  .hero-cart {
+    position: absolute;
+    left: 50%;
+    bottom: 36px;
+    z-index: 2;
+    width: 106px;
+    height: 54px;
+    transform: translateX(-50%);
+    border: 2px solid rgba(255, 255, 255, .45);
+    border-radius: 13px 13px 8px 8px;
+    background: linear-gradient(135deg, #637fff, #3650ba);
+    box-shadow: 0 14px 24px rgba(3, 8, 30, .48), inset 0 1px rgba(255, 255, 255, .35);
+  }
+  .hero-cart::before,
+  .hero-cart::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #182044;
+    border-radius: 50%;
+    background: #7b88ad;
+  }
+  .hero-cart::before { left: 14px; }
+  .hero-cart::after { right: 14px; }
+  .hero-cargo {
+    position: absolute;
+    left: 23px;
+    top: -28px;
+    width: 58px;
+    height: 34px;
+    border: 2px solid #ffcc75;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #f0a84d, #b86a2b);
+    box-shadow: inset 0 1px rgba(255, 255, 255, .4);
+  }
+  .hero-cargo::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(82, 42, 21, .35);
+  }
+  .hero-flame {
+    position: absolute;
+    top: 21px;
+    width: 42px;
+    height: 12px;
+    border-radius: 999px 20% 20% 999px;
+    background: linear-gradient(90deg, transparent, #ff864e, #ffe18a);
+    filter: drop-shadow(0 0 8px #ff8f57);
+  }
+  .hero-flame.left { right: 100%; }
+  .hero-flame.right { left: 100%; transform: scaleX(-1); opacity: .4; }
   .micro-label, .section-title > span, .reveal-kicker { color: var(--qx-accent); font-size: 10px; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
   h2 { font-size: 25px; line-height: 1.1; margin: 7px 0 9px; font-weight: 950; }
   p { color: var(--qx-text-dim); font-size: 13.5px; line-height: 1.5; margin: 0; }
@@ -426,43 +644,212 @@
   .brief-rules span { border: 1px solid var(--qx-border); border-radius: 999px; padding: 5px 9px; font-size: 10px; font-weight: 800; color: var(--qx-text-dim); background: var(--qx-surface-2); }
 
   .primary, .secondary { min-height: 44px; width: 100%; border-radius: 999px; font-family: var(--qx-font); font-size: 14px; font-weight: 900; cursor: pointer; }
-  .primary { border: none; background: var(--qx-accent); color: #fff; }
+  .primary { border: none; background: linear-gradient(135deg, var(--qx-accent), color-mix(in srgb, var(--qx-accent) 65%, #25317d)); color: #fff; box-shadow: 0 10px 20px color-mix(in srgb, var(--qx-accent) 20%, transparent); }
   .primary:disabled { opacity: .42; cursor: not-allowed; }
   .secondary { border: 1.5px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text-dim); }
+  .launch-primary { max-width: 360px; }
 
   .section-title { text-align: left; margin-bottom: 14px; }
   .section-title h2 { font-size: 22px; margin-bottom: 6px; }
 
-  .stage { width: 100%; box-sizing: border-box; min-height: 128px; border: 1.5px solid var(--qx-border); border-radius: 16px; background: linear-gradient(180deg, var(--qx-surface), var(--qx-surface-2)); display: grid; grid-template-columns: 60px 1fr 60px; align-items: center; gap: 8px; padding: 14px 12px; margin-bottom: 10px; }
+  .stage {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 250px;
+    overflow: hidden;
+    border: 1.5px solid rgba(99, 127, 255, .55);
+    border-radius: 18px;
+    background:
+      linear-gradient(180deg, rgba(5, 9, 31, .05), rgba(5, 9, 31, .42)),
+      url('/images/games/stop-the-cart-dock-v1.webp') center 60% / cover;
+    display: grid;
+    grid-template-columns: 70px 1fr 70px;
+    align-items: end;
+    gap: 4px;
+    padding: 24px 14px 35px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 -40px 50px rgba(5, 9, 31, .28), 0 14px 28px rgba(20, 28, 70, .14);
+    isolation: isolate;
+  }
   .stage.still { border-color: var(--qx-green); }
-  .thruster { height: calc(12px + var(--power) * 7px); min-height: 12px; border-radius: 999px; background: var(--qx-accent-soft); border: 1.5px solid var(--qx-accent); position: relative; opacity: calc(.4 + var(--power) * .11); }
-  .thruster::after { content: ''; position: absolute; top: 50%; transform: translateY(-50%); border-top: 11px solid transparent; border-bottom: 11px solid transparent; }
-  .thruster.left::after { right: -13px; border-left: 13px solid var(--qx-accent); }
-  .thruster.right::after { left: -13px; border-right: 13px solid var(--qx-accent); }
-  .track { position: relative; height: 74px; border-bottom: 3px solid var(--qx-border-2); display: grid; place-items: center; }
-  .bay { position: absolute; bottom: 4px; font-size: 8px; font-weight: 900; letter-spacing: .04em; color: var(--qx-text-faint); border: 1px dashed var(--qx-border-2); border-radius: 6px; padding: 3px 5px; }
+  .stage-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at 50% 66%, transparent 25%, rgba(4, 8, 28, .36) 100%);
+  }
+  .dock-id {
+    position: absolute;
+    top: 11px;
+    left: 12px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 999px;
+    padding: 5px 8px;
+    background: rgba(6, 11, 34, .68);
+    color: #e3e9ff;
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .11em;
+    backdrop-filter: blur(6px);
+  }
+  .thruster {
+    align-self: center;
+    height: 18px;
+    border: 2px solid rgba(213, 225, 255, .75);
+    border-radius: 6px;
+    background: linear-gradient(180deg, #8497cb, #27335f);
+    position: relative;
+    box-shadow: 0 8px 16px rgba(3, 7, 24, .38);
+  }
+  .thruster::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(10px + var(--power) * 8px);
+    height: calc(5px + var(--power) * 2px);
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 229, 145, .95), rgba(255, 108, 65, .75), transparent);
+    filter: drop-shadow(0 0 6px #ff814f);
+    opacity: calc(.22 + var(--power) * .15);
+  }
+  .thruster.left::before { right: -4px; transform: translate(100%, -50%); }
+  .thruster.right::before { left: -4px; transform: translate(-100%, -50%) scaleX(-1); }
+  .track {
+    position: relative;
+    height: 128px;
+    border-bottom: 5px solid rgba(146, 164, 216, .72);
+    display: grid;
+    place-items: end center;
+  }
+  .track::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -8px;
+    left: 0;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, #ffbe5b 0 18px, transparent 18px 30px);
+    opacity: .85;
+  }
+  .bay {
+    position: absolute;
+    bottom: 5px;
+    min-width: 42px;
+    border: 1px solid rgba(217, 226, 255, .65);
+    border-radius: 7px;
+    padding: 4px 6px;
+    background: rgba(6, 11, 34, .72);
+    color: #dce5ff;
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .06em;
+    text-align: center;
+    backdrop-filter: blur(5px);
+  }
   .bay.left-bay { left: 0; }
   .bay.right-bay { right: 0; }
-  .bay.hit { color: var(--qx-green-text); border-color: var(--qx-green); border-style: solid; background: var(--qx-green-soft); }
-  .cart { width: 62px; height: 38px; border-radius: 8px 8px 5px 5px; background: var(--qx-accent); position: relative; transition: transform .28s ease; }
-  .stage.still .cart { background: var(--qx-green); }
-  .cart b, .cart::after { content: ''; position: absolute; bottom: -7px; width: 13px; height: 13px; border-radius: 50%; background: var(--qx-text); }
-  .cart b { left: 10px; }
-  .cart::after { right: 10px; }
+  .bay.hit {
+    border-color: #72e59d;
+    background: rgba(25, 111, 68, .82);
+    color: #fff;
+    box-shadow: 0 0 16px rgba(75, 222, 131, .5);
+  }
+  .cart {
+    --shift: 0px;
+    position: relative;
+    width: 78px;
+    height: 46px;
+    z-index: 2;
+    transform: translateX(var(--shift));
+    border: 2px solid rgba(225, 234, 255, .8);
+    border-radius: 11px 11px 7px 7px;
+    background: linear-gradient(140deg, #6681ff, #334db4 70%);
+    box-shadow: 0 12px 19px rgba(3, 7, 25, .48), inset 0 1px rgba(255, 255, 255, .35);
+  }
+  .cart.run-left,
+  .cart.run-right { animation: cartLaunch .58s cubic-bezier(.18, .8, .25, 1); }
+  .cart.run-still { animation: stableLock .5s ease; }
+  .stage.still .cart {
+    border-color: #8df0b1;
+    background: linear-gradient(140deg, #3fcf7a, #197343);
+    box-shadow: 0 0 20px rgba(69, 219, 128, .46);
+  }
+  .cargo {
+    position: absolute;
+    left: 17px;
+    top: -28px;
+    width: 43px;
+    height: 31px;
+    border: 2px solid #ffd38a;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #efb45e, #a95d27);
+  }
+  .cargo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: rgba(96, 48, 21, .35);
+  }
+  .cart b,
+  .cart em {
+    position: absolute;
+    bottom: -11px;
+    width: 18px;
+    height: 18px;
+    border: 3px solid #111934;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #9aa7cf 0 20%, #354064 22% 55%, #151b34 58%);
+  }
+  .cart b { left: 9px; }
+  .cart em { right: 9px; }
+  .nozzle {
+    position: absolute;
+    top: 14px;
+    width: 8px;
+    height: 18px;
+    border-radius: 3px;
+    background: #202b56;
+  }
+  .nozzle-left { right: 100%; }
+  .nozzle-right { left: 100%; }
+  .result-flash {
+    position: absolute;
+    top: 11px;
+    right: 12px;
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: 8px;
+    padding: 6px 9px;
+    background: rgba(8, 13, 38, .78);
+    color: #ffcf7a;
+    font-size: 9px;
+    font-weight: 950;
+    letter-spacing: .08em;
+    animation: resultPop .34s ease both;
+    backdrop-filter: blur(6px);
+  }
+  .result-flash.perfect {
+    border-color: #65e59a;
+    color: #8ef0b3;
+    box-shadow: 0 0 18px rgba(77, 224, 136, .3);
+  }
 
-  .readout { width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border: 1px solid var(--qx-border); border-radius: 9px; background: var(--qx-surface-2); margin-bottom: 10px; }
+  .readout { width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border: 1px solid var(--qx-border); border-radius: 10px; background: linear-gradient(180deg, var(--qx-surface), var(--qx-surface-2)); margin-bottom: 10px; }
   .readout span { font-size: 9px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; color: var(--qx-text-faint); }
   .readout strong { font-size: 13px; color: var(--qx-text); text-transform: capitalize; }
 
   .controls { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-  .control { border: 1px solid var(--qx-border); border-radius: 10px; background: var(--qx-surface); padding: 10px; display: grid; gap: 6px; justify-items: center; }
+  .control { border: 1px solid var(--qx-border); border-radius: 13px; background: linear-gradient(180deg, var(--qx-surface), var(--qx-surface-2)); padding: 10px; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 9px; align-items: center; text-align: left; }
   .control span { font-size: 10px; font-weight: 850; color: var(--qx-text-faint); text-transform: uppercase; letter-spacing: .05em; }
-  .control strong { font-size: 26px; font-weight: 950; color: var(--qx-text); font-variant-numeric: tabular-nums; }
+  .control strong { width: 35px; color: var(--qx-accent-text); font-size: 28px; font-weight: 950; font-variant-numeric: tabular-nums; text-align: center; }
   .control div { display: flex; gap: 8px; }
-  .control button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text); font: 900 20px/1 var(--qx-font); cursor: pointer; }
+  .control button { width: 42px; height: 42px; border-radius: 11px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font: 900 20px/1 var(--qx-font); cursor: pointer; box-shadow: 0 4px 10px rgba(17, 24, 58, .08); }
   .control button:disabled { opacity: .4; cursor: not-allowed; }
 
-  .test-button { width: 100%; min-height: 44px; border-radius: 10px; border: none; background: var(--qx-text); color: var(--qx-bg); font-family: var(--qx-font); font-size: 13px; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
+  .test-button { width: 100%; min-height: 48px; border-radius: 12px; border: none; background: linear-gradient(135deg, #151d43, #303b71); color: #fff; font-family: var(--qx-font); font-size: 13px; font-weight: 900; cursor: pointer; margin-bottom: 10px; box-shadow: 0 9px 20px rgba(17, 25, 64, .22); }
 
   .deliver-goals { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
   .deliver-goals div { display: flex; align-items: center; gap: 6px; border: 1.5px solid var(--qx-border); border-radius: 10px; padding: 9px 11px; background: var(--qx-surface-2); font-size: 11px; font-weight: 850; color: var(--qx-text-dim); }
@@ -495,6 +882,46 @@
   .law-reveals article > strong { font-size: 12px; margin-top: 7px; }
   .law-reveals article > span { color: var(--qx-text-dim); font-size: 9.5px; line-height: 1.35; margin-top: 3px; min-height: 40px; }
   .tie-back { width: 100%; box-sizing: border-box; border: 1px solid var(--qx-border); border-radius: 12px; padding: 11px 13px; background: var(--qx-surface); color: var(--qx-text-dim); font-size: 11.5px; line-height: 1.5; text-align: left; margin-bottom: 13px; }
+  .arcade-result {
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 11px;
+    border: 1px solid rgba(99, 127, 255, .45);
+    border-radius: 15px;
+    padding: 12px;
+    margin-bottom: 13px;
+    background:
+      radial-gradient(circle at 10% 30%, rgba(76, 111, 255, .16), transparent 34%),
+      linear-gradient(135deg, var(--qx-surface), var(--qx-surface-2));
+    text-align: left;
+  }
+  .rank-orb {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--qx-accent);
+    border-radius: 17px;
+    background: var(--qx-accent-soft);
+    color: var(--qx-accent-text);
+    font-size: 27px;
+    font-weight: 1000;
+    box-shadow: 0 8px 18px rgba(76, 111, 255, .17);
+  }
+  .rank-orb.s-rank {
+    border-color: var(--qx-yellow);
+    background: var(--qx-yellow-soft);
+    color: var(--qx-yellow-text);
+    box-shadow: 0 0 22px color-mix(in srgb, var(--qx-yellow) 35%, transparent);
+  }
+  .arcade-result > div:nth-child(2) { min-width: 0; display: flex; flex-direction: column; }
+  .arcade-result span { color: var(--qx-text-faint); font-size: 8px; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+  .arcade-result strong { color: var(--qx-text); font-size: 16px; font-weight: 950; }
+  .arcade-result small { color: var(--qx-text-dim); font-size: 9px; }
+  .arcade-result > b { max-width: 90px; color: var(--qx-accent-text); font-size: 10px; line-height: 1.25; text-align: right; }
   .insight-ladder { width: 100%; box-sizing: border-box; display: grid; gap: 7px; border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px 12px; margin-bottom: 13px; background: var(--qx-accent-soft); text-align: left; }
   .insight-ladder > strong { color: var(--qx-accent-text); font-size: 12px; }
   .insight-ladder span { color: var(--qx-text-dim); font-size: 10.5px; line-height: 1.4; }
@@ -512,12 +939,42 @@
   .reward-panel small { color: var(--qx-text-dim); font-size: 9.5px; line-height: 1.35; display: block; }
   .reveal-actions { width: 100%; display: grid; gap: 7px; }
 
+  @keyframes cartLaunch {
+    0% { transform: translateX(0) scale(.96); filter: brightness(1.25); }
+    64% { transform: translateX(var(--shift)) scale(1.03); }
+    100% { transform: translateX(var(--shift)) scale(1); filter: brightness(1); }
+  }
+  @keyframes stableLock {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-2px); }
+  }
+  @keyframes resultPop {
+    from { opacity: 0; transform: translateY(-5px) scale(.92); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes alertPulse {
+    50% { box-shadow: 0 0 0 10px rgba(229, 107, 111, 0); transform: scale(1.06); }
+  }
+
+  @media (max-width: 560px) {
+    .controls { grid-template-columns: 1fr; }
+    .stage { grid-template-columns: 44px 1fr 44px; min-height: 224px; padding-right: 8px; padding-left: 8px; }
+    .thruster { height: 15px; }
+    .arcade-result { grid-template-columns: 52px minmax(0, 1fr); }
+    .arcade-result > b { grid-column: 2; max-width: none; text-align: left; }
+  }
+
   @media (max-width: 360px) {
     .solve-first { max-width: 100%; }
-    .phase { min-height: 390px; }
+    .phase { min-height: 460px; }
+    .brief-hero { min-height: 195px; }
+    .stage { grid-template-columns: 34px 1fr 34px; min-height: 210px; }
+    .bay { min-width: 34px; font-size: 7px; padding-right: 3px; padding-left: 3px; }
     h2 { font-size: 22px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cart { transition: none; }
+    .cart, .hero-alert, .result-flash { animation: none; }
   }
 </style>
