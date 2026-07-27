@@ -10,6 +10,7 @@
   // average-rate to slope-at-a-point. Contract: prompt in, onDone(1,1) on end.
   export let prompt = 'Up close, a smooth curve looks like a straight line; a corner never does.';
   export let onDone = () => {};
+  import LabShell from './LabShell.svelte';
 
   const reduceMotion = typeof matchMedia !== 'undefined'
     && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -95,15 +96,8 @@
 </script>
 
 <div class="ll">
-  <div class="ll-hud">
-    <div class="ll-fn">{complete ? 'Smooth, corner, or vertical — all by eye ✓' : stage.name}
-      <span class="ll-at">{complete ? '' : `at x = ${stage.a}`}</span></div>
-    <div class="ll-dots">
-      {#each STAGES as _, i}
-        <span class="dot" class:on={i < stageIx || (i === stageIx && matched)} class:cur={i === stageIx && !complete}></span>
-      {/each}
-    </div>
-  </div>
+  <LabShell eyebrow={complete ? 'Smooth, corner, or vertical — all by eye' : `${stage.name}  ·  x = ${stage.a}`}
+            stage={stageIx} total={STAGES.length} done={complete} />
 
   <div class="ll-tip" class:warn={wrongHint}>
     {#if complete}{prompt}{:else if wrongHint}{wrongHint}{:else}{stage.tip}{/if}
@@ -154,13 +148,6 @@
 
 <style>
   .ll { display: flex; flex-direction: column; gap: 9px; }
-  .ll-hud { display: flex; align-items: center; justify-content: space-between; }
-  .ll-fn { font-family: ui-monospace, Menlo, monospace; font-size: 14px; font-weight: 800; color: var(--qx-text); }
-  .ll-at { color: var(--qx-text-dim); font-weight: 600; }
-  .ll-dots { display: flex; gap: 6px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--qx-border-2); }
-  .dot.on { background: var(--qx-green); }
-  .dot.cur { background: var(--qx-accent); }
 
   .ll-tip { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); line-height: 1.35; min-height: 34px; }
   .ll-tip.warn { color: var(--qx-yellow-text); }

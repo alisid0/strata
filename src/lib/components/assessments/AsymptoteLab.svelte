@@ -8,6 +8,7 @@
   // until the reveal). Engine contract: `prompt` in, `onDone(1,1)` on finish.
   export let prompt = 'Read where the curve blows up and where it levels off.';
   export let onDone = () => {};
+  import LabShell from './LabShell.svelte';
 
   const reduceMotion = typeof matchMedia !== 'undefined'
     && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -23,11 +24,11 @@
 
   // Each stage: a rational curve + which asymptote(s) the learner must place.
   const STAGES = [
-    { p: 3, q: 0, num: 1, activeV: true, activeH: false,
+    { p: 3, q: 0, num: 1, activeV: true, activeH: false, name: 'Find the wall',
       tip: 'The curve rockets off near one x-value — its denominator hits zero there. Drag the amber wall onto it.' },
-    { p: -2, q: 2, num: 1, activeV: false, activeH: true,
+    { p: -2, q: 2, num: 1, activeV: false, activeH: true, name: 'Find the floor',
       tip: 'Far left and far right, the curve flattens toward one height. Drag the green line onto that level.' },
-    { p: 1, q: -2, num: -2, activeV: true, activeH: true,
+    { p: 1, q: -2, num: -2, activeV: true, activeH: true, name: 'Both at once',
       tip: 'New curve. Place BOTH: the wall where it blows up, the line where it levels off.' }
   ];
 
@@ -106,14 +107,8 @@
 </script>
 
 <div class="al">
-  <div class="al-hud">
-    <div class="al-title">{complete ? 'Asymptotes mapped ✓' : 'Asymptote Lab'}</div>
-    <div class="al-dots">
-      {#each STAGES as _, i}
-        <span class="dot" class:on={i < stageIx || (i === stageIx && matched)} class:cur={i === stageIx && !complete}></span>
-      {/each}
-    </div>
-  </div>
+  <LabShell eyebrow={complete ? 'Asymptotes mapped' : stage.name}
+            stage={stageIx} total={STAGES.length} done={complete} />
 
   <div class="al-tip">
     {#if complete}
@@ -174,12 +169,6 @@
 
 <style>
   .al { display: flex; flex-direction: column; gap: 10px; }
-  .al-hud { display: flex; align-items: center; justify-content: space-between; }
-  .al-title { font-size: 14px; font-weight: 850; color: var(--qx-text); }
-  .al-dots { display: flex; gap: 6px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--qx-border-2); }
-  .dot.on { background: var(--qx-green); }
-  .dot.cur { background: var(--qx-accent); }
 
   .al-tip { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); line-height: 1.35; min-height: 36px; }
 

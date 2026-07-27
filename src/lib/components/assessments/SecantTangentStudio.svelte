@@ -10,6 +10,7 @@
   // The one aha: a slope at a single point is just a secant squeezed until the
   // gap vanishes, and those slopes form a brand-new curve. Contract: prompt in,
   // onDone(1,1) on finish.
+  import LabShell from './LabShell.svelte';
   export let prompt = 'A slope at a point is a secant squeezed until the gap vanishes — and those slopes make a new curve.';
   export let onDone = () => {};
 
@@ -24,11 +25,11 @@
   const DRANGE = 6.5;                   // f' shown over [-6.5, 6.5]
 
   const STAGES = [
-    { mode: 'collapse', fn: (x) => x * x, dfn: (x) => 2 * x, xA: 1,
+    { mode: 'collapse', name: 'Squeeze the gap', fn: (x) => x * x, dfn: (x) => 2 * x, xA: 1,
       tip: 'Drag point B toward the fixed point A. Watch the secant slope settle on one number.' },
-    { mode: 'paint', fn: (x) => x * x, dfn: (x) => 2 * x,
+    { mode: 'paint', name: 'Paint the slope', fn: (x) => x * x, dfn: (x) => 2 * x,
       tip: 'The slope is now locked to the tangent. Drag A across the curve to paint its slope graph below.' },
-    { mode: 'transfer', fn: (x) => -x * x + 2, dfn: (x) => -2 * x,
+    { mode: 'transfer', name: 'Read your graph', fn: (x) => -x * x + 2, dfn: (x) => -2 * x,
       tip: 'A new curve. Sweep A to paint its slope, then tap the graph you just drew.' }
   ];
 
@@ -148,23 +149,19 @@
 </script>
 
 <div class="st">
-  <div class="st-hud">
+  <LabShell eyebrow={complete ? 'Secant → tangent → the derivative' : stage.name}
+            stage={stageIx} total={STAGES.length} done={complete} />
+  {#if !complete}
     <div class="st-read">
-      {#if complete}
-        <span class="st-done">Secant → tangent → the derivative ✓</span>
-      {:else if stage.mode === 'collapse'}
-        Δx <b>{(xB - xA).toFixed(2)}</b> · Δy <b>{(stage.fn(xB) - stage.fn(xA)).toFixed(2)}</b> ·
-        slope <b class:lock={locked}>{shownSlope.toFixed(2)}</b>
+      {#if stage.mode === 'collapse'}
+        <span class="chip">Δx <b>{(xB - xA).toFixed(2)}</b></span>
+        <span class="chip">Δy <b>{(stage.fn(xB) - stage.fn(xA)).toFixed(2)}</b></span>
+        <span class="chip slope" class:lock={locked}>slope <b>{shownSlope.toFixed(2)}</b></span>
       {:else}
-        slope at A <b>{slopeAtA.toFixed(2)}</b>
+        <span class="chip slope">slope at A <b>{slopeAtA.toFixed(2)}</b></span>
       {/if}
     </div>
-    <div class="st-dots">
-      {#each STAGES as _, i}
-        <span class="dot" class:on={i < stageIx || complete} class:cur={i === stageIx && !complete}></span>
-      {/each}
-    </div>
-  </div>
+  {/if}
 
   <div class="st-tip">{complete ? prompt : (flash || stage.tip)}</div>
 
@@ -229,15 +226,17 @@
 
 <style>
   .st { display: flex; flex-direction: column; gap: 9px; }
-  .st-hud { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .st-read { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; font-weight: 650; color: var(--qx-text-dim); }
-  .st-read b { color: var(--qx-text); font-weight: 800; }
-  .st-read b.lock { color: var(--qx-green-text); }
-  .st-done { font-size: 14px; font-weight: 800; color: var(--qx-green-text); font-family: var(--qx-font); }
-  .st-dots { display: flex; gap: 6px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--qx-border-2); }
-  .dot.on { background: var(--qx-green); }
-  .dot.cur { background: var(--qx-accent); }
+  .st-read { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; font-weight: 700;
+    color: var(--qx-text-dim); background: var(--qx-surface-2);
+    border: 1px solid var(--qx-border); border-radius: 8px; padding: 3px 8px;
+  }
+  .chip b { color: var(--qx-text); font-weight: 900; font-variant-numeric: tabular-nums; }
+  .chip.slope { border-color: color-mix(in srgb, var(--qx-accent) 45%, var(--qx-border)); }
+  .chip.slope b { color: var(--qx-accent-text); }
+  .chip.slope.lock { border-color: var(--qx-green); background: var(--qx-green-soft); }
+  .chip.slope.lock b { color: var(--qx-green-text); }
 
   .st-tip { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); line-height: 1.35; min-height: 34px; }
 

@@ -8,6 +8,7 @@
   // h→0 collapse in the tangent lab. Contract: prompt in, onDone(1,1) on finish.
   export let prompt = 'Average speed over an interval is the slope of the straight line joining its ends.';
   export let onDone = () => {};
+  import LabShell from './LabShell.svelte';
 
   const reduceMotion = typeof matchMedia !== 'undefined'
     && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -91,23 +92,14 @@
 </script>
 
 <div class="rb">
-  <div class="rb-hud">
+  <LabShell eyebrow={complete ? 'Secant slope = average speed' : `Reach ${stage.target} m/s`}
+            stage={stageIx} total={STAGES.length} done={complete} />
+  {#if !complete}
     <div class="rb-read">
-      {#if complete}
-        <span class="rb-done">Secant slope = average speed ✓</span>
-      {:else}
-        <span class="rb-target">target {stage.target} m/s</span>
-        <span class="rb-now" class:hit>now
-          <b>{rate.toFixed(2)}</b> m/s
-        </span>
-      {/if}
+      <span class="rb-target">target {stage.target} m/s</span>
+      <span class="rb-now" class:hit>now <b>{rate.toFixed(2)}</b> m/s</span>
     </div>
-    <div class="rb-dots">
-      {#each STAGES as _, i}
-        <span class="dot" class:on={i < stageIx || (i === stageIx && matched)} class:cur={i === stageIx && !complete}></span>
-      {/each}
-    </div>
-  </div>
+  {/if}
 
   <div class="rb-tip">{complete ? prompt : stage.tip}</div>
 
@@ -153,17 +145,11 @@
 
 <style>
   .rb { display: flex; flex-direction: column; gap: 10px; }
-  .rb-hud { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .rb-read { display: flex; align-items: baseline; gap: 12px; font-family: ui-monospace, Menlo, monospace; }
   .rb-target { font-size: 13px; font-weight: 700; color: var(--qx-text-dim); }
   .rb-now { font-size: 14px; font-weight: 700; color: var(--qx-text); }
   .rb-now b { color: var(--qx-yellow-text); }
   .rb-now.hit, .rb-now.hit b { color: var(--qx-green-text); }
-  .rb-done { font-size: 14px; font-weight: 800; color: var(--qx-green-text); }
-  .rb-dots { display: flex; gap: 6px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--qx-border-2); }
-  .dot.on { background: var(--qx-green); }
-  .dot.cur { background: var(--qx-accent); }
 
   .rb-tip { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); line-height: 1.35; min-height: 34px; }
 

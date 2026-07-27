@@ -8,6 +8,7 @@
   // `prompt` in, `onDone(score, max)` out; a 1/1 completion gate on finish.
   export let prompt = 'Drag the curve onto its shadow. Move the anchor, then stretch.';
   export let onDone = () => {};
+  import LabShell from './LabShell.svelte';
 
   const reduceMotion = typeof matchMedia !== 'undefined'
     && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -31,13 +32,13 @@
 
   // ── Stages: parent + target params + which controls are live. ───────────────
   const STAGES = [
-    { type: 'quadratic', target: { a: 1, c: 3, d: -2 }, lockA: true,
+    { type: 'quadratic', name: 'Slide it over', target: { a: 1, c: 3, d: -2 }, lockA: true,
       tip: 'Only the green anchor moves. Slide it onto the shadow’s tip.' },
-    { type: 'quadratic', target: { a: 2, c: -1, d: 1 }, lockA: false,
+    { type: 'quadratic', name: 'Stretch it taller', target: { a: 2, c: -1, d: 1 }, lockA: false,
       tip: 'New control: drag the amber point to stretch the curve taller.' },
-    { type: 'quadratic', target: { a: -1, c: -3, d: 2 }, lockA: false,
+    { type: 'quadratic', name: 'Flip it over', target: { a: -1, c: -3, d: 2 }, lockA: false,
       tip: 'Pull the amber point below the anchor — a negative stretch flips it.' },
-    { type: 'absolute', target: { a: 2, c: 1, d: -3 }, lockA: false,
+    { type: 'absolute', name: 'Any shape', target: { a: 2, c: 1, d: -3 }, lockA: false,
       tip: 'Different shape, same two controls. The rule doesn’t care.' }
   ];
 
@@ -132,23 +133,16 @@
 </script>
 
 <div class="fl">
-  <div class="fl-hud">
+  <LabShell eyebrow={complete ? 'One rule, any shape' : stage.name}
+            stage={stageIx} total={STAGES.length} done={complete} />
+  {#if !complete}
     <div class="fl-eq">
-      {#if complete}
-        <span class="fl-done-copy">One rule, any shape ✓</span>
-      {:else}
-        f(x) =
-        <span class="p-a">{params.a}</span>{stage.type === 'absolute' ? '|x' : '(x'}
-        <span class="p-c">{sc(params.c) || '− 0'}</span>{stage.type === 'absolute' ? '|' : ')²'}
-        <span class="p-d">{sd(params.d) || '+ 0'}</span>
-      {/if}
+      f(x) =
+      <span class="p-a">{params.a}</span>{stage.type === 'absolute' ? '|x' : '(x'}
+      <span class="p-c">{sc(params.c) || '− 0'}</span>{stage.type === 'absolute' ? '|' : ')²'}
+      <span class="p-d">{sd(params.d) || '+ 0'}</span>
     </div>
-    <div class="fl-dots">
-      {#each STAGES as _, i}
-        <span class="dot" class:on={i < stageIx || (i === stageIx && matched)} class:cur={i === stageIx && !complete}></span>
-      {/each}
-    </div>
-  </div>
+  {/if}
 
   <div class="fl-stage-tip">{complete ? prompt : stage.tip}</div>
 
@@ -194,18 +188,12 @@
 <style>
   .fl { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
 
-  .fl-hud { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .fl-eq {
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
     font-size: 15px; font-weight: 700; color: var(--qx-text); white-space: nowrap;
   }
   .p-a { color: var(--qx-yellow-text); font-weight: 800; }
   .p-c, .p-d { color: var(--qx-green-text); font-weight: 800; }
-  .fl-done-copy { color: var(--qx-green-text); font-weight: 800; }
-  .fl-dots { display: flex; gap: 6px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--qx-border-2); }
-  .dot.on { background: var(--qx-green); }
-  .dot.cur { background: var(--qx-accent); }
 
   .fl-stage-tip {
     font-size: 13px; font-weight: 600; color: var(--qx-text-dim); line-height: 1.35; min-height: 34px;
