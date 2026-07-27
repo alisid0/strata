@@ -18,7 +18,7 @@
   let orOpen = false;
   let hintUsed = false;
   let activeHint = '';
-  let transferAnswers = { payment: '', fire: '' };
+  let transferAnswers = { payment: '', fire: '', override: '' };
   let transferMistakes = 0;
   let recorded = false;
 
@@ -26,7 +26,10 @@
   $: orList = states.map(([a, b]) => orTests[`${a}${b}`]).filter(Boolean);
   $: andReady = andOpen && andList.length >= 3;
   $: orReady = orOpen && !!orTests['10'] && !!orTests['01'] && !!orTests['00'];
-  $: transferReady = transferAnswers.payment === 'both' && transferAnswers.fire === 'either';
+  $: transferReady =
+    transferAnswers.payment === 'both' &&
+    transferAnswers.fire === 'either' &&
+    transferAnswers.override === 'grouped';
   $: transferFirstTry = transferReady && transferMistakes === 0;
   $: evidenceScore = andList.length === 4 && orList.length === 4 ? 4 : 3;
   // Caps at 15 W, consistent with the other Solve First games. The current
@@ -63,7 +66,7 @@
   }
 
   function answerTransfer(scenario, answer) {
-    const correct = scenario === 'payment' ? 'both' : 'either';
+    const correct = scenario === 'payment' ? 'both' : scenario === 'fire' ? 'either' : 'grouped';
     if (answer !== correct) transferMistakes += 1;
     transferAnswers = { ...transferAnswers, [scenario]: answer };
   }
@@ -95,7 +98,7 @@
     orOpen = false;
     hintUsed = false;
     activeHint = '';
-    transferAnswers = { payment: '', fire: '' };
+    transferAnswers = { payment: '', fire: '', override: '' };
     transferMistakes = 0;
     recorded = false;
   }
@@ -284,8 +287,33 @@
           </div>
         </div>
 
+        <div class="policy-card synthesis-card">
+          <div class="policy-icon">↳</div>
+          <div class="policy-copy">
+            <small>Compose both behaviours</small>
+            <strong>A server opens for a valid badge plus PIN, or for one emergency override. Which design matches?</strong>
+          </div>
+          <div class="policy-options">
+            <button
+              class:selected={transferAnswers.override === 'all'}
+              class:wrong={transferAnswers.override === 'all'}
+              on:click={() => answerTransfer('override', 'all')}
+            >Badge, PIN, and override must all pass</button>
+            <button
+              class:selected={transferAnswers.override === 'grouped'}
+              class:correct={transferAnswers.override === 'grouped'}
+              on:click={() => answerTransfer('override', 'grouped')}
+            >(Badge plus PIN) or override</button>
+            <button
+              class:selected={transferAnswers.override === 'any'}
+              class:wrong={transferAnswers.override === 'any'}
+              on:click={() => answerTransfer('override', 'any')}
+            >Any one of the three is enough</button>
+          </div>
+        </div>
+
         <button class="primary" disabled={!transferReady} on:click={finishDiscovery}>
-          {transferReady ? 'Reveal the systems' : 'Assign both security rules'}
+          {transferReady ? 'Reveal the systems' : 'Assign and combine the security rules'}
         </button>
 
       {:else if phase === 'reveal'}
@@ -307,6 +335,13 @@
               <span>Card <b>or</b> recovery code can pass.</span>
               <LogicTruthMini mode="or" />
             </article>
+          </div>
+
+          <div class="insight-ladder">
+            <strong>What you actually proved</strong>
+            <span><b>Evidence:</b> changing one credential at a time isolated what each input contributed.</span>
+            <span><b>Rule:</b> AND narrows access; OR creates alternatives.</span>
+            <span><b>Deeper build:</b> grouping gates lets you design compound decisions such as <em>(badge AND PIN) OR override</em>. That is the first step toward truth tables, circuits, and program conditions.</span>
           </div>
 
           <div class="reward-panel">
@@ -398,6 +433,11 @@
   .policy-options button { min-height: 46px; border: 1.5px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-dim); font: 800 10.5px/1.25 var(--qx-font); padding: 7px; cursor: pointer; }
   .policy-options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .policy-options button.wrong { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
+  .synthesis-card { border-color: var(--qx-accent); }
+  .insight-ladder { width: 100%; box-sizing: border-box; display: grid; gap: 7px; border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px 12px; margin-bottom: 13px; background: var(--qx-accent-soft); text-align: left; }
+  .insight-ladder > strong { color: var(--qx-accent-text); font-size: 12px; }
+  .insight-ladder span { color: var(--qx-text-dim); font-size: 10.5px; line-height: 1.4; }
+  .insight-ladder b { color: var(--qx-text); }
   .reveal { text-align: center; display: flex; flex-direction: column; align-items: center; }
   .reveal h2 { font-size: 22px; }
   .gate-reveals { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0 12px; }

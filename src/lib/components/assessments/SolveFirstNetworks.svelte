@@ -253,6 +253,7 @@
   function freshClinic() { return Array.from({ length: 5 }, (_, i) => ({ n: i + 1, dest: null, mark: null, route: null, delivered: false, stalled: false, wasTown: false })); }
   let t_pieces = freshClinic();
   let t_townFailed = false, t_townDelivered = 0, t_reroute = false, t_started = false;
+  let architecturePick = '', architectureMistakes = 0;
   $: t_correctDest = t_pieces.every((p) => p.dest === 'machine');
   $: t_marks = t_pieces.map((p) => p.mark);
   $: t_fiveOrders = t_marks.filter((x) => x != null).length === 5 && new Set(t_marks.filter((x) => x != null)).size === 5;
@@ -264,7 +265,12 @@
   $: t_configOk = t_townAssigned >= TOWN_MIN && t_hillAssigned >= HILL_MIN;
   $: t_canDispatch = !t_allDelivered && (t_started || t_configOk);
   $: t_redirectable = t_townFailed && t_pieces.some((p) => !p.delivered && p.route === 'town');
-  $: transferReady = t_correctDest && t_fiveOrders && t_reroute && t_allDelivered;
+  $: transferReady =
+    t_correctDest &&
+    t_fiveOrders &&
+    t_reroute &&
+    t_allDelivered &&
+    architecturePick === 'independent';
 
   // Delivered segments are frozen so the evidence history stays coherent.
   function t_setDest(n) { t_pieces = t_pieces.map((p) => (p.n === n && !p.delivered ? { ...p, dest: 'machine', stalled: false } : p)); }
@@ -310,9 +316,14 @@
     t_pieces = t_pieces.map((p) => (!p.delivered && p.route === 'town' ? { ...p, route: 'hill', wasTown: true, stalled: false } : p));
     say('Undelivered town segments redirected to the hill relay. Dispatch again to deliver them.');
   }
+  function pickArchitecture(value) {
+    if (value !== 'independent') architectureMistakes += 1;
+    architecturePick = value;
+  }
   function t_reset() {
     t_pieces = freshClinic();
     t_townFailed = false; t_townDelivered = 0; t_reroute = false; t_started = false;
+    architecturePick = ''; architectureMistakes = 0;
     say('Transfer reset. The town relay is back up and every segment is at the clinic.');
   }
 
@@ -322,7 +333,11 @@
     (o_bothRoutes ? 1 : 0) +
     (a_toA && a_toB ? 1 : 0) +
     (resObserved && lockedStalled && openReroutedComplete ? 1 : 0);
-  $: transferScore = (t_correctDest ? 1 : 0) + (t_fiveOrders ? 1 : 0) + (t_reroute ? 1 : 0);
+  $: transferScore =
+    (t_correctDest ? 1 : 0) +
+    (t_fiveOrders ? 1 : 0) +
+    (t_reroute ? 1 : 0) +
+    (architecturePick === 'independent' ? 1 : 0);
   $: reward = Math.min(15, 6 + evidenceScore + transferScore + (usedHint ? 0 : 2));
 
   function showHint(key, msg) { usedHint = true; activeHint = activeHint === key ? '' : key; if (activeHint === key) say(msg); }
@@ -336,7 +351,7 @@
         id: config.id, reward,
         evidenceCount: tilesDelivered + t_pieces.filter((p) => p.delivered).length,
         patternFound: true, compared: true,
-        transferFirstTry: transferScore === 3, usedHint
+        transferFirstTry: transferScore === 4 && architectureMistakes === 0, usedHint
       });
     }
   }
@@ -563,11 +578,24 @@
 
         {#if !t_started && !t_configOk}<div class="report">Book at least {TOWN_MIN} segments on the town relay and {HILL_MIN} on the hill relay before dispatching.</div>
         {:else if t_townFailed && !t_allDelivered}<div class="report">Town relay down. <strong>Redirect the undelivered segments through the hill relay, then dispatch.</strong></div>
-        {:else if transferReady}<div class="report ok">Full ordered trace reconstructed at the machine.</div>{/if}
+        {:else if t_allDelivered}<div class="report ok">Full ordered trace reconstructed at the machine.</div>{/if}
 
         <button class="hint-link" on:click={() => showHint('tr', 'Check destination, order, and available route as three separate jobs.')}>{activeHint === 'tr' ? 'Hide nudge' : 'Need a nudge?'}</button>
         {#if activeHint === 'tr'}<div class="hint">Check destination, order, and available route as three separate jobs.</div>{/if}
-        <button class="primary" disabled={!transferReady} on:click={finishDiscovery}>{transferReady ? 'Reveal the system' : 'Mark, order, and reroute all five segments'}</button>
+
+        {#if t_allDelivered}
+          <div class="architecture-check">
+            <strong>Systems diagnosis</strong>
+            <span>Which design property let the trace survive a relay failure and still rebuild correctly?</span>
+            <div class="policy-opts">
+              <button class:wrong={architecturePick === 'whole'} on:click={() => pickArchitecture('whole')}>One large message bound to one route</button>
+              <button class:correct={architecturePick === 'independent'} on:click={() => pickArchitecture('independent')}>Small marked segments choosing available routes independently</button>
+              <button class:wrong={architecturePick === 'copies'} on:click={() => pickArchitecture('copies')}>Unmarked duplicate segments sent everywhere</button>
+            </div>
+          </div>
+        {/if}
+
+        <button class="primary" disabled={!transferReady} on:click={finishDiscovery}>{transferReady ? 'Reveal the system' : !t_allDelivered ? 'Mark, order, and reroute all five segments' : 'Diagnose why the transfer survived'}</button>
 
       {:else if phase === 'reveal'}
         <div class="reveal">
@@ -591,6 +619,12 @@
             <span>The shortest route is not always the usable route.</span>
             <span>Later arrival is not corrupted data when the ordering information is intact.</span>
             <span>Cloud services still run on physical remote computers.</span>
+          </div>
+          <div class="insight-ladder">
+            <strong>What you actually proved</strong>
+            <span><b>Evidence:</b> route capacity changed throughput, delay changed arrival order, and failure stranded only route-bound pieces.</span>
+            <span><b>Rule:</b> destination and sequence information let independently routed pieces arrive by different paths and still rebuild one message.</span>
+            <span><b>Deeper build:</b> real networks add checksums, acknowledgements, retransmission, and congestion control. Those mechanisms turn best-effort packet delivery into reliable applications.</span>
           </div>
           <div class="reward-panel">
             <div class="reward-top"><div><span>Discovery distinction</span><strong>{config.rewardLabel}</strong></div><b>+{reward} W</b></div>
@@ -692,6 +726,9 @@
   .policy-opts button { min-height: 44px; border: 1.5px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-dim); font: 850 11.5px/1.2 var(--qx-font); padding: 8px; cursor: pointer; }
   .policy-opts button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .policy-opts button.wrong { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
+  .architecture-check { display: grid; gap: 6px; border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px; margin-bottom: 10px; background: var(--qx-accent-soft); }
+  .architecture-check > strong { color: var(--qx-accent-text); font-size: 12px; }
+  .architecture-check > span { color: var(--qx-text-dim); font-size: 10.5px; line-height: 1.4; }
 
   .reveal { text-align: center; display: flex; flex-direction: column; align-items: center; }
   .reveal h2 { font-size: 20px; }
@@ -702,6 +739,10 @@
   .reveal-list strong { color: var(--qx-text); font-weight: 950; }
   .misconceptions { width: 100%; display: grid; gap: 5px; margin-bottom: 12px; }
   .misconceptions span { text-align: left; border-left: 3px solid var(--qx-accent); background: var(--qx-accent-soft); border-radius: 0 8px 8px 0; padding: 7px 10px; font-size: 10.5px; line-height: 1.4; color: var(--qx-accent-text); }
+  .insight-ladder { width: 100%; box-sizing: border-box; display: grid; gap: 7px; border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px 12px; margin-bottom: 12px; background: var(--qx-accent-soft); text-align: left; }
+  .insight-ladder > strong { color: var(--qx-accent-text); font-size: 12px; }
+  .insight-ladder span { color: var(--qx-text-dim); font-size: 10.5px; line-height: 1.4; }
+  .insight-ladder b { color: var(--qx-text); }
 
   .reward-panel { width: 100%; box-sizing: border-box; border: 1.5px solid var(--qx-green); border-radius: 14px; background: var(--qx-green-soft); padding: 12px; text-align: left; margin-bottom: 13px; }
   .reward-top { display: flex; justify-content: space-between; align-items: center; }

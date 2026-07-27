@@ -83,13 +83,17 @@
   ];
   let reversePick = '';
   let reverseTries = 0;
+  let routePick = '';
+  let routeTries = 0;
   $: cratesDone = CRATES.every((c) => retrieved[c.key]);
   $: reverseDone = reversePick === 'r2';
-  $: warehouseReady = cratesDone && reverseDone;
+  $: routeDone = routePick === 'plus3-minus4';
+  $: warehouseReady = cratesDone && reverseDone && routeDone;
   $: transferFirstTry =
     warehouseReady &&
     CRATES.every((c) => crateTries[c.key] === 1) &&
-    reverseTries === 1;
+    reverseTries === 1 &&
+    routeTries === 1;
 
   // reward
   $: evidenceScore = runs1.length >= 4 && miss4 <= 2 ? 4 : 3;
@@ -161,6 +165,10 @@
     reverseTries += 1;
     reversePick = key;
   }
+  function pickRoute(key) {
+    routeTries += 1;
+    routePick = key;
+  }
 
   function finishDiscovery() {
     if (!warehouseReady) return;
@@ -185,7 +193,7 @@
     ew2 = 0; ns2 = 0; drone2 = null; columnProbed = false; secondControlOn = false; columnSolved = false;
     first3 = 0; second3 = 0; drone3 = null; trace3 = []; gotA = false; gotB = false; repairFirst = 1; repairSecond = 3; repaired = false;
     ew4 = 0; ns4 = 0; drone4 = null; found4 = {}; miss4 = 0;
-    aisle = 0; shelf = 0; retrieved = {}; crateTries = {}; crateMsg = ''; reversePick = ''; reverseTries = 0;
+    aisle = 0; shelf = 0; retrieved = {}; crateTries = {}; crateMsg = ''; reversePick = ''; reverseTries = 0; routePick = ''; routeTries = 0;
   }
 
   const PHASES = ['oneline', 'column', 'order', 'sectors', 'warehouse', 'reveal'];
@@ -519,8 +527,31 @@
           </div>
         {/if}
 
+        {#if reverseDone}
+          <div class="reverse route-challenge">
+            <div class="reverse-head">Build a route — the robot is at (−1, 3) and must reach (2, −1). What change gets it there?</div>
+            <div class="reverse-options">
+              <button
+                class:selected={routePick === 'plus1-minus2'}
+                class:wrong={routePick === 'plus1-minus2'}
+                on:click={() => pickRoute('plus1-minus2')}
+              >[ +1 | −2 ]</button>
+              <button
+                class:selected={routePick === 'plus3-minus4'}
+                class:correct={routePick === 'plus3-minus4'}
+                on:click={() => pickRoute('plus3-minus4')}
+              >[ +3 | −4 ]</button>
+              <button
+                class:selected={routePick === 'minus3-plus4'}
+                class:wrong={routePick === 'minus3-plus4'}
+                on:click={() => pickRoute('minus3-plus4')}
+              >[ −3 | +4 ]</button>
+            </div>
+          </div>
+        {/if}
+
         <button class="primary" disabled={!warehouseReady} on:click={finishDiscovery}>
-          {warehouseReady ? 'Name the map' : 'Retrieve all three, then read the bin'}
+          {warehouseReady ? 'Name the map' : !cratesDone ? 'Retrieve all three crates' : !reverseDone ? 'Read the highlighted bin' : 'Calculate the final route'}
         </button>
 
       {:else if phase === 'reveal'}
@@ -543,6 +574,13 @@
 
           <div class="tie-back">
             You sent the locator 3 east and 2 north — the map writes that address as (3, 2). Swapping the moves sent it elsewhere, which is why (3, 1) and (1, 3) are different ordered pairs. You recovered one signal in every sign region: those regions are the four quadrants.
+          </div>
+
+          <div class="insight-ladder">
+            <strong>What you actually proved</strong>
+            <span><b>Evidence:</b> one value fixed only a line; two ordered values fixed one exact location.</span>
+            <span><b>Rule:</b> position uses (x, y), while movement between positions uses the change in each coordinate.</span>
+            <span><b>Deeper build:</b> from (−1, 3) to (2, −1), the change is (+3, −4). That difference becomes a displacement vector and later powers distance, gradient, and transformations.</span>
           </div>
 
           <div class="reward-panel">
@@ -692,6 +730,7 @@
   .reverse-options button { min-height: 44px; border: 1.5px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-dim); font: 900 11px/1.1 var(--qx-font); cursor: pointer; font-variant-numeric: tabular-nums; }
   .reverse-options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .reverse-options button.wrong { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
+  .route-challenge { border-color: var(--qx-accent); }
 
   .reveal { text-align: center; display: flex; flex-direction: column; align-items: center; }
   .reveal h2 { font-size: 21px; }
@@ -699,6 +738,10 @@
   .reveal-list li { border: 1px solid var(--qx-border); border-radius: 9px; padding: 8px 11px; background: var(--qx-surface-2); font-size: 11.5px; line-height: 1.4; color: var(--qx-text-dim); }
   .reveal-list strong { color: var(--qx-text); font-weight: 950; }
   .tie-back { width: 100%; box-sizing: border-box; border: 1px solid var(--qx-border); border-radius: 12px; padding: 11px 13px; background: var(--qx-surface); color: var(--qx-text-dim); font-size: 11.5px; line-height: 1.5; text-align: left; margin-bottom: 13px; }
+  .insight-ladder { width: 100%; box-sizing: border-box; display: grid; gap: 7px; border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px 12px; margin-bottom: 13px; background: var(--qx-accent-soft); text-align: left; }
+  .insight-ladder > strong { color: var(--qx-accent-text); font-size: 12px; }
+  .insight-ladder span { color: var(--qx-text-dim); font-size: 10.5px; line-height: 1.4; }
+  .insight-ladder b { color: var(--qx-text); }
 
   .reward-panel { width: 100%; box-sizing: border-box; border: 1.5px solid var(--qx-green); border-radius: 14px; background: var(--qx-green-soft); padding: 12px; text-align: left; margin-bottom: 13px; }
   .reward-top { display: flex; justify-content: space-between; align-items: center; }

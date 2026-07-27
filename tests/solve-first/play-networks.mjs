@@ -131,10 +131,12 @@ log2('  dispatches=' + dw + ' | town failed: ' + (txt().includes('Town relay dow
 log2('  Redirect now: ' + st('Redirect via hill') + '  <- must be enabled');
 await click('Redirect via hill');
 for (let i=0;i<4;i++){ if (await click('Dispatch') !== 'ok') break; }
-log2('  reveal gate: ' + st('Reveal the system') + '  <- must be enabled');
+log2('  reveal before diagnosis: ' + st('Diagnose why') + '  <- must be DISABLED');
+log2('  systems diagnosis shown: ' + (txt().includes('Systems diagnosis') ? 'yes' : 'no'));
+await click('Small marked segments choosing available routes independently');
+log2('  reveal after diagnosis: ' + st('Reveal the system') + '  <- must be enabled');
 await click('Reveal the system');
 log2('\n[REVEAL] packet-switched shown: ' + (txt().includes('packet-switched network') ? 'yes':'no'));
 log2('  reward recorded: ' + JSON.stringify(window.__done));
 log2('\nFINAL ERRORS: ' + (errors.length?JSON.stringify(errors.slice(0,5)):'NONE'));
 console.log(R2.join('\n'));
-
