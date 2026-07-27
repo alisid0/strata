@@ -34,6 +34,7 @@
   import FunctionLab from './FunctionLab.svelte';
   import AsymptoteLab from './AsymptoteLab.svelte';
   import RateIntervalBench from './RateIntervalBench.svelte';
+  import LocalLinearityStudio from './LocalLinearityStudio.svelte';
   // MCQ-style scenario picker is inline
 
   export let interactions = []; // [{ type: 'sorting'|'taperase'|'scenario', ...props }]
@@ -409,6 +410,11 @@
         />
       {:else if current.type === 'rateinterval'}
         <RateIntervalBench
+          prompt={current.prompt}
+          onDone={handleInteractionDone}
+        />
+      {:else if current.type === 'locallinearity'}
+        <LocalLinearityStudio
           prompt={current.prompt}
           onDone={handleInteractionDone}
         />

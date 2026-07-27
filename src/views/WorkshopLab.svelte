@@ -70,6 +70,10 @@
     type: 'rateinterval',
     prompt: 'Average speed over an interval is the slope of the line joining its two ends.'
   }];
+  const getLocalLinearityWorkshop = () => [{
+    type: 'locallinearity',
+    prompt: 'Up close, a smooth curve looks like a straight line; a corner never does.'
+  }];
   const getEquationBalancerWorkshop = () => [{
     type: 'equationbalancer',
     prompt: 'Balance each equation: adjust the coefficients until every element matches on both sides.'
@@ -154,6 +158,14 @@
           sub: 'Drag an interval on a distance–time curve and read its average speed as a secant slope.',
           pathId: 'MATH_DIFF',
           getWorkshop: getRateIntervalWorkshop
+        },
+        {
+          id: 'local-linearity',
+          label: 'Zoom in',
+          title: 'Local linearity',
+          sub: 'Zoom into a curve until it straightens — or stays a sharp corner.',
+          pathId: 'MATH_DIFF',
+          getWorkshop: getLocalLinearityWorkshop
         },
         {
           id: 'coord-geometry',
