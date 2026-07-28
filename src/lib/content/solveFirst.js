@@ -140,6 +140,17 @@ const SOLVE_FIRST = {
     title: 'Signal Hacker',
     sub: 'No lesson first. Match security frequencies by tuning amplitude, pitch, phase shift, and vertical lift — then decode the sine formula.',
     rewardLabel: 'Signal Master'
+  },
+  'conic-sections': {
+    id: 'conic-sections-orbit-architect',
+    moduleId: 'conic-sections',
+    pathId: 'MATH_COORD',
+    track: 'mathematics',
+    kind: 'orbit-architect',
+    eyebrow: 'Unmarked problem 12',
+    title: 'Orbit Architect',
+    sub: 'No lesson first. Stretch an elliptical forcefield to capture space debris, then decode the standard form (x−h)²/a² + (y−k)²/b² = 1.',
+    rewardLabel: 'Orbit Master'
   }
 };
 
