@@ -153,6 +153,9 @@ assert(computeReward(perfectRun, true) === 13, 'hint trade-off remains visible o
 // ── Determinism ────────────────────────────────────────────────
 seed(42); const d1 = generateLevel(0, 42); seed(42); const d2 = generateLevel(0, 42);
 assert(d1.L === d2.L && d1.a === d2.a, 'same seed = same level');
+const wallClockSeed = generateLevel(0, 0xffffffff);
+assert(Number.isFinite(wallClockSeed.a) && Number.isFinite(wallClockSeed.L),
+  'large wall-clock seeds normalize to valid scenario values');
 
 // ── Full simulated journey: all 6 completable ──────────────────
 console.log('\n10. Data-model journey');
