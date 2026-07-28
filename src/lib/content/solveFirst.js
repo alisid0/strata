@@ -118,6 +118,17 @@ const SOLVE_FIRST = {
     title: 'Vector Racer',
     sub: 'No lesson first. Race a car around a grid track by picking velocity vectors, then discover why momentum makes you plan the racing line.',
     rewardLabel: 'Racing Line'
+  },
+  'trigonometry': {
+    id: 'trigonometry-ramp-rider',
+    moduleId: 'trigonometry',
+    pathId: 'MATH_TRIG_ADV',
+    track: 'mathematics',
+    kind: 'ramp-rider',
+    eyebrow: 'Unmarked problem 10',
+    title: 'Ramp Rider',
+    sub: 'No lesson first. Tilt a ramp, launch a motorcycle, clear gaps with the right angle, then decode sine and cosine.',
+    rewardLabel: 'Angle Master'
   }
 };
 
