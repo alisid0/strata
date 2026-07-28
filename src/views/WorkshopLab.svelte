@@ -857,10 +857,10 @@
                 <span class="ws-tile-sub">{item.sub}</span>
               </span>
               <span class="ws-tile-foot">
-                <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Learned · complete' : 'Learn First'}</span>
-                {#if getSolveFirst(item.id)}<span class="ws-paired" title="A reversed Solve First journey is also available">Paired</span>{/if}
-                {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">C</span>{/if}
-                {#if getTestForModule(item.id, item.getWorkshop ? item.getWorkshop() : [])}<span class="ws-bolt" title="Scored test available">T</span>{/if}
+                <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Learn'}</span>
+                {#if getSolveFirst(item.id)}<span class="ws-paired" title="Also available as a Solve First discovery">↻ Paired</span>{/if}
+                {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge mode">⚡</span>{/if}
+                {#if getTestForModule(item.id, item.getWorkshop ? item.getWorkshop() : [])}<span class="ws-bolt" title="Scored test mode">📋</span>{/if}
               </span>
             </button>
           {/each}
@@ -1291,13 +1291,20 @@
     align-items: center;
     gap: 11px;
     width: 100%; text-align: left;
-    padding: 11px 12px; border-radius: 17px;
-    border: 1px solid transparent; background: var(--qx-surface);
+    padding: 11px 12px; border-radius: 14px;
+    border: 1px solid var(--qx-border);
+    border-left: 3px solid var(--qx-border);
+    background: var(--qx-surface);
     cursor: pointer; font-family: var(--qx-font);
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--qx-border) 72%, transparent);
-    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
   }
-  .ws-tile:hover { border-color: var(--qx-accent); background: var(--qx-accent-soft-2); transform: translateY(-1px); box-shadow: var(--qx-shadow-card); }
+  .ws-tile:hover {
+    border-color: var(--qx-accent);
+    border-left-color: var(--qx-accent);
+    background: var(--qx-accent-soft-2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--qx-accent) 18%, transparent);
+  }
   .ws-tile:active { transform: scale(0.98); }
   .ws-tile-icon {
     width: 40px; height: 40px; border-radius: 12px; background: var(--qx-surface-2);
@@ -1327,15 +1334,21 @@
   }
   .ws-chip {
     font-size: 9px; font-weight: 850; color: var(--qx-text-faint);
-    background: transparent; padding: 3px 2px;
+    border: 1px solid var(--qx-border); border-radius: 7px;
+    padding: 3px 7px;
   }
-  .ws-chip.done { color: var(--qx-green-text); background: transparent; }
+  .ws-chip.done {
+    color: var(--qx-green-text); background: var(--qx-green-soft);
+    border-color: var(--qx-green);
+  }
   .ws-bolt {
-    width: 18px; height: 18px; display: grid; place-items: center;
+    display: inline-flex; align-items: center; gap: 2px;
     border: 1px solid color-mix(in srgb, var(--qx-accent) 40%, var(--qx-border));
-    border-radius: 6px; color: var(--qx-accent-text);
-    background: var(--qx-accent-soft-2); padding: 0;
-    font-size: 7.5px; font-weight: 950;
+    border-radius: 7px; color: var(--qx-accent-text);
+    background: var(--qx-accent-soft-2);
+    padding: 2px 7px;
+    font-size: 8px; font-weight: 950;
+    line-height: 1.4;
   }
   .ws-paired {
     min-height: 20px;
@@ -1734,10 +1747,19 @@
     place-items: center;
     background: var(--qx-accent-soft);
     color: var(--qx-accent-text);
-    border: 1.5px solid var(--qx-accent);
+    border: 2.5px solid var(--qx-accent);
     font-size: 23px;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 28px color-mix(in srgb, var(--qx-accent) 30%, transparent);
+    animation: scoreIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes scoreIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .score-ring { animation: none; }
   }
 
   h2 {
