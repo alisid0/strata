@@ -47,10 +47,10 @@ const SOLVE_FIRST = {
     moduleId: 'limits',
     pathId: 'MATH_LIMITS',
     track: 'mathematics',
-    kind: 'limit-probe',
+    kind: 'boundary-runner',
     eyebrow: 'Unmarked problem 04',
-    title: 'Recover the Reading',
-    sub: 'No lesson first. Probe a failed sensor from both sides, reconstruct what it was heading toward, and detect when no single reading is defensible.',
+    title: 'Boundary Runner',
+    sub: 'No lesson first. Command two probe ships from opposite sides of a damaged portal, gather evidence, survive infinite barriers, and complete the safety corridor.',
     rewardLabel: 'Boundary Analyst'
   },
   'differentiation': {

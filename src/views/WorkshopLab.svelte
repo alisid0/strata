@@ -510,6 +510,7 @@
   import SolveFirstForces from '../lib/components/assessments/SolveFirstForces.svelte';
   import SolveFirstCoordinates from '../lib/components/assessments/SolveFirstCoordinates.svelte';
   import SolveFirstLimits from '../lib/components/assessments/SolveFirstLimits.svelte';
+  import BoundaryRunner from '../lib/components/assessments/BoundaryRunner.svelte';
   import SolveFirstNetworks from '../lib/components/assessments/SolveFirstNetworks.svelte';
   import SolveFirstDifferentiation from '../lib/components/assessments/SolveFirstDifferentiation.svelte';
   import SolveFirstMatrices from '../lib/components/assessments/SolveFirstMatrices.svelte';
@@ -930,6 +931,8 @@
           <SolveFirstForces config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'coordinate-signal'}
           <SolveFirstCoordinates config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'boundary-runner'}
+          <BoundaryRunner config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'limit-probe'}
           <SolveFirstLimits config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'network-routing'}
