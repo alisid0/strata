@@ -107,6 +107,17 @@ const SOLVE_FIRST = {
     title: 'Trajectory',
     sub: 'No lesson first. Aim a launcher, arc shots onto flags and over walls, then discover why 45° flies farthest.',
     rewardLabel: 'Range Master'
+  },
+  'coord-geometry': {
+    id: 'coord-geometry-vector-racer',
+    moduleId: 'coord-geometry',
+    pathId: 'MATH_COORD',
+    track: 'mathematics',
+    kind: 'vector-race',
+    eyebrow: 'Unmarked problem 09',
+    title: 'Vector Racer',
+    sub: 'No lesson first. Race a car around a grid track by picking velocity vectors, then discover why momentum makes you plan the racing line.',
+    rewardLabel: 'Racing Line'
   }
 };
 

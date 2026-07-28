@@ -516,6 +516,7 @@
   import SolveFirstMatrices from '../lib/components/assessments/SolveFirstMatrices.svelte';
   import SolveFirstBayes from '../lib/components/assessments/SolveFirstBayes.svelte';
   import SolveFirstProjectile from '../lib/components/assessments/SolveFirstProjectile.svelte';
+  import SolveFirstVectorRace from '../lib/components/assessments/SolveFirstVectorRace.svelte';
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
   import { getSolveFirst, getAllSolveFirst } from '../lib/content/solveFirst.js';
@@ -945,6 +946,8 @@
           <SolveFirstBayes config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'projectile-arc'}
           <SolveFirstProjectile config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'vector-race'}
+          <SolveFirstVectorRace config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else}
           <SolveFirst config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {/if}
