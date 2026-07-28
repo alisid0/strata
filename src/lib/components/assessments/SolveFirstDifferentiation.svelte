@@ -167,7 +167,7 @@
 
 <div class="solve-first">
   <header class="mode-head">
-    <button class="exit" on:click={onExit} aria-label="Return to workshop practice">←</button>
+    <button class="exit" on:click={onExit} aria-label="Return to all workshops">←</button>
     <div><span>{config.eyebrow}</span><strong>Solve First</strong></div>
     <div class="phase-count">{phaseIndex}/5</div>
   </header>

@@ -523,6 +523,7 @@
 
   export let onNavigate;
   export let openTarget = null; // module id to open immediately (deep link from a topic page)
+  export let onRunningChange = () => {};
 
   let runId = 0;
   let finished = false;
@@ -582,6 +583,7 @@
   const moduleDone = (id) => !!$progress?.ws?.granted?.[`workshop:${id}`];
   const discoveryDone = (id) => !!$progress?.discoveries?.[id]?.firstCompletedAt;
   $: solveFirstCompleted = ALL_SOLVE_FIRST.filter((item) => discoveryDone(item.id)).length;
+  $: onRunningChange?.(running);
 
   function finishWorkshop(finalScore, finalTotal, finalStreak = 0) {
     score = finalScore;
@@ -673,6 +675,7 @@
 
   function exitSolveFirst() {
     solveFirst = null;
+    running = false;
     runId += 1;
     finished = false;
   }
@@ -698,17 +701,22 @@
   }
 </script>
 
-<div class="qx-shell workshop-lab" class:coord-arcade={solveFirst?.kind === 'coordinate-signal'}>
-  <div class="lab-header">
-    <div>
-      <div class="kicker">Exercises</div>
-      <h1>Workshop</h1>
-      <p>Fast hands-on drills for turning ideas into working understanding.</p>
-    </div>
-    <img src={track.icon} alt={track.label} />
-  </div>
-
+<div
+  class="qx-shell workshop-lab"
+  class:is-running={running}
+  class:solve-running={!!solveFirst}
+  class:coord-arcade={solveFirst?.kind === 'coordinate-signal'}
+>
   {#if !running}
+    <div class="lab-header">
+      <div>
+        <div class="kicker">Exercises</div>
+        <h1>Workshop</h1>
+        <p>Fast hands-on drills for turning ideas into working understanding.</p>
+      </div>
+      <img src={track.icon} alt={track.label} />
+    </div>
+
     <section class="solve-batch" aria-labelledby="solve-batch-title">
       <div class="solve-batch-head">
         <div>
@@ -768,19 +776,18 @@
 
   {:else}
     <!-- Running a workshop -->
-    <button class="ws-back" on:click={backToGrid}>← All workshops</button>
-
-    {#if !solveFirst || solveFirst.kind !== 'coordinate-signal'}
-    <section class="spotlight">
-      <div class="spotlight-copy">
+    {#if !solveFirst}
+    <header class="runner-header">
+      <button class="runner-back" on:click={backToGrid} aria-label="Return to all workshops">←</button>
+      <div class="runner-copy">
         <span>{track.label}</span>
         <strong>{workshopTitle}</strong>
         <small>{workshopSub}</small>
       </div>
-      {#if topicMeta && !solveFirst}
-        <button on:click={() => onNavigate?.('topicDetail', activePathId)}>Read this topic</button>
+      {#if topicMeta}
+        <button class="runner-read" on:click={() => onNavigate?.('topicDetail', activePathId)}>Read</button>
       {/if}
-    </section>
+    </header>
     {/if}
 
     {#if hasSolveFirst && !challenge && !test && !solveFirst}
@@ -895,6 +902,20 @@
     overscroll-behavior-y: contain;
   }
 
+  .workshop-lab.is-running {
+    padding:
+      max(12px, env(safe-area-inset-top, 0px))
+      clamp(12px, 3.5vw, 20px)
+      max(22px, env(safe-area-inset-bottom, 0px));
+    background:
+      radial-gradient(circle at 50% -10%, color-mix(in srgb, var(--qx-accent) 8%, transparent), transparent 38%),
+      var(--qx-bg);
+  }
+
+  .workshop-lab.solve-running {
+    padding-inline: clamp(10px, 3vw, 18px);
+  }
+
   .lab-header {
     display: flex;
     align-items: center;
@@ -954,11 +975,77 @@
     background: var(--qx-accent-soft); border-radius: var(--qx-radius-pill); padding: 3px 8px;
   }
 
-  .ws-back {
-    align-self: flex-start;
-    border: none; background: none; color: var(--qx-text-dim);
-    font-family: var(--qx-font); font-size: 13px; font-weight: 800;
-    cursor: pointer; padding: 2px 0 10px;
+  .runner-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 11px;
+    margin: -2px 0 14px;
+    padding: 8px 0 12px;
+    border-bottom: 1px solid var(--qx-border);
+    background: color-mix(in srgb, var(--qx-bg) 92%, transparent);
+    backdrop-filter: blur(16px);
+  }
+
+  .runner-back {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--qx-border);
+    border-radius: 13px;
+    background: var(--qx-surface);
+    color: var(--qx-text);
+    box-shadow: var(--qx-shadow-card);
+    font: 900 18px var(--qx-font);
+    cursor: pointer;
+  }
+
+  .runner-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .runner-copy span {
+    color: var(--qx-accent);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+
+  .runner-copy strong {
+    overflow: hidden;
+    color: var(--qx-text);
+    font-size: 15px;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .runner-copy small {
+    overflow: hidden;
+    color: var(--qx-text-faint);
+    font-size: 10.5px;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .runner-read {
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--qx-border);
+    border-radius: 12px;
+    background: var(--qx-surface);
+    color: var(--qx-accent-text);
+    font: 850 11px var(--qx-font);
+    cursor: pointer;
   }
 
   @media (min-width: 620px) {
@@ -1042,47 +1129,6 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .spotlight {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    border: 1.5px solid var(--qx-border);
-    background: var(--qx-surface);
-    border-radius: var(--qx-radius-lg);
-    padding: var(--qx-card-pad);
-    margin-bottom: 12px;
-    box-shadow: var(--qx-shadow-card);
-  }
-
-  .spotlight-copy {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .spotlight-copy span {
-    font-size: 10px;
-    font-weight: 850;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--qx-text-faint);
-  }
-
-  .spotlight-copy strong {
-    font-size: 15px;
-    line-height: 1.2;
-    color: var(--qx-text);
-  }
-
-  .spotlight-copy small {
-    font-size: 12px;
-    line-height: 1.3;
-    color: var(--qx-text-dim);
-  }
-
-  .spotlight button,
   .primary-btn {
     border: none;
     border-radius: 999px;
@@ -1238,8 +1284,12 @@
      header, progress rail and padding. Green distinguishes discovery from the
      accent-coloured challenge/test modes. */
   .workshop-card.solve-active {
-    border-color: var(--qx-green);
-    padding-top: clamp(11px, 3vw, 15px);
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   .solve-bar {
@@ -1268,14 +1318,12 @@
   }
 
   @media (max-width: 380px) {
-    .spotlight,
     .challenge-bar,
     .solve-bar {
       align-items: stretch;
       flex-direction: column;
     }
 
-    .spotlight button,
     .challenge-bar button,
     .solve-bar button {
       width: 100%;
@@ -1429,21 +1477,15 @@
     padding: 0 15px;
   }
 
-  @media (max-width: 380px) {
-    .spotlight {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-
-    .spotlight button {
-      width: 100%;
-    }
-  }
-
   @media (max-width: 430px) {
-    .workshop-lab.coord-arcade .lab-header,
-    .workshop-lab.coord-arcade .ws-back {
+    .workshop-lab.is-running {
+      padding-top: max(9px, env(safe-area-inset-top, 0px));
+      padding-inline: 10px;
+    }
+
+    .runner-copy small {
       display: none;
     }
+
   }
 </style>

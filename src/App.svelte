@@ -31,6 +31,7 @@
   let currentPathId = '';
   let currentSubjectId = 'line'; // gateway id for the Subject hub view
   let workshopTarget = null; // module id the workshop tab should open directly
+  let workshopRunning = false; // a selected workshop becomes its own focused screen
   let readerNumbers = [];
   let readerStart = 1;
   let authInitialMode = 'welcome';
@@ -124,6 +125,7 @@
   function navigate(view, arg) {
     view = LEGACY_VIEWS[view] || view;
     if (view === 'author' && !appEnvironment.testToolsEnabled) return;
+    if (view !== 'workshop') workshopRunning = false;
     // Slide direction: push views slide in from the right; back-to-tab slides
     // from the left; tab→tab follows the tab order.
     if (PUSH_VIEWS.includes(view)) {
@@ -174,19 +176,25 @@
     </div>
 
   {:else if TAB_VIEWS.includes(currentView)}
-    <div class="view-layer qx-shell tabbed-view" in:fly={flyIn(slideDirection)} out:fly={flyOut(slideDirection)}>
+    <div class="view-layer qx-shell tabbed-view" class:workshop-running={workshopRunning} in:fly={flyIn(slideDirection)} out:fly={flyOut(slideDirection)}>
       <div class="tab-content">
         {#if currentView === 'home'}
           <Home onNavigate={navigate} />
         {:else if currentView === 'path'}
           <Path onNavigate={navigate} />
         {:else if currentView === 'workshop'}
-          <WorkshopLab onNavigate={navigate} openTarget={workshopTarget} />
+          <WorkshopLab
+            onNavigate={navigate}
+            openTarget={workshopTarget}
+            onRunningChange={(running) => workshopRunning = running}
+          />
         {:else if currentView === 'wscore'}
           <WScore onNavigate={navigate} />
         {/if}
       </div>
-      <BottomNav active={currentView} onNavigate={navigate} />
+      {#if !workshopRunning}
+        <BottomNav active={currentView} onNavigate={navigate} />
+      {/if}
     </div>
 
   {:else if currentView === 'topicDetail'}
@@ -274,4 +282,5 @@
 
   .tabbed-view { display: flex; flex-direction: column; }
   .tab-content { flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; }
+  .tabbed-view.workshop-running .tab-content { overscroll-behavior-y: none; }
 </style>

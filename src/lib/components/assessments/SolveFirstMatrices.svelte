@@ -148,7 +148,7 @@
       </div>
     </div>
   {:else}
-    <button class="exit" on:click={onExit} aria-label="Return to workshop practice">←</button>
+    <button class="exit" on:click={onExit} aria-label="Return to all workshops">←</button>
     <div class="head">
       <span class="eyebrow">{config.eyebrow}</span>
       <h2>{config.title}</h2>

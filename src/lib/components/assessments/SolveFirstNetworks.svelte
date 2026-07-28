@@ -206,7 +206,7 @@
 
 <div class="solve-first">
   <header class="mode-head">
-    <button class="exit" on:click={onExit} aria-label="Return to workshop practice">←</button>
+    <button class="exit" on:click={onExit} aria-label="Return to all workshops">←</button>
     <div><span>{config.eyebrow}</span><strong>Solve First</strong></div>
     <div class="phase-count">{phaseIndex}/6</div>
   </header>
@@ -697,7 +697,16 @@
   .pair-map span:nth-child(2), .centre-map span:nth-child(2) { right: 5px; top: 4px; }
   .pair-map span:nth-child(3), .centre-map span:nth-child(3) { left: 5px; bottom: 4px; }
   .pair-map span:nth-child(4), .centre-map span:nth-child(4) { right: 5px; bottom: 4px; }
-  .pair-lines { position: absolute; inset: 25px 20px; color: var(--qx-pink-text); font-size: 27px; letter-spacing: -9px; }
+  .pair-lines {
+    position: absolute;
+    inset: 25px 16px;
+    overflow: hidden;
+    color: var(--qx-pink-text);
+    font-size: clamp(21px, 6vw, 27px);
+    letter-spacing: -10px;
+    text-align: center;
+    white-space: nowrap;
+  }
   .centre-map::before, .centre-map::after { content: ''; position: absolute; left: 18px; right: 18px; top: 45px; border-top: 2px solid var(--qx-accent); transform: rotate(28deg); }
   .centre-map::after { transform: rotate(-28deg); }
   .centre-map b { position: absolute; left: calc(50% - 11px); top: 35px; z-index: 3; color: var(--qx-accent); font-size: 22px; }
@@ -777,6 +786,174 @@
   .reward-top { display: flex; justify-content: space-between; align-items: center; }.reward-top div { display: flex; flex-direction: column; }.reward-top span { font-size: 9px; color: var(--qx-green-text); font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }.reward-top strong { font-size: 15px; color: var(--qx-text); }.reward-top b { color: var(--qx-green-text); font-size: 21px; }
   .reward-skills { display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0 7px; }.reward-skills span { border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-text-faint); border-radius: 999px; padding: 4px 8px; font-size: 9px; font-weight: 850; }.reward-skills span.earned { color: var(--qx-green-text); border-color: var(--qx-green); }
   .reward-panel small { color: var(--qx-text-dim); font-size: 9.5px; line-height: 1.35; display: block; }.reveal-actions { width: 100%; display: grid; gap: 7px; }
+
+  /* Keep the late-80s game language in the diagrams and HUD, while giving the
+     playable surface a calmer modern hierarchy. One outline per idea is enough. */
+  .solve-first {
+    max-width: 480px;
+  }
+  .solve-first::after {
+    inset: 90px 0 0;
+    opacity: .035;
+    mix-blend-mode: normal;
+  }
+  .mode-head {
+    margin-bottom: 9px;
+    padding-inline: 2px;
+  }
+  .exit {
+    border-width: 1px;
+    border-radius: 12px;
+    box-shadow: var(--qx-shadow-card);
+  }
+  .phase-line {
+    gap: 6px;
+    margin: 0 2px 12px;
+  }
+  .phase-line span {
+    height: 5px;
+  }
+  .arcade-hud {
+    min-height: 38px;
+    margin: 0 0 18px;
+    padding-inline: 11px;
+    border: 1px solid var(--qx-border-2);
+    border-radius: 11px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--qx-text) 94%, var(--qx-accent)), var(--qx-text));
+    box-shadow: var(--qx-shadow-card);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .arcade-hud b {
+    padding-block: 6px;
+  }
+  .phase {
+    gap: 14px;
+  }
+  .section-title {
+    padding: 2px;
+  }
+  .section-title h2 {
+    margin: 7px 0 5px;
+    font-size: clamp(22px, 5.5vw, 26px);
+    letter-spacing: -.025em;
+  }
+  .section-title > span {
+    padding: 4px 8px;
+    border-left-width: 3px;
+    border-radius: 0 7px 7px 0;
+    background: color-mix(in srgb, var(--qx-accent) 9%, var(--qx-surface-2));
+  }
+  .mission {
+    border-width: 1px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, var(--qx-accent-soft), color-mix(in srgb, var(--qx-surface) 72%, var(--qx-accent-soft)));
+    box-shadow: none;
+  }
+  .primary,
+  .secondary,
+  .test-action {
+    min-height: 48px;
+    border-width: 1px;
+    border-radius: 13px;
+    box-shadow: 0 7px 18px rgba(0, 0, 0, .16);
+  }
+  .primary:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 3px 9px rgba(0, 0, 0, .14);
+  }
+  .direct-stage,
+  .layout-card,
+  .decision,
+  .failure-card,
+  .job-board {
+    border: 1px solid var(--qx-border-2);
+    border-radius: 16px;
+    box-shadow: var(--qx-shadow-card);
+  }
+  .direct-stage {
+    border-radius: 18px;
+    box-shadow: inset 0 0 0 1px var(--qx-border), var(--qx-shadow-card);
+  }
+  .layout-card {
+    padding: 10px;
+  }
+  .layout-card > button,
+  .failure-card > button {
+    border-width: 1px;
+    border-radius: 12px;
+  }
+  .tool-grid button,
+  .blueprint-grid button {
+    border-width: 1px;
+    border-radius: 14px;
+    box-shadow: none;
+  }
+  .tool-grid button.active,
+  .blueprint-grid button.active {
+    transform: none;
+    box-shadow: inset 0 0 0 1px var(--qx-accent);
+  }
+  .system-readout {
+    gap: 8px;
+  }
+  .system-readout > span {
+    padding: 9px 10px;
+    border: 1px solid var(--qx-border);
+    border-left: 3px solid var(--qx-accent);
+    border-radius: 11px;
+    background: var(--qx-surface-2);
+    color: var(--qx-text);
+  }
+  .system-readout em {
+    color: var(--qx-text-faint);
+  }
+  .decision {
+    padding: 13px;
+    background: var(--qx-surface-2);
+  }
+  .failure-list {
+    gap: 10px;
+  }
+  .fault-ledger {
+    overflow: hidden;
+    border: 1px solid var(--qx-border-2);
+    border-radius: 12px;
+    background: var(--qx-surface-2);
+    color: var(--qx-text);
+  }
+  .fault-ledger > span {
+    color: var(--qx-accent-text);
+  }
+  .fault-ledger > b {
+    border-left-color: var(--qx-border);
+  }
+  .job-board {
+    padding: 13px;
+    box-shadow: var(--qx-shadow-card);
+  }
+  .contract-strip {
+    border-radius: 11px;
+  }
+  .greenhouse {
+    border-width: 2px;
+    border-radius: 30px 30px 14px 14px;
+    box-shadow: var(--qx-shadow-card);
+  }
+  .transfer-spec {
+    overflow: hidden;
+    border: 1px solid var(--qx-border-2);
+    border-radius: 12px;
+    background: var(--qx-surface-2);
+  }
+  .transfer-spec span {
+    color: var(--qx-text);
+    border-right-color: var(--qx-border);
+  }
+  .completion-banner {
+    border-width: 1px;
+    border-radius: 14px;
+    box-shadow: var(--qx-shadow-card);
+  }
 
   button:focus-visible { outline: 3px solid var(--qx-accent); outline-offset: 2px; }
   @media (max-width: 380px) {
