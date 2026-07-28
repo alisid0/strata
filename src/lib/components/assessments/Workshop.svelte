@@ -49,6 +49,9 @@
   // running — no correct-answer highlight, no teaching feedback, no streak
   // flame (it would leak correctness). The verdict arrives only at the end.
   export let assess = false;
+  // Full workshop runs use a compact retro-game HUD and input treatment.
+  // Reader checkpoints and daily workouts keep the calmer default surface.
+  export let arcade = false;
 
   let step = 0;
   let totalScore = 0;
@@ -118,7 +121,7 @@
   $: scenarioOptions = current?.type === 'scenario' ? shuffledOptions(current) : [];
 </script>
 
-<div class="workshop">
+<div class="workshop" class:arcade>
   <div class="workshop-header">
     <div>
       <span class="workshop-kicker">{assess ? 'Test' : timeLimitSec > 0 ? 'Challenge' : 'Learn First'}</span>
@@ -583,5 +586,105 @@
     padding: 12px 32px; border-radius: 24px; border: none;
     background: var(--qx-accent); color: #fff;
     font-family: var(--qx-font); font-size: 14px; font-weight: 800; cursor: pointer;
+  }
+
+  /* Selected workshops switch into a compact pre-smartphone game presentation.
+     The interactions stay accessible HTML; only the framing and feedback language
+     become more console-like. */
+  .workshop.arcade { min-height: 420px; }
+  .arcade .workshop-header {
+    min-height: 54px;
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    border: 2px solid #756B59;
+    border-radius: 2px;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 7px, rgba(243, 235, 221, .025) 7px 8px),
+      #191713;
+    box-sizing: border-box;
+  }
+  .arcade .workshop-kicker { color: #D88354; font-size: 8px; letter-spacing: .13em; }
+  .arcade .workshop-title { color: #F3EBDD; font-size: 14px; text-transform: uppercase; }
+  .arcade .workshop-progress,
+  .arcade .workshop-timer,
+  .arcade .workshop-streak {
+    border-radius: 2px;
+    padding: 5px 7px;
+    background: #28241D;
+    color: #F3EBDD;
+    font-size: 9px;
+  }
+  .arcade .workshop-timer { border-color: #D88354; color: #F0B17E; }
+  .arcade .workshop-streak { border-color: #6BCB58; color: #9DE18E; }
+  .arcade .progress-track {
+    height: 8px;
+    margin-bottom: 18px;
+    border: 1px solid #756B59;
+    border-radius: 1px;
+    background:
+      repeating-linear-gradient(90deg, #28241D 0 13px, #15130F 13px 15px);
+  }
+  .arcade .progress-track span {
+    border-radius: 0;
+    background:
+      repeating-linear-gradient(90deg, #D88354 0 13px, #B8673B 13px 15px);
+  }
+  .arcade .workshop-body {
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .arcade .scenario { max-width: 430px; gap: 13px; }
+  .arcade .scenario-prompt {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #756B59;
+    border-radius: 2px;
+    background: #201D17;
+    color: #F3EBDD;
+    box-shadow: 4px 4px 0 #0D0C0A;
+    font-size: 13px;
+    line-height: 1.45;
+    box-sizing: border-box;
+  }
+  .arcade .scenario-options { gap: 9px; }
+  .arcade .scenario-opt {
+    min-height: 48px;
+    padding: 11px 13px;
+    border: 2px solid var(--qx-border-2);
+    border-radius: 3px;
+    background: var(--qx-surface);
+    box-shadow: 3px 3px 0 color-mix(in srgb, var(--qx-text) 18%, transparent);
+    font-size: 12px;
+  }
+  .arcade .scenario-opt:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 color-mix(in srgb, var(--qx-text) 18%, transparent);
+  }
+  .arcade .scenario-opt.correct { border-color: var(--qx-green); }
+  .arcade .scenario-opt.incorrect { border-color: var(--qx-danger); }
+  .arcade .scenario-feedback {
+    border: 2px solid currentColor;
+    border-radius: 2px;
+    font-size: 11px;
+  }
+  .arcade .continue-btn {
+    min-height: 46px;
+    padding: 0 26px;
+    border: 2px solid color-mix(in srgb, var(--qx-accent) 70%, #fff);
+    border-radius: 3px;
+    box-shadow: 4px 4px 0 #0D0C0A;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+  .arcade .continue-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #0D0C0A; }
+
+  @media (max-width: 430px) {
+    .workshop.arcade { min-height: 390px; }
+    .arcade .workshop-header { align-items: flex-start; }
+    .arcade .workshop-chips { gap: 3px; }
+    .arcade .workshop-streak { display: none; }
+    .arcade .scenario-prompt { font-size: 12px; }
   }
 </style>

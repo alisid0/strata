@@ -535,6 +535,7 @@
   let solveFirst = null; // active Solve First discovery config (problem-led, no lesson first)
   const ALL_SOLVE_FIRST = getAllSolveFirst();
   let running = false;  // false = browse the module grid; true = a workshop is open
+  let gameStarted = false; // selected Learn First workshops open on a game-style mission briefing
   let browseMode = 'learn-first';
   let browseCategory = 'mathematics';
   let activeTrack = 'mathematics';
@@ -565,6 +566,9 @@
   $: moduleTabs = track.modules || [];
   $: activeModuleId = activeModuleBySubject[activeTrack] || moduleTabs[0]?.id;
   $: activeModule = moduleTabs.find((item) => item.id === activeModuleId) || moduleTabs[0];
+  $: activeModuleNumber = Math.max(1, moduleTabs.findIndex((item) => item.id === activeModuleId) + 1);
+  $: missionCode = `${activeTrack.slice(0, 3).toUpperCase()}-${String(activeModuleNumber).padStart(2, '0')}`;
+  $: activeGameMode = test ? 'TEST RUN' : challenge ? 'TIME ATTACK' : 'LEARN FIRST';
   $: workshopTitle = solveFirst ? solveFirst.title
     : test ? `${activeModule?.title || track.title} — test`
     : challenge ? `${activeModule?.title || track.title} — challenge`
@@ -631,6 +635,7 @@
   function startChallenge() {
     test = null;
     challenge = getChallengeForModule(activeModuleId);
+    gameStarted = true;
     runId += 1;
     score = 0;
     total = 0;
@@ -641,6 +646,7 @@
   function startTest() {
     challenge = null;
     test = getTestForModule(activeModuleId, practiceInteractions);
+    gameStarted = true;
     runId += 1;
     score = 0;
     total = 0;
@@ -672,6 +678,7 @@
     test = null;
     solveFirst = config;
     running = true;
+    gameStarted = true;
     runId += 1;
     score = 0;
     total = 0;
@@ -687,6 +694,7 @@
   function exitSolveFirst() {
     solveFirst = null;
     running = false;
+    gameStarted = false;
     runId += 1;
     finished = false;
   }
@@ -702,11 +710,22 @@
     test = null;
     solveFirst = null;
     running = true;
+    gameStarted = false;
     replay();
+  }
+
+  function launchGame() {
+    gameStarted = true;
+    runId += 1;
+    score = 0;
+    total = 0;
+    bestStreak = 0;
+    finished = false;
   }
 
   function backToGrid() {
     running = false;
+    gameStarted = false;
     challenge = null;
     test = null;
     solveFirst = null;
@@ -717,6 +736,8 @@
 <div
   class="qx-shell workshop-lab"
   class:is-running={running}
+  class:game-briefing={running && !gameStarted && !solveFirst}
+  class:game-started={running && gameStarted && !solveFirst}
   class:solve-running={!!solveFirst}
   class:coord-arcade={solveFirst?.kind === 'coordinate-signal'}
 >
@@ -866,19 +887,77 @@
     </div>
 
   {:else}
+    {#if !solveFirst && !gameStarted}
+      <section class="game-boot" aria-labelledby="game-boot-title">
+        <header class="game-boot-hud">
+          <button on:click={backToGrid} aria-label="Return to all workshops">←</button>
+          <span>QUBIX WORKSHOP SYSTEM</span>
+          <b>{missionCode}</b>
+        </header>
+
+        <div class="game-boot-screen">
+          <div class="game-scanlines" aria-hidden="true"></div>
+          <div class="game-boot-kicker">Mission selected · {track.label}</div>
+          <img src={track.icon} alt="" />
+          <h1 id="game-boot-title">{activeModule?.title || track.title}</h1>
+          <p>{activeModule?.sub || track.sub}</p>
+
+          <div class="mission-route">
+            <span>LF</span>
+            <div>
+              <strong>Learn First route</strong>
+              <small>Build the idea through {practiceInteractions.length || 1} interactive {practiceInteractions.length === 1 ? 'stage' : 'stages'}.</small>
+            </div>
+          </div>
+
+          <div class="mission-rules" aria-label="Mission flow">
+            <span><b>01</b> Build</span>
+            <span><b>02</b> Notice</span>
+            <span><b>03</b> Name</span>
+            <span><b>04</b> Use</span>
+          </div>
+
+          <button class="game-start" on:click={launchGame}>
+            <span>Start mission</span>
+            <b>A</b>
+          </button>
+          {#if hasSolveFirst}
+            <button class="game-alt-start" on:click={() => startSolveFirst()}>
+              Play the reversed Solve First route instead
+            </button>
+          {/if}
+        </div>
+
+        <footer class="game-boot-controls">
+          <span><b>A</b> Start</span>
+          <span><b>B</b> Back</span>
+          <span>Progress saves automatically</span>
+        </footer>
+      </section>
+    {:else}
     <!-- Running a workshop -->
     {#if !solveFirst}
     <header class="runner-header">
       <button class="runner-back" on:click={backToGrid} aria-label="Return to all workshops">←</button>
       <div class="runner-copy">
-        <span>Learn First · {track.label}</span>
+        <span>{activeGameMode} · {missionCode}</span>
         <strong>{workshopTitle}</strong>
         <small>{workshopSub}</small>
       </div>
-      {#if topicMeta}
-        <button class="runner-read" on:click={() => onNavigate?.('topicDetail', activePathId)}>Read</button>
-      {/if}
+      <div class="runner-actions">
+        <span class="game-live">Mission live</span>
+        {#if topicMeta}
+          <button class="runner-read" on:click={() => onNavigate?.('topicDetail', activePathId)}>Guide</button>
+        {/if}
+      </div>
     </header>
+    {/if}
+
+    {#if !solveFirst}
+      <div class="game-screen-cap" aria-hidden="true">
+        <span>PLAYFIELD · {missionCode}</span>
+        <span>{finished ? 'MISSION COMPLETE' : activeGameMode}</span>
+      </div>
     {/if}
 
     {#if hasSolveFirst && !challenge && !test && !solveFirst}
@@ -937,6 +1016,7 @@
       {/key}
     {:else if finished}
       <div class="done-state">
+        <div class="mission-result-label">{test ? 'TEST RESULT' : challenge ? 'TIME ATTACK RESULT' : 'MISSION COMPLETE'}</div>
         <div class="score-ring" class:pass={test && scorePct >= 80} class:fail={test && scorePct < 80}>{scorePct}%</div>
         <h2>{score}/{total} locked in</h2>
         {#if test}
@@ -976,10 +1056,18 @@
       </div>
     {:else}
       {#key workshopRunKey}
-        <Workshop interactions={interactions} timeLimitSec={challenge?.timeLimitSec || 0} assess={!!test} onDone={finishWorkshop} />
+        <Workshop interactions={interactions} timeLimitSec={challenge?.timeLimitSec || 0} assess={!!test} arcade={true} onDone={finishWorkshop} />
       {/key}
     {/if}
   </div>
+  {#if !solveFirst}
+    <footer class="game-control-deck">
+      <span><b>A</b> Select</span>
+      <span><b>B</b> Back</span>
+      <span class="deck-status">{finished ? 'Result saved' : 'Auto-save on'}</span>
+    </footer>
+  {/if}
+  {/if}
   {/if}
 </div>
 
@@ -1004,6 +1092,211 @@
       radial-gradient(circle at 50% -10%, color-mix(in srgb, var(--qx-accent) 8%, transparent), transparent 38%),
       var(--qx-bg);
   }
+
+  .workshop-lab.game-briefing,
+  .workshop-lab.game-started {
+    background:
+      linear-gradient(rgba(20, 19, 16, .92), rgba(20, 19, 16, .97)),
+      repeating-linear-gradient(0deg, transparent 0 7px, rgba(243, 235, 221, .025) 7px 8px),
+      #141310;
+  }
+
+  .game-boot {
+    width: min(100%, 760px);
+    min-height: calc(100% - 8px);
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    border: 2px solid #756B59;
+    background: #0D0C0A;
+    box-shadow:
+      0 0 0 4px #242019,
+      0 18px 46px rgba(0, 0, 0, .5);
+  }
+
+  .game-boot-hud {
+    min-height: 48px;
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-bottom: 2px solid #756B59;
+    background: #191713;
+    color: #F3EBDD;
+  }
+  .game-boot-hud button {
+    width: 36px;
+    height: 34px;
+    border: 1px solid #756B59;
+    border-radius: 2px;
+    background: #28241D;
+    color: #F3EBDD;
+    font: 900 17px var(--qx-font);
+    cursor: pointer;
+  }
+  .game-boot-hud span {
+    overflow: hidden;
+    font-size: 8.5px;
+    font-weight: 950;
+    letter-spacing: .13em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .game-boot-hud b {
+    color: #D88354;
+    font-size: 10px;
+    letter-spacing: .08em;
+  }
+
+  .game-boot-screen {
+    position: relative;
+    isolation: isolate;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 6vw, 52px) clamp(18px, 5vw, 42px);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 34%, rgba(216, 131, 84, .14), transparent 34%),
+      repeating-linear-gradient(90deg, transparent 0 15px, rgba(243, 235, 221, .018) 15px 16px),
+      #11100D;
+    color: #F3EBDD;
+    text-align: center;
+  }
+  .game-scanlines {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0, 0, 0, .14) 3px 4px);
+    opacity: .6;
+  }
+  .game-boot-kicker {
+    color: #D88354;
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .game-boot-screen > img {
+    width: 66px;
+    height: 66px;
+    margin: 16px 0 9px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .3));
+  }
+  .game-boot-screen h1 {
+    max-width: 22ch;
+    margin: 0;
+    color: #F3EBDD;
+    font-size: clamp(24px, 5vw, 38px);
+    line-height: 1.05;
+    letter-spacing: -.035em;
+  }
+  .game-boot-screen > p {
+    max-width: 54ch;
+    margin: 9px 0 20px;
+    color: #BDB3A1;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .mission-route {
+    width: min(100%, 470px);
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 2px solid #D88354;
+    border-radius: 3px;
+    background: #201B16;
+    box-shadow: 4px 4px 0 #080706;
+    text-align: left;
+  }
+  .mission-route > span {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    background: #D88354;
+    color: #141310;
+    font-size: 11px;
+    font-weight: 950;
+  }
+  .mission-route div { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .mission-route strong { color: #F3EBDD; font-size: 12px; }
+  .mission-route small { color: #A89E8D; font-size: 9.5px; line-height: 1.35; }
+  .mission-rules {
+    width: min(100%, 470px);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    margin: 12px 0 20px;
+  }
+  .mission-rules span {
+    min-width: 0;
+    padding: 8px 4px;
+    border: 1px solid #494234;
+    background: #191713;
+    color: #BDB3A1;
+    font-size: 8px;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+  .mission-rules b { color: #6BCB58; margin-right: 3px; }
+  .game-start {
+    width: min(100%, 320px);
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 12px 0 18px;
+    border: 2px solid #F0B17E;
+    border-radius: 3px;
+    background: #D88354;
+    color: #141310;
+    box-shadow: 5px 5px 0 #070605;
+    font: 950 13px var(--qx-font);
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .game-start:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 #070605; }
+  .game-start b {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #141310;
+    border-radius: 50%;
+  }
+  .game-alt-start {
+    margin-top: 14px;
+    border: 0;
+    background: transparent;
+    color: #6BCB58;
+    font: 850 9.5px var(--qx-font);
+    cursor: pointer;
+  }
+  .game-boot-controls {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 12px;
+    border-top: 2px solid #756B59;
+    background: #191713;
+    color: #958B7A;
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .game-boot-controls b { color: #F3EBDD; }
+  .game-boot-controls span:last-child { margin-left: auto; color: #6BCB58; }
 
   .workshop-lab.solve-running {
     padding-inline: clamp(10px, 3vw, 18px);
@@ -1391,6 +1684,77 @@
     cursor: pointer;
   }
 
+  .runner-actions {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .game-live {
+    color: var(--qx-green-text);
+    font-size: 7.5px;
+    font-weight: 950;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .game-started .runner-header {
+    width: min(100%, 820px);
+    position: relative;
+    top: auto;
+    margin: 0 auto;
+    padding: 8px 10px;
+    border: 2px solid #756B59;
+    border-bottom: 0;
+    border-radius: 0;
+    background: #191713;
+    box-sizing: border-box;
+    backdrop-filter: none;
+  }
+  .game-started .runner-back {
+    border: 1px solid #756B59;
+    border-radius: 2px;
+    background: #28241D;
+    color: #F3EBDD;
+    box-shadow: none;
+  }
+  .game-started .runner-copy span { color: #D88354; font-size: 8px; letter-spacing: .12em; }
+  .game-started .runner-copy strong { color: #F3EBDD; font-size: 14px; }
+  .game-started .runner-copy small { color: #A89E8D; font-size: 9.5px; }
+  .game-started .game-live { color: #6BCB58; }
+  .game-started .runner-read {
+    min-height: 30px;
+    padding-inline: 10px;
+    border-color: #756B59;
+    border-radius: 2px;
+    background: #28241D;
+    color: #F3EBDD;
+    font-size: 8px;
+    text-transform: uppercase;
+  }
+  .game-screen-cap {
+    width: min(100%, 820px);
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 auto;
+    padding: 0 10px;
+    border: 2px solid #756B59;
+    border-bottom: 1px solid #3E382D;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 7px, rgba(243, 235, 221, .025) 7px 8px),
+      #0E0D0B;
+    color: #8E8473;
+    font-size: 7px;
+    font-weight: 950;
+    letter-spacing: .11em;
+    box-sizing: border-box;
+  }
+  .game-screen-cap span:last-child { color: #6BCB58; }
+
   @media (min-width: 620px) {
     .ws-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .category-button { min-width: 0; flex: 1 1 0; }
@@ -1500,6 +1864,72 @@
     box-shadow: var(--qx-shadow-card);
   }
 
+  .game-started .paired-runner,
+  .game-started .challenge-bar {
+    width: min(100%, 820px);
+    margin: 0 auto;
+    border-radius: 0;
+    border-inline: 2px solid #756B59;
+    border-top: 0;
+    border-bottom-color: #756B59;
+    box-sizing: border-box;
+  }
+  .game-started .challenge-exit {
+    width: min(100%, 820px);
+    display: block;
+    margin: 0 auto;
+    padding: 9px 10px;
+    border-inline: 2px solid #756B59;
+    background: #201D17;
+    color: #BDB3A1;
+    box-sizing: border-box;
+  }
+  .game-started .workshop-card {
+    width: min(100%, 820px);
+    min-height: 470px;
+    position: relative;
+    margin: 0 auto;
+    padding: clamp(14px, 3vw, 22px);
+    overflow: hidden;
+    border: 2px solid #756B59;
+    border-top: 0;
+    border-radius: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 5px, rgba(20, 19, 16, .018) 5px 6px),
+      var(--qx-surface);
+    box-shadow:
+      0 0 0 4px #0A0908,
+      0 18px 46px rgba(0, 0, 0, .45);
+  }
+  .game-control-deck {
+    width: min(100%, 820px);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 4px auto 0;
+    padding: 0 11px;
+    border: 2px solid #756B59;
+    background: #191713;
+    color: #958B7A;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    box-sizing: border-box;
+  }
+  .game-control-deck b {
+    width: 20px;
+    height: 20px;
+    display: inline-grid;
+    place-items: center;
+    margin-right: 3px;
+    border: 1px solid #756B59;
+    border-radius: 50%;
+    color: #F3EBDD;
+  }
+  .game-control-deck .deck-status { margin-left: auto; color: #6BCB58; }
+
   .done-state {
     min-height: 420px;
     display: flex;
@@ -1508,6 +1938,28 @@
     justify-content: center;
     text-align: center;
     gap: 12px;
+  }
+  .mission-result-label {
+    color: var(--qx-accent-text);
+    font-size: 8.5px;
+    font-weight: 950;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .game-started .score-ring {
+    width: 104px;
+    height: 82px;
+    border: 3px double var(--qx-accent);
+    border-radius: 3px;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 5px, color-mix(in srgb, var(--qx-accent) 8%, transparent) 5px 6px),
+      var(--qx-accent-soft);
+    box-shadow: 5px 5px 0 color-mix(in srgb, var(--qx-text) 18%, transparent);
+  }
+  .game-started .done-actions button,
+  .game-started .test-verdict,
+  .game-started .streak-badge {
+    border-radius: 3px;
   }
 
   .score-ring {
@@ -1893,6 +2345,13 @@
       padding-top: max(9px, env(safe-area-inset-top, 0px));
       padding-inline: 10px;
     }
+
+    .workshop-lab.game-briefing { padding-inline: 8px; }
+    .game-boot { min-height: calc(100% - 2px); }
+    .game-boot-screen { padding-inline: 14px; }
+    .mission-rules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .game-boot-controls span:last-child { display: none; }
+    .game-control-deck span:nth-child(2) { display: none; }
 
     .runner-copy small {
       display: none;
