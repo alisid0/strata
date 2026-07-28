@@ -6,9 +6,9 @@
   // Chapters:
   //   1 oneline    one tunnel; observe home / east / west (>=3 distinct runs)
   //   2 column     one number finds a column, not a point -> restore 2nd control
-  //   3 order      (3,1) vs (1,3) land differently; repair a swapped code
+  //   3 order      build two complete routes, horizontal first and vertical second
   //   4 sectors    recover a signal in each of the four sign regions
-  //   5 warehouse  transfer the same address rule to a robot; then read in reverse
+  //   5 warehouse  transfer the same route-building rule to a robot
   //   6 reveal     only now: number line, origin, x/y axes, ordered pair, quadrants
   // No formal vocabulary before the reveal. A tap-through solved route makes
   // the assignment's input, route, target and output explicit. No timer.
@@ -106,13 +106,11 @@
   let columnSolved = false;
   const COL2_X = 2, COL2_TARGET = { x: 2, y: 3 }, COL2_DECOY = { x: 2, y: -2 };
 
-  // chapter 3 — order matters
+  // chapter 3 — build the route in a consistent order
   let first3 = 0, second3 = 0;
   let drone3 = null, trace3 = [];
-  let gotA = false, gotB = false;        // (3,1) and (1,3)
-  let repairFirst = 1, repairSecond = 3; // a card printed swapped; must become (3,1)
-  let repaired = false;
-  $: order3Ready = gotA && gotB && repaired;
+  let gotA = false, gotB = false;
+  $: build3Ready = gotA && gotB;
 
   // chapter 4 — four sectors
   let ew4 = 0, ns4 = 0;
@@ -127,17 +125,17 @@
   let miss4 = 0;
   $: sectors4Ready = SECTORS.every((s) => found4[s.key]);
 
-  // chapter 5 — warehouse transfer + reverse read
+  // chapter 5 — warehouse transfer
   let aisle = 0, shelf = 0;
   const CRATES = [
-    { key: 'c1', label: 'Crate A', x: 2, y: 1, printed: { a: 2, s: 1 }, fault: 'none' },
-    { key: 'c2', label: 'Crate B', x: 3, y: -1, printed: { a: -1, s: 3 }, fault: 'swapped' },
-    { key: 'c3', label: 'Crate C', x: -2, y: 2, printed: { a: 2, s: 2 }, fault: 'sign' }
+    { key: 'c1', label: 'Crate A', x: 2, y: 1, printed: { a: 2, s: 1 } },
+    { key: 'c2', label: 'Crate B', x: 3, y: -1, printed: { a: 3, s: -1 } },
+    { key: 'c3', label: 'Crate C', x: -2, y: 2, printed: { a: -2, s: 2 } }
   ];
   let retrieved = {};
   let crateTries = {};
   let crateMsg = '';
-  // reverse read
+  // final route builds
   const REVERSE_BIN = { x: -1, y: 3 };
   const REVERSE_OPTIONS = [
     { key: 'r1', a: 1, s: 3 },
@@ -221,24 +219,11 @@
     if (first3 === 3 && second3 === 1) {
       gotA = true;
       award('order-a', 400);
-    } else if (first3 === 1 && second3 === 3) {
+    } else if (first3 === -2 && second3 === 3) {
       gotB = true;
       award('order-b', 400);
     } else {
       miss();
-    }
-  }
-  function fixRepair(slot, delta) {
-    if (slot === 'first') repairFirst = clamp(repairFirst + delta);
-    else repairSecond = clamp(repairSecond + delta);
-  }
-  function submitRepair() {
-    attempts += 1;
-    if (repairFirst === 3 && repairSecond === 1) {
-      repaired = true;
-      award('repair', 500, true);
-    } else {
-      miss(35);
     }
   }
 
@@ -316,7 +301,7 @@
     demoIndex = 0; demoVisited = new Set(['start']);
     ew1 = 0; drone1 = null; runs1 = []; seen1 = { home: false, east: false, west: false }; signedShown = false;
     ew2 = 0; ns2 = 0; drone2 = null; columnProbed = false; secondControlOn = false; columnSolved = false;
-    first3 = 0; second3 = 0; drone3 = null; trace3 = []; gotA = false; gotB = false; repairFirst = 1; repairSecond = 3; repaired = false;
+    first3 = 0; second3 = 0; drone3 = null; trace3 = []; gotA = false; gotB = false;
     ew4 = 0; ns4 = 0; drone4 = null; found4 = {}; miss4 = 0;
     aisle = 0; shelf = 0; retrieved = {}; crateTries = {}; crateMsg = ''; reversePick = ''; reverseTries = 0; routePick = ''; routeTries = 0;
     arcadeScore = 0; combo = 0; attempts = 0; awarded = new Set();
@@ -345,6 +330,9 @@
           <div class="micro-label">Underground rescue · Worked example</div>
           <h2>Find the Signal</h2>
           <p class="brief-lede">First, inspect one completed rescue. Then use the same two-move system to rebuild the missing map yourself.</p>
+          <button class="skip-example" on:click={() => phase = 'oneline'}>
+            Already know this? Skip example · Start Level 1 →
+          </button>
 
           <div class="assignment-summary">
             <div>
@@ -536,60 +524,49 @@
 
       {:else if phase === 'order'}
         <div class="section-title">
-          <span>Task · The order of the code</span>
-          <h2>Same numbers, different place</h2>
-          <p>Two signals use the same pair of numbers in a different order. Load each code and watch where the drone lands.</p>
+          <span>Build 03 · Two complete routes</span>
+          <h2>Build every location the same way</h2>
+          <p>Start at home. Set the horizontal move first, then the vertical move. Send each completed route to its signal.</p>
         </div>
 
         <SignalGrid drone={drone3} mode="signed" trace={trace3}
-          scanStatus={radarStatus(drone3, [{ x: 3, y: 1 }, { x: 1, y: 3 }])}
-          signals={[{ x: 3, y: 1, label: 'Signal A', found: gotA }, { x: 1, y: 3, label: 'Signal B', found: gotB }]}
-          caption="Order test" />
+          scanStatus={radarStatus(drone3, [{ x: 3, y: 1 }, { x: -2, y: 3 }])}
+          signals={[{ x: 3, y: 1, label: 'Signal A', found: gotA }, { x: -2, y: 3, label: 'Signal B', found: gotB }]}
+          caption="Route builder" />
+
+        <div class="route-rule" aria-label="Route order">
+          <span><b>1</b> Horizontal</span>
+          <i>→</i>
+          <span><b>2</b> Vertical</span>
+          <i>→</i>
+          <strong>Exact location</strong>
+        </div>
 
         <div class="code-card">
-          <span class="slot-label">First move (E/W)</span>
+          <span class="slot-label">1 · Horizontal move (west/east)</span>
           <div class="slot">
-            <button on:click={() => first3 = clamp(first3 - 1)} disabled={first3 === -4} aria-label="First move down">−</button>
+            <button on:click={() => first3 = clamp(first3 - 1)} disabled={first3 === -4} aria-label="Horizontal move west">−</button>
             <strong>{first3 > 0 ? `+${first3}` : first3}</strong>
-            <button on:click={() => first3 = clamp(first3 + 1)} disabled={first3 === 4} aria-label="First move up">+</button>
+            <button on:click={() => first3 = clamp(first3 + 1)} disabled={first3 === 4} aria-label="Horizontal move east">+</button>
           </div>
-          <span class="slot-label">Second move (N/S)</span>
+          <span class="slot-label">2 · Vertical move (south/north)</span>
           <div class="slot">
-            <button on:click={() => second3 = clamp(second3 - 1)} disabled={second3 === -4} aria-label="Second move down">−</button>
+            <button on:click={() => second3 = clamp(second3 - 1)} disabled={second3 === -4} aria-label="Vertical move south">−</button>
             <strong>{second3 > 0 ? `+${second3}` : second3}</strong>
-            <button on:click={() => second3 = clamp(second3 + 1)} disabled={second3 === 4} aria-label="Second move up">+</button>
+            <button on:click={() => second3 = clamp(second3 + 1)} disabled={second3 === 4} aria-label="Vertical move north">+</button>
           </div>
         </div>
         <button class="test-button" on:click={send3}>Send locator</button>
 
         <div class="goal-row">
-          <div class:done={gotA}><b>{gotA ? '✓' : '○'}</b> Reach Signal A (3, then 1)</div>
-          <div class:done={gotB}><b>{gotB ? '✓' : '○'}</b> Reach Signal B (1, then 3)</div>
+          <div class:done={gotA}><b>{gotA ? '✓' : '○'}</b> Signal A · 3 east → 1 north</div>
+          <div class:done={gotB}><b>{gotB ? '✓' : '○'}</b> Signal B · 2 west → 3 north</div>
         </div>
 
-        {#if gotA && gotB && !repaired}
-          <div class="repair">
-            <div class="repair-head">Repair a scrambled code. This card should reach Signal A, but its two moves were swapped. Fix it.</div>
-            <div class="code-card small">
-              <div class="slot">
-                <button on:click={() => fixRepair('first', -1)} aria-label="Repair first down">−</button>
-                <strong>{repairFirst > 0 ? `+${repairFirst}` : repairFirst}</strong>
-                <button on:click={() => fixRepair('first', 1)} aria-label="Repair first up">+</button>
-              </div>
-              <div class="slot">
-                <button on:click={() => fixRepair('second', -1)} aria-label="Repair second down">−</button>
-                <strong>{repairSecond > 0 ? `+${repairSecond}` : repairSecond}</strong>
-                <button on:click={() => fixRepair('second', 1)} aria-label="Repair second up">+</button>
-              </div>
-            </div>
-            <button class="test-button" on:click={submitRepair}>Confirm repair</button>
-          </div>
-        {/if}
-
         <button class="hint-link" on:click={() => showHint('order')}>{activeHint === 'order' ? 'Hide clue' : 'Need a clue?'}</button>
-        {#if activeHint === 'order'}<div class="hint">The first slot always moves east/west. The second slot always moves north/south.</div>{/if}
-        <button class="primary" disabled={!order3Ready} on:click={() => phase = 'sectors'}>
-          {order3Ready ? 'Order proven · Recover all four' : 'Reach both signals, then repair the code'}
+        {#if activeHint === 'order'}<div class="hint">Build Signal A as 3 spaces east, then 1 north. Build Signal B as 2 spaces west, then 3 north.</div>{/if}
+        <button class="primary" disabled={!build3Ready} on:click={() => phase = 'sectors'}>
+          {build3Ready ? 'Routes built · Recover all four' : 'Build both routes'}
         </button>
 
       {:else if phase === 'sectors'}
@@ -662,7 +639,7 @@
           {#each CRATES as c}
             <div class:done={retrieved[c.key]}>
               <b>{c.label}</b>
-              <small>printed code: [ {c.printed.a > 0 ? `+${c.printed.a}` : c.printed.a} | {c.printed.s > 0 ? `+${c.printed.s}` : c.printed.s} ]{c.fault !== 'none' ? ' · check it' : ''}</small>
+              <small>route: {c.printed.a < 0 ? `${-c.printed.a} left` : `${c.printed.a} right`} → {c.printed.s < 0 ? `${-c.printed.s} down` : `${c.printed.s} up`}</small>
             </div>
           {/each}
         </div>
@@ -697,10 +674,10 @@
 
         {#if cratesDone}
           <div class="reverse">
-            <div class="reverse-head">Last check — read it backwards. Which code reaches the highlighted bin?</div>
+            <div class="reverse-head">Build the highlighted bin route. Move horizontally first, then vertically.</div>
             <SignalGrid drone={null} mode="signed" scanStatus="TARGET"
               signals={[{ x: REVERSE_BIN.x, y: REVERSE_BIN.y, label: 'this bin', found: true }]}
-              caption="Reverse read target" />
+              caption="Route target" />
             <div class="reverse-options">
               {#each REVERSE_OPTIONS as o}
                 <button
@@ -708,7 +685,7 @@
                   class:correct={reversePick === o.key && o.key === 'r2'}
                   class:wrong={reversePick === o.key && o.key !== 'r2'}
                   on:click={() => pickReverse(o.key)}
-                >[ {o.a > 0 ? `+${o.a}` : o.a} | {o.s > 0 ? `+${o.s}` : o.s} ]</button>
+                >{o.a < 0 ? `${-o.a} left` : `${o.a} right`} → {o.s < 0 ? `${-o.s} down` : `${o.s} up`}</button>
               {/each}
             </div>
           </div>
@@ -716,29 +693,29 @@
 
         {#if reverseDone}
           <div class="reverse route-challenge">
-            <div class="reverse-head">Build a route — the robot is at (−1, 3) and must reach (2, −1). What change gets it there?</div>
+            <div class="reverse-head">From the robot’s current bin, move 3 aisles right and 4 shelves down. Which route follows those instructions?</div>
             <div class="reverse-options">
               <button
                 class:selected={routePick === 'plus1-minus2'}
                 class:wrong={routePick === 'plus1-minus2'}
                 on:click={() => pickRoute('plus1-minus2')}
-              >[ +1 | −2 ]</button>
+              >1 right → 2 down</button>
               <button
                 class:selected={routePick === 'plus3-minus4'}
                 class:correct={routePick === 'plus3-minus4'}
                 on:click={() => pickRoute('plus3-minus4')}
-              >[ +3 | −4 ]</button>
+              >3 right → 4 down</button>
               <button
                 class:selected={routePick === 'minus3-plus4'}
                 class:wrong={routePick === 'minus3-plus4'}
                 on:click={() => pickRoute('minus3-plus4')}
-              >[ −3 | +4 ]</button>
+              >3 left → 4 up</button>
             </div>
           </div>
         {/if}
 
         <button class="primary" disabled={!warehouseReady} on:click={finishDiscovery}>
-          {warehouseReady ? 'Name the map' : !cratesDone ? 'Retrieve all three crates' : !reverseDone ? 'Read the highlighted bin' : 'Calculate the final route'}
+          {warehouseReady ? 'Name the map' : !cratesDone ? 'Retrieve all three crates' : !reverseDone ? 'Build the highlighted route' : 'Build the final route'}
         </button>
 
       {:else if phase === 'reveal'}
@@ -760,7 +737,7 @@
           </ul>
 
           <div class="tie-back">
-            You sent the locator 3 east and 2 north — the map writes that address as (3, 2). Swapping the moves sent it elsewhere, which is why (3, 1) and (1, 3) are different ordered pairs. You recovered one signal in every sign region: those regions are the four quadrants.
+            You built every location in the same order: horizontal first, vertical second. Your sample route—3 east, then 2 north—is written (3, 2) on this map. You also recovered one signal in every sign region; those regions are the four quadrants.
           </div>
 
           <div class="insight-ladder">
@@ -809,6 +786,18 @@
   h2 { font-size: 24px; line-height: 1.12; margin: 7px 0 9px; font-weight: 950; }
   p { color: var(--qx-text-dim); font-size: 13.5px; line-height: 1.5; margin: 0; }
   .brief-lede { max-width: 40ch; }
+  .skip-example {
+    min-height: 36px;
+    margin-top: 7px;
+    padding: 4px 8px;
+    border: 0;
+    background: transparent;
+    color: var(--qx-accent-text);
+    font: 850 10.5px/1.2 var(--qx-font);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
   .brief-rules { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin: 14px 0 12px; }
   .brief-rules span { border: 1px solid var(--qx-border); border-radius: 999px; padding: 5px 9px; font-size: 10px; font-weight: 800; color: var(--qx-text-dim); background: var(--qx-surface-2); }
 
@@ -1201,9 +1190,37 @@
   .slot button { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text); font: 900 20px/1 var(--qx-font); cursor: pointer; }
   .slot button:disabled { opacity: .4; cursor: not-allowed; }
 
-  .repair { width: 100%; box-sizing: border-box; border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px; background: var(--qx-accent-soft); margin-bottom: 10px; }
-  .repair-head { font-size: 11.5px; font-weight: 850; color: var(--qx-accent-text); line-height: 1.4; margin-bottom: 8px; }
-  .repair .code-card { border-color: var(--qx-border-2); background: var(--qx-surface); grid-template-columns: 1fr 1fr; }
+  .route-rule {
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1.1fr);
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 9px;
+    padding: 8px;
+    border: 1px solid var(--qx-accent);
+    border-radius: 11px;
+    background: var(--qx-accent-soft);
+    color: var(--qx-accent-text);
+    font-size: 9px;
+    font-weight: 900;
+    text-align: center;
+  }
+  .route-rule span { min-width: 0; }
+  .route-rule b {
+    display: inline-grid;
+    width: 18px;
+    height: 18px;
+    margin-right: 2px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--qx-accent);
+    color: #fff;
+    font-size: 9px;
+  }
+  .route-rule i { color: var(--qx-text-faint); font-style: normal; }
+  .route-rule strong { color: var(--qx-text); font-size: 9px; }
 
   .nudge, .hint { border-radius: 10px; padding: 9px 11px; font-size: 11px; line-height: 1.4; margin-bottom: 7px; }
   .nudge { color: var(--qx-green-text); background: var(--qx-green-soft); }
@@ -1232,7 +1249,7 @@
   .reverse { width: 100%; box-sizing: border-box; border: 1.5px solid var(--qx-border); border-radius: 12px; padding: 11px; background: var(--qx-surface-2); margin-bottom: 10px; }
   .reverse-head { font-size: 11.5px; font-weight: 850; color: var(--qx-text); line-height: 1.4; margin-bottom: 9px; }
   .reverse-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 9px; }
-  .reverse-options button { min-height: 44px; border: 1.5px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-dim); font: 900 11px/1.1 var(--qx-font); cursor: pointer; font-variant-numeric: tabular-nums; }
+  .reverse-options button { min-width: 0; min-height: 52px; padding: 7px 5px; border: 1.5px solid var(--qx-border-2); border-radius: 10px; background: var(--qx-surface); color: var(--qx-text-dim); font: 900 10px/1.25 var(--qx-font); cursor: pointer; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
   .reverse-options button.correct { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .reverse-options button.wrong { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
   .route-challenge { border-color: var(--qx-accent); }
