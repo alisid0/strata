@@ -12,9 +12,14 @@
   ];
 </script>
 
-<nav class="bottom-nav">
+<nav class="bottom-nav" aria-label="Primary navigation">
   {#each TABS as tab}
-    <button class="tab" class:active={active === tab.id} on:click={() => onNavigate?.(tab.id)}>
+    <button
+      class="tab"
+      class:active={active === tab.id}
+      aria-current={active === tab.id ? 'page' : undefined}
+      on:click={() => onNavigate?.(tab.id)}
+    >
       <QxIcon name={tab.icon} size={20} />
       <span>{tab.label}</span>
     </button>
@@ -23,55 +28,70 @@
 
 <style>
   .bottom-nav {
+    width: min(calc(100% - 16px), 560px);
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 3px;
-    border-top: 1px solid var(--qx-border);
-    background: color-mix(in srgb, var(--qx-surface) 94%, transparent);
-    backdrop-filter: blur(16px);
-    padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px));
+    align-self: center;
+    gap: 4px;
+    margin: 0 8px max(8px, env(safe-area-inset-bottom, 0px));
+    border: 1px solid var(--qx-border);
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--qx-surface) 91%, transparent);
+    backdrop-filter: blur(22px) saturate(1.15);
+    padding: 5px;
     flex-shrink: 0;
     position: relative;
-    box-shadow: 0 -12px 30px -24px var(--qx-text);
+    box-shadow: 0 16px 40px -26px var(--qx-text);
   }
   .tab {
     min-width: 0;
-    min-height: 50px;
+    min-height: 52px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     color: var(--qx-text-faintest);
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 9.5px;
+    font-weight: 760;
     font-family: var(--qx-font);
     background: none;
     border: none;
     cursor: pointer;
-    padding: 6px 3px 5px;
-    border-radius: var(--qx-radius-md);
+    padding: 7px 3px 6px;
+    border-radius: 15px;
     transition: color 0.2s, transform 0.15s, background-color 0.2s;
     position: relative;
   }
   .tab:active { transform: scale(0.94); }
   .tab.active {
-    color: var(--qx-accent);
-    font-weight: 800;
+    color: var(--qx-accent-text);
+    font-weight: 850;
     background: var(--qx-accent-soft);
   }
   .tab::after {
     content: '';
     position: absolute;
-    top: 3px;
+    bottom: 3px;
     left: 50%;
     transform: translateX(-50%) scaleX(0);
-    width: 20px;
-    height: 3px;
-    border-radius: 2px;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
     background: var(--qx-accent);
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .tab.active::after {
     transform: translateX(-50%) scaleX(1);
+  }
+
+  @media (max-width: 430px) {
+    .bottom-nav {
+      width: 100%;
+      margin: 0;
+      padding: 6px 7px calc(6px + env(safe-area-inset-bottom, 0px));
+      border-width: 1px 0 0;
+      border-radius: 0;
+      box-shadow: 0 -14px 36px -30px var(--qx-text);
+    }
   }
 </style>

@@ -44,7 +44,7 @@
   .arcade-shell {
     width: 100%;
     color: var(--qx-text);
-    border-radius: 18px;
+    border-radius: 22px;
   }
 
   .arcade-hud {
@@ -58,9 +58,9 @@
   .exit {
     width: 36px;
     height: 36px;
-    border-radius: 11px;
+    border-radius: 12px;
     border: 1px solid var(--qx-border);
-    background: var(--qx-surface-2);
+    background: var(--qx-surface);
     color: var(--qx-text);
     font: 900 17px/1 var(--qx-font);
     cursor: pointer;
@@ -93,10 +93,9 @@
 
   .stat {
     min-width: 54px;
-    border: 1px solid var(--qx-border);
-    border-radius: 10px;
-    padding: 6px 8px;
-    background: var(--qx-surface-2);
+    border: 0;
+    padding: 5px 4px;
+    background: transparent;
     display: flex;
     flex-direction: column;
     align-items: flex-end;

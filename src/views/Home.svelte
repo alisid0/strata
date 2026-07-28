@@ -88,20 +88,20 @@
   // the 5-minute mix reachable whenever it is not already the primary.
   $: primary = dueCandidates.length
     ? {
-        kind: 'review', icon: '🔥', label: 'CONTINUE NOW',
+        kind: 'review', icon: 'flame', label: 'CONTINUE NOW',
         title: `${dueCandidates.length} ${dueCandidates.length === 1 ? 'board' : 'boards'} due for review`,
         meta: `~${dueMinutes} min · keeps your streak`,
         cta: 'Review', run: startSession
       }
     : continuePath
       ? {
-          kind: 'continue', icon: '▶', label: 'CONTINUE NOW',
+          kind: 'continue', icon: 'chevronRight', label: 'CONTINUE NOW',
           title: `Continue ${continuePath.manifest.name}`,
           meta: `${continuePath.state.boardsRead} / ${continuePath.state.boardsTotal} boards · ${continuePct}%`,
           cta: 'Continue', run: () => onNavigate?.('topicDetail', continuePath.id)
         }
       : {
-          kind: 'workout', icon: '⚡',
+          kind: 'workout', icon: 'workshop',
           label: overall.read === 0 ? 'START HERE' : 'CONTINUE NOW',
           title: overall.read === 0 ? 'Start with a 5-minute mix' : 'Your 5-minute mix',
           meta: 'recall · weak spots · something new',
@@ -129,7 +129,8 @@
   <div class="header">
     <button class="avatar" on:click={() => onNavigate?.('wscore')} aria-label="Your W Score">{$displayName.charAt(0).toUpperCase()}</button>
     <div class="greeting">
-      <div class="hi">Hi, {$displayName}</div>
+      <div class="home-kicker">Your learning studio</div>
+      <div class="hi">Good to see you, {$displayName}</div>
       <div class="level">
         <span class="level-badge">Level {level}</span>
       </div>
@@ -151,7 +152,7 @@
        Home answers "what now?" with a single confident action. -->
   <div class="focus-card">
     <button class="focus-main" on:click={primary.run}>
-      <span class="focus-bolt">{primary.icon}</span>
+      <span class="focus-bolt"><QxIcon name={primary.icon} size={20} /></span>
       <span class="focus-copy">
         <span class="focus-label">{primary.label}</span>
         <span class="focus-title">{primary.title}</span>
@@ -199,60 +200,81 @@
 </div>
 
 <style>
-  .home-view { height: 100%; overflow-y: auto; display: flex; flex-direction: column; padding: 16px 18px 0; box-sizing: border-box; }
+  .home-view {
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(20px, 4vw, 34px) var(--qx-page-pad) 12px;
+    box-sizing: border-box;
+  }
 
   /* Header */
   .header {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto auto auto auto;
     align-items: center;
-    gap: 9px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: clamp(24px, 5vw, 40px);
   }
   .avatar {
-    width: 44px; height: 44px; border-radius: 50%; background: var(--qx-accent); color: #fff;
-    font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    cursor: pointer; border: none; font-family: var(--qx-font);
+    width: 46px; height: 46px; border-radius: 15px; background: var(--qx-text); color: var(--qx-bg);
+    font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    cursor: pointer; border: 1px solid color-mix(in srgb, var(--qx-text) 80%, var(--qx-border)); font-family: var(--qx-font);
+    box-shadow: var(--qx-shadow-card);
   }
   .greeting { flex: 1; min-width: 0; }
-  .hi { font-size: 18px; font-weight: 800; color: var(--qx-text); line-height: 1.2; }
+  .home-kicker {
+    margin-bottom: 2px;
+    color: var(--qx-accent-text);
+    font-size: 8.5px;
+    font-weight: 900;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+  }
+  .hi { font-size: clamp(17px, 3vw, 21px); font-weight: 900; color: var(--qx-text); line-height: 1.15; letter-spacing: -.025em; }
   .level { font-size: 12px; font-weight: 600; color: var(--qx-text-dim); margin-top: 2px; }
-  .level-badge { color: var(--qx-accent-text); }
+  .level-badge { color: var(--qx-text-faint); }
   .streak-chip {
-    display: flex; align-items: center; gap: 4px; background: var(--qx-yellow-soft); border: 1px solid var(--qx-yellow);
-    border-radius: var(--qx-radius-pill); padding: 5px 12px; color: var(--qx-yellow-text); font-size: 14px; font-weight: 800;
+    min-height: 36px; display: flex; align-items: center; gap: 5px; background: transparent;
+    border: 0; padding: 4px 7px; color: var(--qx-accent-text); font-size: 13px; font-weight: 850;
   }
   .w-chip {
-    background: var(--qx-green-soft); border: 1px solid var(--qx-green);
-    border-radius: var(--qx-radius-pill); padding: 5px 12px; color: var(--qx-green-text);
-    font-size: 14px; font-weight: 900; white-space: nowrap;
+    min-height: 36px; display: grid; place-items: center; background: transparent; border: 0;
+    padding: 4px 7px; color: var(--qx-green-text);
+    font-size: 13px; font-weight: 900; white-space: nowrap;
   }
 
   /* One "Continue now" card — accent-filled so it reads as THE action */
-  .focus-card { margin-bottom: 20px; }
+  .focus-card { margin-bottom: clamp(28px, 5vw, 42px); }
   .focus-main {
-    width: 100%; display: flex; align-items: center; gap: 12px; text-align: left;
-    padding: 15px 14px; border-radius: var(--qx-radius-lg);
-    border: none; background: var(--qx-accent); cursor: pointer;
+    width: 100%; min-height: 118px; display: flex; align-items: center; gap: 15px; text-align: left;
+    padding: clamp(18px, 4vw, 25px); border-radius: 26px;
+    border: 1px solid color-mix(in srgb, var(--qx-text) 80%, transparent);
+    background:
+      radial-gradient(circle at 90% 5%, color-mix(in srgb, var(--qx-accent) 28%, transparent), transparent 32%),
+      var(--qx-surface-elevated);
+    cursor: pointer;
     font-family: var(--qx-font); box-sizing: border-box;
+    box-shadow: 0 24px 54px -34px rgba(0,0,0,.75);
   }
   .focus-bolt {
-    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; font-size: 18px;
-    background: rgba(255, 255, 255, 0.18); color: #fff;
+    width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
+    background: var(--qx-accent); color: #fff;
     display: flex; align-items: center; justify-content: center;
   }
-  .focus-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .focus-label { font-size: 10px; font-weight: 850; letter-spacing: 0.07em; color: rgba(255, 255, 255, 0.75); }
-  .focus-title { font-size: 15px; font-weight: 850; color: #fff; line-height: 1.25; }
-  .focus-meta { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.78); }
+  .focus-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .focus-label { font-size: 9px; font-weight: 900; letter-spacing: 0.11em; color: var(--qx-accent); }
+  .focus-title { font-size: clamp(17px, 3vw, 21px); font-weight: 900; color: #F7F2E8; line-height: 1.2; letter-spacing: -.02em; }
+  .focus-meta { font-size: 12px; font-weight: 650; color: #B9AF9D; }
   .focus-cta {
-    flex-shrink: 0; padding: 8px 16px; border-radius: 999px;
-    background: #fff; color: var(--qx-accent); font-size: 13px; font-weight: 900;
+    flex-shrink: 0; padding: 10px 17px; border-radius: 12px;
+    background: var(--qx-accent); color: #fff; font-size: 12px; font-weight: 900;
   }
   .focus-alt {
     display: block; width: 100%; text-align: center; margin-top: 8px; padding: 6px;
     background: none; border: none; cursor: pointer; font-family: var(--qx-font);
-    font-size: 12.5px; font-weight: 750; color: var(--qx-text-dim);
+    font-size: 11.5px; font-weight: 800; color: var(--qx-text-faint);
   }
   .focus-alt:hover { color: var(--qx-accent-text); }
 
@@ -285,26 +307,32 @@
   }
   .recall-note { font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint); line-height: 1.4; }
   .menu-btn {
-    width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--qx-border-2);
-    background: var(--qx-surface); color: var(--qx-text-dim); font-size: 22px; line-height: 1;
+    width: 36px; height: 36px; border-radius: 11px; border: 1px solid var(--qx-border);
+    background: var(--qx-surface); color: var(--qx-text-dim); font-size: 20px; line-height: 1;
     cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
     font-family: var(--qx-font); padding: 0 0 6px;
   }
   .menu-btn.icon-btn { padding: 0; }
 
   /* The four doors */
-  .doors-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); letter-spacing: 0.05em; margin-bottom: 10px; text-transform: uppercase; }
-  .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 16px; }
+  .doors-label { font-size: 10px; font-weight: 900; color: var(--qx-text-faint); letter-spacing: 0.1em; margin-bottom: 12px; text-transform: uppercase; }
+  .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 18px; }
   .door {
-    display: flex; flex-direction: column; align-items: center; gap: 5px;
-    padding: 20px 12px; border-radius: var(--qx-radius-lg); border: 1.5px solid var(--qx-border-2);
+    min-height: 154px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px;
+    padding: 18px; border-radius: 20px; border: 1px solid var(--qx-border);
     background: var(--qx-surface); cursor: pointer; font-family: var(--qx-font);
-    transition: border-color 0.15s, transform 0.15s;
+    box-shadow: var(--qx-shadow-card);
+    text-align: left;
   }
   .door:hover { border-color: var(--qx-accent); transform: translateY(-2px); }
-  .door-icon { width: 56px; height: 56px; object-fit: contain; display: block; }
-  .door-name { font-size: 15px; font-weight: 800; color: var(--qx-text); text-align: center; line-height: 1.18; }
-  .door-sub { font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint); }
+  .door-icon { width: 52px; height: 52px; object-fit: contain; display: block; margin-bottom: 4px; }
+  .door-name { font-size: 15px; font-weight: 900; color: var(--qx-text); line-height: 1.18; letter-spacing: -.015em; }
+  .door-sub { font-size: 11px; font-weight: 650; color: var(--qx-text-faint); line-height: 1.3; }
+
+  @media (min-width: 720px) {
+    .doors-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .door { min-height: 174px; }
+  }
 
   @media (max-width: 410px) {
     .header {

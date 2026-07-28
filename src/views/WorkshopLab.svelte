@@ -794,13 +794,15 @@
           {#each browseTrack.modules as item (item.id)}
             <button class="ws-tile" on:click={() => openModule(browseCategory, item.id)}>
               <span class="ws-tile-icon"><img src={browseTrack.icon} alt="" /></span>
-              <span class="ws-tile-name">{item.title}</span>
-              <span class="ws-tile-sub">{item.sub}</span>
+              <span class="ws-tile-copy">
+                <span class="ws-tile-name">{item.title}</span>
+                <span class="ws-tile-sub">{item.sub}</span>
+              </span>
               <span class="ws-tile-foot">
                 <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Practice'}</span>
-                {#if getSolveFirst(item.id)}<span class="ws-bolt" title="Solve First discovery available">🔍</span>{/if}
-                {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">⚡</span>{/if}
-                {#if getTestForModule(item.id, item.getWorkshop ? item.getWorkshop() : [])}<span class="ws-bolt" title="Scored test available">📋</span>{/if}
+                {#if getSolveFirst(item.id)}<span class="ws-bolt" title="Solve First discovery available">S</span>{/if}
+                {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">C</span>{/if}
+                {#if getTestForModule(item.id, item.getWorkshop ? item.getWorkshop() : [])}<span class="ws-bolt" title="Scored test available">T</span>{/if}
               </span>
             </button>
           {/each}
@@ -844,8 +846,8 @@
           <small>Challenge races the clock. Test scores you cold — one attempt, no reveals.</small>
         </div>
         <div class="mode-buttons">
-          {#if hasChallenge}<button on:click={startChallenge}>⚡ Challenge</button>{/if}
-          {#if hasTest}<button class="test-btn" on:click={startTest}>📋 Test</button>{/if}
+          {#if hasChallenge}<button on:click={startChallenge}>Challenge</button>{/if}
+          {#if hasTest}<button class="test-btn" on:click={startTest}>Test</button>{/if}
         </div>
       </div>
     {/if}
@@ -885,21 +887,21 @@
           <div class="test-verdict" class:pass={scorePct >= 80}>{scorePct >= 80 ? '✓ Passed' : 'Not passed yet — 80% to pass'}</div>
           <p>{scorePct >= 80 ? 'Scored cold, one attempt per question, nothing revealed on the way. This result is trustworthy — the idea is genuinely yours.' : scorePct >= 50 ? 'This is what testing is for: it found the soft spots practice papered over. Revisit the practice drill, then retake — the questions reshuffle.' : 'A low test score is information, not a verdict. Run the practice drill again with fresh eyes, then come back and retake.'}</p>
           <div class="done-actions">
-            <button class="primary-btn" on:click={replay}>📋 Retake test</button>
+            <button class="primary-btn" on:click={replay}>Retake test</button>
             {#if hasChallenge}
-              <button class="ghost-btn" on:click={startChallenge}>⚡ Try the challenge</button>
+              <button class="ghost-btn" on:click={startChallenge}>Try the challenge</button>
             {/if}
             <button class="ghost-btn" on:click={exitChallenge}>Back to practice</button>
           </div>
         {:else if challenge}
           {#if bestStreak >= 2}
-            <div class="streak-badge">🔥 Best streak: {bestStreak} in a row</div>
+            <div class="streak-badge">Best streak · {bestStreak} in a row</div>
           {/if}
           <p>{scorePct >= 80 ? 'Under time pressure, with targets you had never seen. That is real mastery.' : scorePct >= 50 ? 'Solid under pressure. Another run means brand-new targets — no memorising your way through this one.' : 'The clock is brutal at first. Every rerun is freshly randomized, so each attempt genuinely trains the skill.'}</p>
           <div class="done-actions">
-            <button class="primary-btn" on:click={replay}>⚡ New challenge</button>
+            <button class="primary-btn" on:click={replay}>New challenge</button>
             {#if hasTest}
-              <button class="ghost-btn" on:click={startTest}>📋 Take the test</button>
+              <button class="ghost-btn" on:click={startTest}>Take the test</button>
             {/if}
             <button class="ghost-btn" on:click={exitChallenge}>Back to practice</button>
           </div>
@@ -908,10 +910,10 @@
           <div class="done-actions">
             <button class="primary-btn" on:click={replay}>Replay drill</button>
             {#if hasChallenge}
-              <button class="ghost-btn" on:click={startChallenge}>⚡ Try the challenge</button>
+              <button class="ghost-btn" on:click={startChallenge}>Try the challenge</button>
             {/if}
             {#if hasTest}
-              <button class="ghost-btn" on:click={startTest}>📋 Take the test</button>
+              <button class="ghost-btn" on:click={startTest}>Take the test</button>
             {/if}
           </div>
         {/if}
@@ -932,7 +934,7 @@
     max-width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 16px var(--qx-page-pad) 28px;
+    padding: clamp(20px, 4vw, 34px) var(--qx-page-pad) 32px;
     box-sizing: border-box;
     overscroll-behavior-y: contain;
   }
@@ -956,7 +958,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    margin-bottom: 16px;
+    margin-bottom: clamp(20px, 4vw, 30px);
   }
 
   .lab-header-mark {
@@ -965,8 +967,8 @@
     display: grid;
     flex: 0 0 auto;
     place-items: center;
-    border: 1.5px solid var(--qx-green);
-    border-radius: 13px;
+    border: 1px solid var(--qx-green);
+    border-radius: 15px;
     background: var(--qx-green-soft);
     color: var(--qx-green-text);
     font-size: 13px;
@@ -977,37 +979,38 @@
 
   .category-grid {
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin-bottom: 16px;
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    padding: 4px;
+    overflow-x: auto;
+    border: 1px solid var(--qx-border);
+    border-radius: 18px;
+    background: var(--qx-surface-2);
+    scrollbar-width: none;
   }
+  .category-grid::-webkit-scrollbar { display: none; }
 
   .category-button {
-    min-width: 0;
-    min-height: 58px;
+    min-width: 122px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     gap: 9px;
-    padding: 8px 10px;
-    border: 1.5px solid var(--qx-border);
-    border-radius: 13px;
-    background: var(--qx-surface);
+    padding: 7px 9px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    background: transparent;
     color: var(--qx-text);
-    box-shadow: var(--qx-shadow-card);
+    box-shadow: none;
     font-family: var(--qx-font);
     text-align: left;
     cursor: pointer;
     transition: border-color .15s, background .15s, transform .15s;
   }
 
-  .category-button.featured {
-    grid-column: 1 / -1;
-  }
-
   .category-button:hover {
-    border-color: var(--qx-accent);
-    transform: translateY(-1px);
+    background: color-mix(in srgb, var(--qx-surface) 60%, transparent);
   }
 
   .category-button:active {
@@ -1020,30 +1023,30 @@
   }
 
   .category-button.active {
-    border-color: var(--qx-accent);
-    background: var(--qx-accent-soft);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--qx-accent) 20%, transparent), var(--qx-shadow-card);
+    border-color: var(--qx-border);
+    background: var(--qx-surface);
+    box-shadow: var(--qx-shadow-card);
   }
 
   .category-button.featured.active {
-    border-color: var(--qx-green);
-    background: var(--qx-green-soft);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--qx-green) 20%, transparent), var(--qx-shadow-card);
+    border-color: color-mix(in srgb, var(--qx-green) 45%, var(--qx-border));
+    background: var(--qx-surface);
+    box-shadow: var(--qx-shadow-card);
   }
 
   .category-mark {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     display: grid;
     flex: 0 0 auto;
     place-items: center;
-    border-radius: 9px;
-    background: var(--qx-surface-2);
+    border-radius: 10px;
+    background: transparent;
   }
 
   .category-mark img {
-    width: 26px;
-    height: 26px;
+    width: 25px;
+    height: 25px;
     display: block;
     object-fit: contain;
   }
@@ -1065,7 +1068,7 @@
   .category-button strong {
     overflow: hidden;
     color: var(--qx-text);
-    font-size: 11.5px;
+    font-size: 10.5px;
     font-weight: 900;
     line-height: 1.2;
     text-overflow: ellipsis;
@@ -1074,7 +1077,7 @@
 
   .category-button small {
     color: var(--qx-text-faint);
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 750;
     line-height: 1.2;
     white-space: nowrap;
@@ -1087,52 +1090,62 @@
   /* Workshop grid — mirrors the Path boards grid (.topic-grid / .topic-tile) */
   .ws-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 7px;
     margin-top: 4px;
   }
   .ws-tile {
-    min-height: 132px;
-    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    min-height: 88px;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 11px;
     width: 100%; text-align: left;
-    padding: 12px; border-radius: var(--qx-radius-lg);
-    border: 1.5px solid var(--qx-border); background: var(--qx-surface);
+    padding: 11px 12px; border-radius: 17px;
+    border: 1px solid transparent; background: var(--qx-surface);
     cursor: pointer; font-family: var(--qx-font);
-    box-shadow: var(--qx-shadow-card);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--qx-border) 72%, transparent);
     transition: border-color 0.15s, background 0.15s, transform 0.15s;
   }
-  .ws-tile:hover { border-color: var(--qx-accent); transform: translateY(-2px); box-shadow: var(--qx-shadow-soft); }
+  .ws-tile:hover { border-color: var(--qx-accent); background: var(--qx-accent-soft-2); transform: translateY(-1px); box-shadow: var(--qx-shadow-card); }
   .ws-tile:active { transform: scale(0.98); }
   .ws-tile-icon {
-    width: 34px; height: 34px; border-radius: 8px; background: var(--qx-surface-2);
+    width: 40px; height: 40px; border-radius: 12px; background: var(--qx-surface-2);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .ws-tile-icon img { width: 26px; height: 26px; object-fit: contain; display: block; }
+  .ws-tile-icon img { width: 29px; height: 29px; object-fit: contain; display: block; }
+  .ws-tile-copy { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
   .ws-tile-name {
-    font-size: 14px; font-weight: 850; color: var(--qx-text);
+    font-size: 13px; font-weight: 900; color: var(--qx-text);
     line-height: 1.22; overflow-wrap: anywhere;
   }
   .ws-tile-sub {
-    font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint);
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 10px; font-weight: 650; color: var(--qx-text-faint);
     line-height: 1.35; overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
   .ws-tile-foot {
-    width: 100%;
-    max-width: 100%;
-    margin-top: auto;
+    max-width: 120px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 5px;
+    justify-content: flex-end;
+    gap: 3px;
   }
   .ws-chip {
-    font-size: 11px; font-weight: 800; color: var(--qx-text-faint);
-    background: var(--qx-surface-2); border-radius: var(--qx-radius-pill); padding: 4px 10px;
+    font-size: 9px; font-weight: 850; color: var(--qx-text-faint);
+    background: transparent; padding: 3px 2px;
   }
-  .ws-chip.done { color: var(--qx-green-text); background: var(--qx-green-soft); }
+  .ws-chip.done { color: var(--qx-green-text); background: transparent; }
   .ws-bolt {
-    font-size: 12px; color: var(--qx-accent-text);
-    background: var(--qx-accent-soft); border-radius: var(--qx-radius-pill); padding: 3px 8px;
+    width: 18px; height: 18px; display: grid; place-items: center;
+    border: 1px solid color-mix(in srgb, var(--qx-accent) 40%, var(--qx-border));
+    border-radius: 6px; color: var(--qx-accent-text);
+    background: var(--qx-accent-soft-2); padding: 0;
+    font-size: 7.5px; font-weight: 950;
   }
 
   .runner-header {
@@ -1209,22 +1222,21 @@
   }
 
   @media (min-width: 620px) {
-    .ws-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .category-grid { grid-template-columns: 1.15fr repeat(4, minmax(0, 1fr)); }
-    .category-button.featured { grid-column: auto; }
+    .ws-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .category-button { min-width: 0; flex: 1 1 0; }
   }
 
   .kicker {
-    font-size: 11px;
-    font-weight: 850;
-    letter-spacing: 0.08em;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--qx-accent);
     margin-bottom: 3px;
   }
 
   h1 {
-    font-size: 23px;
+    font-size: clamp(26px, 4vw, 34px);
     font-weight: 900;
     color: var(--qx-text);
     margin: 0;

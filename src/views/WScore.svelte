@@ -3,6 +3,7 @@
   import { progress } from '../lib/stores/progress.js';
   import { displayName } from '../lib/stores/auth.js';
   import { getLeague } from '../lib/stores/league.js';
+  import QxIcon from '../lib/components/qubix/QxIcon.svelte';
 
   export let onNavigate;
 
@@ -55,7 +56,7 @@
     </div>
     <div class="tc-card streak-card">
       <div class="tc-label">Streak</div>
-      <div class="tc-value">🔥 {streak} <span class="tc-unit">{streak === 1 ? 'day' : 'days'}</span></div>
+      <div class="tc-value streak-value"><QxIcon name="flame" size={17} /> {streak} <span class="tc-unit">{streak === 1 ? 'day' : 'days'}</span></div>
     </div>
   </div>
 
@@ -109,7 +110,7 @@
   {#if earnedMedals.length}
     <div class="medal-row">
       {#each earnedMedals as m}
-        <div class="medal-chip">🏅 {m.label}</div>
+        <div class="medal-chip"><span aria-hidden="true">M</span>{m.label}</div>
       {/each}
     </div>
   {:else}
@@ -118,31 +119,41 @@
 </div>
 
 <style>
-  .stats-view { height: 100%; overflow-y: auto; padding: 16px 18px 24px; box-sizing: border-box; }
-  .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .stats-view { height: 100%; overflow-y: auto; padding: clamp(20px, 4vw, 34px) var(--qx-page-pad) 32px; box-sizing: border-box; }
+  .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
   .top-left { display: flex; align-items: center; gap: 10px; }
-  h1 { font-size: 23px; font-weight: 800; color: var(--qx-text); margin: 0; }
+  h1 { font-size: clamp(26px, 4vw, 34px); font-weight: 900; color: var(--qx-text); margin: 0; letter-spacing: -.035em; }
   .avatar {
-    width: 36px; height: 36px; border-radius: 50%; background: var(--qx-accent); color: #fff;
-    font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 13px; background: var(--qx-text); color: var(--qx-bg);
+    font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    box-shadow: var(--qx-shadow-card);
   }
 
   /* W hero */
   .w-hero {
-    text-align: center; padding: 18px 0 22px;
+    text-align: left;
+    padding: clamp(22px, 5vw, 34px);
+    margin-bottom: 12px;
+    border-radius: 26px;
+    background:
+      radial-gradient(circle at 92% 5%, color-mix(in srgb, var(--qx-green) 18%, transparent), transparent 35%),
+      var(--qx-surface-elevated);
+    box-shadow: 0 24px 54px -34px rgba(0,0,0,.75);
   }
   .w-hero-number {
-    font-size: 52px; font-weight: 900; color: var(--qx-green-text); line-height: 1;
+    font-size: clamp(42px, 8vw, 64px); font-weight: 950; color: var(--qx-green); line-height: 1;
     font-variant-numeric: tabular-nums;
+    letter-spacing: -.055em;
   }
-  .w-hero-sub { font-size: 13px; font-weight: 700; color: var(--qx-text-dim); margin-top: 6px; }
+  .w-hero-sub { font-size: 12px; font-weight: 750; color: #B9AF9D; margin-top: 7px; }
 
   /* League */
   .league-head { display: flex; justify-content: space-between; align-items: baseline; }
   .league-reset { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); }
   .league-card {
-    border: 1.5px solid var(--qx-border); background: var(--qx-surface);
-    border-radius: var(--qx-radius-md); padding: 6px 0 0; margin-bottom: 20px;
+    border: 1px solid var(--qx-border); background: var(--qx-surface);
+    border-radius: 20px; padding: 7px 0 0; margin-bottom: 24px;
+    box-shadow: var(--qx-shadow-card);
   }
   .league-row {
     display: flex; align-items: center; gap: 10px; padding: 8px 14px;
@@ -163,13 +174,14 @@
     border-top: 1px solid var(--qx-border);
   }
 
-  .top-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-  .tc-card { border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-md); padding: 14px; }
+  .top-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 28px; }
+  .tc-card { border: 1px solid var(--qx-border); background: var(--qx-surface); border-radius: 17px; padding: 15px; box-shadow: var(--qx-shadow-card); }
   .tc-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); margin-bottom: 4px; }
   .tc-value { font-size: 20px; font-weight: 800; color: var(--qx-text); }
+  .streak-value { display: flex; align-items: center; gap: 4px; color: var(--qx-accent-text); }
   .tc-unit { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); }
 
-  .section-label { font-size: 12px; font-weight: 700; color: var(--qx-text-dim); margin-bottom: 10px; }
+  .section-label { font-size: 10px; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; color: var(--qx-text-faint); margin-bottom: 10px; }
 
   /* Consistency */
   .consistency-row { display: flex; gap: 6px; align-items: flex-end; height: 70px; margin-bottom: 30px; position: relative; }
@@ -182,12 +194,13 @@
 
   /* Metrics */
   .metrics-row { display: flex; gap: 10px; margin-bottom: 20px; }
-  .metric { flex: 1; border: 1.5px solid var(--qx-border); background: var(--qx-surface); border-radius: var(--qx-radius-md); padding: 12px; text-align: center; }
+  .metric { flex: 1; border: 1px solid var(--qx-border); background: var(--qx-surface); border-radius: 16px; padding: 13px; text-align: left; box-shadow: var(--qx-shadow-card); }
   .metric-label { font-size: 11px; font-weight: 700; color: var(--qx-text-faint); margin-bottom: 3px; }
   .metric-value { font-size: 17px; font-weight: 800; color: var(--qx-text); }
 
   /* Medals */
   .medal-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-  .medal-chip { font-size: 12px; font-weight: 700; color: var(--qx-yellow-text); background: var(--qx-yellow-soft); border-radius: var(--qx-radius-pill); padding: 7px 13px; }
+  .medal-chip { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 800; color: var(--qx-yellow-text); background: var(--qx-yellow-soft); border-radius: 13px; padding: 7px 10px; }
+  .medal-chip > span { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; background: var(--qx-yellow); color: #fff; font-size: 9px; font-weight: 950; }
   .medal-empty { font-size: 13px; color: var(--qx-text-faint); margin-bottom: 20px; }
 </style>

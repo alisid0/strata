@@ -305,7 +305,7 @@
 
   {:else if mode === 'reset-password'}
     <div class="screen form-screen">
-      <div class="verify-glyph" aria-hidden="true">🔒</div>
+      <div class="verify-glyph" aria-hidden="true">PW</div>
       <h2>Choose a new password</h2>
       <p>Use at least 8 characters and avoid a password you use elsewhere.</p>
       <label class="fl" for="new-password">New password</label>
@@ -352,29 +352,34 @@
 <style>
   .auth-view {
     min-height: 100%; display: flex; flex-direction: column; align-items: center;
-    padding: 20px; box-sizing: border-box;
+    padding: clamp(20px, 5vw, 44px); box-sizing: border-box;
   }
   .screen {
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    width: 100%; max-width: 320px; margin: auto 0;
+    width: 100%; max-width: 390px; margin: auto 0;
+    padding: clamp(22px, 5vw, 34px);
+    border: 1px solid var(--qx-border);
+    border-radius: 26px;
+    background: color-mix(in srgb, var(--qx-surface) 84%, transparent);
+    box-shadow: var(--qx-shadow-soft);
   }
   .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
-  .brand { font-size: 23px; font-weight: 900; letter-spacing: 0.13em; color: var(--qx-text); margin-bottom: 4px; }
+  .brand { font-size: 25px; font-weight: 950; letter-spacing: 0.16em; color: var(--qx-text); margin-bottom: 5px; }
   .acc { color: var(--qx-accent); }
-  .tagline { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); margin-bottom: 24px; }
+  .tagline { font-size: 12.5px; font-weight: 650; color: var(--qx-text-dim); margin-bottom: 28px; }
   .tab-row {
-    display: flex; width: 100%; background: var(--qx-surface); border-radius: var(--qx-radius-md);
-    border: 1.5px solid var(--qx-border-2); margin-bottom: 10px; padding: 3px;
+    display: flex; width: 100%; background: var(--qx-surface-2); border-radius: 15px;
+    border: 1px solid var(--qx-border); margin-bottom: 12px; padding: 4px;
   }
   .tab {
-    flex: 1; min-height: 44px; padding: 10px; border-radius: 11px; border: none; background: transparent;
-    font-family: var(--qx-font); font-size: 15px; font-weight: 700; color: var(--qx-text-dim); cursor: pointer;
+    flex: 1; min-height: 42px; padding: 9px; border-radius: 11px; border: 1px solid transparent; background: transparent;
+    font-family: var(--qx-font); font-size: 13px; font-weight: 800; color: var(--qx-text-dim); cursor: pointer;
     transition: all 0.15s;
   }
-  .tab.active { background: var(--qx-accent); color: #fff; }
+  .tab.active { border-color: var(--qx-border); background: var(--qx-surface); color: var(--qx-text); box-shadow: var(--qx-shadow-card); }
   .method-row {
     display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; margin-bottom: 10px;
   }
@@ -384,12 +389,12 @@
   }
   .method-row button.active { border-color: var(--qx-accent); color: var(--qx-accent-text); background: var(--qx-accent-soft); }
   .fl {
-    align-self: flex-start; font-size: 12px; font-weight: 700; color: var(--qx-text-dim);
-    text-transform: uppercase; letter-spacing: 0.04em; margin: 10px 0 5px 4px;
+    align-self: flex-start; font-size: 10px; font-weight: 850; color: var(--qx-text-dim);
+    text-transform: uppercase; letter-spacing: 0.08em; margin: 10px 0 6px 2px;
   }
   .field {
-    width: 100%; min-height: 48px; padding: 13px 14px; border-radius: var(--qx-radius-sm);
-    border: 1.5px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text);
+    width: 100%; min-height: 50px; padding: 13px 14px; border-radius: 13px;
+    border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text);
     font-family: var(--qx-font); font-size: 15px; box-sizing: border-box; margin-bottom: 10px;
     transition: border 0.15s;
   }
@@ -410,8 +415,8 @@
   .divider { display: flex; align-items: center; gap: 12px; width: 100%; margin: 16px 0; color: var(--qx-text-faint); font-size: 13px; font-weight: 600; }
   .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--qx-border-2); }
   .social-btn {
-    width: 100%; min-height: 48px; padding: 13px; border-radius: var(--qx-radius-md);
-    border: 1.5px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text);
+    width: 100%; min-height: 50px; padding: 13px; border-radius: 13px;
+    border: 1px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text);
     font-family: var(--qx-font); font-size: 15px; font-weight: 700; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 10px;
   }
@@ -430,7 +435,7 @@
     font-size: 21px; cursor: pointer; display: flex; align-items: center; justify-content: center;
   }
   .form-screen { position: relative; padding-top: 54px; }
-  .verify-glyph { font-size: 36px; margin-bottom: 10px; }
+  .verify-glyph { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 12px; font-weight: 950; margin-bottom: 10px; }
   .code-inputs { display: flex; gap: 6px; margin-bottom: 14px; }
   .code-box {
     width: 44px; height: 52px; border-radius: var(--qx-radius-md); border: 1.5px solid var(--qx-border-2);
@@ -439,4 +444,16 @@
   .code-box:focus { border-color: var(--qx-accent); }
   .resend { font-size: 13px; color: var(--qx-text-faint); margin-bottom: 16px; }
   .recovery-link { min-height: 44px; margin-top: 10px; padding: 12px 8px; }
+
+  @media (max-width: 460px) {
+    .auth-view { padding: 18px; }
+    .screen {
+      max-width: 350px;
+      padding: 12px 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+  }
 </style>

@@ -250,11 +250,13 @@
   .app-shell {
     height: 100%;
     width: 100%;
-    max-width: 560px;
+    max-width: 960px;
     margin-inline: auto;
     position: relative;
     overflow: hidden;
-    background: var(--qx-bg);
+    background:
+      radial-gradient(ellipse at 50% -18%, var(--qx-bg-radial), transparent 56%),
+      var(--qx-bg);
   }
   .environment-badge {
     position: fixed; top: max(6px, env(safe-area-inset-top)); left: 50%; z-index: 10000;

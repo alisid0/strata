@@ -16,12 +16,12 @@
 <style>
   .qx-btn {
     font-family: var(--qx-font);
-    font-size: 15px;
-    font-weight: 800;
-    border-radius: var(--qx-radius-md);
+    font-size: 14px;
+    font-weight: 850;
+    border-radius: 13px;
     border: none;
     cursor: pointer;
-    min-height: 46px;
+    min-height: 50px;
     padding: 0 18px;
     display: inline-flex;
     align-items: center;
@@ -30,7 +30,7 @@
     max-width: 100%;
     line-height: 1.2;
     text-align: center;
-    box-shadow: 0 5px 14px -9px var(--qx-text);
+    box-shadow: var(--qx-shadow-card);
     transition: transform var(--qx-duration-fast) var(--qx-ease-out), box-shadow var(--qx-duration-fast) ease;
   }
   .qx-btn:active:not(:disabled) { transform: translateY(1px) scale(.985); box-shadow: none; }
@@ -41,11 +41,11 @@
   .secondary {
     background: var(--qx-surface);
     color: var(--qx-text);
-    border: 1.5px solid var(--qx-border-2);
+    border: 1px solid var(--qx-border-2);
   }
   .ghost {
     background: transparent;
     color: var(--qx-text-dim);
-    border: 1.5px dashed var(--qx-border-2);
+    border: 1px solid var(--qx-border-2);
   }
 </style>

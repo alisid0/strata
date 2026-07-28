@@ -14,7 +14,7 @@
     min-width: 0;
     overflow: hidden;
     background: var(--qx-surface);
-    border: 1.5px solid var(--qx-border);
+    border: 1px solid var(--qx-border);
     border-radius: var(--qx-radius-lg);
     box-shadow: var(--qx-shadow-card);
   }
