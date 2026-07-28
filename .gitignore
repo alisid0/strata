@@ -19,6 +19,10 @@ node_modules/
 
 audio/
 
+# Scratch files from development sessions
+_vr*
+
+
 # one-off per-board authoring/upload helper scripts (throwaway)
 scripts/_*.mjs
 media/videos/
