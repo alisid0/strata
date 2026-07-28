@@ -165,6 +165,16 @@
     {/if}
   </div>
 
+  <button class="method-callout" on:click={() => onNavigate?.('workshop')}>
+    <span class="method-callout-mark" aria-hidden="true">LF<br />SF</span>
+    <span class="method-callout-copy">
+      <span class="method-callout-kicker">The Strata method</span>
+      <strong>Learn it forwards. Solve it backwards.</strong>
+      <small>Build a STEM concept with guidance, or meet the problem before the explanation. Same concept, opposite route.</small>
+    </span>
+    <span class="method-callout-action">Explore workshops</span>
+  </button>
+
   {#if recallActive}
     {#key recallActive.cardNumber}
       {#if recallActive.selfCheck}
@@ -246,7 +256,7 @@
   }
 
   /* One "Continue now" card — accent-filled so it reads as THE action */
-  .focus-card { margin-bottom: clamp(28px, 5vw, 42px); }
+  .focus-card { margin-bottom: clamp(16px, 3vw, 22px); }
   .focus-main {
     width: 100%; min-height: 118px; display: flex; align-items: center; gap: 15px; text-align: left;
     padding: clamp(18px, 4vw, 25px); border-radius: 26px;
@@ -257,6 +267,64 @@
     cursor: pointer;
     font-family: var(--qx-font); box-sizing: border-box;
     box-shadow: 0 24px 54px -34px rgba(0,0,0,.75);
+  }
+
+  .method-callout {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 13px;
+    margin: 0 0 clamp(28px, 5vw, 42px);
+    padding: 14px 15px;
+    border: 1px solid var(--qx-border);
+    border-radius: 18px;
+    background: var(--qx-surface);
+    color: var(--qx-text);
+    box-shadow: var(--qx-shadow-card);
+    font-family: var(--qx-font);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s, transform .15s, background .15s;
+  }
+  .method-callout:hover {
+    border-color: var(--qx-green);
+    background: color-mix(in srgb, var(--qx-green-soft) 42%, var(--qx-surface));
+    transform: translateY(-1px);
+  }
+  .method-callout:focus-visible { outline: 2px solid var(--qx-green); outline-offset: 2px; }
+  .method-callout-mark {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: var(--qx-text);
+    color: var(--qx-bg);
+    font-size: 8.5px;
+    font-weight: 950;
+    line-height: 1.05;
+    text-align: center;
+  }
+  .method-callout-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .method-callout-kicker {
+    color: var(--qx-green-text);
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .method-callout-copy strong { font-size: 13px; line-height: 1.25; }
+  .method-callout-copy small {
+    color: var(--qx-text-faint);
+    font-size: 9.5px;
+    line-height: 1.35;
+  }
+  .method-callout-action {
+    color: var(--qx-accent-text);
+    font-size: 9.5px;
+    font-weight: 900;
+    white-space: nowrap;
   }
   .focus-bolt {
     width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
@@ -348,6 +416,8 @@
     .streak-chip { grid-area: streak; justify-content: center; }
     .menu-btn.icon-btn { grid-area: snippets; }
     .menu-btn:not(.icon-btn) { grid-area: menu; }
+    .method-callout { grid-template-columns: 42px minmax(0, 1fr); }
+    .method-callout-action { display: none; }
   }
 
   @media (max-width: 340px) {

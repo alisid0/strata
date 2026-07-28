@@ -121,8 +121,8 @@
 <div class="workshop">
   <div class="workshop-header">
     <div>
-      <span class="workshop-kicker">{assess ? 'Test' : timeLimitSec > 0 ? 'Challenge' : 'Micro drill'}</span>
-      <span class="workshop-title">Workshop</span>
+      <span class="workshop-kicker">{assess ? 'Test' : timeLimitSec > 0 ? 'Challenge' : 'Learn First'}</span>
+      <span class="workshop-title">{assess ? 'Prove it' : timeLimitSec > 0 ? 'Use it under pressure' : 'Build the idea'}</span>
     </div>
     <div class="workshop-chips">
       {#if streak >= 2 && !assess}

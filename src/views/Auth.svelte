@@ -226,7 +226,10 @@
     <div class="screen welcome">
       <div class="brand">QUB<span class="acc">I</span>X</div>
       <h1 class="sr-only">Log in or sign up to Qubix</h1>
-      <div class="tagline">Learn in Bytes. Grow by Leaps.</div>
+      <div class="tagline">
+        <strong>Learn forwards. Solve backwards.</strong>
+        <span>Two routes through difficult ideas.</span>
+      </div>
 
       <div class="tab-row">
         <button class="tab" class:active={authTab === 'login'} aria-pressed={authTab === 'login'} on:click={() => changeAuthTab('login')}>Log in</button>
@@ -369,7 +372,15 @@
   }
   .brand { font-size: 25px; font-weight: 950; letter-spacing: 0.16em; color: var(--qx-text); margin-bottom: 5px; }
   .acc { color: var(--qx-accent); }
-  .tagline { font-size: 12.5px; font-weight: 650; color: var(--qx-text-dim); margin-bottom: 28px; }
+  .tagline {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 28px;
+    color: var(--qx-text-dim);
+  }
+  .tagline strong { color: var(--qx-text); font-size: 13px; font-weight: 900; }
+  .tagline span { font-size: 10.5px; font-weight: 650; }
   .tab-row {
     display: flex; width: 100%; background: var(--qx-surface-2); border-radius: 15px;
     border: 1px solid var(--qx-border); margin-bottom: 12px; padding: 4px;

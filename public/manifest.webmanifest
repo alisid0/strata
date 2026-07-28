@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Qubix - Learn Physics, Maths & STEM",
   "short_name": "Qubix",
-  "description": "Bite-sized, swipeable STEM microlearning for physics, mathematics, chemistry, and computer science.",
+  "description": "Learn STEM concepts forwards with guidance or solve them backwards from the problem.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

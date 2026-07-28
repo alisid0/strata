@@ -535,8 +535,9 @@
   let solveFirst = null; // active Solve First discovery config (problem-led, no lesson first)
   const ALL_SOLVE_FIRST = getAllSolveFirst();
   let running = false;  // false = browse the module grid; true = a workshop is open
-  let browseCategory = 'solve-first';
-  let activeTrack = 'computer';
+  let browseMode = 'learn-first';
+  let browseCategory = 'mathematics';
+  let activeTrack = 'mathematics';
   let activeModuleBySubject = {
     mathematics: 'line-core',
     computer: 'binary-data',
@@ -550,6 +551,7 @@
       if (trk.modules.some((m) => m.id === openTarget)) {
         activeTrack = tid;
         browseCategory = tid;
+        browseMode = 'learn-first';
         activeModuleBySubject = { ...activeModuleBySubject, [tid]: openTarget };
         running = true;
         break;
@@ -558,7 +560,8 @@
   }
 
   $: track = TRACKS[activeTrack];
-  $: browseTrack = browseCategory === 'solve-first' ? null : TRACKS[browseCategory];
+  $: browseTrack = TRACKS[browseCategory];
+  $: browseSolveFirst = ALL_SOLVE_FIRST.filter((item) => item.track === browseCategory);
   $: moduleTabs = track.modules || [];
   $: activeModuleId = activeModuleBySubject[activeTrack] || moduleTabs[0]?.id;
   $: activeModule = moduleTabs.find((item) => item.id === activeModuleId) || moduleTabs[0];
@@ -576,7 +579,7 @@
   $: topicMeta = PATHS[activePathId] || null;
   $: practiceInteractions = activeModule?.getWorkshop ? activeModule.getWorkshop() : [];
   $: interactions = test ? test : challenge ? challenge.interactions : practiceInteractions;
-  $: workshopRunKey = `${activeTrack}-${activeModuleId}-${solveFirst ? 'solve-first' : test ? 'test' : challenge ? 'challenge' : 'practice'}-${runId}`;
+  $: workshopRunKey = `${activeTrack}-${activeModuleId}-${solveFirst ? 'solve-first' : test ? 'test' : challenge ? 'challenge' : 'learn-first'}-${runId}`;
   $: scorePct = total ? Math.round((score / total) * 100) : 0;
   $: hasChallenge = !!getChallengeForModule(activeModuleId);
   $: hasTest = !!getTestForModule(activeModuleId, practiceInteractions);
@@ -585,7 +588,10 @@
   // 'workshop:<id>' W, so its presence in granted marks the module done.)
   const moduleDone = (id) => !!$progress?.ws?.granted?.[`workshop:${id}`];
   const discoveryDone = (id) => !!$progress?.discoveries?.[id]?.firstCompletedAt;
+  const pairedLearnTitle = (item) =>
+    TRACKS[item?.track]?.modules?.find((module) => module.id === item?.moduleId)?.title || 'Learn First';
   $: solveFirstCompleted = ALL_SOLVE_FIRST.filter((item) => discoveryDone(item.id)).length;
+  $: subjectSolveFirstCompleted = browseSolveFirst.filter((item) => discoveryDone(item.id)).length;
   $: onRunningChange?.(running);
 
   function finishWorkshop(finalScore, finalTotal, finalStreak = 0) {
@@ -657,6 +663,8 @@
   function startSolveFirst(config = getSolveFirst(activeModuleId)) {
     if (!config) return;
     if (config.track) activeTrack = config.track;
+    browseMode = 'solve-first';
+    browseCategory = config.track || activeTrack;
     if (config.moduleId) {
       activeModuleBySubject = { ...activeModuleBySubject, [config.track || activeTrack]: config.moduleId };
     }
@@ -688,6 +696,7 @@
   function openModule(trackId, id) {
     activeTrack = trackId;
     browseCategory = trackId;
+    browseMode = 'learn-first';
     activeModuleBySubject = { ...activeModuleBySubject, [trackId]: id };
     challenge = null;
     test = null;
@@ -714,27 +723,57 @@
   {#if !running}
     <div class="lab-header">
       <div>
-        <div class="kicker">Exercises</div>
-        <h1>Workshop</h1>
-        <p>Choose a category, then focus on one set of activities at a time.</p>
+        <div class="kicker">The Strata method</div>
+        <h1>Learn forwards. Solve backwards.</h1>
+        <p>Two routes through the same concept, designed to produce one thing: real understanding.</p>
       </div>
-      {#if browseTrack}
-        <img src={browseTrack.icon} alt={browseTrack.label} />
-      {:else}
-        <span class="lab-header-mark" aria-hidden="true">SF</span>
-      {/if}
+      <img src={browseTrack.icon} alt={browseTrack.label} />
+    </div>
+
+    <section class="method-system" aria-labelledby="method-system-title">
+      <div class="method-principle">
+        <span>One concept · two routes</span>
+        <strong id="method-system-title">Same destination. Opposite direction.</strong>
+        <small>Start with the explanation when the idea is new. Start with the problem when you want to prove the idea is yours.</small>
+      </div>
+      <div class="mode-grid" role="group" aria-label="Choose a workshop method">
+        <button
+          class="mode-card learn"
+          class:active={browseMode === 'learn-first'}
+          aria-pressed={browseMode === 'learn-first'}
+          on:click={() => browseMode = 'learn-first'}
+        >
+          <span class="mode-mark">LF</span>
+          <span class="mode-copy">
+            <span class="mode-name">Learn First</span>
+            <span class="mode-description">Build the concept step by step, with teaching at each decision.</span>
+            <span class="mode-sequence">BUILD · NOTICE · NAME · USE</span>
+          </span>
+          <span class="mode-state">{browseMode === 'learn-first' ? 'Selected' : 'Choose'}</span>
+        </button>
+        <button
+          class="mode-card solve"
+          class:active={browseMode === 'solve-first'}
+          aria-pressed={browseMode === 'solve-first'}
+          on:click={() => browseMode = 'solve-first'}
+        >
+          <span class="mode-mark">SF</span>
+          <span class="mode-copy">
+            <span class="mode-name">Solve First</span>
+            <span class="mode-description">Meet the problem cold, uncover its pattern, then reveal the formal idea.</span>
+            <span class="mode-sequence">ATTEMPT · NOTICE · PROVE · REVEAL</span>
+          </span>
+          <span class="mode-state">{browseMode === 'solve-first' ? 'Selected' : 'Choose'}</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="catalogue-label">
+      <span>Choose a subject</span>
+      <span>{browseMode === 'learn-first' ? 'Guided workshops' : `${solveFirstCompleted}/${ALL_SOLVE_FIRST.length} discoveries complete`}</span>
     </div>
 
     <nav class="category-grid" aria-label="Workshop categories">
-      <button
-        class="category-button featured"
-        class:active={browseCategory === 'solve-first'}
-        aria-pressed={browseCategory === 'solve-first'}
-        on:click={() => browseCategory = 'solve-first'}
-      >
-        <span class="category-mark solve-mark">SF</span>
-        <span><strong>Solve First</strong><small>{solveFirstCompleted}/{ALL_SOLVE_FIRST.length} complete</small></span>
-      </button>
       {#each Object.entries(TRACKS) as [tid, trk] (tid)}
         <button
           class="category-button"
@@ -745,25 +784,32 @@
           <span class="category-mark"><img src={trk.icon} alt="" /></span>
           <span>
             <strong>{trk.label}</strong>
-            <small>{trk.modules.filter((m) => moduleDone(m.id)).length}/{trk.modules.length} complete</small>
+            <small>
+              {#if browseMode === 'learn-first'}
+                {trk.modules.filter((m) => moduleDone(m.id)).length}/{trk.modules.length} learned
+              {:else}
+                {ALL_SOLVE_FIRST.filter((item) => item.track === tid).length} discoveries
+              {/if}
+            </small>
           </span>
         </button>
       {/each}
     </nav>
 
     <div class="category-panel" id={`workshop-category-${browseCategory}`}>
-      {#if browseCategory === 'solve-first'}
+      {#if browseMode === 'solve-first'}
         <section class="solve-batch" aria-labelledby="solve-batch-title">
           <div class="solve-batch-head">
             <div>
-              <span>Solve First · Discovery set</span>
-              <strong id="solve-batch-title">{ALL_SOLVE_FIRST.length} problems. No lesson first.</strong>
-              <small>Experiment, prove the hidden rule, then reveal the formal idea.</small>
+              <span>{browseTrack.label} · Solve First</span>
+              <strong id="solve-batch-title">The problem comes before the explanation.</strong>
+              <small>Nothing is named upfront. Experiment, state the rule in your own words, then reveal and transfer the formal concept.</small>
             </div>
-            <b>{solveFirstCompleted}/{ALL_SOLVE_FIRST.length}</b>
+            <b>{browseSolveFirst.length ? `${subjectSolveFirstCompleted}/${browseSolveFirst.length}` : 'Planned'}</b>
           </div>
+          {#if browseSolveFirst.length}
           <div class="solve-batch-grid">
-            {#each ALL_SOLVE_FIRST as item, index (item.id)}
+            {#each browseSolveFirst as item, index (item.id)}
               <button
                 class="solve-batch-card"
                 class:done={discoveryDone(item.id)}
@@ -772,13 +818,21 @@
               >
                 <span class="solve-batch-number">{String(index + 1).padStart(2, '0')}</span>
                 <span class="solve-batch-copy">
-                  <small>{TRACKS[item.track]?.label || 'Workshop'}</small>
+                  <small>Pairs with {pairedLearnTitle(item)}</small>
                   <strong>{item.title}</strong>
                 </span>
-                <span class="solve-batch-state">{discoveryDone(item.id) ? 'Replay ✓' : 'Solve →'}</span>
+                <span class="solve-batch-state">{discoveryDone(item.id) ? 'Replay · complete' : 'Start with the problem'}</span>
               </button>
             {/each}
           </div>
+          {:else}
+            <div class="mode-empty">
+              <span>In development</span>
+              <strong>{browseTrack.label} Solve First journeys are being built.</strong>
+              <small>The Learn First workshops remain available now. We only publish a reversed journey when the experiment genuinely teaches the concept.</small>
+              <button on:click={() => browseMode = 'learn-first'}>Open Learn First</button>
+            </div>
+          {/if}
         </section>
       {:else if browseTrack}
         <section class="ws-block" aria-labelledby={`workshop-category-title-${browseCategory}`}>
@@ -786,7 +840,7 @@
           <img class="ws-block-icon" src={browseTrack.icon} alt="" />
           <div class="ws-block-info">
             <div class="ws-block-name" id={`workshop-category-title-${browseCategory}`}>{browseTrack.label}</div>
-            <div class="ws-block-sub">{browseTrack.sub}</div>
+            <div class="ws-block-sub">Learn First · {browseTrack.sub}</div>
           </div>
           <span class="ws-block-progress">{browseTrack.modules.filter((m) => moduleDone(m.id)).length}/{browseTrack.modules.length}</span>
         </div>
@@ -799,8 +853,8 @@
                 <span class="ws-tile-sub">{item.sub}</span>
               </span>
               <span class="ws-tile-foot">
-                <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Practice'}</span>
-                {#if getSolveFirst(item.id)}<span class="ws-bolt" title="Solve First discovery available">S</span>{/if}
+                <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Learned · complete' : 'Learn First'}</span>
+                {#if getSolveFirst(item.id)}<span class="ws-paired" title="A reversed Solve First journey is also available">Paired</span>{/if}
                 {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge available">C</span>{/if}
                 {#if getTestForModule(item.id, item.getWorkshop ? item.getWorkshop() : [])}<span class="ws-bolt" title="Scored test available">T</span>{/if}
               </span>
@@ -817,7 +871,7 @@
     <header class="runner-header">
       <button class="runner-back" on:click={backToGrid} aria-label="Return to all workshops">←</button>
       <div class="runner-copy">
-        <span>{track.label}</span>
+        <span>Learn First · {track.label}</span>
         <strong>{workshopTitle}</strong>
         <small>{workshopSub}</small>
       </div>
@@ -828,13 +882,15 @@
     {/if}
 
     {#if hasSolveFirst && !challenge && !test && !solveFirst}
-      <div class="solve-bar">
-        <div>
-          <strong>No lesson first</strong>
-          <small>Work the problem, prove the rule yourself, and only then see what it is called.</small>
+      <div class="paired-runner">
+        <div class="paired-runner-copy">
+          <span>Paired concept</span>
+          <strong>Learn it here. Or reverse the route.</strong>
+          <small>Both journeys reach the same formal idea; only the order of discovery changes.</small>
         </div>
-        <div class="mode-buttons">
-          <button on:click={() => startSolveFirst()}>Solve First</button>
+        <div class="paired-runner-actions">
+          <span class="paired-current"><b>LF</b> Learn First · active</span>
+          <button on:click={() => startSolveFirst()}><b>SF</b> Switch to Solve First</button>
         </div>
       </div>
     {/if}
@@ -842,7 +898,7 @@
     {#if !challenge && !test && !solveFirst && (hasChallenge || hasTest)}
       <div class="challenge-bar">
         <div>
-          <strong>Done practising?</strong>
+          <strong>Ready to test the understanding?</strong>
           <small>Challenge races the clock. Test scores you cold — one attempt, no reveals.</small>
         </div>
         <div class="mode-buttons">
@@ -853,7 +909,7 @@
     {/if}
 
     {#if (challenge || test) && !finished}
-      <button class="challenge-exit" on:click={exitChallenge}>← Back to practice</button>
+      <button class="challenge-exit" on:click={exitChallenge}>← Back to Learn First</button>
     {/if}
 
   <div class="workshop-card" class:challenge-active={!!challenge || !!test} class:solve-active={!!solveFirst}>
@@ -885,13 +941,13 @@
         <h2>{score}/{total} locked in</h2>
         {#if test}
           <div class="test-verdict" class:pass={scorePct >= 80}>{scorePct >= 80 ? '✓ Passed' : 'Not passed yet — 80% to pass'}</div>
-          <p>{scorePct >= 80 ? 'Scored cold, one attempt per question, nothing revealed on the way. This result is trustworthy — the idea is genuinely yours.' : scorePct >= 50 ? 'This is what testing is for: it found the soft spots practice papered over. Revisit the practice drill, then retake — the questions reshuffle.' : 'A low test score is information, not a verdict. Run the practice drill again with fresh eyes, then come back and retake.'}</p>
+          <p>{scorePct >= 80 ? 'Scored cold, one attempt per question, nothing revealed on the way. This result is trustworthy — the idea is genuinely yours.' : scorePct >= 50 ? 'This is what testing is for: it found the soft spots Learn First exposed. Revisit the guided journey, then retake — the questions reshuffle.' : 'A low test score is information, not a verdict. Run Learn First again with fresh eyes, then come back and retake.'}</p>
           <div class="done-actions">
             <button class="primary-btn" on:click={replay}>Retake test</button>
             {#if hasChallenge}
               <button class="ghost-btn" on:click={startChallenge}>Try the challenge</button>
             {/if}
-            <button class="ghost-btn" on:click={exitChallenge}>Back to practice</button>
+            <button class="ghost-btn" on:click={exitChallenge}>Back to Learn First</button>
           </div>
         {:else if challenge}
           {#if bestStreak >= 2}
@@ -903,12 +959,12 @@
             {#if hasTest}
               <button class="ghost-btn" on:click={startTest}>Take the test</button>
             {/if}
-            <button class="ghost-btn" on:click={exitChallenge}>Back to practice</button>
+            <button class="ghost-btn" on:click={exitChallenge}>Back to Learn First</button>
           </div>
         {:else}
           <p>{scorePct >= 80 ? 'Strong grasp. This is the confidence zone: the idea is usable, not just familiar.' : 'Replay once and aim for a cleaner run. Short repetition is where the pattern starts to feel automatic.'}</p>
           <div class="done-actions">
-            <button class="primary-btn" on:click={replay}>Replay drill</button>
+            <button class="primary-btn" on:click={replay}>Replay Learn First</button>
             {#if hasChallenge}
               <button class="ghost-btn" on:click={startChallenge}>Try the challenge</button>
             {/if}
@@ -958,30 +1014,145 @@
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    margin-bottom: clamp(20px, 4vw, 30px);
+    margin-bottom: clamp(18px, 3vw, 24px);
   }
 
-  .lab-header-mark {
-    width: 46px;
-    height: 46px;
-    display: grid;
-    flex: 0 0 auto;
-    place-items: center;
-    border: 1px solid var(--qx-green);
-    border-radius: 15px;
-    background: var(--qx-green-soft);
-    color: var(--qx-green-text);
-    font-size: 13px;
-    font-weight: 950;
-    letter-spacing: -.02em;
+  .method-system {
+    overflow: hidden;
+    margin-bottom: 24px;
+    border: 1px solid color-mix(in srgb, var(--qx-text) 82%, transparent);
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--qx-green) 20%, transparent), transparent 34%),
+      var(--qx-text);
     box-shadow: var(--qx-shadow-card);
+  }
+
+  .method-principle {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: clamp(17px, 3vw, 23px);
+    border-bottom: 1px solid color-mix(in srgb, var(--qx-bg) 16%, transparent);
+  }
+
+  .method-principle span {
+    color: var(--qx-accent);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+  }
+
+  .method-principle strong {
+    color: var(--qx-bg);
+    font-size: clamp(18px, 3vw, 23px);
+    line-height: 1.15;
+    letter-spacing: -.025em;
+  }
+
+  .method-principle small {
+    max-width: 66ch;
+    color: var(--qx-bg);
+    font-size: 11.5px;
+    line-height: 1.45;
+    opacity: .72;
+  }
+
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .mode-card {
+    min-width: 0;
+    min-height: 116px;
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid color-mix(in srgb, var(--qx-bg) 18%, transparent);
+    border-radius: 17px;
+    background: color-mix(in srgb, var(--qx-bg) 7%, transparent);
+    color: var(--qx-bg);
+    font-family: var(--qx-font);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s, background .15s, transform .15s;
+  }
+
+  .mode-card:hover {
+    background: color-mix(in srgb, var(--qx-bg) 11%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .mode-card:focus-visible {
+    outline: 2px solid var(--qx-accent);
+    outline-offset: 2px;
+  }
+
+  .mode-card.learn.active { border-color: var(--qx-accent); }
+  .mode-card.solve.active { border-color: var(--qx-green); }
+
+  .mode-mark {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--qx-bg);
+    color: var(--qx-text);
+    font-size: 10px;
+    font-weight: 950;
+  }
+
+  .mode-card.learn.active .mode-mark { background: var(--qx-accent); color: #fff; }
+  .mode-card.solve.active .mode-mark { background: var(--qx-green); color: #fff; }
+  .mode-copy { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .mode-name { color: var(--qx-bg); font-size: 13px; font-weight: 950; }
+  .mode-description { color: var(--qx-bg); font-size: 10.5px; line-height: 1.35; opacity: .72; }
+  .mode-sequence {
+    margin-top: 5px;
+    color: var(--qx-accent);
+    font-size: 7.5px;
+    font-weight: 950;
+    letter-spacing: .07em;
+  }
+  .mode-card.solve .mode-sequence { color: var(--qx-green); }
+  .mode-state {
+    color: var(--qx-bg);
+    font-size: 8.5px;
+    font-weight: 850;
+    opacity: .48;
+  }
+  .mode-card.active .mode-state { opacity: 1; }
+
+  @media (max-width: 560px) {
+    .mode-grid { grid-template-columns: 1fr; }
+    .mode-card { min-height: 102px; }
+  }
+
+  .catalogue-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 2px 8px;
+    color: var(--qx-text-faint);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
   }
 
   .category-grid {
     width: 100%;
     display: flex;
     gap: 4px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     padding: 4px;
     overflow-x: auto;
     border: 1px solid var(--qx-border);
@@ -1028,12 +1199,6 @@
     box-shadow: var(--qx-shadow-card);
   }
 
-  .category-button.featured.active {
-    border-color: color-mix(in srgb, var(--qx-green) 45%, var(--qx-border));
-    background: var(--qx-surface);
-    box-shadow: var(--qx-shadow-card);
-  }
-
   .category-mark {
     width: 32px;
     height: 32px;
@@ -1049,13 +1214,6 @@
     height: 25px;
     display: block;
     object-fit: contain;
-  }
-
-  .category-mark.solve-mark {
-    background: var(--qx-text);
-    color: var(--qx-bg);
-    font-size: 10px;
-    font-weight: 950;
   }
 
   .category-button > span:last-child {
@@ -1146,6 +1304,18 @@
     border-radius: 6px; color: var(--qx-accent-text);
     background: var(--qx-accent-soft-2); padding: 0;
     font-size: 7.5px; font-weight: 950;
+  }
+  .ws-paired {
+    min-height: 20px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 6px;
+    border: 1px solid color-mix(in srgb, var(--qx-green) 52%, var(--qx-border));
+    border-radius: 7px;
+    background: var(--qx-green-soft);
+    color: var(--qx-green-text);
+    font-size: 8px;
+    font-weight: 950;
   }
 
   .runner-header {
@@ -1466,43 +1636,78 @@
     box-shadow: none;
   }
 
-  .solve-bar {
-    display: flex;
+  .paired-runner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    border: 1.5px solid var(--qx-green);
-    background: var(--qx-green-soft);
-    border-radius: var(--qx-radius-md);
-    padding: 11px 13px;
-    margin: 0 0 10px;
+    gap: 16px;
+    margin: 0 0 12px;
+    padding: 14px;
+    border: 1px solid color-mix(in srgb, var(--qx-green) 55%, var(--qx-border));
+    border-radius: 17px;
+    background:
+      linear-gradient(100deg, var(--qx-surface), color-mix(in srgb, var(--qx-green-soft) 72%, var(--qx-surface)));
+    box-shadow: var(--qx-shadow-card);
   }
 
-  .solve-bar strong { display: block; font-size: 13px; color: var(--qx-green-text); }
-  .solve-bar small { display: block; font-size: 11.5px; color: var(--qx-text-dim); margin-top: 2px; }
-  .solve-bar button {
-    min-height: 36px;
-    border: 0;
-    border-radius: 999px;
-    padding: 0 15px;
+  .paired-runner-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .paired-runner-copy span {
+    color: var(--qx-green-text);
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  .paired-runner-copy strong { color: var(--qx-text); font-size: 13px; }
+  .paired-runner-copy small { color: var(--qx-text-dim); font-size: 10.5px; line-height: 1.35; }
+  .paired-runner-actions {
+    min-width: 172px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .paired-current,
+  .paired-runner-actions button {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 11px;
+    border-radius: 11px;
+    font: 850 9.5px var(--qx-font);
+  }
+  .paired-current {
+    border: 1px solid var(--qx-border);
+    background: var(--qx-surface);
+    color: var(--qx-text-dim);
+  }
+  .paired-current b,
+  .paired-runner-actions button b {
+    font-size: 8px;
+    letter-spacing: .04em;
+  }
+  .paired-runner-actions button {
+    border: 1px solid var(--qx-green);
     background: var(--qx-green);
     color: #fff;
-    font: 900 12px var(--qx-font);
     cursor: pointer;
   }
 
-  @media (max-width: 380px) {
+  @media (max-width: 560px) {
     .challenge-bar,
-    .solve-bar {
+    .paired-runner {
       align-items: stretch;
-      flex-direction: column;
+      grid-template-columns: 1fr;
     }
 
-    .challenge-bar button,
-    .solve-bar button {
+    .challenge-bar button {
       width: 100%;
       min-height: 44px;
     }
+
+    .paired-runner-actions { min-width: 0; }
+    .paired-current,
+    .paired-runner-actions button { min-height: 42px; }
 
     .mode-buttons {
       width: 100%;
@@ -1512,8 +1717,8 @@
   /* Launch rail for the complete Solve First batch. */
   .solve-batch {
     border: 1.5px solid var(--qx-text);
-    border-radius: 12px;
-    padding: 14px;
+    border-radius: 22px;
+    padding: clamp(15px, 3vw, 20px);
     margin: 2px 0 22px;
     background: var(--qx-text);
     box-shadow: var(--qx-shadow-card);
@@ -1616,6 +1821,38 @@
     font-weight: 850;
   }
   .solve-batch-card.done .solve-batch-state { color: var(--qx-green); opacity: 1; }
+
+  .mode-empty {
+    min-height: 190px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 14px;
+    border: 1px dashed color-mix(in srgb, var(--qx-bg) 26%, transparent);
+    border-radius: 15px;
+    color: var(--qx-bg);
+  }
+  .mode-empty span {
+    color: var(--qx-accent);
+    font-size: 8.5px;
+    font-weight: 950;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .mode-empty strong { margin-top: 5px; font-size: 15px; line-height: 1.25; }
+  .mode-empty small { max-width: 58ch; margin-top: 4px; font-size: 10.5px; line-height: 1.45; opacity: .7; }
+  .mode-empty button {
+    min-height: 38px;
+    margin-top: 14px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--qx-bg);
+    color: var(--qx-text);
+    font: 900 10.5px var(--qx-font);
+    cursor: pointer;
+  }
 
   @media (max-width: 380px) {
     .solve-batch-grid { grid-template-columns: 1fr; }
