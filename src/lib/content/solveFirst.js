@@ -129,6 +129,17 @@ const SOLVE_FIRST = {
     title: 'Ramp Rider',
     sub: 'No lesson first. Tilt a ramp, launch a motorcycle, clear gaps with the right angle, then decode sine and cosine.',
     rewardLabel: 'Angle Master'
+  },
+  'sine-waves': {
+    id: 'sine-waves-signal-hacker',
+    moduleId: 'sine-waves',
+    pathId: 'MATH_TRIG_ADV',
+    track: 'mathematics',
+    kind: 'signal-hacker',
+    eyebrow: 'Unmarked problem 11',
+    title: 'Signal Hacker',
+    sub: 'No lesson first. Match security frequencies by tuning amplitude, pitch, phase shift, and vertical lift — then decode the sine formula.',
+    rewardLabel: 'Signal Master'
   }
 };
 
