@@ -50,10 +50,10 @@
   // Incoming view: slide in from `dir`. Outgoing: slide out the opposite way.
   const flyIn = (dir = 1) => reduceMotion
     ? { duration: 0 }
-    : { x: dir * 100, duration: 280, easing: easeInOutQuad };
+    : { x: dir * 64, duration: 300, easing: easeInOutQuad };
   const flyOut = (dir = 1) => reduceMotion
     ? { duration: 0 }
-    : { x: -dir * 60, duration: 200, easing: easeInOutQuad };
+    : { x: -dir * 34, duration: 220, easing: easeInOutQuad };
 
   onMount(() => {
     let mounted = true;
@@ -239,7 +239,15 @@
 </div>
 
 <style>
-  .app-shell { height: 100%; width: 100%; position: relative; overflow: hidden; }
+  .app-shell {
+    height: 100%;
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+    position: relative;
+    overflow: hidden;
+    background: var(--qx-bg);
+  }
   .environment-badge {
     position: fixed; top: max(6px, env(safe-area-inset-top)); left: 50%; z-index: 10000;
     transform: translateX(-50%); pointer-events: none;
@@ -251,7 +259,7 @@
   /* Every top-level screen is its own absolutely-positioned layer, so during a
      transition the outgoing and incoming views overlap and cross-slide cleanly
      instead of stacking in normal flow. */
-  .view-layer { position: absolute; inset: 0; }
+  .view-layer { position: absolute; inset: 0; min-width: 0; overflow-x: hidden; }
   .scrollable-layer { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
   .loading-screen {
@@ -265,5 +273,5 @@
   @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
   .tabbed-view { display: flex; flex-direction: column; }
-  .tab-content { flex: 1; min-height: 0; overflow-y: auto; }
+  .tab-content { flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; }
 </style>

@@ -17,10 +17,15 @@
 
 :root {
   --qx-font: 'Mulish', sans-serif;
-  --qx-radius-sm: 10px;
-  --qx-radius-md: 14px;
-  --qx-radius-lg: 18px;
+  --qx-radius-sm: 9px;
+  --qx-radius-md: 13px;
+  --qx-radius-lg: 17px;
   --qx-radius-pill: 999px;
+  --qx-page-pad: clamp(14px, 4vw, 20px);
+  --qx-card-pad: clamp(12px, 3.4vw, 16px);
+  --qx-ease-out: cubic-bezier(.22, 1, .36, 1);
+  --qx-duration-fast: 160ms;
+  --qx-duration-page: 300ms;
 
   /* Reading-optimised type: larger, book-like body with generous line-height. */
   --qx-fs-body: 17.5px;
@@ -68,6 +73,7 @@
   --qx-danger-text: #A02D1D;
 
   --qx-shadow-card: 0 10px 22px -10px rgba(36,31,22,0.16);
+  --qx-shadow-soft: 0 18px 48px -28px rgba(36,31,22,0.28);
 }
 
 /* ── Dark — Ink background, Canvas-warm text; accents lightened ── */
@@ -111,6 +117,7 @@
   --qx-danger-text: #F26B52;
 
   --qx-shadow-card: 0 14px 30px -14px rgba(0,0,0,0.55);
+  --qx-shadow-soft: 0 22px 56px -28px rgba(0,0,0,0.8);
 }
 
 .qx-shell {
@@ -118,7 +125,9 @@
   background: radial-gradient(ellipse at 50% 6%, var(--qx-bg-radial), var(--qx-bg) 80%), var(--qx-bg);
   color: var(--qx-text);
   -webkit-font-smoothing: antialiased;
-  max-width: 480px;
+  width: 100%;
+  max-width: 520px;
   margin: 0 auto;
   position: relative;
+  min-width: 0;
 }

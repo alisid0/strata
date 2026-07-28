@@ -27,7 +27,13 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    max-width: 100%;
+    line-height: 1.2;
+    text-align: center;
+    box-shadow: 0 5px 14px -9px var(--qx-text);
+    transition: transform var(--qx-duration-fast) var(--qx-ease-out), box-shadow var(--qx-duration-fast) ease;
   }
+  .qx-btn:active:not(:disabled) { transform: translateY(1px) scale(.985); box-shadow: none; }
   .qx-btn.full { width: 100%; }
   .qx-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 

@@ -511,6 +511,7 @@
   import SolveFirstCoordinates from '../lib/components/assessments/SolveFirstCoordinates.svelte';
   import SolveFirstLimits from '../lib/components/assessments/SolveFirstLimits.svelte';
   import SolveFirstNetworks from '../lib/components/assessments/SolveFirstNetworks.svelte';
+  import SolveFirstDifferentiation from '../lib/components/assessments/SolveFirstDifferentiation.svelte';
   import SolveFirstMatrices from '../lib/components/assessments/SolveFirstMatrices.svelte';
   import SolveFirstBayes from '../lib/components/assessments/SolveFirstBayes.svelte';
   import SolveFirstProjectile from '../lib/components/assessments/SolveFirstProjectile.svelte';
@@ -822,6 +823,8 @@
           <SolveFirstLimits config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'network-routing'}
           <SolveFirstNetworks config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'fuel-rate'}
+          <SolveFirstDifferentiation config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'matrix-warp'}
           <SolveFirstMatrices config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'bayes-screen'}
@@ -883,9 +886,13 @@
 <style>
   .workshop-lab {
     height: 100%;
+    width: 100%;
+    max-width: 100%;
     overflow-y: auto;
-    padding: 14px 14px 24px;
+    overflow-x: hidden;
+    padding: 16px var(--qx-page-pad) 28px;
     box-sizing: border-box;
+    overscroll-behavior-y: contain;
   }
 
   .lab-header {
@@ -910,9 +917,10 @@
     padding: 12px; border-radius: var(--qx-radius-lg);
     border: 1.5px solid var(--qx-border); background: var(--qx-surface);
     cursor: pointer; font-family: var(--qx-font);
+    box-shadow: var(--qx-shadow-card);
     transition: border-color 0.15s, background 0.15s, transform 0.15s;
   }
-  .ws-tile:hover { border-color: var(--qx-accent); transform: translateY(-1px); }
+  .ws-tile:hover { border-color: var(--qx-accent); transform: translateY(-2px); box-shadow: var(--qx-shadow-soft); }
   .ws-tile:active { transform: scale(0.98); }
   .ws-tile-icon {
     width: 34px; height: 34px; border-radius: 8px; background: var(--qx-surface-2);
@@ -928,7 +936,13 @@
     line-height: 1.35; overflow-wrap: anywhere;
   }
   .ws-tile-foot {
-    margin-top: auto; display: flex; align-items: center; gap: 6px;
+    width: 100%;
+    max-width: 100%;
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
   }
   .ws-chip {
     font-size: 11px; font-weight: 800; color: var(--qx-text-faint);
@@ -1016,9 +1030,8 @@
   .ws-block-sub {
     font-size: 12px;
     color: var(--qx-text-dim);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
   }
 
   .ws-block-progress {
@@ -1036,9 +1049,10 @@
     gap: 12px;
     border: 1.5px solid var(--qx-border);
     background: var(--qx-surface);
-    border-radius: 8px;
-    padding: 13px 14px;
+    border-radius: var(--qx-radius-lg);
+    padding: var(--qx-card-pad);
     margin-bottom: 12px;
+    box-shadow: var(--qx-shadow-card);
   }
 
   .spotlight-copy {
@@ -1084,12 +1098,16 @@
   }
 
   .workshop-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border: 1.5px solid var(--qx-border);
     background: var(--qx-surface);
-    border-radius: 8px;
-    padding: 16px 14px 18px;
+    border-radius: var(--qx-radius-lg);
+    padding: clamp(12px, 3.5vw, 18px);
     min-height: 460px;
     box-sizing: border-box;
+    box-shadow: var(--qx-shadow-card);
   }
 
   .done-state {
@@ -1135,7 +1153,7 @@
     gap: 12px;
     border: 1.5px solid var(--qx-accent);
     background: var(--qx-accent-soft);
-    border-radius: 8px;
+    border-radius: var(--qx-radius-md);
     padding: 11px 13px;
     margin: 0 0 10px;
   }
@@ -1221,7 +1239,7 @@
      accent-coloured challenge/test modes. */
   .workshop-card.solve-active {
     border-color: var(--qx-green);
-    padding-top: 13px;
+    padding-top: clamp(11px, 3vw, 15px);
   }
 
   .solve-bar {
@@ -1231,7 +1249,7 @@
     gap: 12px;
     border: 1.5px solid var(--qx-green);
     background: var(--qx-green-soft);
-    border-radius: 8px;
+    border-radius: var(--qx-radius-md);
     padding: 11px 13px;
     margin: 0 0 10px;
   }
@@ -1247,6 +1265,26 @@
     color: #fff;
     font: 900 12px var(--qx-font);
     cursor: pointer;
+  }
+
+  @media (max-width: 380px) {
+    .spotlight,
+    .challenge-bar,
+    .solve-bar {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .spotlight button,
+    .challenge-bar button,
+    .solve-bar button {
+      width: 100%;
+      min-height: 44px;
+    }
+
+    .mode-buttons {
+      width: 100%;
+    }
   }
 
   /* Launch rail for the complete Solve First batch. */

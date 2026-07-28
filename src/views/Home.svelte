@@ -202,7 +202,13 @@
   .home-view { height: 100%; overflow-y: auto; display: flex; flex-direction: column; padding: 16px 18px 0; box-sizing: border-box; }
 
   /* Header */
-  .header { display: flex; align-items: center; gap: 11px; margin-bottom: 20px; }
+  .header {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto auto auto;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 20px;
+  }
   .avatar {
     width: 44px; height: 44px; border-radius: 50%; background: var(--qx-accent); color: #fff;
     font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -299,4 +305,26 @@
   .door-icon { width: 56px; height: 56px; object-fit: contain; display: block; }
   .door-name { font-size: 15px; font-weight: 800; color: var(--qx-text); text-align: center; line-height: 1.18; }
   .door-sub { font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint); }
+
+  @media (max-width: 410px) {
+    .header {
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      grid-template-areas:
+        "avatar greeting snippets menu"
+        "w w streak streak";
+      row-gap: 9px;
+    }
+    .avatar { grid-area: avatar; }
+    .greeting { grid-area: greeting; }
+    .w-chip { grid-area: w; justify-self: stretch; text-align: center; }
+    .streak-chip { grid-area: streak; justify-content: center; }
+    .menu-btn.icon-btn { grid-area: snippets; }
+    .menu-btn:not(.icon-btn) { grid-area: menu; }
+  }
+
+  @media (max-width: 340px) {
+    .home-view { padding-inline: 14px; }
+    .doors-grid { gap: 9px; }
+    .door { padding-inline: 8px; }
+  }
 </style>

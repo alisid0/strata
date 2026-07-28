@@ -6,7 +6,7 @@
  * open the correct subject rail. `kind` selects the specialised game component
  * in WorkshopLab (logic-vault -> SolveFirst, force-lab -> SolveFirstForces,
  * coordinate-signal -> SolveFirstCoordinates, limit-probe -> SolveFirstLimits,
- * network-routing -> SolveFirstNetworks).
+ * network-routing -> SolveFirstNetworks, fuel-rate -> SolveFirstDifferentiation).
  */
 const SOLVE_FIRST = {
   'logic-gates': {
@@ -53,16 +53,27 @@ const SOLVE_FIRST = {
     sub: 'No lesson first. Probe a failed sensor from both sides, reconstruct what it was heading toward, and detect when no single reading is defensible.',
     rewardLabel: 'Boundary Analyst'
   },
+  'differentiation': {
+    id: 'differentiation-forecourt-flow',
+    moduleId: 'differentiation',
+    pathId: 'MATH_DIFF',
+    track: 'mathematics',
+    kind: 'fuel-rate',
+    eyebrow: 'Unmarked problem 05',
+    title: 'Run the Forecourt',
+    sub: 'No lesson first. Refill an underground petrol tank, read how fast its level is changing, and keep the pumps running through rush hour.',
+    rewardLabel: 'Flow Controller'
+  },
   'networks-cloud': {
-    id: 'networks-save-the-broadcast',
+    id: 'networks-connect-the-computers',
     moduleId: 'networks-cloud',
     pathId: 'COMP_NETWORKS_SECURITY',
     track: 'computer',
     kind: 'network-routing',
-    eyebrow: 'Unmarked problem 05',
-    title: 'Save the Broadcast',
-    sub: 'No lesson first. Rebuild a live picture, keep its pieces organised, and survive a broken route.',
-    rewardLabel: 'Route Architect'
+    eyebrow: 'Unmarked problem 06',
+    title: 'Connect the Computers',
+    sub: 'No lesson first. Link two computers, scale to a room, break the network on purpose, and discover which design fits each job.',
+    rewardLabel: 'Network Architect'
   },
   'matrices': {
     id: 'matrices-warp-the-grid',
@@ -70,7 +81,7 @@ const SOLVE_FIRST = {
     pathId: 'MATH_MATRICES',
     track: 'mathematics',
     kind: 'matrix-warp',
-    eyebrow: 'Unmarked problem 06',
+    eyebrow: 'Unmarked problem 07',
     title: 'Warp the Grid',
     sub: 'No lesson first. Bend a shape with two guide arrows, prove they decide where every point lands, then name the machine.',
     rewardLabel: 'Space Bender'

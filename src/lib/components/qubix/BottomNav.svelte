@@ -23,15 +23,20 @@
 
 <style>
   .bottom-nav {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3px;
     border-top: 1px solid var(--qx-border);
-    background: var(--qx-surface);
-    padding: 7px 4px calc(4px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--qx-surface) 94%, transparent);
+    backdrop-filter: blur(16px);
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px));
     flex-shrink: 0;
     position: relative;
+    box-shadow: 0 -12px 30px -24px var(--qx-text);
   }
   .tab {
-    flex: 1;
+    min-width: 0;
+    min-height: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,23 +48,25 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 4px 0;
-    transition: color 0.2s, transform 0.15s;
+    padding: 6px 3px 5px;
+    border-radius: var(--qx-radius-md);
+    transition: color 0.2s, transform 0.15s, background-color 0.2s;
     position: relative;
   }
   .tab:active { transform: scale(0.94); }
   .tab.active {
     color: var(--qx-accent);
     font-weight: 800;
+    background: var(--qx-accent-soft);
   }
   .tab::after {
     content: '';
     position: absolute;
-    top: 0;
+    top: 3px;
     left: 50%;
     transform: translateX(-50%) scaleX(0);
     width: 20px;
-    height: 2.5px;
+    height: 3px;
     border-radius: 2px;
     background: var(--qx-accent);
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);

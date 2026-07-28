@@ -10,12 +10,12 @@
 html, body {
   height: 100%;
   overflow: hidden;
-  background: var(--bg-1);
+  background: var(--qx-bg);
 }
 
 body {
-  font-family: var(--hand);
-  color: var(--chalk);
+  font-family: var(--qx-font);
+  color: var(--qx-text);
   position: fixed;
   width: 100%;
   overscroll-behavior: none;
@@ -55,9 +55,135 @@ body::after {
   background: var(--qx-bg);
 }
 
+/* Shared containment contract. Grid/flex children default to their content
+   width, which let long workshop labels and diagrams escape card boundaries.
+   Every Qubix surface now opts into shrinkable, wrapping content instead. */
+.qx-shell,
+.qx-shell * {
+  min-width: 0;
+}
+
+.qx-shell img,
+.qx-shell svg,
+.qx-shell canvas,
+.qx-shell video,
+.qx-shell iframe {
+  display: block;
+  max-width: 100%;
+}
+
+.qx-shell button,
+.qx-shell input,
+.qx-shell select,
+.qx-shell textarea {
+  max-width: 100%;
+  font-family: var(--qx-font);
+}
+
+.qx-shell h1,
+.qx-shell h2,
+.qx-shell h3,
+.qx-shell p,
+.qx-shell strong,
+.qx-shell small,
+.qx-shell span,
+.qx-shell li,
+.qx-shell button {
+  overflow-wrap: anywhere;
+}
+
+.qx-shell button {
+  touch-action: manipulation;
+}
+
+.qx-shell :where(
+  .session-card,
+  .continue-card,
+  .door,
+  .topic-tile,
+  .path-card,
+  .tc-card,
+  .metric,
+  .workout-card,
+  .topic-row,
+  .lesson-row,
+  .snippet-card
+) {
+  max-width: 100%;
+  min-width: 0;
+  box-shadow: var(--qx-shadow-card);
+}
+
+.qx-shell :where(
+  .home-view,
+  .path-tab,
+  .workshop-lab,
+  .stats-view,
+  .workout-view,
+  .subject-view,
+  .topic-detail-view,
+  .snippets-view
+) {
+  scrollbar-gutter: stable;
+  overscroll-behavior-y: contain;
+}
+
+.qx-shell :is(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid var(--qx-accent);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .qx-shell button:not(:disabled) {
+    transition:
+      transform var(--qx-duration-fast) var(--qx-ease-out),
+      border-color var(--qx-duration-fast) ease,
+      background-color var(--qx-duration-fast) ease,
+      box-shadow var(--qx-duration-fast) ease;
+  }
+
+  .qx-shell :where(.door, .topic-tile, .path-card, .workout-card):hover {
+    transform: translateY(-2px);
+    box-shadow: var(--qx-shadow-soft);
+  }
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-thumb { background: var(--chalk-faint); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--qx-text-faint); border-radius: 3px; }
+
+@media (min-width: 620px) {
+  body {
+    background:
+      radial-gradient(circle at 50% -10%, var(--qx-accent-soft), transparent 42%),
+      var(--qx-bg);
+  }
+
+  #app {
+    max-width: 560px;
+    margin-inline: auto;
+    border-inline: 1px solid var(--qx-border);
+    box-shadow: var(--qx-shadow-soft);
+  }
+}
+
+@media (max-width: 410px) {
+  .qx-shell .session-card {
+    flex-wrap: wrap;
+  }
+
+  .qx-shell .session-cta {
+    margin-left: 50px;
+  }
+}
+
+@media (max-width: 340px) {
+  .qx-shell .session-cta {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+}
 
 /* Utility: prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
