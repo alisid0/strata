@@ -184,6 +184,8 @@ assert(componentSource.includes("hintVisible = !hintVisible"),
   'hint control can show and hide');
 assert(componentSource.includes(">= epsilon - 1e-10"),
   'Safety Corridor enforces the strict epsilon boundary');
+assert(componentSource.includes("let samples = []"),
+  'sample collection is initialized before reactive filters run');
 
 console.log('\n12. No NaN');
 for (let i = 0; i < 6; i++) {
