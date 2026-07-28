@@ -151,6 +151,17 @@ const SOLVE_FIRST = {
     title: 'Orbit Architect',
     sub: 'No lesson first. Stretch an elliptical forcefield to capture space debris, then decode the standard form (x−h)²/a² + (y−k)²/b² = 1.',
     rewardLabel: 'Orbit Master'
+  },
+  'polar-coordinates': {
+    id: 'polar-coordinates-polar-aegis',
+    moduleId: 'polar-coordinates',
+    pathId: 'MATH_TRIG_ADV',
+    track: 'mathematics',
+    kind: 'polar-aegis',
+    eyebrow: 'Unmarked problem 13',
+    title: 'Polar Aegis',
+    sub: 'No lesson first. Morph a laser whip from a circle into rose curves using polar equations, then decode r = a·cos(k·θ) as the source code of reality.',
+    rewardLabel: 'Reality Bender'
   }
 };
 

@@ -520,6 +520,7 @@
   import SolveFirstTrigonometry from '../lib/components/assessments/SolveFirstTrigonometry.svelte';
   import SolveFirstSignalHacker from '../lib/components/assessments/SolveFirstSignalHacker.svelte';
   import SolveFirstOrbitArchitect from '../lib/components/assessments/SolveFirstOrbitArchitect.svelte';
+  import SolveFirstPolarAegis from '../lib/components/assessments/SolveFirstPolarAegis.svelte';
   import { getChallengeForModule } from '../lib/content/challenges.js';
   import { getTestForModule } from '../lib/content/tests.js';
   import { getSolveFirst, getAllSolveFirst } from '../lib/content/solveFirst.js';
@@ -957,6 +958,8 @@
           <SolveFirstSignalHacker config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'orbit-architect'}
           <SolveFirstOrbitArchitect config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'polar-aegis'}
+          <SolveFirstPolarAegis config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else}
           <SolveFirst config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {/if}
