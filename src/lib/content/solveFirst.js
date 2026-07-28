@@ -39,7 +39,7 @@ const SOLVE_FIRST = {
     kind: 'coordinate-signal',
     eyebrow: 'Unmarked problem 03',
     title: 'Find the Signal',
-    sub: 'No lesson first. Fly a locator drone through a blacked-out map, recover every rescue signal, then name the map you rebuilt.',
+    sub: 'Inspect a solved route, then use two signed moves to rebuild the map, recover four signals, and route a warehouse robot.',
     rewardLabel: 'Grid Navigator'
   },
   'limits': {

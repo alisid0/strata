@@ -12,7 +12,7 @@
 
 <div class="arcade-shell">
   <header class="arcade-hud">
-    <button class="exit" on:click={onExit} aria-label="Return to workshop practice">←</button>
+    <button class="exit" on:click={onExit} aria-label="Return to all workshops">←</button>
     <div class="identity">
       <span>{eyebrow}</span>
       <strong>{title}</strong>
