@@ -20,8 +20,14 @@
   $: totalLevels = 6;
 
   // Level state
-  let level = null, probes, samples, activeSide;
-  let prediction, predictionCorrect, levelCleared, mistakes, hintVisible;
+  let level = null;
+  let probes = {
+    left: { x: 0, active: false },
+    right: { x: 0, active: false }
+  };
+  let samples = [], activeSide = 'left';
+  let prediction = null, predictionCorrect = false, levelCleared = false;
+  let mistakes = 0, hintVisible = false;
   // Reactor-specific
   let reactorStage = 0;
   // Far-Horizon-specific
