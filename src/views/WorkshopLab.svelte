@@ -535,6 +535,7 @@
   let solveFirst = null; // active Solve First discovery config (problem-led, no lesson first)
   const ALL_SOLVE_FIRST = getAllSolveFirst();
   let running = false;  // false = browse the module grid; true = a workshop is open
+  let browseCategory = 'solve-first';
   let activeTrack = 'computer';
   let activeModuleBySubject = {
     mathematics: 'line-core',
@@ -548,6 +549,7 @@
     for (const [tid, trk] of Object.entries(TRACKS)) {
       if (trk.modules.some((m) => m.id === openTarget)) {
         activeTrack = tid;
+        browseCategory = tid;
         activeModuleBySubject = { ...activeModuleBySubject, [tid]: openTarget };
         running = true;
         break;
@@ -556,6 +558,7 @@
   }
 
   $: track = TRACKS[activeTrack];
+  $: browseTrack = browseCategory === 'solve-first' ? null : TRACKS[browseCategory];
   $: moduleTabs = track.modules || [];
   $: activeModuleId = activeModuleBySubject[activeTrack] || moduleTabs[0]?.id;
   $: activeModule = moduleTabs.find((item) => item.id === activeModuleId) || moduleTabs[0];
@@ -680,10 +683,11 @@
     finished = false;
   }
 
-  // Tapping a grid tile opens that workshop. Every subject's tiles are on the
-  // page at once (Topics-style), so the tile carries its own track.
+  // Tapping a grid tile opens that workshop and keeps its subject selected
+  // when the learner returns to the catalogue.
   function openModule(trackId, id) {
     activeTrack = trackId;
+    browseCategory = trackId;
     activeModuleBySubject = { ...activeModuleBySubject, [trackId]: id };
     challenge = null;
     test = null;
@@ -712,54 +716,84 @@
       <div>
         <div class="kicker">Exercises</div>
         <h1>Workshop</h1>
-        <p>Fast hands-on drills for turning ideas into working understanding.</p>
+        <p>Choose a category, then focus on one set of activities at a time.</p>
       </div>
-      <img src={track.icon} alt={track.label} />
+      {#if browseTrack}
+        <img src={browseTrack.icon} alt={browseTrack.label} />
+      {:else}
+        <span class="lab-header-mark" aria-hidden="true">SF</span>
+      {/if}
     </div>
 
-    <section class="solve-batch" aria-labelledby="solve-batch-title">
-      <div class="solve-batch-head">
-        <div>
-          <span>Solve First · Discovery set</span>
-          <strong id="solve-batch-title">{ALL_SOLVE_FIRST.length} problems. No lesson first.</strong>
-          <small>Experiment, prove the hidden rule, then reveal the formal idea.</small>
-        </div>
-        <b>{solveFirstCompleted}/{ALL_SOLVE_FIRST.length}</b>
-      </div>
-      <div class="solve-batch-grid">
-        {#each ALL_SOLVE_FIRST as item, index (item.id)}
-          <button
-            class="solve-batch-card"
-            class:done={discoveryDone(item.id)}
-            data-testid={`solve-first-${item.id}`}
-            on:click={() => startSolveFirst(item)}
-          >
-            <span class="solve-batch-number">{String(index + 1).padStart(2, '0')}</span>
-            <span class="solve-batch-copy">
-              <small>{TRACKS[item.track]?.label || 'Workshop'}</small>
-              <strong>{item.title}</strong>
-            </span>
-            <span class="solve-batch-state">{discoveryDone(item.id) ? 'Replay ✓' : 'Solve →'}</span>
-          </button>
-        {/each}
-      </div>
-    </section>
+    <nav class="category-grid" aria-label="Workshop categories">
+      <button
+        class="category-button featured"
+        class:active={browseCategory === 'solve-first'}
+        aria-pressed={browseCategory === 'solve-first'}
+        on:click={() => browseCategory = 'solve-first'}
+      >
+        <span class="category-mark solve-mark">SF</span>
+        <span><strong>Solve First</strong><small>{solveFirstCompleted}/{ALL_SOLVE_FIRST.length} complete</small></span>
+      </button>
+      {#each Object.entries(TRACKS) as [tid, trk] (tid)}
+        <button
+          class="category-button"
+          class:active={browseCategory === tid}
+          aria-pressed={browseCategory === tid}
+          on:click={() => browseCategory = tid}
+        >
+          <span class="category-mark"><img src={trk.icon} alt="" /></span>
+          <span>
+            <strong>{trk.label}</strong>
+            <small>{trk.modules.filter((m) => moduleDone(m.id)).length}/{trk.modules.length} complete</small>
+          </span>
+        </button>
+      {/each}
+    </nav>
 
-    <!-- Browse: every subject stacked as its own section + grid (matches the Topics page) -->
-    {#each Object.entries(TRACKS) as [tid, trk] (tid)}
-      <section class="ws-block">
-        <div class="ws-block-head">
-          <img class="ws-block-icon" src={trk.icon} alt="" />
-          <div class="ws-block-info">
-            <div class="ws-block-name">{trk.label}</div>
-            <div class="ws-block-sub">{trk.sub}</div>
+    <div class="category-panel" id={`workshop-category-${browseCategory}`}>
+      {#if browseCategory === 'solve-first'}
+        <section class="solve-batch" aria-labelledby="solve-batch-title">
+          <div class="solve-batch-head">
+            <div>
+              <span>Solve First · Discovery set</span>
+              <strong id="solve-batch-title">{ALL_SOLVE_FIRST.length} problems. No lesson first.</strong>
+              <small>Experiment, prove the hidden rule, then reveal the formal idea.</small>
+            </div>
+            <b>{solveFirstCompleted}/{ALL_SOLVE_FIRST.length}</b>
           </div>
-          <span class="ws-block-progress">{trk.modules.filter((m) => moduleDone(m.id)).length}/{trk.modules.length}</span>
+          <div class="solve-batch-grid">
+            {#each ALL_SOLVE_FIRST as item, index (item.id)}
+              <button
+                class="solve-batch-card"
+                class:done={discoveryDone(item.id)}
+                data-testid={`solve-first-${item.id}`}
+                on:click={() => startSolveFirst(item)}
+              >
+                <span class="solve-batch-number">{String(index + 1).padStart(2, '0')}</span>
+                <span class="solve-batch-copy">
+                  <small>{TRACKS[item.track]?.label || 'Workshop'}</small>
+                  <strong>{item.title}</strong>
+                </span>
+                <span class="solve-batch-state">{discoveryDone(item.id) ? 'Replay ✓' : 'Solve →'}</span>
+              </button>
+            {/each}
+          </div>
+        </section>
+      {:else if browseTrack}
+        <section class="ws-block" aria-labelledby={`workshop-category-title-${browseCategory}`}>
+        <div class="ws-block-head">
+          <img class="ws-block-icon" src={browseTrack.icon} alt="" />
+          <div class="ws-block-info">
+            <div class="ws-block-name" id={`workshop-category-title-${browseCategory}`}>{browseTrack.label}</div>
+            <div class="ws-block-sub">{browseTrack.sub}</div>
+          </div>
+          <span class="ws-block-progress">{browseTrack.modules.filter((m) => moduleDone(m.id)).length}/{browseTrack.modules.length}</span>
         </div>
         <div class="ws-grid">
-          {#each trk.modules as item (item.id)}
-            <button class="ws-tile" on:click={() => openModule(tid, item.id)}>
-              <span class="ws-tile-icon"><img src={trk.icon} alt="" /></span>
+          {#each browseTrack.modules as item (item.id)}
+            <button class="ws-tile" on:click={() => openModule(browseCategory, item.id)}>
+              <span class="ws-tile-icon"><img src={browseTrack.icon} alt="" /></span>
               <span class="ws-tile-name">{item.title}</span>
               <span class="ws-tile-sub">{item.sub}</span>
               <span class="ws-tile-foot">
@@ -772,7 +806,8 @@
           {/each}
         </div>
       </section>
-    {/each}
+      {/if}
+    </div>
 
   {:else}
     <!-- Running a workshop -->
@@ -921,7 +956,132 @@
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+  }
+
+  .lab-header-mark {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1.5px solid var(--qx-green);
+    border-radius: 13px;
+    background: var(--qx-green-soft);
+    color: var(--qx-green-text);
+    font-size: 13px;
+    font-weight: 950;
+    letter-spacing: -.02em;
+    box-shadow: var(--qx-shadow-card);
+  }
+
+  .category-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .category-button {
+    min-width: 0;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border: 1.5px solid var(--qx-border);
+    border-radius: 13px;
+    background: var(--qx-surface);
+    color: var(--qx-text);
+    box-shadow: var(--qx-shadow-card);
+    font-family: var(--qx-font);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s, background .15s, transform .15s;
+  }
+
+  .category-button.featured {
+    grid-column: 1 / -1;
+  }
+
+  .category-button:hover {
+    border-color: var(--qx-accent);
+    transform: translateY(-1px);
+  }
+
+  .category-button:active {
+    transform: scale(.985);
+  }
+
+  .category-button:focus-visible {
+    outline: 2px solid var(--qx-accent);
+    outline-offset: 2px;
+  }
+
+  .category-button.active {
+    border-color: var(--qx-accent);
+    background: var(--qx-accent-soft);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--qx-accent) 20%, transparent), var(--qx-shadow-card);
+  }
+
+  .category-button.featured.active {
+    border-color: var(--qx-green);
+    background: var(--qx-green-soft);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--qx-green) 20%, transparent), var(--qx-shadow-card);
+  }
+
+  .category-mark {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 9px;
+    background: var(--qx-surface-2);
+  }
+
+  .category-mark img {
+    width: 26px;
+    height: 26px;
+    display: block;
+    object-fit: contain;
+  }
+
+  .category-mark.solve-mark {
+    background: var(--qx-text);
+    color: var(--qx-bg);
+    font-size: 10px;
+    font-weight: 950;
+  }
+
+  .category-button > span:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .category-button strong {
+    overflow: hidden;
+    color: var(--qx-text);
+    font-size: 11.5px;
+    font-weight: 900;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .category-button small {
+    color: var(--qx-text-faint);
+    font-size: 9px;
+    font-weight: 750;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .category-panel {
+    min-height: 320px;
   }
 
   /* Workshop grid — mirrors the Path boards grid (.topic-grid / .topic-tile) */
@@ -1050,6 +1210,8 @@
 
   @media (min-width: 620px) {
     .ws-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .category-grid { grid-template-columns: 1.15fr repeat(4, minmax(0, 1fr)); }
+    .category-button.featured { grid-column: auto; }
   }
 
   .kicker {
