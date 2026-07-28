@@ -12,7 +12,10 @@
  *   6. Safety Corridor — epsilon–delta with valid delta bounds
  */
 let _seed = 0;
-export function seed(s) { _seed = s | 0; }
+export function seed(s) {
+  _seed = (Number(s) >>> 0) % 2147483647;
+  if (_seed === 0) _seed = 1;
+}
 function rng() { _seed = (_seed * 16807 + 0) % 2147483647; return _seed / 2147483647; }
 function pick(arr) { return arr[Math.floor(rng() * arr.length)]; }
 
