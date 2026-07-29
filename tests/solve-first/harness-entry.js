@@ -1,5 +1,6 @@
 import SolveFirstNetworks from '../../src/lib/components/assessments/SolveFirstNetworks.svelte';
 import SolveFirstDifferentiation from '../../src/lib/components/assessments/SolveFirstDifferentiation.svelte';
+import SolveFirstMemory from '../../src/lib/components/assessments/SolveFirstMemory.svelte';
 
 const configs = {
   network: {
@@ -23,6 +24,17 @@ const configs = {
     title: 'Run the Forecourt',
     sub: 'test',
     rewardLabel: 'Flow Controller'
+  },
+  memory: {
+    id: 'hardware-memory-clear-the-rack',
+    moduleId: 'hardware-memory',
+    pathId: 'COMP_HARDWARE',
+    track: 'computer',
+    kind: 'memory-allocation',
+    eyebrow: 'Unmarked problem 15',
+    title: 'Clear the Launch Rack',
+    sub: 'test',
+    rewardLabel: 'Memory Marshal'
   }
 };
 
@@ -30,7 +42,11 @@ window.__done = [];
 window.__mount = (kind = 'network') => {
   window.__app?.$destroy();
   document.getElementById('app').innerHTML = '';
-  const Component = kind === 'differentiation' ? SolveFirstDifferentiation : SolveFirstNetworks;
+  const Component = kind === 'differentiation'
+    ? SolveFirstDifferentiation
+    : kind === 'memory'
+      ? SolveFirstMemory
+      : SolveFirstNetworks;
   window.__app = new Component({
     target: document.getElementById('app'),
     props: {

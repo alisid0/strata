@@ -511,6 +511,7 @@
   import SolveFirstCoordinates from '../lib/components/assessments/SolveFirstCoordinates.svelte';
   import BoundaryRunner from '../lib/components/assessments/BoundaryRunner.svelte';
   import SolveFirstNetworks from '../lib/components/assessments/SolveFirstNetworks.svelte';
+  import SolveFirstMemory from '../lib/components/assessments/SolveFirstMemory.svelte';
   import SolveFirstDifferentiation from '../lib/components/assessments/SolveFirstDifferentiation.svelte';
   import SolveFirstMatrices from '../lib/components/assessments/SolveFirstMatrices.svelte';
   import SolveFirstBayes from '../lib/components/assessments/SolveFirstBayes.svelte';
@@ -965,6 +966,8 @@
           <BoundaryRunner config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'network-routing'}
           <SolveFirstNetworks config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
+        {:else if solveFirst.kind === 'memory-allocation'}
+          <SolveFirstMemory config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'fuel-rate'}
           <SolveFirstDifferentiation config={solveFirst} onDone={finishSolveFirst} onExit={exitSolveFirst} />
         {:else if solveFirst.kind === 'matrix-warp'}

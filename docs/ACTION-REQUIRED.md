@@ -12,7 +12,7 @@ as the archived 2026-07-25 Solve First port record.
 |---|---|
 | Solve First port and deeper mechanism pass | ✅ integrated |
 | Phase 1.1 Learn → Solve → Recall loop | ✅ on `main` |
-| Current paired Solve First journeys | ✅ 14 |
+| Current paired Solve First journeys | ✅ 15 |
 | Production and staging builds | ✅ passing |
 | Expansion, Solve First and arcade regression suites | ✅ passing |
 | Production stable URL | ✅ tracked build verified 2026-07-29 |

@@ -81,6 +81,18 @@ const SOLVE_FIRST = {
     sub: 'No lesson first. Link two computers, scale to a room, break the network on purpose, and discover which design fits each job.',
     rewardLabel: 'Network Architect'
   },
+  'hardware-memory': {
+    id: 'hardware-memory-clear-the-rack',
+    moduleId: 'hardware-memory',
+    conceptLabel: 'Memory allocation',
+    pathId: 'COMP_HARDWARE',
+    track: 'computer',
+    kind: 'memory-allocation',
+    eyebrow: 'Unmarked problem 15',
+    title: 'Clear the Launch Rack',
+    sub: 'No lesson first. Fit jobs into a crowded flight computer, recover space that looks unusable, and uncover how memory is allocated.',
+    rewardLabel: 'Memory Marshal'
+  },
   'matrices': {
     id: 'matrices-warp-the-grid',
     moduleId: 'matrices',

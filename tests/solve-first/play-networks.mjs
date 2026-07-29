@@ -106,5 +106,32 @@ await click('Reveal the mathematics');
 assert(text().includes('You used a derivative'), 'derivative formal reveal is reached');
 assert(window.__done.some((item) => item.id === 'differentiation-forecourt-flow'), 'differentiation reward records once');
 
+// Memory-allocation discovery.
+window.__mount('memory');
+await tick();
+assert(text().includes('Clear the Launch Rack'), 'memory-allocation workshop mounts');
+await click('Open dispatch console');
+for (const size of ['1-slot job', '2-slot job', '3-slot job']) {
+  await click(size, '.size-picker button');
+  await click('Run placement test');
+}
+assert(text().includes('Total space is not the whole story'), 'contrasting job sizes expose scattered-space failure');
+await click('Inspect the rack');
+await click('Pack occupied blocks together');
+await click('Load the 3-slot job');
+assert(text().includes('Same capacity. Different shape.'), 'repacking creates a usable opening without adding capacity');
+await click('Try another system');
+for (const slot of all('.rack.selectable button.slot.free').slice(0, 4)) await clickElement(slot);
+await click('Dispatch four pieces');
+assert(text().includes('One job does not always need one block'), 'split placement uses separate openings');
+await click('Set deployment rules');
+const transferCards = all('.transfer-card');
+await clickElement(Array.from(transferCards[0].querySelectorAll('button')).find((item) => item.textContent.includes('Pack first')));
+await clickElement(Array.from(transferCards[1].querySelectorAll('button')).find((item) => item.textContent.includes('Use separate')));
+assert(text().includes('Both placement rules deployed'), 'transfer applies contiguous and split placement rules');
+await click('Reveal the system');
+assert(text().includes('You discovered memory allocation'), 'memory-allocation formal reveal is reached');
+assert(window.__done.some((item) => item.id === 'hardware-memory-clear-the-rack'), 'memory-allocation reward records once');
+
 assert(errors.length === 0, 'no runtime console or window errors');
 console.log(results.join('\n'));
