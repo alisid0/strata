@@ -89,8 +89,8 @@ const SOLVE_FIRST = {
     track: 'computer',
     kind: 'memory-allocation',
     eyebrow: 'Unmarked problem 15',
-    title: 'RAM Page: Warehouse Worker',
-    sub: 'No lesson first. Operate a package warehouse, create and recover scattered space, then uncover how a computer allocates memory.',
+    title: 'The Allocator',
+    sub: 'No lesson first. Run one strip of memory addresses: allocate blocks, free them, watch fragmentation block a request, then discover why paging beats compaction.',
     rewardLabel: 'Memory Marshal'
   },
   'matrices': {
