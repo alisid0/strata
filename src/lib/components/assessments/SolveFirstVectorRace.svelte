@@ -37,7 +37,21 @@
 
   let levelIx = 0;
   let cx = 1, cy = 5, vx = 0, vy = 0;
-  let phase = 'play';       // play | concept
+  let phase = 'play';       // play | predict | concept
+
+  // Predict beat: momentum in numbers, no track to lean on.
+  const PREDICT = {
+    intro: 'Pit-lane check. The car is coasting at velocity (4, 0). Each turn you may nudge by at most 1, and you brake as hard as possible every turn.',
+    q: 'How many turns until the car is fully stopped?',
+    options: [
+      { label: '1 turn — just stop', ok: false },
+      { label: '4 turns — speed sheds 1 per turn', ok: true },
+      { label: '8 turns — braking halves it each turn', ok: false }
+    ],
+    hint: 'Each turn: new velocity = old velocity + nudge. The biggest brake nudge is −1, so 4 → 3 → 2 → 1 → 0. Momentum only drains one notch at a time.'
+  };
+  let predictTries = 0;
+  let predictWrong = false;
   let moves = 0, crashes = 0, cleared = 0;
   let arcadeScore = 0, combo = 0;
   let crashFlash = false;
@@ -94,7 +108,7 @@
       arcadeScore += (180 + Math.max(0, 60 - moves * 3)) * Math.max(1, combo);
       try { (combo > 1 ? playBonus : playAward)(); } catch (_) {}
       if (levelIx < LEVELS.length - 1) { levelIx += 1; loadLevel(); }
-      else { phase = 'concept'; finish(); }
+      else { phase = 'predict'; predictWrong = false; }
     } else if (!c.ok) {
       crashes += 1; combo = 0; crashFlash = true;
       setTimeout(() => { crashFlash = false; }, 320);
@@ -104,10 +118,24 @@
     }
   }
 
+  function answerPredict(opt) {
+    predictTries += 1;
+    if (!opt.ok) { predictWrong = true; combo = 0; return; }
+    arcadeScore += Math.max(40, 180 - (predictTries - 1) * 70);
+    try { playBonus(); } catch (_) {}
+    phase = 'concept';
+    finish();
+  }
+
   function finish() {
     if (recorded) return;
     recorded = true;
-    onDone({ id: config.id, reward, arcadeScore, cleared, patternFound: true, compared: true, usedHint: false, transferFirstTry: crashes === 0 });
+    onDone({
+      id: config.id, reward, arcadeScore, cleared,
+      patternFound: true, compared: true,
+      usedHint: predictTries > 1,
+      transferFirstTry: predictTries === 1 && crashes === 0
+    });
   }
 </script>
 
@@ -120,7 +148,21 @@
   streak={combo}
   onExit={onExit}
 >
-  {#if phase === 'concept'}
+  {#if phase === 'predict'}
+    <div class="reveal">
+      <span class="rv-eyebrow">Final check — call it first</span>
+      <h2>Momentum, in numbers.</h2>
+      <p>{PREDICT.intro}</p>
+      <p><b>{PREDICT.q}</b></p>
+      <div class="topts">
+        {#each PREDICT.options as opt (opt.label)}
+          <button class="topt" on:click={() => answerPredict(opt)}>{opt.label}</button>
+        {/each}
+      </div>
+      {#if predictWrong}<p class="twrong">{PREDICT.hint}</p>{/if}
+    </div>
+
+  {:else if phase === 'concept'}
     <div class="reveal">
       <span class="rv-eyebrow">Concept uncovered</span>
       <h2>You were racing on vectors.</h2>
@@ -192,6 +234,15 @@
   .car { fill: var(--qx-text); stroke: var(--qx-surface); stroke-width: 2; }
   .hint { font-size: 12px; font-weight: 600; color: var(--qx-text-dim); margin: 10px 0 0; text-align: center; }
   .hint b { color: var(--qx-text); font-family: ui-monospace, Menlo, monospace; }
+
+  .topts { width: 100%; display: grid; gap: 8px; }
+  .topt {
+    border: 1.5px solid var(--qx-border-2); border-radius: 12px; background: var(--qx-surface);
+    color: var(--qx-text); font-family: var(--qx-font); font-size: 13px; font-weight: 750;
+    min-height: 46px; padding: 8px 14px; cursor: pointer; text-align: left;
+  }
+  .topt:hover { border-color: var(--qx-accent); }
+  .twrong { color: var(--qx-danger-text); font-size: 12.5px; font-weight: 700; }
 
   .reveal { display: flex; flex-direction: column; gap: 12px; text-align: center; align-items: center; padding: 6px 2px; }
   .rv-eyebrow { font-size: 10px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: var(--qx-accent-text); }

@@ -27,7 +27,7 @@
   const TOTAL = 100, COLS = 10;
 
   let levelIx = 0;
-  let phase = 'ready';          // ready | beeped | shown | concept
+  let phase = 'ready';          // ready | beeped | shown | transfer | concept
   let cells = [];
   let guess = 50;
   let arcadeScore = 0;
@@ -35,6 +35,20 @@
   let goodGuesses = 0;
   let lastErr = null;
   let recorded = false;
+
+  // Transfer: a fresh island, numbers only — no field to dig. The learner must
+  // apply the rule (real beeps ÷ all beeps) instead of re-feeling it.
+  // 1 gold in 100; detector beeps all gold + 20% of the 99 junk ≈ 20 junk beeps.
+  const TRANSFER = {
+    text: 'New island: only 1 site in 100 hides gold. Same detector — beeps on every gold coin and 1 in 5 junk pieces. It just beeped. Chance it’s gold?',
+    options: [
+      { label: 'About 1 in 21 — roughly 5%', ok: true },
+      { label: 'About half — the beep is 50/50', ok: false },
+      { label: 'About 80% — the detector is reliable', ok: false }
+    ]
+  };
+  let transferTries = 0;
+  let transferWrong = false;
 
   $: level = LEVELS[levelIx];
   $: beeped = level.goldN + level.junkBeepN;
@@ -74,16 +88,22 @@
 
   function next() {
     if (levelIx < LEVELS.length - 1) { levelIx += 1; startLevel(); }
-    else {
-      phase = 'concept';
-      if (!recorded) {
-        recorded = true;
-        onDone({
-          id: config.id, reward, arcadeScore, goodGuesses,
-          patternFound: true, compared: true, usedHint: false,
-          transferFirstTry: goodGuesses >= 2
-        });
-      }
+    else { phase = 'transfer'; transferWrong = false; }
+  }
+
+  function answerTransfer(opt) {
+    transferTries += 1;
+    if (!opt.ok) { transferWrong = true; combo = 0; return; }
+    arcadeScore += Math.max(40, 160 - (transferTries - 1) * 60);
+    if (!reduceMotion) { try { playBonus(); } catch (_) {} }
+    phase = 'concept';
+    if (!recorded) {
+      recorded = true;
+      onDone({
+        id: config.id, reward, arcadeScore, goodGuesses,
+        patternFound: true, compared: true, usedHint: transferTries > 1,
+        transferFirstTry: transferTries === 1
+      });
     }
   }
 
@@ -99,7 +119,22 @@
   streak={combo}
   onExit={onExit}
 >
-  {#if phase === 'concept'}
+  {#if phase === 'transfer'}
+    <div class="reveal">
+      <span class="rv-eyebrow">Final check — no field this time</span>
+      <h2>Numbers only.</h2>
+      <p>{TRANSFER.text}</p>
+      <div class="topts">
+        {#each TRANSFER.options as opt (opt.label)}
+          <button class="topt" on:click={() => answerTransfer(opt)}>{opt.label}</button>
+        {/each}
+      </div>
+      {#if transferWrong}
+        <p class="twrong">Count the beeps: 1 real + ~20 false alarms. Gold is 1 of ~21 beeps.</p>
+      {/if}
+    </div>
+
+  {:else if phase === 'concept'}
     <div class="reveal">
       <span class="rv-eyebrow">Concept uncovered</span>
       <h2>You just used Bayes' theorem.</h2>
@@ -216,6 +251,16 @@
     align-self: stretch; border: none; border-radius: 999px; background: var(--qx-accent); color: #fff;
     font-family: var(--qx-font); font-size: 14px; font-weight: 850; min-height: 46px; padding: 0 22px; cursor: pointer;
   }
+
+  /* transfer */
+  .topts { width: 100%; display: grid; gap: 8px; }
+  .topt {
+    border: 1.5px solid var(--qx-border-2); border-radius: 12px; background: var(--qx-surface);
+    color: var(--qx-text); font-family: var(--qx-font); font-size: 13px; font-weight: 750;
+    min-height: 46px; padding: 8px 14px; cursor: pointer; text-align: left;
+  }
+  .topt:hover { border-color: var(--qx-accent); }
+  .twrong { color: var(--qx-danger-text); font-size: 12.5px; font-weight: 700; }
 
   /* reveal */
   .reveal { display: flex; flex-direction: column; gap: 12px; text-align: center; align-items: center; padding: 6px 2px; }

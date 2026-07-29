@@ -29,9 +29,24 @@
       blurb: 'Land a shot on the flag. Nudge the angle and power until the arc drops on it.' },
     { targetX: 74, tol: 6, wall: { x: 40, h: 26 }, fixedPower: null,
       blurb: 'A wall in the way. Arc OVER it and still land on the flag beyond.' },
-    { targetX: 92, tol: 5, wall: null, fixedPower: 30,
-      blurb: 'Power is locked. This flag is at the very edge — only one angle reaches that far.' }
+    { targetX: 92, tol: 5, wall: null, fixedPower: 30, noPreview: true,
+      blurb: 'Power locked — and the targeting computer is OFFLINE. No preview arc. This flag is at the very edge; only one angle reaches that far. Find it by feel.' }
   ];
+
+  // Transfer: complementary angles share a range. At the locked power,
+  // 30° lands at v²·sin(60°)/g ≈ 80. Which other angle matches it?
+  const TRANSFER = {
+    intro: 'One last calibration shot: at this same power, a 30° launch lands at distance ≈80.',
+    q: 'WITHOUT firing — which other angle lands in exactly the same spot?',
+    options: [
+      { label: '45° — always the best', ok: false },
+      { label: '60° — same distance as 30°', ok: true },
+      { label: '75° — higher flies farther', ok: false }
+    ],
+    hint: 'Look at the formula shape: range depends on sin(2θ). sin(60°) = sin(120°) — so 30° and 60° twin up. Angles that add to 90° share a landing spot.'
+  };
+  let transferTries = 0;
+  let transferWrong = false;
 
   let levelIx = 0;
   let angle = 45;
@@ -98,12 +113,22 @@
   function retry() { phase = 'aim'; landedX = null; hit = false; }
   function next() {
     if (levelIx < LEVELS.length - 1) { levelIx += 1; startLevel(); }
-    else {
-      phase = 'concept';
-      if (!recorded) {
-        recorded = true;
-        onDone({ id: config.id, reward, arcadeScore, hits, patternFound: true, compared: true, usedHint: false, transferFirstTry: hits >= 2 });
-      }
+    else { phase = 'transfer'; transferWrong = false; }
+  }
+
+  function answerTransfer(opt) {
+    transferTries += 1;
+    if (!opt.ok) { transferWrong = true; combo = 0; return; }
+    arcadeScore += Math.max(40, 180 - (transferTries - 1) * 70);
+    try { playBonus(); } catch (_) {}
+    phase = 'concept';
+    if (!recorded) {
+      recorded = true;
+      onDone({
+        id: config.id, reward, arcadeScore, hits,
+        patternFound: true, compared: true,
+        usedHint: transferTries > 1, transferFirstTry: transferTries === 1
+      });
     }
   }
 </script>
@@ -117,7 +142,21 @@
   streak={combo}
   onExit={onExit}
 >
-  {#if phase === 'concept'}
+  {#if phase === 'transfer'}
+    <div class="reveal">
+      <span class="rv-eyebrow">Final check — no preview, no shot</span>
+      <h2>Call it before you fire.</h2>
+      <p>{TRANSFER.intro}</p>
+      <p><b>{TRANSFER.q}</b></p>
+      <div class="topts">
+        {#each TRANSFER.options as opt (opt.label)}
+          <button class="topt" on:click={() => answerTransfer(opt)}>{opt.label}</button>
+        {/each}
+      </div>
+      {#if transferWrong}<p class="twrong">{TRANSFER.hint}</p>{/if}
+    </div>
+
+  {:else if phase === 'concept'}
     <div class="reveal">
       <span class="rv-eyebrow">Concept uncovered</span>
       <h2>You've been flying projectiles.</h2>
@@ -159,8 +198,8 @@
         </g>
         <circle class="base" cx={sx(0)} cy={GROUND} r="8" />
 
-        <!-- aim preview -->
-        {#if phase === 'aim'}<path class="aim" d={aimPath} />{/if}
+        <!-- aim preview (offline on the final mission — that's the discovery) -->
+        {#if phase === 'aim' && !level.noPreview}<path class="aim" d={aimPath} />{/if}
         <!-- shot in flight / landed -->
         {#if phase !== 'aim'}
           <circle class="shot" cx={sx(flightX)} cy={sy(flightY)} r="5" />
@@ -229,6 +268,15 @@
     font-family: var(--qx-font); font-size: 15px; font-weight: 850; min-height: 46px; padding: 0 22px; cursor: pointer;
   }
   .fire.ghost { background: var(--qx-surface); color: var(--qx-text); border: 1.5px solid var(--qx-border-2); }
+
+  .topts { width: 100%; display: grid; gap: 8px; }
+  .topt {
+    border: 1.5px solid var(--qx-border-2); border-radius: 12px; background: var(--qx-surface);
+    color: var(--qx-text); font-family: var(--qx-font); font-size: 13px; font-weight: 750;
+    min-height: 46px; padding: 8px 14px; cursor: pointer; text-align: left;
+  }
+  .topt:hover { border-color: var(--qx-accent); }
+  .twrong { color: var(--qx-danger-text); font-size: 12.5px; font-weight: 700; }
 
   .reveal { display: flex; flex-direction: column; gap: 12px; text-align: center; align-items: center; padding: 6px 2px; }
   .rv-eyebrow { font-size: 10px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: var(--qx-accent-text); }

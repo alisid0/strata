@@ -39,6 +39,7 @@ el-screenshot.png
 # Work mode (local state)
 .mode
 tests/solve-first/.out
+tests/arcade/.out
 
 # Transient Vite config-load temp files
 vite.config.js.timestamp-*.mjs

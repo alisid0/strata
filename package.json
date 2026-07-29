@@ -11,6 +11,7 @@
     "build:staging": "node scripts/build-app.mjs staging",
     "test:security": "node scripts/test-sanitize-html.mjs",
     "test:solve-first": "vite build -c tests/solve-first/harness.vite.config.js && node tests/solve-first/play-networks.mjs",
+    "test:arcade": "vite build -c tests/arcade/vite.config.js && node tests/arcade/run.mjs",
     "content:export-staging-sql": "node scripts/export-staging-content-sql.mjs",
     "audit:live-catalogue": "node scripts/export-live-path-catalogue.mjs",
     "audit:live-media": "node scripts/export-live-path-catalogue.mjs && node scripts/build-gif-eligibility-audit.mjs",

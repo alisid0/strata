@@ -5,7 +5,7 @@
  * `track` is the workshop subject the experience belongs to, so the shell can
  * open the correct subject rail. `kind` selects the specialised game component
  * in WorkshopLab (logic-vault -> SolveFirst, force-lab -> SolveFirstForces,
- * coordinate-signal -> SolveFirstCoordinates, limit-probe -> SolveFirstLimits,
+ * coordinate-signal -> SolveFirstCoordinates, boundary-runner -> BoundaryRunner,
  * network-routing -> SolveFirstNetworks, fuel-rate -> SolveFirstDifferentiation).
  */
 const SOLVE_FIRST = {
@@ -92,7 +92,7 @@ const SOLVE_FIRST = {
     pathId: 'MATH_PROBABILITY',
     track: 'mathematics',
     kind: 'bayes-screen',
-    eyebrow: 'Unmarked problem 07',
+    eyebrow: 'Unmarked problem 08',
     title: 'Trust the Detector',
     sub: 'No lesson first. Sweep a treasure field, predict whether a beep is really gold, then watch the rare truth split from a crowd of false alarms.',
     rewardLabel: 'Base-Rate Reader'
@@ -103,7 +103,7 @@ const SOLVE_FIRST = {
     pathId: 'PHY_MOTION_FOUNDATIONS',
     track: 'physics',
     kind: 'projectile-arc',
-    eyebrow: 'Unmarked problem 08',
+    eyebrow: 'Unmarked problem 09',
     title: 'Trajectory',
     sub: 'No lesson first. Aim a launcher, arc shots onto flags and over walls, then discover why 45° flies farthest.',
     rewardLabel: 'Range Master'
@@ -114,7 +114,7 @@ const SOLVE_FIRST = {
     pathId: 'MATH_COORD',
     track: 'mathematics',
     kind: 'vector-race',
-    eyebrow: 'Unmarked problem 09',
+    eyebrow: 'Unmarked problem 10',
     title: 'Vector Racer',
     sub: 'No lesson first. Race a car around a grid track by picking velocity vectors, then discover why momentum makes you plan the racing line.',
     rewardLabel: 'Racing Line'
@@ -125,7 +125,7 @@ const SOLVE_FIRST = {
     pathId: 'MATH_TRIG_ADV',
     track: 'mathematics',
     kind: 'ramp-rider',
-    eyebrow: 'Unmarked problem 10',
+    eyebrow: 'Unmarked problem 11',
     title: 'Ramp Rider',
     sub: 'No lesson first. Tilt a ramp, launch a motorcycle, clear gaps with the right angle, then decode sine and cosine.',
     rewardLabel: 'Angle Master'
@@ -136,7 +136,7 @@ const SOLVE_FIRST = {
     pathId: 'MATH_TRIG_ADV',
     track: 'mathematics',
     kind: 'signal-hacker',
-    eyebrow: 'Unmarked problem 11',
+    eyebrow: 'Unmarked problem 12',
     title: 'Signal Hacker',
     sub: 'No lesson first. Match security frequencies by tuning amplitude, pitch, phase shift, and vertical lift — then decode the sine formula.',
     rewardLabel: 'Signal Master'
@@ -147,7 +147,7 @@ const SOLVE_FIRST = {
     pathId: 'MATH_COORD',
     track: 'mathematics',
     kind: 'orbit-architect',
-    eyebrow: 'Unmarked problem 12',
+    eyebrow: 'Unmarked problem 13',
     title: 'Orbit Architect',
     sub: 'No lesson first. Stretch an elliptical forcefield to capture space debris, then decode the standard form (x−h)²/a² + (y−k)²/b² = 1.',
     rewardLabel: 'Orbit Master'
@@ -158,7 +158,7 @@ const SOLVE_FIRST = {
     pathId: 'MATH_TRIG_ADV',
     track: 'mathematics',
     kind: 'polar-aegis',
-    eyebrow: 'Unmarked problem 13',
+    eyebrow: 'Unmarked problem 14',
     title: 'Polar Aegis',
     sub: 'No lesson first. Morph a laser whip from a circle into rose curves using polar equations, then decode r = a·cos(k·θ) as the source code of reality.',
     rewardLabel: 'Reality Bender'
