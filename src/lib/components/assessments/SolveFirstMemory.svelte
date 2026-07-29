@@ -146,7 +146,7 @@
     allocations = [];
     incoming = ALLOCATE_QUEUE.map((item) => ({ ...item }));
     resetForklift();
-    setFeedback('Drive to the conveyor gate, collect each package, and choose where it should live.');
+    setFeedback('Tap the conveyor to collect a package, then tap the floor space where it should live.');
   }
 
   function move(direction) {
@@ -226,6 +226,16 @@
     setFeedback(`${item.id} is still active. It cannot be cleared yet.`, 'bad');
   }
 
+  function useConveyor() {
+    forklift = { row: 0, col: -1 };
+    interact();
+  }
+
+  function useFloorCell(index) {
+    forklift = { row: Math.floor(index / COLS), col: index % COLS };
+    interact();
+  }
+
   function afterPlacement(item) {
     if (phase === 'allocate' && incoming.length === 0 && allocations.length === ALLOCATE_QUEUE.length) {
       allocateComplete = true;
@@ -266,7 +276,7 @@
     leakAttempted = false;
     leakCleared = false;
     resetForklift();
-    setFeedback('Package L has no release signal. Drive to it and try to clear it.');
+    setFeedback('Package L has no release signal. Tap it and try to clear it.');
   }
 
   function killProcess() {
@@ -391,9 +401,6 @@
       <h2>RAM Page: Warehouse Worker</h2>
       <p>The launch warehouse receives packages that must stay on its limited floor while customers use them.</p>
       <strong>Place packages, clear finished work, and keep the launch computer running. No timer. Failed experiments are evidence.</strong>
-      <div class="keys" aria-label="Controls">
-        <span>WASD / arrows</span><span>Space / Enter: interact</span>
-      </div>
       <button class="primary" type="button" on:click={begin}>Start the first shift</button>
     </section>
 
@@ -524,36 +531,63 @@
         class:forklift={forklift.col === -1}
         type="button"
         aria-label="Conveyor gate"
-        on:click={() => forklift = { row: 0, col: -1 }}
+        on:click={useConveyor}
       >
-        <span>Conveyor</span>
-        {#if currentRequest}<b>{currentRequest.id}</b><small>{currentRequest.size} cells</small>{:else}<small>empty</small>{/if}
-        {#if forklift.col === -1}<i aria-hidden="true">▣</i>{/if}
+        <span class="belt-label">Incoming conveyor</span>
+        <span class="belt" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        {#if currentRequest}
+          <span class="incoming-crate" style={`--crate-size:${currentRequest.size}`}>
+            <b>{currentRequest.id}</b><small>{currentRequest.size} cells</small>
+          </span>
+        {:else}
+          <small class="belt-empty">No package waiting</small>
+        {/if}
+        {#if forklift.col === -1}
+          <span class="forklift-sprite docked" aria-hidden="true"><i></i><b></b><em></em></span>
+        {/if}
       </button>
 
-      <div class="floor" aria-label="Warehouse floor">
-        {#each Array(CELL_COUNT) as _, index}
-          {@const row = Math.floor(index / COLS)}
-          {@const col = index % COLS}
-          <button
-            type="button"
-            class="cell"
-            class:occupied={!!cells[index]}
-            class:released={cells[index]?.released}
-            class:leaked={cells[index]?.leaked}
-            class:page={!!cells[index]?.parent}
-            class:forklift={forklift.row === row && forklift.col === col}
-            aria-label={cells[index]
-              ? `Floor cell ${index + 1}, package ${cells[index].id}${cells[index].leaked ? ', locked package' : cells[index].released ? ', ready to clear' : ''}`
-              : `Floor cell ${index + 1}, open`}
-            on:click={() => forklift = { row, col }}
-          >
-            <small>{index + 1}</small>
-            <b>{cells[index]?.parent ? `${cells[index].parent}${cells[index].page}` : cells[index]?.id || ''}</b>
-            <em>{cells[index]?.released ? 'READY' : cells[index]?.leaked ? '🔒' : ''}</em>
-            {#if forklift.row === row && forklift.col === col}<i aria-hidden="true">▣</i>{/if}
-          </button>
-        {/each}
+      <div class="floor-wrap">
+        <div class="floor" aria-label="Warehouse floor">
+          {#each Array(CELL_COUNT) as _, index}
+            {@const row = Math.floor(index / COLS)}
+            {@const col = index % COLS}
+            <button
+              type="button"
+              class="cell"
+              class:occupied={!!cells[index]}
+              class:forklift={forklift.row === row && forklift.col === col}
+              aria-label={cells[index]
+                ? `Floor cell ${index + 1}, package ${cells[index].id}${cells[index].leaked ? ', locked package' : cells[index].released ? ', ready to clear' : ''}`
+                : `Floor cell ${index + 1}, open`}
+              on:click={() => useFloorCell(index)}
+            >
+              <small>{index + 1}</small>
+            </button>
+          {/each}
+        </div>
+
+        <div class="crate-layer" aria-hidden="true">
+          {#each allocations as item (item.id)}
+            <div
+              class="crate"
+              class:released={item.released}
+              class:leaked={item.leaked}
+              class:page={item.parent}
+              style={`grid-column:${item.start % COLS + 1} / span ${item.size};grid-row:${Math.floor(item.start / COLS) + 1};`}
+            >
+              <b>{item.parent ? `${item.parent}${item.page}` : item.id}</b>
+              {#if item.released}<span>COLLECT</span>{/if}
+              {#if item.leaked}<span>LOCKED</span>{/if}
+            </div>
+          {/each}
+          {#if forklift.col >= 0}
+            <span
+              class="forklift-sprite"
+              style={`grid-column:${forklift.col + 1};grid-row:${forklift.row + 1};`}
+            ><i></i><b></b><em></em></span>
+          {/if}
+        </div>
       </div>
     </div>
 
@@ -562,7 +596,7 @@
       {#if carrying}
         <b>Carrying {carrying.id}</b><small>{carrying.size} cell{carrying.size === 1 ? '' : 's'} wide</small>
       {:else}
-        <b>Empty</b><small>Face a package or the conveyor</small>
+        <b>Empty</b><small>Tap the conveyor or a package</small>
       {/if}
     </div>
 
@@ -586,16 +620,6 @@
     {/if}
 
     <div class="feedback" class:good={messageTone === 'good'} class:bad={messageTone === 'bad'} aria-live="polite">{message}</div>
-
-    <div class="controls">
-      <div class="dpad" aria-label="Forklift directional controls">
-        <button type="button" class="up" on:click={() => move('up')} aria-label="Move up">↑</button>
-        <button type="button" class="left" on:click={() => move('left')} aria-label="Move left">←</button>
-        <button type="button" class="down" on:click={() => move('down')} aria-label="Move down">↓</button>
-        <button type="button" class="right" on:click={() => move('right')} aria-label="Move right">→</button>
-      </div>
-      <button class="interact" type="button" on:click={interact}><b>INTERACT</b><span>Space / Enter</span></button>
-    </div>
 
     {#if allocateComplete}
       <SolveFirstPause title="Every package now owns floor space." message="The positions matter because each package occupies real, limited cells." actionLabel="Release finished work" onContinue={enterFree} />
@@ -635,8 +659,8 @@
   .robot-mark { width: 94px; height: 82px; display: grid; place-items: center; border: 2px solid var(--qx-text); border-radius: 8px; background: var(--qx-surface-2); box-shadow: 6px 6px 0 var(--qx-border-2); }
   .robot-mark i { width: 44px; height: 24px; border: 2px solid var(--qx-text); background: repeating-linear-gradient(90deg, var(--qx-accent) 0 7px, var(--qx-surface) 7px 14px); }
   .robot-mark b { font-size: 11px; letter-spacing: .13em; }
-  .keys, .translation-grid { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; }
-  .keys span, .frozen-label { padding: 6px 10px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); color: var(--qx-text-dim); font-size: 10px; font-weight: 800; }
+  .translation-grid { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; }
+  .frozen-label { padding: 6px 10px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); color: var(--qx-text-dim); font-size: 10px; font-weight: 800; }
   .primary { width: 100%; min-height: 48px; border: 0; border-radius: 4px; background: var(--qx-accent); color: var(--qx-bg); cursor: pointer; font-size: 13px; font-weight: 950; }
   .rail { display: flex; justify-content: center; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
   .rail span { padding: 4px 7px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); color: var(--qx-text-faint); font-size: 8px; font-weight: 900; text-transform: uppercase; }
@@ -645,32 +669,45 @@
   .mission { padding: 10px 12px; border-left: 4px solid var(--qx-accent); background: var(--qx-surface-2); }
   .mission h3 { margin: 2px 0; font-size: 16px; font-weight: 950; }
   .mission p { margin: 0; color: var(--qx-text-dim); font-size: 12px; line-height: 1.4; }
-  .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 9px 0; }
-  .dashboard span { padding: 6px; border: 1px solid var(--qx-border); background: var(--qx-surface); text-align: center; }
+  .dashboard { display: flex; justify-content: flex-end; gap: 5px; margin: 8px 0; flex-wrap: wrap; }
+  .dashboard span { min-width: 76px; padding: 5px 8px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface); text-align: center; }
   .dashboard small { display: block; color: var(--qx-text-faint); font-size: 8px; font-weight: 850; text-transform: uppercase; }
   .dashboard b { font-size: 13px; font-variant-numeric: tabular-nums; }
-  .warehouse { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 7px; align-items: stretch; }
-  .dock { position: relative; min-height: 190px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 2px dashed var(--qx-border-2); border-radius: 4px; background: repeating-linear-gradient(135deg, var(--qx-surface-2) 0 9px, var(--qx-surface) 9px 18px); color: var(--qx-text); cursor: pointer; }
-  .dock span { font-size: 8px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
-  .dock b { font-size: 20px; }
-  .dock small { color: var(--qx-text-dim); font-size: 9px; }
-  .dock i, .cell i { position: absolute; width: 22px; height: 17px; display: grid; place-items: center; border: 2px solid var(--qx-text); border-radius: 3px; background: var(--qx-green); color: var(--qx-bg); font-size: 10px; font-style: normal; box-shadow: 2px 2px 0 var(--qx-text); }
-  .dock i { bottom: 8px; }
-  .floor { display: grid; grid-template-columns: repeat(6, minmax(44px, 1fr)); gap: 3px; padding: 6px; border: 2px solid var(--qx-text); border-radius: 4px; background: var(--qx-surface-3); box-shadow: 5px 5px 0 var(--qx-border-2); }
-  .cell { position: relative; min-width: 44px; min-height: 58px; overflow: hidden; border: 1.5px dashed var(--qx-border-2); border-radius: 2px; background: var(--qx-surface); color: var(--qx-text-faint); cursor: pointer; }
-  .cell small { position: absolute; top: 3px; left: 4px; font-size: 7px; font-weight: 850; }
-  .cell b { font-size: 12px; }
-  .cell em { position: absolute; right: 2px; bottom: 2px; color: inherit; font-size: 7px; font-style: normal; font-weight: 950; }
-  .cell.occupied { border-style: solid; border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
-  .cell.released { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); animation: pulse 1.2s ease-in-out infinite; }
-  .cell.leaked { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
-  .cell.page { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
-  .cell i { left: 50%; bottom: 5px; transform: translateX(-50%); }
-  .cell.forklift, .dock.forklift { outline: 3px solid var(--qx-green); outline-offset: -3px; }
-  .load-status { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--qx-border); background: var(--qx-surface-2); }
+  .warehouse { position: relative; overflow: hidden; border: 2px solid var(--qx-text); border-radius: 8px; background: var(--qx-surface-3); box-shadow: 6px 6px 0 var(--qx-border-2); }
+  .dock { position: relative; width: 100%; min-height: 82px; overflow: hidden; display: block; border: 0; border-bottom: 2px solid var(--qx-text); background: var(--qx-surface-2); color: var(--qx-text); cursor: pointer; text-align: left; }
+  .belt-label { position: absolute; top: 7px; left: 12px; z-index: 3; color: var(--qx-text-dim); font-size: 8px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+  .belt { position: absolute; inset: 28px 0 10px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 5px 10px; border-top: 2px solid var(--qx-border-2); border-bottom: 2px solid var(--qx-border-2); background: var(--qx-surface); }
+  .belt i { display: block; border-radius: 999px; background: repeating-linear-gradient(90deg, var(--qx-border-2) 0 6px, var(--qx-surface-3) 6px 12px); }
+  .incoming-crate { --crate-size: 1; position: absolute; z-index: 2; top: 31px; left: 48%; width: clamp(66px, calc(var(--crate-size) * 11%), 190px); height: 42px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 2px solid var(--qx-accent); border-radius: 4px; background: var(--qx-accent); box-shadow: inset 0 0 0 3px var(--qx-accent-soft), 4px 4px 0 color-mix(in srgb, var(--qx-text) 24%, transparent); color: var(--qx-bg); transform: translateX(-50%); }
+  .incoming-crate::before, .crate::before { content: ''; position: absolute; inset: 5px; border: 1px dashed color-mix(in srgb, currentColor 50%, transparent); pointer-events: none; }
+  .incoming-crate b { font-size: 18px; }
+  .incoming-crate small { font-size: 9px; font-weight: 800; }
+  .belt-empty { position: absolute; z-index: 2; top: 45px; left: 50%; color: var(--qx-text-faint); font-size: 9px; font-weight: 800; transform: translateX(-50%); }
+  .floor-wrap { position: relative; }
+  .floor { display: grid; grid-template-columns: repeat(6, minmax(44px, 1fr)); grid-template-rows: repeat(3, 76px); gap: 4px; padding: 9px; background: repeating-linear-gradient(0deg, transparent 0 15px, color-mix(in srgb, var(--qx-text) 4%, transparent) 15px 16px), var(--qx-surface-3); }
+  .cell { position: relative; z-index: 1; min-width: 44px; min-height: 64px; overflow: hidden; border: 1.5px dashed var(--qx-border-2); border-radius: 3px; background: color-mix(in srgb, var(--qx-surface) 82%, transparent); color: var(--qx-text-faint); cursor: pointer; }
+  .cell:hover { border-color: var(--qx-accent); background: var(--qx-surface); }
+  .cell small { position: absolute; top: 4px; left: 5px; font-size: 7px; font-weight: 900; }
+  .cell.occupied { border-style: solid; border-color: color-mix(in srgb, var(--qx-accent) 42%, var(--qx-border)); background: var(--qx-accent-soft-2); }
+  .cell.forklift { outline: 3px solid var(--qx-green); outline-offset: -4px; }
+  .crate-layer { position: absolute; z-index: 2; inset: 9px; display: grid; grid-template-columns: repeat(6, minmax(44px, 1fr)); grid-template-rows: repeat(3, 76px); gap: 4px; pointer-events: none; }
+  .crate { position: relative; align-self: center; height: 54px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--qx-accent-text); border-radius: 4px; background: var(--qx-accent); box-shadow: inset 0 0 0 3px var(--qx-accent-soft), 3px 3px 0 color-mix(in srgb, var(--qx-text) 25%, transparent); color: var(--qx-bg); }
+  .crate b { position: relative; z-index: 1; font-size: 17px; font-weight: 950; }
+  .crate span { position: absolute; right: 7px; bottom: 5px; z-index: 1; font-size: 7px; font-weight: 950; letter-spacing: .08em; }
+  .crate.released { border-color: var(--qx-green-text); background: var(--qx-green); animation: pulse 1.2s ease-in-out infinite; }
+  .crate.leaked { border-color: var(--qx-danger-text); background: var(--qx-danger); }
+  .crate.page { border-color: var(--qx-green-text); background: var(--qx-green); }
+  .forklift-sprite { position: relative; z-index: 5; align-self: end; justify-self: center; width: 38px; height: 45px; display: block; filter: drop-shadow(2px 3px 0 color-mix(in srgb, var(--qx-text) 35%, transparent)); }
+  .forklift-sprite::before { content: ''; position: absolute; left: 7px; bottom: 7px; width: 24px; height: 23px; border: 2px solid var(--qx-green-text); border-radius: 5px 5px 3px 3px; background: var(--qx-green); }
+  .forklift-sprite::after { content: ''; position: absolute; left: 12px; top: 3px; width: 15px; height: 18px; border: 3px solid var(--qx-text); border-bottom: 0; border-radius: 3px 3px 0 0; }
+  .forklift-sprite i, .forklift-sprite b { position: absolute; bottom: 2px; width: 8px; height: 8px; border: 2px solid var(--qx-text); border-radius: 50%; background: var(--qx-surface); }
+  .forklift-sprite i { left: 5px; } .forklift-sprite b { right: 3px; }
+  .forklift-sprite em { position: absolute; right: -5px; bottom: 5px; width: 15px; height: 3px; border-top: 3px solid var(--qx-text); border-right: 3px solid var(--qx-text); font-style: normal; }
+  .forklift-sprite.docked { position: absolute; right: 15px; bottom: 12px; }
+  .load-status { display: flex; gap: 8px; align-items: center; margin-top: 9px; padding: 7px 10px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); }
   .load-status > span { color: var(--qx-text-faint); font-size: 8px; font-weight: 900; text-transform: uppercase; }
   .load-status b { font-size: 12px; }
-  .load-status small { color: var(--qx-text-dim); font-size: 9px; }
+  .load-status small { margin-left: auto; color: var(--qx-text-dim); font-size: 9px; }
   .clipboard { display: flex; align-items: center; gap: 7px; margin-top: 8px; padding: 8px 10px; border: 2px solid var(--qx-green); background: var(--qx-green-soft); }
   .clipboard div { display: grid; margin-right: auto; text-align: left; }
   .clipboard span { color: var(--qx-green-text); font-size: 8px; font-weight: 900; text-transform: uppercase; }
@@ -681,15 +718,9 @@
   .wall-tool span { color: var(--qx-text-dim); font-size: 10px; }
   .wall-tool.slicer { border-color: var(--qx-green); }
   .wall-tool.kill { border-color: var(--qx-danger); background: var(--qx-danger-soft); }
-  .feedback { min-height: 35px; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--qx-border); background: var(--qx-surface-2); color: var(--qx-text-dim); font-size: 11px; font-weight: 700; line-height: 1.4; }
+  .feedback { min-height: 30px; margin-top: 8px; padding: 7px 10px; border-left: 4px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text-dim); font-size: 11px; font-weight: 700; line-height: 1.4; }
   .feedback.good { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .feedback.bad { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
-  .controls { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 10px; }
-  .dpad { display: grid; grid-template: repeat(2, 44px) / repeat(3, 44px); gap: 3px; }
-  .dpad button, .interact { min-width: 44px; min-height: 44px; border: 1.5px solid var(--qx-border-2); border-radius: 4px; background: var(--qx-surface); color: var(--qx-text); cursor: pointer; font-weight: 950; }
-  .dpad .up { grid-area: 1 / 2; } .dpad .left { grid-area: 2 / 1; } .dpad .down { grid-area: 2 / 2; } .dpad .right { grid-area: 2 / 3; }
-  .interact { min-width: 150px; min-height: 82px; display: grid; place-content: center; border-color: var(--qx-accent); background: var(--qx-accent); color: var(--qx-bg); }
-  .interact span { font-size: 8px; opacity: .8; }
   .hint-button { display: block; min-height: 44px; margin: 8px auto 0; border: 0; background: transparent; color: var(--qx-accent-text); cursor: pointer; font-weight: 850; text-decoration: underline; }
   .hint { margin: 8px 0 0; padding: 9px; border: 1px solid var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 11px; text-align: center; }
   .translation-grid { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); }
@@ -712,27 +743,26 @@
   .reward-panel > b { color: var(--qx-accent-text); font-size: 19px; }
   .complete-panel { display: grid; border-color: var(--qx-green); background: var(--qx-green-soft); }
   .complete-panel span { color: var(--qx-green-text); font-size: 11px; }
-  .reveal-floor { width: 100%; grid-template-columns: 100px minmax(0, 1fr); text-align: left; }
-  .reveal-floor .dock { min-height: 150px; }
+  .reveal-floor { width: 100%; text-align: left; }
+  .reveal-floor .dock { min-height: 48px; padding: 15px 12px 0; box-sizing: border-box; }
+  .reveal-floor .floor { grid-template-rows: repeat(3, 54px); }
   .technical .cell small { color: var(--qx-text-faint); }
   @keyframes pulse { 50% { filter: brightness(1.1); box-shadow: inset 0 0 0 2px var(--qx-green); } }
   @media (max-width: 600px) {
-    .warehouse { grid-template-columns: 1fr; }
-    .dock { min-height: 58px; display: grid; grid-template-columns: 1fr auto auto; padding: 7px 12px; }
-    .dock i { right: 8px; bottom: 50%; transform: translateY(50%); }
-    .floor { grid-template-columns: repeat(6, minmax(44px, 1fr)); overflow-x: auto; }
+    .dock { min-height: 76px; }
+    .floor { grid-template-columns: repeat(6, minmax(44px, 1fr)); grid-template-rows: repeat(3, 62px); overflow-x: auto; }
+    .crate-layer { grid-template-columns: repeat(6, minmax(44px, 1fr)); grid-template-rows: repeat(3, 62px); }
     .cell { min-height: 52px; }
-    .load-status { grid-template-columns: auto 1fr; }
-    .load-status small { grid-column: 2; }
+    .crate { height: 44px; }
+    .forklift-sprite { transform: scale(.86); }
     .clipboard { flex-wrap: wrap; }
-    .controls { justify-content: space-between; gap: 8px; }
-    .interact { flex: 1; min-width: 110px; }
-    .reveal-floor { grid-template-columns: 1fr; }
-    .reveal-floor .dock { min-height: 48px; }
+    .reveal-floor .floor { grid-template-rows: repeat(3, 48px); }
   }
   @media (max-width: 390px) {
-    .dashboard { grid-template-columns: repeat(2, 1fr); }
+    .dashboard { justify-content: stretch; }
+    .dashboard span { flex: 1 1 38%; }
     .floor { grid-template-columns: repeat(6, 44px); }
+    .crate-layer { grid-template-columns: repeat(6, 44px); }
     .translation-grid, .comparison { grid-template-columns: 1fr; }
     .metric-replay { grid-template-columns: repeat(3, 1fr); }
   }

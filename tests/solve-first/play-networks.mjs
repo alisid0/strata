@@ -111,13 +111,12 @@ window.__mount('memory');
 await tick();
 assert(text().includes('RAM Page: Warehouse Worker'), 'memory warehouse mounts');
 
-const floorCells = () => all('.warehouse > .floor button.cell');
+const floorCells = () => all('.floor-wrap .floor button.cell');
 const goDock = async () => clickElement(all('button.dock')[0]);
 const goCell = async (index) => clickElement(floorCells()[index]);
-const interact = async () => click('INTERACT', 'button.interact');
-const collect = async () => { await goDock(); await interact(); };
-const placeAt = async (index) => { await goCell(index); await interact(); };
-const movePackage = async (from, to) => { await goCell(from); await interact(); await goCell(to); await interact(); };
+const collect = goDock;
+const placeAt = goCell;
+const movePackage = async (from, to) => { await goCell(from); await goCell(to); };
 
 await click('Start the first shift');
 for (const start of [0, 3, 6, 9, 12, 15]) {
@@ -129,7 +128,6 @@ assert(text().includes('Every package now owns floor space'), 'six packages allo
 await click('Release finished work');
 for (const start of [3, 9, 15]) {
   await goCell(start);
-  await interact();
 }
 assert(text().includes('Clearing made those cells reusable'), 'release signals deallocate only finished packages');
 
@@ -140,7 +138,6 @@ assert(text().includes('Eight free cells. No five-cell opening'), 'failed reques
 
 await click('Investigate another fault');
 await goCell(3);
-await interact();
 assert(text().includes('release signal is gone'), 'locked allocation exposes a leak');
 await click('PROCESS KILL');
 assert(text().includes('useful MAP work vanished too'), 'process termination reclaims the leak and live process memory');
