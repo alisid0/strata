@@ -126,9 +126,9 @@ const SOLVE_FIRST = {
     track: 'mathematics',
     kind: 'ramp-rider',
     eyebrow: 'Unmarked problem 11',
-    title: 'Ramp Rider',
-    sub: 'No lesson first. Tilt a ramp, launch a motorcycle, clear gaps with the right angle, then decode sine and cosine.',
-    rewardLabel: 'Angle Master'
+    title: 'Skyhook',
+    sub: 'No lesson first. Run a rescue crane, discover that up and across are locked to the angle by two stubborn ratios, then take one shot on intel alone.',
+    rewardLabel: 'Ratio Rigger'
   },
   'sine-waves': {
     id: 'sine-waves-signal-hacker',
@@ -137,9 +137,9 @@ const SOLVE_FIRST = {
     track: 'mathematics',
     kind: 'signal-hacker',
     eyebrow: 'Unmarked problem 12',
-    title: 'Signal Hacker',
-    sub: 'No lesson first. Match security frequencies by tuning amplitude, pitch, phase shift, and vertical lift — then decode the sine formula.',
-    rewardLabel: 'Signal Master'
+    title: 'The Big Wheel',
+    sub: 'No lesson first. A spinning wheel draws its height onto scrolling paper. Recreate the recorded rides, then set the dials from a bare formula — and see why every sine wave is a circle in disguise.',
+    rewardLabel: 'Wave Rider'
   },
   'conic-sections': {
     id: 'conic-sections-orbit-architect',
@@ -148,9 +148,9 @@ const SOLVE_FIRST = {
     track: 'mathematics',
     kind: 'orbit-architect',
     eyebrow: 'Unmarked problem 13',
-    title: 'Orbit Architect',
-    sub: 'No lesson first. Stretch an elliptical forcefield to capture space debris, then decode the standard form (x−h)²/a² + (y−k)²/b² = 1.',
-    rewardLabel: 'Orbit Master'
+    title: 'Ropeworks',
+    sub: 'No lesson first. Two anchors, one rope, a stylus pulled taut — sweep orbits through drifting debris and discover that an ellipse is nothing but a rope length shared between two points.',
+    rewardLabel: 'Focus Finder'
   },
   'polar-coordinates': {
     id: 'polar-coordinates-polar-aegis',
@@ -159,9 +159,9 @@ const SOLVE_FIRST = {
     track: 'mathematics',
     kind: 'polar-aegis',
     eyebrow: 'Unmarked problem 14',
-    title: 'Polar Aegis',
-    sub: 'No lesson first. Morph a laser whip from a circle into rose curves using polar equations, then decode r = a·cos(k·θ) as the source code of reality.',
-    rewardLabel: 'Reality Bender'
+    title: 'Radar Nine',
+    sub: 'No lesson first. Tag blips by range and bearing, translate the tower\'s language onto the old grid map, then program a rose-curve fence where petal alignment — not petal count — wins the raid.',
+    rewardLabel: 'Polar Operator'
   }
 };
 

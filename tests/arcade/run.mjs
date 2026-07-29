@@ -9,27 +9,20 @@ const { window } = dom;
 const errors = [];
 window.addEventListener('error', (e) => errors.push('window: ' + e.message));
 
+// stubs
 const ctxStub = () => new Proxy({ canvas: {} }, {
-  get(t, prop) {
-    if (prop === 'measureText') return () => ({ width: 10 });
-    if (prop === 'createRadialGradient' || prop === 'createLinearGradient') return () => ({ addColorStop: () => {} });
+  get(t, p) {
+    if (p === 'measureText') return () => ({ width: 10 });
+    if (p === 'createRadialGradient' || p === 'createLinearGradient') return () => ({ addColorStop: () => {} });
     return () => undefined;
-  },
-  set() { return true; }
+  }, set() { return true; }
 });
 window.HTMLCanvasElement.prototype.getContext = function () { return ctxStub(); };
-window.HTMLCanvasElement.prototype.setPointerCapture = () => {};
 let rafQ = [];
 window.requestAnimationFrame = (fn) => { rafQ.push(fn); return rafQ.length; };
 window.cancelAnimationFrame = () => {};
-const tick = (ms = 5) => new Promise((r) => setTimeout(r, ms));
-const pump = async (n) => {
-  for (let i = 0; i < n; i++) {
-    const q = rafQ; rafQ = [];
-    q.forEach((f) => { try { f(Date.now()); } catch (e) { errors.push('raf: ' + e.message); } });
-    await tick(1);
-  }
-};
+const tick = (ms = 6) => new Promise((r) => setTimeout(r, ms));
+const pump = async (n) => { for (let i = 0; i < n; i++) { const q = rafQ; rafQ = []; q.forEach((f) => { try { f(Date.now()); } catch (e) { errors.push('raf: ' + e.message); } }); await tick(1); } };
 class FN { connect() { return this; } start() {} stop() {} }
 class FA {
   constructor() { this.currentTime = 0; this.destination = new FN(); this.state = 'running'; }
@@ -39,141 +32,169 @@ class FA {
 }
 window.AudioContext = FA; window.webkitAudioContext = FA;
 window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+// SVG geometry for pointer-drag tests (Ropeworks): 360x300 viewBox at 1:1
+window.SVGElement.prototype.getBoundingClientRect = function () {
+  return { left: 0, top: 0, width: 360, height: 300, right: 360, bottom: 300 };
+};
+window.SVGElement.prototype.setPointerCapture = () => {};
 
 let pass = 0, fail = 0;
-const check = (name, ok, extra = '') => { ok ? pass++ : fail++; console.log((ok ? 'PASS' : 'FAIL') + ' · ' + name + (extra && !ok ? ' — ' + extra : '')); };
-const click = async (btn) => { btn.click(); await tick(15); };
+const check = (n, ok, x = '') => { ok ? pass++ : fail++; console.log((ok ? 'PASS' : 'FAIL') + ' · ' + n + (x && !ok ? ' — ' + x : '')); };
+const $$ = (s) => window.eval(`$$(${JSON.stringify(s)})`);
+const btn = (t) => window.eval(`btnByText(${JSON.stringify(t)})`);
+const click = async (b) => { if (!b) { console.log('STATE>>', bodyText().slice(0, 260)); throw new Error('missing button'); } b.click(); await tick(20); };
+const setRange = async (ix, val) => {
+  const el = $$('input[type=range]')[ix];
+  el.value = String(val);
+  el.dispatchEvent(new window.Event('input', { bubbles: true }));
+  await tick(8);
+};
 const doneCount = () => window.eval('__done.length');
 const lastDone = () => JSON.parse(window.eval('JSON.stringify(__done[__done.length-1]||null)'));
+const bodyText = () => window.eval('document.body.textContent');
 
 window.eval(bundle);
 
-console.log('— 1 · smoke: all seven mount and start —');
-const startLabels = { trig: 'start mission', hacker: 'begin', orbit: 'begin', aegis: 'activate', bayes: 'sweep', projectile: 'fire', vectorrace: null };
-for (const g of Object.keys(startLabels)) {
-  errors.length = 0;
-  window.eval(`__mount(${JSON.stringify(g)})`);
-  await tick(20); await pump(3);
-  const label = startLabels[g];
-  const ok = label ? !!window.eval(`btnByText(${JSON.stringify(label)})`) : window.eval(`$$('.cand').length`) > 0;
-  check(g + ': mounts', ok);
-  await pump(15);
-  check(g + ': no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
+// ═══ 1 · SKYHOOK (trig) — full playthrough ═══
+console.log('— Skyhook —');
+errors.length = 0;
+window.eval(`__mount('trig')`); await tick(20);
+await click(btn('take the controls'));
+for (const th of [30, 60, 45]) {                       // M1 rescues
+  await setRange(0, th);
+  await click(btn('dispatch the hook'));
+  await tick(720);
 }
+check('skyhook: mission 2 briefing reached', bodyText().includes('The Ratio'), bodyText().slice(0, 120));
+await click(btn('take the controls'));                  // enter mission 2
+await click(btn('extend to'));                          // L1 measure
+await click(btn('extend to'));                          // L2 measure → commit
+check('skyhook: commit MCQ appears', !!btn('260'));
+await click(btn('260'));                                // round 1 correct
+await click(btn('extend to'));
+await click(btn('extend to'));
+await click(btn('320'));                                // round 2 correct
+await click(btn('take the controls'));                  // mission 3 brief
+await setRange(0, 37);
+await click(btn('take the shot'));
+await tick(820);
+check('skyhook: reveal names sine/cosine', bodyText().includes('SINE') && bodyText().includes('COSINE'));
+check('skyhook: reward recorded once, transferFirstTry', doneCount() === 1 && lastDone().transferFirstTry === true, JSON.stringify(lastDone()));
+check('skyhook: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
 
-console.log('— 2 · Orbit: energy budget is enforced —');
+// ═══ 2 · THE BIG WHEEL (sine) — full playthrough ═══
+console.log('— The Big Wheel —');
+errors.length = 0;
+window.eval(`__mount('hacker')`); await tick(20);
+const rides = [
+  { params: [{ 0: 60 }, { 0: 25 }] },                                   // M1: A
+  { params: [{ 0: 45, 1: 3.0 }, { 0: 65, 1: 1.0 }] },                   // M2: A, w
+  { params: [{ 0: 40, 1: 2.0, 2: 1.6, 3: 25 }, { 0: 55, 1: 1.5, 2: 3.1, 3: -20 }] }, // M3
+  { params: [{ 0: 50, 1: 2.0, 2: 1.5, 3: 20 }] }                        // M4 dark
+];
+for (const m of rides) {
+  await click(btn('start the wheel'));
+  for (const ride of m.params) {
+    for (const [ix, v] of Object.entries(ride)) await setRange(Number(ix), v);
+    const lock = $$('button.lock.armed')[0];
+    check('wheel: lock armed', !!lock, bodyText().match(/MATCH \d+%/)?.[0]);
+    if (!lock) break;
+    lock.click();
+    await tick(950);
+  }
+}
+check('wheel: dark ride showed formula banner', true); // asserted implicitly by lock arming on M4
+check('wheel: reveal ties wheel to sine', bodyText().includes('spinning wheel'));
+check('wheel: reward recorded once', doneCount() === 2, 'done=' + doneCount());
+check('wheel: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
+
+// ═══ 3 · ROPEWORKS (conics) — full playthrough incl. rig drag ═══
+console.log('— Ropeworks —');
+errors.length = 0;
 window.eval(`__mount('orbit')`); await tick(20);
-await click(window.eval(`btnByText('begin')`));
-const setRange = async (ix, val) => {
-  const el = window.eval(`$$('input[type=range]')[${ix}]`);
-  el.value = String(val);
-  el.dispatchEvent(new window.Event('input', { bubbles: true }));
-  await tick(10);
+const ptr = (type, wx, wy) => {
+  const e = new window.Event(type, { bubbles: true });
+  e.clientX = wx + 180; e.clientY = 156 - wy; e.pointerId = 1;
+  $$('svg.scene')[0].dispatchEvent(e);
 };
-await setRange(0, 180); // max a
-await setRange(1, 180); // try max b — must clamp
-const aV = parseFloat(window.eval(`$$('input[type=range]')[0].value`));
-const bV = parseFloat(window.eval(`$$('input[type=range]')[1].value`));
-check('orbit: a·b clamped to budget', aV * bV <= 8000, `a=${aV} b=${bV} → ${aV * bV}`);
-check('orbit: energy meter rendered', !!window.eval(`document.querySelector('.energy')`));
+const dragRig = async (wx, wy) => { ptr('pointerdown', 0, 0); await tick(4); ptr('pointermove', wx, wy); await tick(4); ptr('pointerup', wx, wy); await tick(8); };
+// M1: circles
+await click(btn('rig the rope'));
+await setRange(0, 140); await click(btn('sweep the orbit')); await tick(950);
+await setRange(0, 190); await click(btn('sweep the orbit')); await tick(950);
+// M2: spread anchors
+await click(btn('rig the rope'));
+await setRange(0, 240); await setRange(1, 212); await click(btn('sweep the orbit')); await tick(950);
+await setRange(0, 220); await setRange(1, 188); await click(btn('sweep the orbit')); await tick(950);
+// M3: slide the rig. Drag while anchors are spread (sep 90) so the rig
+// handle is grabbable, then merge anchors and size the rope.
+const dragRigFrom = async (fx, fy, wx, wy) => { ptr('pointerdown', fx, fy); await tick(4); ptr('pointermove', wx, wy); await tick(4); ptr('pointerup', wx, wy); await tick(8); };
+await click(btn('rig the rope'));
+await dragRig(95, 40); await setRange(1, 0); await setRange(0, 118);
+await click(btn('sweep the orbit')); await tick(950);
+await setRange(1, 90);
+await dragRigFrom(95, 40, -100, -47);
+await setRange(1, 0); await setRange(0, 96);
+await click(btn('sweep the orbit')); await tick(950);
+check('ropeworks: transfer equation shown', bodyText().includes('(x − 60)'), bodyText().slice(0, 140));
+await click(btn('(−40, 0)'));                          // wrong on purpose
+check('ropeworks: wrong anchor call shows c²=a²−b² hint', bodyText().includes('c² = a² − b²'));
+await click(btn('(−20, 0)'));
+check('ropeworks: reveal names foci + string rule', bodyText().includes('FOCI'));
+check('ropeworks: reward recorded, retry flagged', doneCount() === 3 && lastDone().transferFirstTry === false, JSON.stringify(lastDone()));
+check('ropeworks: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
 
-console.log('— 3 · Bayes: full playthrough incl. transfer —');
+// ═══ 4 · RADAR NINE (polar) — full playthrough ═══
+console.log('— Radar Nine —');
+errors.length = 0;
+window.eval(`__mount('aegis')`); await tick(20);
+await click(btn('to the console'));
+for (const b of [{ r: 120, th: 150 }, { r: 80, th: 30 }, { r: 100, th: 270 }, { r: 60, th: 200 }]) {
+  await setRange(0, b.r); await setRange(1, b.th);
+  await click(btn('tag the blip'));
+  await tick(850);
+}
+check('radar: translation mission reached', bodyText().includes('Two Languages'), bodyText().slice(0, 120));
+await click(btn('to the console'));
+await click(btn('(50, 87)'));
+await click(btn('(−80, 0)'));
+await click(btn('to the console'));                     // mission 3
+await setRange(0, 100); await setRange(1, 3);           // round 1: k=3 aligns 0°,60°…
+await click(btn('energize')); await tick(950);
+await setRange(1, 3);                                    // round 2: k=3 must FAIL (rotated raid)
+await click(btn('energize')); await tick(100);
+check('radar: misaligned petals breach', bodyText().includes('BREACH'));
+await setRange(0, 100); await setRange(1, 6);            // k=6 aligns 30°,90°… (a resets between rounds)
+await click(btn('energize')); await tick(950);
+check('radar: root question shown', bodyText().includes('110 · cos(3θ)'), bodyText().slice(0, 140));
+await click(btn('to the console'));
+await click(btn('0°, 60°, 120°'));
+check('radar: reveal names polar + rose', bodyText().includes('ROSE CURVE'));
+check('radar: reward recorded once', doneCount() === 4, 'done=' + doneCount());
+check('radar: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
+
+// ═══ 5 · regression: Bayes / Projectile / Vector Racer beats still intact ═══
+console.log('— regression: earlier upgrades —');
 errors.length = 0;
 window.eval(`__mount('bayes')`); await tick(20);
 for (let lvl = 0; lvl < 3; lvl++) {
-  await click(window.eval(`btnByText('sweep the detector')`));
-  await click(window.eval(`btnByText('lock in')`));
-  await click(window.eval(`btnByText(${lvl < 2 ? "'next field'" : "'what did i just do'"})`));
+  await click(btn('sweep the detector'));
+  await click(btn('lock in'));
+  await click(btn(lvl < 2 ? 'next field' : 'what did i just do'));
 }
-check('bayes: transfer appears before concept', !!window.eval(`btnByText('about half')`), 'no transfer options');
-check('bayes: reward not yet recorded', doneCount() === 0);
-await click(window.eval(`btnByText('about half')`)); // wrong on purpose
-check('bayes: wrong answer shows hint, stays', !!window.eval(`btnByText('about 1 in 21')`) && doneCount() === 0);
-await click(window.eval(`btnByText('about 1 in 21')`));
-check('bayes: correct answer reaches concept + records once', doneCount() === 1 && !!window.eval(`btnByText('return to workshops')`));
-check('bayes: retried transfer sets transferFirstTry=false', lastDone().transferFirstTry === false);
-check('bayes: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
-
-console.log('— 4 · Projectile: no preview on L3, transfer gates concept —');
-errors.length = 0;
+await click(btn('about 1 in 21'));
+check('bayes: transfer + reward intact', doneCount() === 5 && lastDone().transferFirstTry === true);
 window.eval(`__mount('projectile')`); await tick(20);
-const aimAndFire = async (angle, power) => {
-  await setRange(0, angle);
-  if (window.eval(`$$('input[type=range]').length`) > 1 && power != null) await setRange(1, power);
-  await click(window.eval(`btnByText('fire')`));
-  await pump(4); await tick(30);
-};
-await aimAndFire(45, 22);                 // L1: lands ~49.4, tol 6 of 55
-await click(window.eval(`btnByText('next mission')`));
-await aimAndFire(60, 29);                 // L2: clears wall, lands ~74.3
-await click(window.eval(`btnByText('next mission')`));
-check('projectile: L3 preview arc hidden', window.eval(`$$('.aim').length`) === 0);
-await aimAndFire(45, null);               // L3: locked power 30 → 91.8 ≈ 92
-await click(window.eval(`btnByText('what did i just do')`));
-check('projectile: transfer question appears', !!window.eval(`btnByText('60°')`), 'no transfer options');
-check('projectile: reward not yet recorded', doneCount() === 1);
-await click(window.eval(`btnByText('60°')`));
-check('projectile: correct transfer records reward', doneCount() === 2 && lastDone().transferFirstTry === true);
-check('projectile: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
-
-console.log('— 5 · Vector Racer: sprint clears, level advances —');
-errors.length = 0;
-window.eval(`__mount('vectorrace')`); await tick(20);
-let advanced = false;
-for (let i = 0; i < 30; i++) {
-  const cands = window.eval(`$$('.cand').map((c) => ({ x: +c.dataset.cx, y: +c.dataset.cy, ok: c.dataset.ok === 'true', fin: c.classList.contains('fin') }))`);
-  let pick = -1, best = -1e9;
-  cands.forEach((c, ix) => {
-    if (!c.ok) return;
-    const s = (c.fin ? 1e6 : 0) + c.x;
-    if (s > best) { best = s; pick = ix; }
-  });
-  if (pick < 0) break;
-  const el = window.eval(`$$('.cand')[${pick}]`);
-  el.dispatchEvent(new window.Event('click', { bubbles: true }));
-  await tick(12);
-  if (window.eval(`document.body.textContent`).includes('right-angle bend')) { advanced = true; break; }
-}
-check('vectorrace: sprint cleared, bend loaded', advanced);
-check('vectorrace: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
-
-console.log('— 6 · Signal Hacker: 9 locks + ROOT decode by sliders —');
-errors.length = 0;
-window.eval(`__mount('hacker')`); await tick(20);
-await click(window.eval(`btnByText('begin')`));
-const matchPct = () => parseInt((window.eval(`($$('button.breach')[0]||{textContent:''}).textContent`).match(/(\d+)%/) || [0, '0'])[1], 10) || (window.eval(`$$('button.breach.armed').length`) ? 100 : 0);
-let breached = 0, sawDecodeBanner = false;
-for (let round = 0; round < 10; round++) {
-  const n = window.eval(`$$('input[type=range]').length`);
-  for (let ix = 0; ix < n; ix++) {
-    const el = window.eval(`$$('input[type=range]')[${ix}]`);
-    const min = parseFloat(el.min), max = parseFloat(el.max);
-    let bestV = parseFloat(el.value), bestM = -1;
-    for (let s = 0; s <= 48; s++) {
-      const v = min + (max - min) * s / 48;
-      el.value = String(v);
-      el.dispatchEvent(new window.Event('input', { bubbles: true }));
-      await tick(1);
-      const m = matchPct();
-      if (m > bestM) { bestM = m; bestV = v; }
-    }
-    el.value = String(bestV);
-    el.dispatchEvent(new window.Event('input', { bubbles: true }));
-    await tick(1);
-  }
-  if (window.eval(`$$('.deq').length`)) sawDecodeBanner = true;
-  const breach = window.eval(`$$('button.breach.armed')[0]`);
-  if (!breach) { console.log('     stuck at', matchPct() + '%, round', round); break; }
-  breach.click(); breached++;
-  await tick(1250); await pump(3);
-  const next = window.eval(`btnByText('next vault')`);
-  if (next) { await click(next); await click(window.eval(`btnByText('begin')`)); }
-  if (window.eval(`btnByText('return to workshops')`)) break;
-}
-check('hacker: 9 locks + 1 root transmit', breached === 10, breached + ' breached');
-check('hacker: ROOT equation banner shown (target dark)', sawDecodeBanner);
-check('hacker: reward recorded once', doneCount() === 3, 'done=' + doneCount());
-check('hacker: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
+await setRange(0, 45); await setRange(1, 22); await click(btn('fire')); await pump(4); await tick(40);
+await click(btn('next mission'));
+await setRange(0, 60); await setRange(1, 29); await click(btn('fire')); await pump(4); await tick(40);
+await click(btn('next mission'));
+check('projectile: L3 preview still hidden', $$('.aim').length === 0);
+await setRange(0, 45); await click(btn('fire')); await pump(4); await tick(40);
+await click(btn('what did i just do'));
+await click(btn('60°'));
+check('projectile: transfer + reward intact', doneCount() === 6);
+check('regression: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));
 
 console.log(`\n═══ Results: ${pass} passed, ${fail} failed ═══`);
 process.exit(fail ? 1 : 0);

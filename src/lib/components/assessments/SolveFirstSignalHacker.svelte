@@ -1,18 +1,18 @@
 <script>
-  // Signal Hacker — a Solve First sine-wave arcade.
+  // The Big Wheel — a Solve First sine-wave discovery, built from scratch 2026-07-29.
   //
-  // Match a hidden target wave by tuning VOLUME (amplitude), PITCH (frequency),
-  // H-SHIFT (phase) and V-SHIFT (vertical translation). Only the final vault
-  // names them: f(x) = A·sin(ωx + φ) + D.
-  //
-  // Rewritten 2026-07-29: canvas colors resolved from Qubix tokens (canvas
-  // ignores var()/color-mix), touch sliders + a BREACH button added (it was
-  // keyboard-only), duplicate keydown listener removed, and the discovery is
-  // recorded when the final reveal is reached rather than only via one button.
+  // A dot rides a rotating wheel; its HEIGHT traces onto scrolling paper.
+  // The learner recreates recorded rides:
+  //   Mission 1 — wheel RADIUS shapes the trace's height (amplitude).
+  //   Mission 2 — spin SPEED packs in more cycles (frequency).
+  //   Mission 3 — START ANGLE slides the trace (phase) and AXLE HEIGHT lifts
+  //               its midline (vertical shift).
+  //   Mission 4 — ROOT: the recorded trace goes dark; only its equation is
+  //               shown. Set the dials by reading it.
+  // The reveal names it: a sine wave IS circular motion seen sideways.
+  // Pure SVG — Qubix tokens work natively, every state testable.
   import ArcadeShell from './ArcadeShell.svelte';
   import { fly } from 'svelte/transition';
-  import { onMount } from 'svelte';
-  import { resolvePalette, watchTheme, withAlpha } from './arcadePalette.js';
   import { playAward, playBonus } from '../../sfx.js';
 
   export let config;
@@ -20,159 +20,135 @@
   export let onExit = () => {};
 
   const reduceMotion = typeof matchMedia !== 'undefined'
-    && matchMedia('(prefers-reduced-motion:reduce)').matches;
+    && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const W = 380, H = 380;
-  let c, ctx, af, recorded = false;
-  let P = null;
-
-  let phase = 'briefing', levelIx = 0, score = 0, frame = 0;
-  let params = { amp: 1, freq: 1, phase: 0, vShift: 0 };
-  let target = { amp: 0, freq: 0, phase: 0, vShift: 0 };
-  let matchPct = 0, unlocked = false, currentTarget = 0, scanLine = 0;
-
-  // ROOT CHALLENGE — the active decode. After the last lock, the target wave
-  // goes DARK and only its equation is shown. The learner must set the
-  // sliders by READING the formula, not by matching a picture.
-  const DECODE_TARGET = { amp: 70, freq: 2.0, phase: Math.PI, vShift: -20 };
-  const DECODE_EQUATION = 'f(x) = 70 · sin(2.0x + 1.0π) − 20';
-  let decodeMode = false;
+  const W = 360, H = 240;
+  const WHEEL_CX = 62, MID = 120;      // wheel centre x, paper midline y
+  const PAPER_X = 130, PAPER_W = 218;  // trace area
 
   const RANGES = {
-    amp:    { min: 5,   max: 120, step: 1 },
-    freq:   { min: 0.2, max: 5,   step: 0.1 },
-    phase:  { min: 0,   max: Math.PI * 2, step: 0.1 },
-    vShift: { min: -80, max: 80,  step: 2 }
+    A: { min: 10, max: 80, step: 2 },
+    w: { min: 0.5, max: 4, step: 0.1 },
+    p: { min: 0, max: 6.2, step: 0.1 },
+    D: { min: -50, max: 50, step: 2 }
   };
-  const LABELS = { amp: 'Volume', freq: 'Pitch', phase: 'H-shift', vShift: 'V-shift' };
-  const RAW_LABELS = { amp: 'A', freq: 'ω', phase: 'φ', vShift: 'D' };
+  const LABELS = { A: 'Wheel radius', w: 'Spin speed', p: 'Start angle', D: 'Axle height' };
+  const RAW = { A: 'A', w: 'ω', p: 'φ', D: 'D' };
 
-  const LEVELS = [
+  const MISSIONS = [
     {
-      name: 'Signal Match',
-      params: ['amp', 'freq'],
-      briefing: 'Two controls:\n  ■ VOLUME — wave height\n  ■ PITCH — cycle speed\n\nMatch the target (dim).\nYour signal is bright.',
-      targets: [
-        { amp: 60, freq: 2.0, phase: 0, vShift: 0 },
-        { amp: 90, freq: 1.0, phase: 0, vShift: 0 },
-        { amp: 40, freq: 3.5, phase: 0, vShift: 0 }
-      ],
-      reveal: 'VOLUME = AMPLITUDE.\nPITCH = FREQUENCY.\n\nAmplitude: wave height from center.\nFrequency: cycles across the screen.\n\nYou just tuned a sine wave.'
+      name: 'The Radius', params: ['A'],
+      brief: 'A camera films the wheel from the side. Its dot draws the paper trace on the right.\n\nOne dial: WHEEL RADIUS.\nRecreate the two recorded rides (dim traces).',
+      rides: [{ A: 60, w: 1.5, p: 0, D: 0 }, { A: 25, w: 1.5, p: 0, D: 0 }]
     },
     {
-      name: 'Phase Shift',
-      params: ['amp', 'freq', 'phase', 'vShift'],
-      briefing: 'Four controls:\n  ■ H-SHIFT — slide left/right\n  ■ V-SHIFT — lift whole wave\n\nPlus VOLUME and PITCH.',
-      targets: [
-        { amp: 70, freq: 2.0, phase: 1.5, vShift: 0 },
-        { amp: 60, freq: 1.5, phase: 0, vShift: 50 },
-        { amp: 80, freq: 2.5, phase: 0.8, vShift: -30 }
-      ],
-      reveal: 'H-SHIFT = PHASE SHIFT (φ).\nV-SHIFT = VERTICAL TRANSLATION (D).\n\nf(x) = A·sin(ωx + φ) + D\n\nEvery term is under your control.'
+      name: 'The Spin', params: ['A', 'w'],
+      brief: 'New dial: SPIN SPEED.\nFaster spin = more humps on the same paper.\nRecreate both rides.',
+      rides: [{ A: 45, w: 3.0, p: 0, D: 0 }, { A: 65, w: 1.0, p: 0, D: 0 }]
     },
     {
-      name: 'Root Access',
-      params: ['amp', 'freq', 'phase', 'vShift'],
-      briefing: '⚠ LABELS FAILING ⚠\n\nRaw math only.\nYou already know what these do.',
-      targets: [
-        { amp: 50, freq: 3.0, phase: 0.5, vShift: 20, glitch: true },
-        { amp: 100, freq: 0.8, phase: 2.0, vShift: -40, glitch: true },
-        { amp: 70, freq: 1.8, phase: 1.0, vShift: 0, glitch: true }
-      ],
-      reveal: 'YOU MASTERED SINE WAVES.\n\nf(x) = A·sin(ωx + φ) + D\n\nA = amplitude  ω = frequency\nφ = phase shift  D = vertical shift\n\n★ SIGNAL HACKER ★'
+      name: 'The Offset', params: ['A', 'w', 'p', 'D'],
+      brief: 'Two more dials.\nSTART ANGLE — where on the wheel the dot begins.\nAXLE HEIGHT — raise or sink the whole wheel.\nRecreate both rides.',
+      rides: [{ A: 40, w: 2.0, p: 1.6, D: 25 }, { A: 55, w: 1.5, p: 3.1, D: -20 }]
+    },
+    {
+      name: 'Root Access', params: ['A', 'w', 'p', 'D'],
+      brief: '⚠ RECORDING CORRUPTED ⚠\nThe trace is dark. Only its formula survived:\n\nh(t) = 50 · sin(2.0·t + 1.5) + 20\n\nSet the dials by reading it. Then transmit.',
+      rides: [{ A: 50, w: 2.0, p: 1.5, D: 20, dark: true }],
+      equation: 'h(t) = 50 · sin(2.0·t + 1.5) + 20'
     }
   ];
 
-  $: lv = LEVELS[levelIx];
-  $: tgt = lv.targets[currentTarget];
-  $: glitched = !!tgt?.glitch || decodeMode;
+  let mission = 0;
+  let phase = 'briefing';              // briefing | play | reveal
+  let rideIx = 0;
+  let params = { A: 30, w: 1.0, p: 0, D: 0 };
+  let matched = false;
+  let score = 0, locksDone = 0;
+  let celebrating = false;
+  let recorded = false;
 
-  function initLevel(l) {
-    levelIx = l;
-    currentTarget = 0;
-    score = 0;
-    matchPct = 0;
-    unlocked = false;
-    phase = 'briefing';
-    randomizeParams();
-  }
+  $: M = MISSIONS[mission];
+  $: ride = M.rides[rideIx];
+  $: dark = !!ride.dark;
+  $: matchPct = computeMatch(params, ride, M.params);
+  $: matched = matchPct >= 88;
 
-  function loadTarget() {
-    target = { ...LEVELS[levelIx].targets[currentTarget] };
-    randomizeParams();
-    computeMatch();
-    phase = 'playing';
-  }
-
-  function randomizeParams() {
-    params = {
-      amp: 25 + Math.random() * 35,
-      freq: 1.5 + Math.random() * 2,
-      phase: Math.random() * Math.PI * 2,
-      vShift: (Math.random() - .5) * 60
-    };
-  }
-
-  function computeMatch() {
-    const active = lv.params;
+  function computeMatch(pr, tg, active) {
+    const spans = { A: 55, w: 2.8, p: Math.PI, D: 80 };
     let total = 0;
-    const spans = { amp: 60, freq: 2.5, phase: Math.PI, vShift: 80 };
-    for (const key of active) {
-      const diff = key === 'phase'
-        ? Math.min(Math.abs(params[key] - target[key]), Math.PI * 2 - Math.abs(params[key] - target[key]))
-        : Math.abs(params[key] - target[key]);
-      total += Math.max(0, 1 - diff / Math.max(spans[key], 1));
+    for (const k of active) {
+      const diff = k === 'p'
+        ? Math.min(Math.abs(pr.p - tg.p), Math.PI * 2 - Math.abs(pr.p - tg.p))
+        : Math.abs(pr[k] - tg[k]);
+      total += Math.max(0, 1 - diff / spans[k]);
     }
-    matchPct = Math.round((total / active.length) * 100);
-    unlocked = matchPct >= 85;
+    return Math.round((total / active.length) * 100);
   }
 
-  function onSlider(key, value) {
-    params[key] = Number(value);
-    computeMatch();
+  function tracePath(cfg) {
+    let d = '';
+    for (let i = 0; i <= 100; i++) {
+      const t = (i / 100) * (Math.PI * 2);
+      const x = PAPER_X + (i / 100) * PAPER_W;
+      const y = MID - (cfg.A * Math.sin(cfg.w * t + cfg.p) + cfg.D);
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    }
+    return d;
   }
 
-  function crackVault() {
-    if (!unlocked || phase !== 'playing') return;
-    phase = 'success';
-    score++;
-    playBonus();
+  function randomize(active) {
+    const next = { ...params };
+    for (const k of active) {
+      const r = RANGES[k];
+      next[k] = Math.round((r.min + Math.random() * (r.max - r.min)) / r.step) * r.step;
+    }
+    // never start already matched
+    params = next;
+    if (computeMatch(next, ride, active) >= 80) randomize(active);
+  }
+
+  function startMission(m) {
+    mission = m;
+    rideIx = 0;
+    phase = 'briefing';
+  }
+
+  function beginRide() {
+    phase = 'play';
+    randomize(MISSIONS[mission].params);
+  }
+
+  function lockRide() {
+    if (!matched || phase !== 'play' || celebrating) return;
+    celebrating = true;
+    locksDone += 1;
+    score += 120 + matchPct;
+    try { playBonus(); } catch (_) {}
     setTimeout(() => {
-      if (currentTarget < lv.targets.length - 1) {
-        currentTarget++;
-        loadTarget();
-      } else if (levelIx === LEVELS.length - 1 && !decodeMode) {
-        startDecode();
+      celebrating = false;
+      if (rideIx < M.rides.length - 1) {
+        rideIx += 1;
+        randomize(M.params);
+      } else if (mission < MISSIONS.length - 1) {
+        startMission(mission + 1);
       } else {
-        decodeMode = false;
-        enterReveal();
+        phase = 'reveal';
+        finishGame();
       }
-    }, 1100);
-  }
-
-  function startDecode() {
-    decodeMode = true;
-    target = { ...DECODE_TARGET };
-    randomizeParams();
-    computeMatch();
-    phase = 'playing';
-  }
-
-  function enterReveal() {
-    phase = 'reveal';
-    if (levelIx === LEVELS.length - 1) finishGame();
+    }, 900);
   }
 
   function finishGame() {
     if (recorded) return;
     recorded = true;
-    playAward();
+    try { playAward(); } catch (_) {}
     onDone({
       id: config.id,
-      reward: Math.min(15, 6 + score * 2),
-      arcadeScore: score * 100,
-      levelsCleared: 3,
-      perfectLevels: score >= LEVELS.reduce((n, l) => n + l.targets.length, 0) ? 3 : 2,
+      reward: Math.min(15, 7 + locksDone),
+      arcadeScore: score,
+      levelsCleared: 4,
+      perfectLevels: 4,
       patternFound: true,
       compared: true,
       transferFirstTry: true,
@@ -182,231 +158,147 @@
 
   function restart() {
     recorded = false;
-    decodeMode = false;
-    initLevel(0);
+    score = 0;
+    locksDone = 0;
+    startMission(0);
   }
 
-  const keyMap = {
-    '1': ['amp', -5], 'q': ['amp', 5],
-    '2': ['freq', -0.2], 'w': ['freq', 0.2],
-    '3': ['phase', -0.2], 'e': ['phase', 0.2],
-    '4': ['vShift', -6], 'r': ['vShift', 6]
+  function fmt(k) {
+    const v = params[k];
+    if (k === 'w') return v.toFixed(1);
+    if (k === 'p') return v.toFixed(1);
+    return String(Math.round(v));
+  }
+
+  startMission(0);
+
+  // wheel dot at trace start (t = 0): height A·sin(φ), horizontal A·cos(φ)
+  $: wheelDot = {
+    x: WHEEL_CX + params.A * Math.cos(params.p),
+    y: MID - params.D - params.A * Math.sin(params.p)
   };
-
-  function handleKey(e) {
-    if (phase !== 'playing') return;
-    const bind = keyMap[e.key];
-    if (bind) {
-      const [k, d] = bind;
-      let v = params[k] + d;
-      if (k === 'phase') v = ((v % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-      else v = Math.max(RANGES[k].min, Math.min(RANGES[k].max, v));
-      params[k] = v;
-      computeMatch();
-      e.preventDefault();
-    }
-    if (e.key === ' ' && unlocked) { crackVault(); e.preventDefault(); }
-  }
-
-  function fmt(key) {
-    const v = params[key];
-    if (glitched) {
-      return key === 'phase'
-        ? `${RAW_LABELS[key]}=${(v / Math.PI).toFixed(1)}π`
-        : `${RAW_LABELS[key]}=${key === 'freq' ? v.toFixed(1) : Math.round(v)}`;
-    }
-    return key === 'phase' ? `${(v / Math.PI).toFixed(1)}π` : key === 'freq' ? v.toFixed(1) : String(Math.round(v));
-  }
-
-  function draw() {
-    if (!ctx || !P) return;
-    ctx.fillStyle = P.bg;
-    ctx.fillRect(0, 0, W, H);
-    ctx.strokeStyle = P.border;
-    ctx.lineWidth = 0.5;
-    ctx.globalAlpha = 0.3;
-    for (let x = 0; x < W; x += 36) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
-    for (let y = 0; y < H; y += 36) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
-    ctx.globalAlpha = 1;
-
-    const cy = H / 2 + 10;
-    ctx.strokeStyle = withAlpha(P.textFaint, 0.4);
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
-
-    // target wave (dim) — hidden during the ROOT CHALLENGE: read the equation
-    if (!decodeMode) {
-      ctx.beginPath();
-      for (let x = 0; x <= W; x += 2) {
-        const y = cy - (target.amp * Math.sin(target.freq * (x / W) * Math.PI * 2 + target.phase) + target.vShift);
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = withAlpha(P.green, 0.35);
-      ctx.lineWidth = 3;
-      ctx.stroke();
-    }
-
-    // player wave (bright, glowing)
-    ctx.beginPath();
-    for (let x = 0; x <= W; x += 2) {
-      const y = cy - (params.amp * Math.sin(params.freq * (x / W) * Math.PI * 2 + params.phase) + params.vShift);
-      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = P.accent;
-    ctx.lineWidth = 2.5;
-    ctx.shadowColor = P.accent;
-    ctx.shadowBlur = 8;
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    // match tint
-    if (matchPct > 60) {
-      ctx.fillStyle = withAlpha(P.green, (matchPct - 60) / 400);
-      ctx.fillRect(0, 0, W, H);
-    }
-
-    // header strip
-    ctx.fillStyle = withAlpha(P.surface, 0.85);
-    ctx.fillRect(0, 0, W, 26);
-    ctx.fillStyle = P.textDim;
-    ctx.font = `bold 10px ${P.font}`;
-    ctx.fillText(decodeMode ? 'ROOT CHALLENGE · target wave DARK' : `VAULT ${levelIx + 1} · LOCK ${currentTarget + 1}/${lv.targets.length}`, 10, 17);
-    ctx.fillStyle = unlocked ? P.green : P.textDim;
-    ctx.fillText(`MATCH ${matchPct}%`, W / 2 - 24, 17);
-    if (unlocked) {
-      ctx.fillStyle = P.green;
-      ctx.fillText(decodeMode ? '◄ TRANSMIT READY' : '◄ BREACH READY', W - 118, 17);
-    }
-
-    // scanline + glitch
-    scanLine = (scanLine + 2) % H;
-    ctx.fillStyle = withAlpha(P.accent, 0.05);
-    ctx.fillRect(0, scanLine, W, 1);
-    if (glitched && frame % 28 < 5) {
-      ctx.fillStyle = withAlpha(P.accent, 0.06);
-      for (let i = 0; i < 2; i++) {
-        ctx.fillRect(Math.random() * W, Math.random() * H, Math.random() * 70, Math.random() * 2);
-      }
-    }
-
-    if (phase === 'success') {
-      ctx.fillStyle = withAlpha(P.green, 0.12);
-      ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = P.greenText;
-      ctx.font = `bold 20px ${P.font}`;
-      ctx.textAlign = 'center';
-      ctx.fillText('ACCESS GRANTED', W / 2, H / 2 - 20);
-      ctx.textAlign = 'start';
-    }
-  }
-
-  function loop() {
-    frame++;
-    if (phase !== 'briefing' && phase !== 'reveal' && c) draw();
-    af = requestAnimationFrame(loop);
-  }
-
-  onMount(() => {
-    ctx = c.getContext('2d');
-    P = resolvePalette();
-    const unwatch = watchTheme((next) => { P = next; });
-    initLevel(0);
-    af = requestAnimationFrame(loop);
-    return () => { cancelAnimationFrame(af); unwatch(); };
-  });
 </script>
-
-<svelte:window on:keydown={handleKey} />
 
 <ArcadeShell
   eyebrow={config.eyebrow}
   title={config.title}
-  level={levelIx + (phase === 'reveal' ? 1 : 0)}
-  totalLevels={LEVELS.length}
-  score={score * 100}
-  streak={score > 2 ? score : 0}
-  onExit={() => { if (phase === 'reveal' && levelIx === LEVELS.length - 1) finishGame(); onExit(); }}
+  level={mission + (phase === 'reveal' ? 1 : 0)}
+  totalLevels={MISSIONS.length}
+  score={score}
+  streak={locksDone > 2 ? locksDone : 0}
+  onExit={() => { if (phase === 'reveal') finishGame(); onExit(); }}
 >
-  <canvas
-    bind:this={c}
-    class="pf"
-    class:hidden={phase === 'briefing' || phase === 'reveal'}
-    width={W}
-    height={H}
-    aria-label="Signal Hacker oscilloscope"
-  ></canvas>
+  {#if phase === 'briefing'}
+    <div class="panel center" in:fly={{ x: reduceMotion ? 0 : 16, duration: reduceMotion ? 0 : 200 }}>
+      <div class="eyebrow">Mission {mission + 1} of {MISSIONS.length}</div>
+      <h2>{M.name}</h2>
+      <p class="pre">{M.brief}</p>
+      <button class="primary" on:click={beginRide}>Start the wheel</button>
+    </div>
 
-  {#if phase === 'playing' || phase === 'success'}
-    {#if decodeMode}
-      <div class="deq">
-        <span>Root challenge — the target wave is dark. Set the dials from the equation alone:</span>
-        <b>{DECODE_EQUATION}</b>
+  {:else if phase === 'reveal'}
+    <div class="panel center" in:fly={{ x: reduceMotion ? 0 : 16, duration: reduceMotion ? 0 : 200 }}>
+      <div class="eyebrow">Decoded</div>
+      <h2>A sine wave is a spinning wheel, seen sideways.</h2>
+      <p class="pre" style="color:var(--qx-green-text)">{'Every dial you turned is a term:\n\nWHEEL RADIUS = A — amplitude\nSPIN SPEED = ω — frequency\nSTART ANGLE = φ — phase shift\nAXLE HEIGHT = D — vertical shift'}</p>
+      <div class="formula">h(t) = A · sin(ω·t + φ) + D</div>
+      <div class="rewardbox"><div><span>Discovery</span><strong>{config.rewardLabel}</strong></div></div>
+      <div class="stack">
+        <button class="primary" on:click={() => { finishGame(); onExit(); }}>Return to workshops</button>
+        <button class="ghost" on:click={restart}>Ride again</button>
       </div>
+    </div>
+
+  {:else}
+    <svg class="scene" class:locked={celebrating} viewBox="0 0 {W} {H}" aria-label="Wheel and trace">
+      <!-- midline -->
+      <line class="mid" x1="8" y1={MID} x2={W - 8} y2={MID} />
+      <!-- paper zone -->
+      <rect class="paper" x={PAPER_X - 4} y="10" width={PAPER_W + 10} height={H - 20} rx="8" />
+      <!-- axle track -->
+      <line class="axletrack" x1={WHEEL_CX} y1={MID - 60} x2={WHEEL_CX} y2={MID + 60} />
+      <!-- wheel -->
+      <circle class="wheel" cx={WHEEL_CX} cy={MID - params.D} r={params.A} />
+      <circle class="axle" cx={WHEEL_CX} cy={MID - params.D} r="3.5" />
+      <line class="spoke" x1={WHEEL_CX} y1={MID - params.D} x2={wheelDot.x} y2={wheelDot.y} />
+      <circle class="rider" cx={wheelDot.x} cy={wheelDot.y} r="6" />
+      <!-- projection line from rider to trace start -->
+      <line class="proj" x1={wheelDot.x} y1={wheelDot.y} x2={PAPER_X} y2={MID - (params.A * Math.sin(params.p) + params.D)} />
+      <!-- target trace (recorded ride) -->
+      {#if !dark}
+        <path class="target" d={tracePath(ride)} />
+      {:else}
+        <text class="darknote" x={PAPER_X + PAPER_W / 2} y="32" text-anchor="middle">RECORDING DARK — read the formula</text>
+      {/if}
+      <!-- player trace -->
+      <path class="player" d={tracePath(params)} />
+      <!-- match strip -->
+      <text class="matchlabel" class:good={matched} x="12" y="24">MATCH {matchPct}%</text>
+      {#if celebrating}<text class="flash" x={W / 2} y={H - 14} text-anchor="middle">RIDE LOCKED ✓</text>{/if}
+    </svg>
+
+    {#if dark}
+      <div class="deq"><span>Root challenge — set the dials from the surviving formula:</span><b>{M.equation}</b></div>
+    {:else}
+      <p class="tip">Ride {rideIx + 1} of {M.rides.length}. Match the dim recorded trace with the bright one, then lock it.</p>
     {/if}
+
     <div class="controls">
-      {#each lv.params as key (key)}
+      {#each M.params as k (k)}
         <label class="ctl">
-          <span>{glitched ? RAW_LABELS[key] : LABELS[key]} · {fmt(key)}</span>
-          <input
-            type="range"
-            min={RANGES[key].min}
-            max={RANGES[key].max}
-            step={RANGES[key].step}
-            value={params[key]}
-            on:input={(e) => onSlider(key, e.currentTarget.value)}
-            disabled={phase !== 'playing'}
-            aria-label={LABELS[key]}
-          />
+          <span>{dark ? RAW[k] : LABELS[k]} · {fmt(k)}</span>
+          <input type="range" min={RANGES[k].min} max={RANGES[k].max} step={RANGES[k].step}
+            bind:value={params[k]} aria-label={LABELS[k]} />
         </label>
       {/each}
-      <button class="breach" class:armed={unlocked} on:click={crackVault} disabled={!unlocked || phase !== 'playing'}>
-        {unlocked ? (decodeMode ? 'TRANSMIT ▸' : 'BREACH ▸') : `MATCH ${matchPct}% — need 85%`}
+      <button class="lock" class:armed={matched} on:click={lockRide} disabled={!matched || celebrating}>
+        {matched ? (dark ? 'TRANSMIT ▸' : 'LOCK THE RIDE ▸') : `MATCH ${matchPct}% — need 88%`}
       </button>
-    </div>
-  {/if}
-
-  {#if phase === 'briefing'}
-    <div class="b" in:fly={{ x: reduceMotion ? 0 : 16, duration: reduceMotion ? 0 : 200 }}>
-      <h2>VAULT {levelIx + 1} — {lv.name}</h2>
-      <p style="white-space:pre-line">{lv.briefing}</p>
-      <button class="p" on:click={loadTarget}>Begin</button>
-    </div>
-  {:else if phase === 'reveal'}
-    <div class="r" in:fly={{ x: reduceMotion ? 0 : 16, duration: reduceMotion ? 0 : 200 }}>
-      <div class="k">Decoded</div>
-      <h2>{lv.name}</h2>
-      <p style="white-space:pre-line;color:var(--qx-green-text)">{lv.reveal}</p>
-      <p style="color:var(--qx-accent-text);font-weight:900">★ {score} locks cracked ★</p>
-      {#if levelIx < LEVELS.length - 1}
-        <button class="p" on:click={() => initLevel(levelIx + 1)}>Next vault</button>
-      {:else}
-        <div class="ra">
-          <button class="p" on:click={() => { finishGame(); onExit(); }}>Return to workshops</button>
-          <button class="s" on:click={restart}>Play again</button>
-        </div>
-      {/if}
     </div>
   {/if}
 </ArcadeShell>
 
 <style>
-  .b, .r { display: flex; flex-direction: column; gap: 10px; padding: 0 4px; align-items: center; text-align: center; }
-  .k { color: var(--qx-accent-text); font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
-  h2 { font-size: 20px; line-height: 1.15; margin: 4px 0 6px; font-weight: 950; }
-  p { color: var(--qx-text-dim); font-size: 13px; line-height: 1.5; margin: 0; }
-  .pf { width: 100%; border: 1px solid var(--qx-border); border-radius: 14px; background: var(--qx-bg); }
-  .pf.hidden { display: none; }
-  .deq { display: grid; gap: 4px; margin-top: 10px; border: 1.5px solid var(--qx-accent); border-radius: 12px; background: var(--qx-accent-soft); padding: 10px 12px; }
-  .deq span { color: var(--qx-text-dim); font-size: 11px; font-weight: 700; line-height: 1.35; }
+  .scene { width: 100%; border: 1px solid var(--qx-border); border-radius: 14px; background: var(--qx-bg); transition: box-shadow .2s; }
+  .scene.locked { box-shadow: 0 0 0 2px var(--qx-green); }
+  .mid { stroke: var(--qx-border-2); stroke-dasharray: 4 5; }
+  .paper { fill: var(--qx-surface); stroke: var(--qx-border); }
+  .axletrack { stroke: var(--qx-border-2); stroke-dasharray: 2 4; }
+  .wheel { fill: none; stroke: var(--qx-accent); stroke-width: 2; opacity: .85; }
+  .axle { fill: var(--qx-text); }
+  .spoke { stroke: var(--qx-accent); stroke-width: 2; }
+  .rider { fill: var(--qx-yellow); stroke: var(--qx-text); stroke-width: 1.5; }
+  .proj { stroke: var(--qx-yellow); stroke-width: 1.5; stroke-dasharray: 3 4; opacity: .8; }
+  .target { fill: none; stroke: var(--qx-green); stroke-width: 3; opacity: .35; }
+  .player { fill: none; stroke: var(--qx-accent); stroke-width: 2.5; }
+  .matchlabel { fill: var(--qx-text-faint); font-size: 11px; font-weight: 900; }
+  .matchlabel.good { fill: var(--qx-green-text); }
+  .darknote { fill: var(--qx-text-faint); font-size: 11px; font-weight: 800; letter-spacing: .05em; }
+  .flash { fill: var(--qx-green-text); font-size: 15px; font-weight: 950; }
+
+  .tip { color: var(--qx-text-dim); font-size: 12.5px; font-weight: 650; line-height: 1.4; margin: 9px 0 0; }
+  .deq { display: grid; gap: 4px; margin-top: 9px; border: 1.5px solid var(--qx-accent); border-radius: 12px; background: var(--qx-accent-soft); padding: 10px 12px; }
+  .deq span { color: var(--qx-text-dim); font-size: 11px; font-weight: 700; }
   .deq b { font-family: ui-monospace, Menlo, monospace; font-size: 14px; font-weight: 800; color: var(--qx-text); }
+
   .controls { display: grid; gap: 7px; margin-top: 10px; grid-template-columns: 1fr 1fr; }
   .ctl { display: grid; gap: 3px; }
   .ctl span { color: var(--qx-text-dim); font-size: 10px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
   .ctl input { width: 100%; accent-color: var(--qx-accent); min-height: 28px; }
-  .breach { grid-column: 1 / -1; min-height: 46px; border: 1.5px solid var(--qx-border-2); border-radius: 999px; background: var(--qx-surface); color: var(--qx-text-faint); font: 900 13px var(--qx-font); cursor: default; transition: background .2s, color .2s; }
-  .breach.armed { border: none; background: var(--qx-green); color: var(--qx-bg); cursor: pointer; }
-  .p, .s { min-height: 46px; width: 100%; border-radius: 999px; font-family: var(--qx-font); font-size: 14px; font-weight: 900; cursor: pointer; }
-  .p { border: none; background: var(--qx-accent); color: var(--qx-bg); }
-  .s { border: 1.5px solid var(--qx-border-2); background: var(--qx-surface); color: var(--qx-text-dim); margin-top: 6px; }
-  .ra { width: 100%; display: grid; gap: 7px; }
+  .lock { grid-column: 1 / -1; min-height: 46px; border: 1.5px solid var(--qx-border-2); border-radius: 999px; background: var(--qx-surface); color: var(--qx-text-faint); font: 900 13px var(--qx-font); cursor: default; transition: background .2s, color .2s; }
+  .lock.armed { border: none; background: var(--qx-green); color: var(--qx-bg); cursor: pointer; }
+
+  .panel { display: flex; flex-direction: column; gap: 10px; padding: 4px 2px; }
+  .panel.center { align-items: center; text-align: center; }
+  .eyebrow { color: var(--qx-accent-text); font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+  h2 { font-size: 20px; line-height: 1.15; margin: 2px 0 4px; font-weight: 950; }
+  .panel p { color: var(--qx-text-dim); font-size: 13px; line-height: 1.5; margin: 0; }
+  .pre { white-space: pre-line; }
+  .formula { font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 800; color: var(--qx-text); border: 1.5px solid var(--qx-accent); border-radius: 12px; background: var(--qx-accent-soft); padding: 10px 12px; }
+  .rewardbox { width: 100%; border: 1.5px solid var(--qx-green); border-radius: 14px; background: var(--qx-green-soft); padding: 12px; text-align: left; }
+  .rewardbox span { font-size: 9px; color: var(--qx-green-text); font-weight: 900; text-transform: uppercase; }
+  .rewardbox strong { display: block; font-size: 15px; }
+  .stack { width: 100%; display: grid; gap: 7px; }
+  .primary { min-height: 46px; border: none; border-radius: 999px; background: var(--qx-accent); color: var(--qx-bg); font: 900 14px var(--qx-font); cursor: pointer; width: 100%; }
+  .ghost { min-height: 46px; border: 1.5px solid var(--qx-border-2); border-radius: 999px; background: var(--qx-surface); color: var(--qx-text-dim); font: 900 14px var(--qx-font); cursor: pointer; width: 100%; }
 </style>
