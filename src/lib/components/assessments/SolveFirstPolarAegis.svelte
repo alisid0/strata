@@ -1,64 +1,29 @@
-<script>
-  import ArcadeShell from './ArcadeShell.svelte';import {fly} from 'svelte/transition';import {onMount} from 'svelte';
-  export let config;export let onDone=()=>{};export let onExit=()=>{};
-  const reduceMotion=typeof matchMedia!=='undefined'&&matchMedia('(prefers-reduced-motion:reduce)').matches;
-  let c,ctx,af,recorded=false,phase='briefing';
-  let W,H,cx,cy,frame=0,dt=0,lastTime=0,a=150,kSlider=1,enemies=[],particles=[],score=0,kills=0,totalKills=0;
-  let shakeAmt=0,shakeDur=0,levelState='LEVEL1',bossNodes=[],bossHP=6,bossTimerVal=10,levelTimer=0;
+<script>import ArcadeShell from './ArcadeShell.svelte';import {fly} from 'svelte/transition';import {onMount} from 'svelte';
+export let config;export let onDone=()=>{};export let onExit=()=>{};
+const reduceMotion=typeof matchMedia!=='undefined'&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+let c,ctx,af,recorded=false,phase='briefing';
+let W,H,cx,cy,frame=0,dt=0,lastTime=0,a=150,kSlider=1,enemies=[],particles=[],score=0,kills=0,totalKills=0;
+let shakeAmt=0,shakeDur=0,levelState='LEVEL1',bossNodes=[],bossHP=6,bossTimerVal=10,levelTimer=0;
 
-  function resize(){const dpr=window.devicePixelRatio||1;W=window.innerWidth;H=window.innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';const s=dpr;ctx.setTransform(s,0,0,s,0,0);cx=W/2;cy=H/2}
-
-  function spawnEnemyFn(dist,theta){return{x:cx+dist*Math.cos(theta),y:cy+dist*Math.sin(theta),speed:2.5+Math.random()*2,r:3+Math.random()*3}}
-  function enemyWeaponDist(e){const dx=e.x-cx,dy=e.y-cy,theta=Math.atan2(dy,dx),eR=Math.sqrt(dx*dx+dy*dy);if(kSlider===1)return Math.abs(eR-a);const wR=Math.abs(a*Math.cos(kSlider*theta));return Math.abs(eR-wR)}
-
-  function spawnParticles(x,y,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*8,vy:(Math.random()-.5)*8,life:25+Math.random()*15,color:Math.random()>.5?'#0ff':'#f0f'})}
-  function checkHits(){const T=14;for(let i=enemies.length-1;i>=0;i--){if(enemyWeaponDist(enemies[i])<T+enemies[i].r){spawnParticles(enemies[i].x,enemies[i].y,8);enemies.splice(i,1);kills++;totalKills++;score+=10}}
-    for(let i=enemies.length-1;i>=0;i--){const e=enemies[i],dx=e.x-cx,dy=e.y-cy;if(Math.sqrt(dx*dx+dy*dy)<12){shakeAmt=8;shakeDur=12;enemies.splice(i,1);if(score>0)score-=5}}}
-
-  function spawn(freq,corridors,spread){if(frame%freq===0){const th=corridors?corridors[Math.floor(Math.random()*corridors.length)]+(Math.random()-.5)*spread:Math.random()*Math.PI*2;enemies.push(spawnEnemyFn(Math.min(W,H)*1.2,th))}}
-
-  function setLevel(s){enemies=[];particles=[];kills=0;levelTimer=0;bossHP=6;levelState=s;if(s==='BOSS'){a=200;kSlider=6;bossNodes=[];for(let i=0;i<6;i++){const th=i*Math.PI/3-Math.PI/6;bossNodes.push({x:cx+200*Math.cos(th),y:cy+200*Math.sin(th),alive:true,th})}bossTimerVal=10}}
-
-  function checkBossHits(){for(const n of bossNodes){if(!n.alive)continue;const dx=n.x-cx,dy=n.y-cy,theta=Math.atan2(dy,dx),eR=Math.sqrt(dx*dx+dy*dy),wR=Math.abs(a*Math.cos(kSlider*theta));if(Math.abs(eR-wR)<20){n.alive=false;bossHP--;spawnParticles(n.x,n.y,15)}}if(bossHP<=0)finishGame()}
-
-  function finishGame(){if(recorded)return;recorded=true;phase='reveal';onDone({id:config.id,reward:Math.min(15,8+totalKills/50),arcadeScore:totalKills*10,levelsCleared:4,perfectLevels:4,patternFound:true,compared:true,usedHint:false})}
-
-  function draw(){
-    ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(-20,-20,W+40,H+40);ctx.globalCompositeOperation='lighter';
-    ctx.save();if(shakeDur>0){ctx.translate((Math.random()-.5)*shakeAmt,(Math.random()-.5)*shakeAmt);shakeAmt*=.85;shakeDur--}
-    ctx.beginPath();if(kSlider===1)ctx.arc(cx,cy,a,0,Math.PI*2);else{let f=true;for(let th=0;th<=Math.PI*2;th+=0.03){const r=Math.abs(a*Math.cos(kSlider*th)),x=cx+r*Math.cos(th),y=cy+r*Math.sin(th);f?(ctx.moveTo(x,y),f=false):ctx.lineTo(x,y)}}
-    ctx.strokeStyle='var(--qx-accent)';ctx.lineWidth=3;ctx.shadowColor='var(--qx-accent)';ctx.shadowBlur=20;ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='#fff';ctx.lineWidth=0.8;ctx.globalAlpha=.4;ctx.stroke();ctx.globalAlpha=1;
-    for(const e of enemies){const dx=e.x-cx,dy=e.y-cy;e.x-=(dx/Math.sqrt(dx*dx+dy*dy))*e.speed;e.y-=(dy/Math.sqrt(dx*dx+dy*dy))*e.speed;ctx.fillStyle='var(--qx-danger)';ctx.shadowColor='var(--qx-danger)';ctx.shadowBlur=6;ctx.fillRect(e.x-e.r,e.y-e.r,e.r*2,e.r*2);ctx.shadowBlur=0}
-    for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vx*=.92;p.vy*=.92;p.life--;if(p.life<=0){particles.splice(i,1);continue}ctx.globalAlpha=p.life/40;ctx.fillStyle=p.color;ctx.fillRect(p.x-1.5,p.y-1.5,3,3);ctx.globalAlpha=1}
-    for(const n of bossNodes){if(!n.alive)continue;ctx.strokeStyle='var(--qx-pink)';ctx.lineWidth=4;ctx.shadowColor='var(--qx-pink)';ctx.shadowBlur=20;ctx.beginPath();ctx.arc(n.x,n.y,12,0,Math.PI*2);ctx.stroke();ctx.fillStyle='var(--qx-pink)';ctx.beginPath();ctx.arc(n.x,n.y,5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}
-    ctx.shadowBlur=0;ctx.fillStyle='#fff';ctx.shadowColor='#fff';ctx.shadowBlur=20;ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.restore();ctx.globalCompositeOperation='source-over'
-    if(levelState==='BOSS'){bossTimerVal-=dt;if(bossTimerVal<=0&&phase!=='reveal')phase='gameover'}
-  }
-
-  function loop(ts){dt=(ts-lastTime)/1000;lastTime=ts;if(dt>.1)dt=.1;frame++;
-    if(levelState==='LEVEL1'){spawn(2,null,0);checkHits();if(kills>=30)setLevel('LEVEL2')}
-    else if(levelState==='LEVEL2'){spawn(2,[0,Math.PI/2,Math.PI,3*Math.PI/2],.15);checkHits();if(kills>=60)setLevel('LEVEL3')}
-    else if(levelState==='LEVEL3'){const w=Math.floor(frame/300)%2;const p=w===0?[0,2*Math.PI/3,4*Math.PI/3]:[0,2*Math.PI/5,4*Math.PI/5,6*Math.PI/5,8*Math.PI/5];spawn(1,p,.1);checkHits();levelTimer+=dt;if(levelTimer>=30)setLevel('BOSS')}
-    else if(levelState==='BOSS'){spawn(4,null,0);checkHits()}
-    if(phase==='playing')draw();af=requestAnimationFrame(loop)}
-
-  function start(){phase='playing';setLevel('LEVEL1')}
-  function restart(){recorded=false;phase='briefing';totalKills=0;score=0}
-
-  onMount(()=>{ctx=c.getContext('2d');resize();window.addEventListener('resize',resize);af=requestAnimationFrame(loop);return()=>{cancelAnimationFrame(af);window.removeEventListener('resize',resize)}});
+function resize(){const dpr=window.devicePixelRatio||1;W=window.innerWidth;H=window.innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);cx=W/2;cy=H/2}
+function spawnEnemyFn(dist,theta){return{x:cx+dist*Math.cos(theta),y:cy+dist*Math.sin(theta),speed:2.5+Math.random()*2,r:3+Math.random()*3}}
+function enemyWeaponDist(e){const dx=e.x-cx,dy=e.y-cy,theta=Math.atan2(dy,dx),eR=Math.sqrt(dx*dx+dy*dy);if(kSlider===1)return Math.abs(eR-a);const wR=Math.abs(a*Math.cos(kSlider*theta));return Math.abs(eR-wR)}
+function spawnParticles(x,y,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*8,vy:(Math.random()-.5)*8,life:25+Math.random()*15,color:Math.random()>.5?'#0ff':'#f0f'})}
+function checkHits(){const T=14;for(let i=enemies.length-1;i>=0;i--){if(enemyWeaponDist(enemies[i])<T+enemies[i].r){spawnParticles(enemies[i].x,enemies[i].y,8);enemies.splice(i,1);kills++;totalKills++;score+=10}}for(let i=enemies.length-1;i>=0;i--){const e=enemies[i],dx=e.x-cx,dy=e.y-cy;if(Math.sqrt(dx*dx+dy*dy)<12){shakeAmt=8;shakeDur=12;enemies.splice(i,1);if(score>0)score-=5}}}
+function spawn(freq,corridors,spread){if(frame%freq===0){const th=corridors?corridors[Math.floor(Math.random()*corridors.length)]+(Math.random()-.5)*spread:Math.random()*Math.PI*2;enemies.push(spawnEnemyFn(Math.min(W,H)*1.2,th))}}
+function setLevel(s){enemies=[];particles=[];kills=0;levelTimer=0;bossHP=6;levelState=s;if(s==='BOSS'){a=200;kSlider=6;bossNodes=[];for(let i=0;i<6;i++){const th=i*Math.PI/3-Math.PI/6;bossNodes.push({x:cx+200*Math.cos(th),y:cy+200*Math.sin(th),alive:true,th})}bossTimerVal=10}}
+function checkBossHits(){for(const n of bossNodes){if(!n.alive)continue;const dx=n.x-cx,dy=n.y-cy,theta=Math.atan2(dy,dx),eR=Math.sqrt(dx*dx+dy*dy),wR=Math.abs(a*Math.cos(kSlider*theta));if(Math.abs(eR-wR)<20){n.alive=false;bossHP--;spawnParticles(n.x,n.y,15)}}if(bossHP<=0)finishGame()}
+function finishGame(){if(recorded)return;recorded=true;phase='reveal';onDone({id:config.id,reward:Math.min(15,8+totalKills/50),arcadeScore:totalKills*10,levelsCleared:4,perfectLevels:4,patternFound:true,compared:true,usedHint:false})}
+function draw(){if(!ctx)return;ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(-20,-20,W+40,H+40);ctx.globalCompositeOperation='lighter';ctx.save();if(shakeDur>0){ctx.translate((Math.random()-.5)*shakeAmt,(Math.random()-.5)*shakeAmt);shakeAmt*=.85;shakeDur--}ctx.beginPath();if(kSlider===1)ctx.arc(cx,cy,a,0,Math.PI*2);else{let f=true;for(let th=0;th<=Math.PI*2;th+=0.03){const r=Math.abs(a*Math.cos(kSlider*th)),x=cx+r*Math.cos(th),y=cy+r*Math.sin(th);f?(ctx.moveTo(x,y),f=false):ctx.lineTo(x,y)}}ctx.strokeStyle='#0ff';ctx.lineWidth=3;ctx.shadowColor='#0ff';ctx.shadowBlur=20;ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='#fff';ctx.lineWidth=0.8;ctx.globalAlpha=.4;ctx.stroke();ctx.globalAlpha=1;for(const e of enemies){const dx=e.x-cx,dy=e.y-cy;e.x-=(dx/Math.sqrt(dx*dx+dy*dy))*e.speed;e.y-=(dy/Math.sqrt(dx*dx+dy*dy))*e.speed;ctx.fillStyle='#f44';ctx.shadowColor='#f44';ctx.shadowBlur=6;ctx.fillRect(e.x-e.r,e.y-e.r,e.r*2,e.r*2);ctx.shadowBlur=0}for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vx*=.92;p.vy*=.92;p.life--;if(p.life<=0){particles.splice(i,1);continue}ctx.globalAlpha=p.life/40;ctx.fillStyle=p.color;ctx.fillRect(p.x-1.5,p.y-1.5,3,3);ctx.globalAlpha=1}for(const n of bossNodes){if(!n.alive)continue;ctx.strokeStyle='#f0f';ctx.lineWidth=4;ctx.shadowColor='#f0f';ctx.shadowBlur=20;ctx.beginPath();ctx.arc(n.x,n.y,12,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#f0f';ctx.beginPath();ctx.arc(n.x,n.y,5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}ctx.shadowBlur=0;ctx.fillStyle='#fff';ctx.shadowColor='#fff';ctx.shadowBlur=20;ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.restore();ctx.globalCompositeOperation='source-over';if(levelState==='BOSS'){bossTimerVal-=dt;if(bossTimerVal<=0&&phase!=='reveal')phase='gameover'}}
+function loop(ts){dt=(ts-lastTime)/1000;lastTime=ts;if(dt>.1)dt=.1;frame++;if(levelState==='LEVEL1'){spawn(2,null,0);checkHits();if(kills>=30)setLevel('LEVEL2')}else if(levelState==='LEVEL2'){spawn(2,[0,Math.PI/2,Math.PI,3*Math.PI/2],.15);checkHits();if(kills>=60)setLevel('LEVEL3')}else if(levelState==='LEVEL3'){const w=Math.floor(frame/300)%2;const p=w===0?[0,2*Math.PI/3,4*Math.PI/3]:[0,2*Math.PI/5,4*Math.PI/5,6*Math.PI/5,8*Math.PI/5];spawn(1,p,.1);checkHits();levelTimer+=dt;if(levelTimer>=30)setLevel('BOSS')}else if(levelState==='BOSS'){spawn(4,null,0);checkHits()}if(phase==='playing'&&c)draw();af=requestAnimationFrame(loop)}
+function start(){phase='playing';setLevel('LEVEL1')}
+function restart(){recorded=false;phase='briefing';totalKills=0;score=0}
+onMount(()=>{ctx=c.getContext('2d');resize();window.addEventListener('resize',resize);af=requestAnimationFrame(loop);return()=>{cancelAnimationFrame(af);window.removeEventListener('resize',resize)}});
 </script>
-
 <ArcadeShell eyebrow={config.eyebrow} title={config.title} level={totalKills} totalLevels={100} score={totalKills*10} streak={kills>10?kills:0} onExit={onExit}>
-  {#if phase==='briefing'}
-    <div class="b" in:fly={{x:reduceMotion?0:16,duration:reduceMotion?0:200}}><h2>Polar Aegis</h2><p style="white-space:pre-line">Your weapon is a math equation.\n\n  ■ ENERGY RADIUS (a) — expands the shield\n  ■ RESONANCE (k) — morphs it into petals\n\nMorph it. Master it. Decode it.</p><button class="p" on:click={start}>▶ ACTIVATE</button></div>
-  {:else if phase==='reveal'}
-    <div class="r" in:fly={{x:reduceMotion?0:16,duration:reduceMotion?0:200}}><div class="k">Decoded</div><h2>Weapon Mastered</h2><p style="white-space:pre-line;color:var(--qx-green-text)">r = a · cos(k · θ)\n\na = radius (size)\nk = petals (resonance)\n\nYou wielded a polar equation\nas a weapon of mass destruction.\nMath is the source code of reality.</p><p style="color:var(--qx-accent-text);font-weight:900">★ {totalKills} enemies destroyed ★</p>
-      <div class="ra"><button class="p" on:click={onExit}>Return to workshops</button><button class="s" on:click={restart}>Play again</button></div></div>
-  {:else if phase==='gameover'}
-    <div class="r" in:fly={{x:reduceMotion?0:16,duration:reduceMotion?0:200}}><h2>System Failure</h2><p>Enemies breached the core.</p><p style="color:var(--qx-accent-text);font-weight:900">Kills: {totalKills}</p><button class="p" on:click={restart}>Retry</button></div>
-  {:else}
-    <canvas bind:this={c} class="pf" aria-label="Polar Aegis. Morph your polar equation weapon."></canvas>
-  {/if}
+  <canvas bind:this={c} class="pf" class:hidden={phase==='briefing'||phase==='reveal'||phase==='gameover'} aria-label="Polar Aegis"></canvas>
+  {#if phase==='briefing'}<div class="b" in:fly={{x:reduceMotion?0:16,duration:reduceMotion?0:200}}><h2>Polar Aegis</h2><p style="white-space:pre-line">Your weapon is a math equation.\n\n  ■ ENERGY RADIUS (a) — expands the shield\n  ■ RESONANCE (k) — morphs it into petals\n\nMorph it. Master it. Decode it.</p><button class="p" on:click={start}>▶ ACTIVATE</button></div>
+  {:else if phase==='reveal'}<div class="r" in:fly={{x:reduceMotion?0:16,duration:reduceMotion?0:200}}><div class="k">Decoded</div><h2>Weapon Mastered</h2><p style="white-space:pre-line;color:var(--qx-green-text)">r = a · cos(k · θ)\n\na = radius (size)\nk = petals (resonance)\n\nYou wielded a polar equation\nas a weapon of mass destruction.\nMath is the source code of reality.</p><p style="color:var(--qx-accent-text);font-weight:900">★ {totalKills} enemies destroyed ★</p><div class="ra"><button class="p" on:click={onExit}>Return to workshops</button><button class="s" on:click={restart}>Play again</button></div></div>
+  {:else if phase==='gameover'}<div class="r" in:fly={{x:reduceMotion?0:16,duration:reduceMotion?0:200}}><h2>System Failure</h2><p>Enemies breached the core.</p><p style="color:var(--qx-accent-text);font-weight:900">Kills: {totalKills}</p><button class="p" on:click={restart}>Retry</button></div>{/if}
 </ArcadeShell>
-
-<style>.b,.r{display:flex;flex-direction:column;gap:10px;padding:0 4px;align-items:center;text-align:center}.k{color:var(--qx-accent-text);font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}h2{font-size:20px;line-height:1.15;margin:4px 0 6px;font-weight:950}p{color:var(--qx-text-dim);font-size:13px;line-height:1.5;margin:0}.pf{width:100%;height:60vh;min-height:320px;border:1px solid var(--qx-border);border-radius:14px;background:#000}.p,.s{min-height:46px;width:100%;border-radius:999px;font-family:var(--qx-font);font-size:14px;font-weight:900;cursor:pointer}.p{border:none;background:var(--qx-accent);color:var(--qx-bg)}.s{border:1.5px solid var(--qx-border-2);background:var(--qx-surface);color:var(--qx-text-dim);margin-top:6px}.ra{width:100%;display:grid;gap:7px}</style>
+<style>.b,.r{display:flex;flex-direction:column;gap:10px;padding:0 4px;align-items:center;text-align:center}.k{color:var(--qx-accent-text);font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}h2{font-size:20px;line-height:1.15;margin:4px 0 6px;font-weight:950}p{color:var(--qx-text-dim);font-size:13px;line-height:1.5;margin:0}.pf{width:100%;height:60vh;min-height:320px;border:1px solid var(--qx-border);border-radius:14px;background:#000}.pf.hidden{display:none}.p,.s{min-height:46px;width:100%;border-radius:999px;font-family:var(--qx-font);font-size:14px;font-weight:900;cursor:pointer}.p{border:none;background:var(--qx-accent);color:var(--qx-bg)}.s{border:1.5px solid var(--qx-border-2);background:var(--qx-surface);color:var(--qx-text-dim);margin-top:6px}.ra{width:100%;display:grid;gap:7px}</style>
