@@ -32,7 +32,7 @@ const configs = {
     track: 'computer',
     kind: 'memory-allocation',
     eyebrow: 'Unmarked problem 15',
-    title: 'Clear the Launch Rack',
+    title: 'RAM Page: Warehouse Worker',
     sub: 'test',
     rewardLabel: 'Memory Marshal'
   }

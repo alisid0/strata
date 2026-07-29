@@ -1,122 +1,352 @@
 <script>
+  import { onMount } from 'svelte';
   import SolveFirstPause from './SolveFirstPause.svelte';
 
   export let config;
   export let onDone = () => {};
   export let onExit = () => {};
 
-  const STEPS = [
-    { id: 'probe', label: 'Test' },
-    { id: 'compact', label: 'Repack' },
-    { id: 'split', label: 'Split' },
-    { id: 'transfer', label: 'Deploy' },
-    { id: 'reveal', label: 'Reveal' }
+  const COLS = 6;
+  const ROWS = 3;
+  const CELL_COUNT = COLS * ROWS;
+  const RELEASE_IDS = ['B', 'D', 'F'];
+  const ALLOCATE_QUEUE = [
+    { id: 'A', size: 3, process: 'NAV' },
+    { id: 'B', size: 2, process: 'COMMS' },
+    { id: 'C', size: 3, process: 'MAP' },
+    { id: 'D', size: 2, process: 'AUDIO' },
+    { id: 'E', size: 3, process: 'NAV' },
+    { id: 'F', size: 2, process: 'COMMS' }
+  ];
+  const FRAGMENTED = [
+    { id: 'A', size: 2, start: 0, process: 'NAV' },
+    { id: 'C', size: 2, start: 3, process: 'MAP' },
+    { id: 'E', size: 2, start: 6, process: 'NAV' },
+    { id: 'G', size: 2, start: 9, process: 'SENSOR' },
+    { id: 'H', size: 2, start: 12, process: 'DISPLAY' }
+  ];
+  const LEAK_LAYOUT = [
+    { id: 'A', size: 2, start: 0, process: 'NAV' },
+    { id: 'L', size: 2, start: 3, process: 'MAP', leaked: true },
+    { id: 'M', size: 2, start: 6, process: 'MAP' },
+    { id: 'G', size: 2, start: 9, process: 'SENSOR' },
+    { id: 'H', size: 2, start: 12, process: 'DISPLAY' }
+  ];
+  const PAGED_LAYOUT = [
+    { id: 'A', size: 2, start: 0, process: 'NAV' },
+    { id: 'B', size: 2, start: 3, process: 'COMMS' },
+    { id: 'C', size: 2, start: 6, process: 'SENSOR' },
+    { id: 'D', size: 2, start: 9, process: 'DISPLAY' },
+    { id: 'E', size: 2, start: 12, process: 'AUDIO' }
   ];
 
-  const SCATTERED = ['A', 'A', null, null, 'B', 'B', null, null, 'C', 'C', null, null];
-  const PACKED = ['A', 'A', 'B', 'B', 'C', 'C', null, null, null, null, null, null];
-  const SPLIT_RACK = [null, 'A', 'A', null, null, 'B', null, null, 'C', 'C', null, 'D'];
+  const STAGES = ['allocate', 'free', 'fragment', 'leak', 'compact', 'page', 'transfer', 'reveal'];
+  const STAGE_LABELS = {
+    allocate: 'Place',
+    free: 'Clear',
+    fragment: 'Fit',
+    leak: 'Fault',
+    compact: 'Move',
+    page: 'Slice',
+    transfer: 'Run',
+    reveal: 'Reveal'
+  };
 
   let phase = 'intro';
-  let selectedSize = 1;
-  let tested = new Set();
-  let probeResult = null;
-  let packed = false;
-  let compactResult = null;
-  let splitSelection = [];
-  let splitDone = false;
-  let transferAnswers = {};
-  let transferWrong = 0;
+  let allocations = [];
+  let incoming = [];
+  let carrying = null;
+  let forklift = { row: 0, col: -1 };
+  let message = '';
+  let messageTone = 'neutral';
+  let allocateComplete = false;
+  let fragmentFailed = false;
+  let leakAttempted = false;
+  let leakCleared = false;
+  let compactMoves = 0;
+  let compactComplete = false;
+  let pageComplete = false;
+  let transferComplete = false;
+  let revealBeat = 0;
   let usedHint = false;
   let showHint = false;
+  let placementFailures = 0;
+  let transferFailures = 0;
   let recorded = false;
 
-  $: testedAll = [1, 2, 3].every((size) => tested.has(size));
-  $: rack = packed ? PACKED : SCATTERED;
-  $: transferDone = transferAnswers.camera === 'together' && transferAnswers.tiles === 'separate';
-  $: reward = Math.min(15, 10 + (usedHint ? 0 : 2) + (transferWrong === 0 ? 3 : 1));
+  $: occupied = buildOccupied(allocations);
+  $: cells = Array.from({ length: CELL_COUNT }, (_, index) => occupied.get(index) || null);
+  $: currentRequest = incoming[0] || null;
+  $: usedCells = occupied.size;
+  $: freeCells = CELL_COUNT - usedCells;
+  $: largestGap = getLargestGap(allocations);
+  $: pageRows = allocations
+    .filter((item) => item.parent)
+    .sort((a, b) => a.page - b.page)
+    .map((item) => ({ page: item.page, frame: item.start }));
+  $: releaseRemaining = RELEASE_IDS.filter((id) => allocations.some((item) => item.id === id)).length;
+  $: stageIndex = Math.max(0, STAGES.indexOf(phase));
+  $: reward = Math.min(15, 10 + (usedHint ? 0 : 2) + (transferFailures ? 1 : 3));
 
-  function begin() {
-    phase = 'probe';
+  function buildOccupied(items, ignoreId = null) {
+    const map = new Map();
+    for (const item of items) {
+      if (ignoreId && item.id === ignoreId) continue;
+      for (let offset = 0; offset < item.size; offset += 1) map.set(item.start + offset, item);
+    }
+    return map;
   }
 
-  function tryProbe() {
-    tested = new Set([...tested, selectedSize]);
-    probeResult = selectedSize <= 2
-      ? { ok: true, text: `${selectedSize}-slot job fits inside one opening.` }
-      : { ok: false, text: 'Rejected. Six slots are open, but none of the openings is three slots wide.' };
+  function getLargestGap(items) {
+    const map = buildOccupied(items);
+    let largest = 0;
+    for (let row = 0; row < ROWS; row += 1) {
+      let run = 0;
+      for (let col = 0; col < COLS; col += 1) {
+        if (map.has(row * COLS + col)) run = 0;
+        else {
+          run += 1;
+          largest = Math.max(largest, run);
+        }
+      }
+    }
+    return largest;
+  }
+
+  function atIndex() {
+    return forklift.col < 0 ? -1 : forklift.row * COLS + forklift.col;
+  }
+
+  function allocationAt(index) {
+    return occupied.get(index) || null;
+  }
+
+  function canPlace(item, start) {
+    if (!item || start < 0 || start >= CELL_COUNT) return false;
+    const col = start % COLS;
+    if (col + item.size > COLS) return false;
+    for (let offset = 0; offset < item.size; offset += 1) {
+      if (occupied.has(start + offset)) return false;
+    }
+    return true;
+  }
+
+  function setFeedback(text, tone = 'neutral') {
+    message = text;
+    messageTone = tone;
+  }
+
+  function resetForklift() {
+    forklift = { row: 0, col: -1 };
+    carrying = null;
+  }
+
+  function begin() {
+    phase = 'allocate';
+    allocations = [];
+    incoming = ALLOCATE_QUEUE.map((item) => ({ ...item }));
+    resetForklift();
+    setFeedback('Drive to the conveyor gate, collect each package, and choose where it should live.');
+  }
+
+  function move(direction) {
+    if (phase === 'intro' || phase === 'reveal') return;
+    let { row, col } = forklift;
+    if (direction === 'left') {
+      if (col > 0) col -= 1;
+      else if (col === 0 && row === 0) col = -1;
+    } else if (direction === 'right') {
+      if (col === -1) col = 0;
+      else if (col < COLS - 1) col += 1;
+    } else if (direction === 'up' && col >= 0) row = Math.max(0, row - 1);
+    else if (direction === 'down' && col >= 0) row = Math.min(ROWS - 1, row + 1);
+    forklift = { row, col };
+  }
+
+  function interact() {
+    if (!STAGES.includes(phase) || phase === 'reveal') return;
+    const index = atIndex();
+
+    if (index === -1) {
+      if (carrying) {
+        incoming = [carrying, ...incoming];
+        setFeedback(`${carrying.id} returned to the conveyor.`, 'neutral');
+        carrying = null;
+      } else if (currentRequest) {
+        carrying = currentRequest;
+        incoming = incoming.slice(1);
+        setFeedback(`${carrying.id} collected: ${carrying.size} cell${carrying.size === 1 ? '' : 's'} wide.`, 'neutral');
+      } else {
+        setFeedback('The conveyor is empty.', 'neutral');
+      }
+      return;
+    }
+
+    if (carrying) {
+      if (!canPlace(carrying, index)) {
+        placementFailures += 1;
+        if (phase === 'fragment') fragmentFailed = true;
+        if (phase === 'transfer') transferFailures += 1;
+        setFeedback(
+          `${carrying.id} needs ${carrying.size} adjacent open cell${carrying.size === 1 ? '' : 's'} on one row.`,
+          'bad'
+        );
+        return;
+      }
+      const placed = { ...carrying, start: index };
+      allocations = [...allocations, placed];
+      setFeedback(`${placed.id} placed at floor cell ${index + 1}.`, 'good');
+      if (phase === 'compact' && placed.movedFrom !== undefined) compactMoves += 1;
+      carrying = null;
+      afterPlacement(placed);
+      return;
+    }
+
+    const item = allocationAt(index);
+    if (!item) {
+      setFeedback('Open cell. Bring a package here to allocate it.', 'neutral');
+      return;
+    }
+    if (item.leaked) {
+      leakAttempted = true;
+      setFeedback(`${item.id} is locked. Its release signal is gone, but the floor still marks it as occupied.`, 'bad');
+      return;
+    }
+    if (item.released) {
+      allocations = allocations.filter((entry) => entry.id !== item.id);
+      setFeedback(`${item.id} cleared. ${item.size} cells are free again.`, 'good');
+      return;
+    }
+    if (phase === 'compact') {
+      allocations = allocations.filter((entry) => entry.id !== item.id);
+      carrying = { ...item, movedFrom: item.start };
+      setFeedback(`${item.id} lifted. The warehouse is paused while live data moves.`, 'neutral');
+      return;
+    }
+    setFeedback(`${item.id} is still active. It cannot be cleared yet.`, 'bad');
+  }
+
+  function afterPlacement(item) {
+    if (phase === 'allocate' && incoming.length === 0 && allocations.length === ALLOCATE_QUEUE.length) {
+      allocateComplete = true;
+    }
+    if (phase === 'compact' && item.id === 'X') compactComplete = true;
+    if (phase === 'page' && item.parent === 'P' && allocations.filter((entry) => entry.parent === 'P').length === 4) {
+      pageComplete = true;
+    }
+    if (phase === 'transfer') {
+      const camDone = allocations.some((entry) => entry.id === 'CAM');
+      const mapPages = allocations.filter((entry) => entry.parent === 'MAP').length;
+      if (camDone && mapPages === 4) transferComplete = true;
+    }
+  }
+
+  function enterFree() {
+    phase = 'free';
+    allocateComplete = false;
+    allocations = allocations.map((item) => RELEASE_IDS.includes(item.id) ? { ...item, released: true } : item);
+    incoming = [];
+    resetForklift();
+    setFeedback('Three customers have finished. Find the pulsing packages and clear them.');
+  }
+
+  function enterFragment() {
+    phase = 'fragment';
+    allocations = FRAGMENTED.map((item) => ({ ...item }));
+    incoming = [{ id: 'X', size: 5, process: 'SCAN' }];
+    fragmentFailed = false;
+    resetForklift();
+    setFeedback('A five-cell scan job is waiting. The dashboard says eight cells are free.');
+  }
+
+  function enterLeak() {
+    phase = 'leak';
+    allocations = LEAK_LAYOUT.map((item) => ({ ...item }));
+    incoming = [];
+    leakAttempted = false;
+    leakCleared = false;
+    resetForklift();
+    setFeedback('Package L has no release signal. Drive to it and try to clear it.');
+  }
+
+  function killProcess() {
+    allocations = allocations.filter((item) => item.process !== 'MAP');
+    leakCleared = true;
+    setFeedback('MAP process terminated. Its leaked package and its useful package were both reclaimed.', 'good');
   }
 
   function enterCompact() {
     phase = 'compact';
-    packed = false;
-    compactResult = null;
-    showHint = false;
+    allocations = FRAGMENTED.map((item) => ({ ...item }));
+    incoming = [{ id: 'X', size: 5, process: 'SCAN' }];
+    compactMoves = 0;
+    compactComplete = false;
+    resetForklift();
+    setFeedback('Move live packages until one row has five adjacent open cells. Every move pauses the floor.');
   }
 
-  function choosePacking(value) {
-    packed = value === 'packed';
-    compactResult = null;
+  function enterPage() {
+    phase = 'page';
+    allocations = PAGED_LAYOUT.map((item) => ({ ...item }));
+    incoming = [{ id: 'P', size: 4, process: 'FORECAST' }];
+    pageComplete = false;
+    resetForklift();
+    setFeedback('A four-cell forecast package has arrived. No row has four adjacent openings.');
   }
 
-  function tryCompact() {
-    compactResult = packed
-      ? { ok: true, text: 'Accepted. No capacity was added; moving the occupied blocks created one usable opening.' }
-      : { ok: false, text: 'Still rejected. The same three narrow openings remain.' };
-  }
-
-  function enterSplit() {
-    phase = 'split';
-    splitSelection = [];
-    splitDone = false;
-    showHint = false;
-  }
-
-  function toggleSplit(index) {
-    if (SPLIT_RACK[index] || splitDone) return;
-    splitSelection = splitSelection.includes(index)
-      ? splitSelection.filter((slot) => slot !== index)
-      : splitSelection.length < 4
-        ? [...splitSelection, index]
-        : splitSelection;
-  }
-
-  function dispatchSplit() {
-    if (splitSelection.length !== 4) return;
-    splitDone = true;
+  function sliceCarried() {
+    if (!carrying || carrying.size <= 1 || !['page', 'transfer'].includes(phase)) return;
+    const parent = carrying.id;
+    const pieces = Array.from({ length: carrying.size }, (_, page) => ({
+      id: `${parent}${page}`,
+      parent,
+      page,
+      size: 1,
+      process: carrying.process
+    }));
+    carrying = pieces[0];
+    incoming = [...pieces.slice(1), ...incoming];
+    setFeedback(`${parent} split into ${pieces.length} tracked pieces. The clipboard will remember every location.`, 'good');
   }
 
   function enterTransfer() {
     phase = 'transfer';
-    transferAnswers = {};
-    transferWrong = 0;
-    showHint = false;
+    allocations = PAGED_LAYOUT.map((item) => ({ ...item }));
+    incoming = [
+      { id: 'CAM', size: 3, process: 'CAMERA' },
+      { id: 'MAP', size: 4, process: 'MAP' }
+    ];
+    transferComplete = false;
+    transferFailures = 0;
+    resetForklift();
+    setFeedback('Final shift: load both jobs. The camera strip must remain whole. The map tiles may be tracked separately.');
   }
 
-  function answerTransfer(job, answer) {
-    const correct = (job === 'camera' && answer === 'together')
-      || (job === 'tiles' && answer === 'separate');
-    if (correct) {
-      transferAnswers = { ...transferAnswers, [job]: answer };
-    } else {
-      transferWrong += 1;
-    }
-  }
-
-  function reveal() {
+  function beginReveal() {
     phase = 'reveal';
-    if (recorded) return;
-    recorded = true;
-    onDone({
-      id: config.id,
-      reward,
-      evidenceCount: 4,
-      patternFound: true,
-      compared: true,
-      transferred: true,
-      transferFirstTry: transferWrong === 0,
-      usedHint
-    });
+    revealBeat = 0;
+    resetForklift();
+  }
+
+  function nextReveal() {
+    if (revealBeat < 4) {
+      revealBeat += 1;
+      return;
+    }
+    if (!recorded) {
+      recorded = true;
+      onDone({
+        id: config.id,
+        reward,
+        evidenceCount: 4,
+        patternFound: true,
+        compared: true,
+        transferred: true,
+        transferFirstTry: transferFailures === 0,
+        usedHint
+      });
+    }
+    revealBeat = 5;
   }
 
   function useHint() {
@@ -124,604 +354,389 @@
     showHint = true;
   }
 
-  const slotLabel = (value, index) =>
-    value ? `Slot ${index + 1}, occupied by job ${value}` : `Slot ${index + 1}, open`;
+  function formatAddress(index) {
+    return `0x${index.toString(16).toUpperCase().padStart(2, '0')}`;
+  }
+
+  function keydown(event) {
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target?.tagName)) return;
+    const key = event.key.toLowerCase();
+    const directions = {
+      arrowleft: 'left', a: 'left',
+      arrowright: 'right', d: 'right',
+      arrowup: 'up', w: 'up',
+      arrowdown: 'down', s: 'down'
+    };
+    if (directions[key]) {
+      event.preventDefault();
+      move(directions[key]);
+    } else if (key === ' ' || key === 'enter') {
+      event.preventDefault();
+      interact();
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener('keydown', keydown);
+    return () => window.removeEventListener('keydown', keydown);
+  });
 </script>
 
-<div class="memory-game">
+<div class="memory-game" class:technical={phase === 'reveal' && revealBeat >= 1}>
   {#if phase === 'intro'}
     <button class="exit" type="button" on:click={onExit} aria-label="Return to all workshops">←</button>
     <section class="intro">
       <span class="eyebrow">{config.eyebrow}</span>
-      <div class="rack-mark" aria-hidden="true">
-        {#each Array(12) as _, i}<i class:lit={i === 1 || i === 4 || i === 8}></i>{/each}
+      <div class="robot-mark" aria-hidden="true"><i></i><b>R.A.M.</b></div>
+      <h2>RAM Page: Warehouse Worker</h2>
+      <p>The launch warehouse receives packages that must stay on its limited floor while customers use them.</p>
+      <strong>Place packages, clear finished work, and keep the launch computer running. No timer. Failed experiments are evidence.</strong>
+      <div class="keys" aria-label="Controls">
+        <span>WASD / arrows</span><span>Space / Enter: interact</span>
       </div>
-      <h2>{config.title}</h2>
-      <p>A flight computer has six open rack slots. A critical three-slot navigation job is waiting—but the dispatch console refuses it.</p>
-      <strong>Test the rack, recover the launch job, then choose a placement rule for two new systems.</strong>
-      <button class="primary" type="button" on:click={begin}>Open dispatch console</button>
+      <button class="primary" type="button" on:click={begin}>Start the first shift</button>
     </section>
 
   {:else if phase === 'reveal'}
     <section class="reveal">
-      <span class="eyebrow">Concept uncovered</span>
-      <h2>You discovered memory allocation.</h2>
-      <p>The rack was <strong>RAM</strong>, and each job needed space assigned by the operating system.</p>
+      <span class="eyebrow">Concept uncovered · {revealBeat + 1}/5</span>
 
-      <div class="concept-grid">
-        <article>
-          <b>External fragmentation</b>
-          <span>Enough memory was free in total, but it was broken into gaps too small for one contiguous job.</span>
-        </article>
-        <article>
-          <b>Compaction</b>
-          <span>Moving allocated blocks together combined the scattered gaps into one usable block.</span>
-        </article>
-        <article>
-          <b>Paging</b>
-          <span>Splitting a job into fixed-size pages let its pieces occupy separate free frames.</span>
-        </article>
-      </div>
-
-      <div class="mapping" aria-label="Game actions mapped to memory concepts">
-        <span>Rack slots → memory locations</span>
-        <span>Job blocks → allocated data</span>
-        <span>Openings → free memory</span>
-      </div>
-
-      <div class="reward-panel">
-        <div>
-          <span>Discovery distinction</span>
-          <strong>{config.rewardLabel}</strong>
+      {#if revealBeat === 0}
+        <h2>You were managing a computer’s working memory.</h2>
+        <p>The final warehouse is frozen exactly where you left it. Nothing new is replacing the experience; the system you operated is about to change names.</p>
+        <div class="frozen-label">Same positions · technical labels arriving</div>
+      {:else if revealBeat === 1}
+        <h2>The warehouse was RAM.</h2>
+        <div class="translation-grid">
+          <span><b>Floor</b>RAM</span>
+          <span><b>Grid cell</b>Memory address</span>
+          <span><b>Package</b>Allocated block</span>
+          <span><b>Conveyor</b>Allocation request queue</span>
+          <span><b>Forklift</b>Memory manager</span>
+          <span><b>Clear signal</b>Deallocation request</span>
         </div>
-        <b>+{reward} W</b>
+      {:else if revealBeat === 2}
+        <h2>Enough free memory can still be unusable.</h2>
+        <div class="metric-replay">
+          <span><b>8</b> cells free in total</span>
+          <span><b>4</b> largest continuous opening</span>
+          <span><b>5</b> cells requested together</span>
+        </div>
+        <p>The request failed because the free cells were split into smaller gaps. That is <strong>external fragmentation</strong>.</p>
+      {:else if revealBeat === 3}
+        <h2>Compaction recovered space—but moving live data cost work.</h2>
+        <div class="copy-counter">
+          <b>{compactMoves}</b>
+          <span>live block move{compactMoves === 1 ? '' : 's'} during your recovery</span>
+        </div>
+        <p><strong>Compaction</strong> combines gaps by copying allocated blocks elsewhere. The floor pauses because addresses and data must be updated safely.</p>
+      {:else}
+        <h2>Paging removed the need for one physical block.</h2>
+        <div class="page-table reveal-table">
+          <div><b>Virtual page</b><b>Physical frame</b></div>
+          {#each pageRows.slice(-4) as row}
+            <div><span>MAP P{row.page}</span><span>Frame {row.frame}</span></div>
+          {/each}
+        </div>
+        <p>The slicer created fixed-size <strong>pages</strong>. Each occupied a separate physical <strong>frame</strong>, and the <strong>page table</strong> preserved their logical order.</p>
+        <div class="comparison">
+          <article><b>Contiguous allocation</b><span>Simple, one block, adjacent space required.</span></article>
+          <article><b>Paging</b><span>Separate frames, page table required, no external fragmentation.</span></article>
+        </div>
+      {/if}
+
+      <div class="warehouse reveal-floor" aria-label="Final memory floor">
+        <div class="dock"><span>{revealBeat >= 1 ? 'Request queue' : 'Belt'}</span></div>
+        <div class="floor">
+          {#each Array(CELL_COUNT) as _, index}
+            <div class="cell" class:occupied={!!cells[index]} class:page={!!cells[index]?.parent}>
+              <small>{revealBeat >= 1 ? formatAddress(index) : index + 1}</small>
+              <b>{cells[index]?.parent ? `${cells[index].parent} P${cells[index].page}` : cells[index]?.id || ''}</b>
+            </div>
+          {/each}
+        </div>
       </div>
-      <button class="primary" type="button" on:click={onExit}>Return to workshops</button>
+
+      {#if revealBeat < 4}
+        <button class="primary" type="button" on:click={nextReveal}>
+          {revealBeat === 0 ? 'Translate the warehouse' : revealBeat === 1 ? 'Replay the failed request' : revealBeat === 2 ? 'Name the moving cost' : 'Reveal the slicer'}
+        </button>
+      {:else if revealBeat === 4}
+        <div class="reward-panel">
+          <div><span>Discovery distinction</span><strong>{config.rewardLabel}</strong></div>
+          <b>+{reward} W</b>
+        </div>
+        <button class="primary" type="button" on:click={nextReveal}>Complete discovery</button>
+      {:else}
+        <div class="complete-panel"><b>Memory allocation mapped.</b><span>Your warehouse decisions now have their computer-science names.</span></div>
+        <button class="primary" type="button" on:click={onExit}>Return to workshops</button>
+      {/if}
     </section>
 
   {:else}
     <button class="exit" type="button" on:click={onExit} aria-label="Return to all workshops">←</button>
     <header>
-      <span class="eyebrow">{config.eyebrow}</span>
-      <h2>{config.title}</h2>
+      <span class="eyebrow">{config.eyebrow} · Warehouse shift</span>
+      <h2>RAM Page</h2>
     </header>
 
     <div class="rail" aria-label="Discovery progress">
-      {#each STEPS as step}
-        <span
-          class:current={step.id === phase}
-          class:done={STEPS.findIndex((item) => item.id === phase) > STEPS.findIndex((item) => item.id === step.id)}
-        >{step.label}</span>
+      {#each STAGES as stage}
+        <span class:current={stage === phase} class:done={stageIndex > STAGES.indexOf(stage)}>{STAGE_LABELS[stage]}</span>
       {/each}
     </div>
-    <p class="hidden-note">System names stay hidden until the final deployment.</p>
 
-    {#if phase === 'probe'}
-      <section class="stage">
-        <div class="stage-copy">
-          <span>Rack diagnostic</span>
-          <h3>Six open slots. What can actually fit?</h3>
-          <p>Every job must occupy one unbroken run of slots. Test all three job sizes.</p>
-        </div>
+    <section class="mission">
+      {#if phase === 'allocate'}
+        <span>Shift 1 · Intake</span><h3>Give every package a home.</h3>
+        <p>Packages must lie horizontally in one unbroken row. Where they go is your decision.</p>
+      {:else if phase === 'free'}
+        <span>Shift 2 · Release</span><h3>Clear only finished packages.</h3>
+        <p>A pulsing package is no longer needed. Active packages must remain untouched.</p>
+      {:else if phase === 'fragment'}
+        <span>Shift 3 · Pressure</span><h3>Load the five-cell scan job.</h3>
+        <p>The dashboard reports enough total room. Test whether the floor can accept it.</p>
+      {:else if phase === 'leak'}
+        <span>Shift 4 · Fault</span><h3>Investigate package L.</h3>
+        <p>Its customer has gone, but no release signal arrived.</p>
+      {:else if phase === 'compact'}
+        <span>Shift 5 · Recovery</span><h3>Build one five-cell opening.</h3>
+        <p>Lift active packages and relocate them. The floor pauses for every move.</p>
+      {:else if phase === 'page'}
+        <span>Shift 6 · Upgrade</span><h3>Use the new pallet slicer.</h3>
+        <p>Split the waiting package, scatter its pieces, and watch the clipboard track them.</p>
+      {:else}
+        <span>Final shift · No instructions</span><h3>Load the camera and map jobs.</h3>
+        <p>The camera strip must remain whole. The map tiles may live separately.</p>
+      {/if}
+    </section>
 
-        <div class="rack" aria-label="Launch rack with scattered openings">
-          {#each SCATTERED as value, index}
-            <div class="slot" class:free={!value} aria-label={slotLabel(value, index)}>
-              {value || index + 1}
-            </div>
-          {/each}
-        </div>
+    <div class="dashboard">
+      <span><small>Used</small><b>{usedCells}/{CELL_COUNT}</b></span>
+      <span><small>Free</small><b>{freeCells}</b></span>
+      <span><small>Largest opening</small><b>{largestGap}</b></span>
+      <span><small>Moves</small><b>{compactMoves}</b></span>
+    </div>
 
-        <div class="meter">
-          <span><b>6</b> open</span>
-          <span><b>2</b> widest opening</span>
-          <span><b>{tested.size}/3</b> tested</span>
-        </div>
+    <div class="warehouse">
+      <button
+        class="dock"
+        class:forklift={forklift.col === -1}
+        type="button"
+        aria-label="Conveyor gate"
+        on:click={() => forklift = { row: 0, col: -1 }}
+      >
+        <span>Conveyor</span>
+        {#if currentRequest}<b>{currentRequest.id}</b><small>{currentRequest.size} cells</small>{:else}<small>empty</small>{/if}
+        {#if forklift.col === -1}<i aria-hidden="true">▣</i>{/if}
+      </button>
 
-        <div class="size-picker" aria-label="Choose a job size">
-          {#each [1, 2, 3] as size}
-            <button type="button" class:active={selectedSize === size} on:click={() => { selectedSize = size; probeResult = null; }}>
-              {size}-slot job {tested.has(size) ? '✓' : ''}
-            </button>
-          {/each}
-        </div>
-        <button class="primary" type="button" on:click={tryProbe}>Run placement test</button>
+      <div class="floor" aria-label="Warehouse floor">
+        {#each Array(CELL_COUNT) as _, index}
+          {@const row = Math.floor(index / COLS)}
+          {@const col = index % COLS}
+          <button
+            type="button"
+            class="cell"
+            class:occupied={!!cells[index]}
+            class:released={cells[index]?.released}
+            class:leaked={cells[index]?.leaked}
+            class:page={!!cells[index]?.parent}
+            class:forklift={forklift.row === row && forklift.col === col}
+            aria-label={cells[index]
+              ? `Floor cell ${index + 1}, package ${cells[index].id}${cells[index].leaked ? ', locked package' : cells[index].released ? ', ready to clear' : ''}`
+              : `Floor cell ${index + 1}, open`}
+            on:click={() => forklift = { row, col }}
+          >
+            <small>{index + 1}</small>
+            <b>{cells[index]?.parent ? `${cells[index].parent}${cells[index].page}` : cells[index]?.id || ''}</b>
+            <em>{cells[index]?.released ? 'READY' : cells[index]?.leaked ? '🔒' : ''}</em>
+            {#if forklift.row === row && forklift.col === col}<i aria-hidden="true">▣</i>{/if}
+          </button>
+        {/each}
+      </div>
+    </div>
 
-        {#if probeResult}
-          <div class="result" class:success={probeResult.ok} class:failure={!probeResult.ok} aria-live="polite">
-            <b>{probeResult.ok ? 'Accepted' : 'Rejected'}</b>
-            <span>{probeResult.text}</span>
-          </div>
-        {/if}
+    <div class="load-status">
+      <span>Forklift</span>
+      {#if carrying}
+        <b>Carrying {carrying.id}</b><small>{carrying.size} cell{carrying.size === 1 ? '' : 's'} wide</small>
+      {:else}
+        <b>Empty</b><small>Face a package or the conveyor</small>
+      {/if}
+    </div>
 
-        {#if testedAll}
-          <SolveFirstPause
-            title="Total space is not the whole story."
-            message="Small jobs fit. The three-slot job fails even though six slots are open. The width and position of each opening matter."
-            actionLabel="Inspect the rack"
-            onContinue={enterCompact}
-          />
-        {/if}
-      </section>
+    {#if pageRows.length && ['page', 'transfer'].includes(phase)}
+      <aside class="clipboard">
+        <div><span>Manager’s clipboard</span><b>Piece → floor cell</b></div>
+        {#each pageRows as row}<small>P{row.page} → {row.frame + 1}</small>{/each}
+      </aside>
+    {/if}
 
-    {:else if phase === 'compact'}
-      <section class="stage">
-        <div class="stage-copy">
-          <span>Recovery attempt</span>
-          <h3>Make one opening wide enough.</h3>
-          <p>You may move occupied blocks, but you cannot add or remove any slots.</p>
-        </div>
+    {#if carrying?.size > 1 && ['page', 'transfer'].includes(phase)}
+      <button class="wall-tool slicer" type="button" on:click={sliceCarried}>
+        <b>PALLET SLICER</b><span>Split {carrying.id} into {carrying.size} tracked pieces</span>
+      </button>
+    {/if}
 
-        <div class="rack" aria-label="Rearrangeable launch rack">
-          {#each rack as value, index}
-            <div class="slot" class:free={!value} aria-label={slotLabel(value, index)}>
-              {value || index + 1}
-            </div>
-          {/each}
-        </div>
+    {#if phase === 'leak' && leakAttempted && !leakCleared}
+      <button class="wall-tool kill" type="button" on:click={killProcess}>
+        <b>PROCESS KILL · MAP</b><span>Force-stop the owner and reclaim its whole section</span>
+      </button>
+    {/if}
 
-        <div class="arrangements">
-          <button type="button" class:active={!packed} on:click={() => choosePacking('gaps')}>Leave the gaps</button>
-          <button type="button" class:active={packed} on:click={() => choosePacking('packed')}>Pack occupied blocks together</button>
-        </div>
-        <button class="primary" type="button" on:click={tryCompact}>Load the 3-slot job</button>
+    <div class="feedback" class:good={messageTone === 'good'} class:bad={messageTone === 'bad'} aria-live="polite">{message}</div>
 
-        {#if compactResult}
-          <div class="result" class:success={compactResult.ok} class:failure={!compactResult.ok} aria-live="polite">
-            <b>{compactResult.ok ? 'Launch job loaded' : 'Placement rejected'}</b>
-            <span>{compactResult.text}</span>
-          </div>
-        {/if}
+    <div class="controls">
+      <div class="dpad" aria-label="Forklift directional controls">
+        <button type="button" class="up" on:click={() => move('up')} aria-label="Move up">↑</button>
+        <button type="button" class="left" on:click={() => move('left')} aria-label="Move left">←</button>
+        <button type="button" class="down" on:click={() => move('down')} aria-label="Move down">↓</button>
+        <button type="button" class="right" on:click={() => move('right')} aria-label="Move right">→</button>
+      </div>
+      <button class="interact" type="button" on:click={interact}><b>INTERACT</b><span>Space / Enter</span></button>
+    </div>
 
-        {#if compactResult?.ok}
-          <SolveFirstPause
-            title="Same capacity. Different shape."
-            message="Packing the occupied blocks together turned three narrow openings into one wide opening. Nothing was deleted and no new slot appeared."
-            actionLabel="Try another system"
-            onContinue={enterSplit}
-          />
-        {:else if showHint}
-          <p class="hint">Move A, B, and C beside one another. Their old openings will join into a wider run.</p>
-        {:else}
-          <button class="hint-button" type="button" on:click={useHint}>Need a nudge?</button>
-        {/if}
-      </section>
-
-    {:else if phase === 'split'}
-      <section class="stage">
-        <div class="stage-copy">
-          <span>Second dispatch console</span>
-          <h3>This job arrives in four independent pieces.</h3>
-          <p>The pieces do not need to touch. Select any four open slots, then dispatch them together.</p>
-        </div>
-
-        <div class="rack selectable" aria-label="Rack accepting separate job pieces">
-          {#each SPLIT_RACK as value, index}
-            <button
-              type="button"
-              class="slot"
-              class:free={!value}
-              class:selected={splitSelection.includes(index)}
-              disabled={!!value || splitDone}
-              aria-pressed={splitSelection.includes(index)}
-              aria-label={value ? `Slot ${index + 1}, occupied` : `Open slot ${index + 1}`}
-              on:click={() => toggleSplit(index)}
-            >
-              {value || (splitSelection.includes(index) ? 'J' : index + 1)}
-            </button>
-          {/each}
-        </div>
-
-        <div class="meter">
-          <span><b>{splitSelection.length}/4</b> pieces placed</span>
-          <span><b>2</b> widest opening</span>
-        </div>
-        <button class="primary" type="button" disabled={splitSelection.length !== 4 || splitDone} on:click={dispatchSplit}>
-          Dispatch four pieces
-        </button>
-
-        {#if splitDone}
-          <div class="result success" aria-live="polite">
-            <b>Job accepted</b>
-            <span>The four pieces occupy separate openings but still belong to one job.</span>
-          </div>
-          <SolveFirstPause
-            title="One job does not always need one block."
-            message="The first console demanded a single run. This console tracks the pieces, so scattered openings become useful."
-            actionLabel="Set deployment rules"
-            onContinue={enterTransfer}
-          />
-        {/if}
-      </section>
-
-    {:else if phase === 'transfer'}
-      <section class="stage">
-        <div class="stage-copy">
-          <span>Final deployment</span>
-          <h3>Choose the right placement rule.</h3>
-          <p>These systems have different constraints. Apply both patterns you discovered.</p>
-        </div>
-
-        <article class="transfer-card" class:solved={transferAnswers.camera}>
-          <div>
-            <span>Live camera buffer</span>
-            <p>Three linked frames must be read as one uninterrupted strip.</p>
-          </div>
-          <div class="transfer-options">
-            <button type="button" disabled={!!transferAnswers.camera} on:click={() => answerTransfer('camera', 'separate')}>Use separate openings</button>
-            <button type="button" disabled={!!transferAnswers.camera} on:click={() => answerTransfer('camera', 'together')}>Pack first, then keep it together</button>
-          </div>
-        </article>
-
-        <article class="transfer-card" class:solved={transferAnswers.tiles}>
-          <div>
-            <span>Offline map tiles</span>
-            <p>Four independent tiles may be fetched in any order.</p>
-          </div>
-          <div class="transfer-options">
-            <button type="button" disabled={!!transferAnswers.tiles} on:click={() => answerTransfer('tiles', 'together')}>Wait for one four-slot opening</button>
-            <button type="button" disabled={!!transferAnswers.tiles} on:click={() => answerTransfer('tiles', 'separate')}>Use separate openings</button>
-          </div>
-        </article>
-
-        {#if transferWrong}
-          <p class="hint" aria-live="polite">Match the placement rule to the job: must its pieces stay adjacent, or can the console track them separately?</p>
-        {/if}
-
-        {#if transferDone}
-          <SolveFirstPause
-            title="Both placement rules deployed."
-            message="You preserved one uninterrupted job and used scattered capacity for independent pieces. The hidden computer system can now be named."
-            actionLabel="Reveal the system"
-            onContinue={reveal}
-          />
-        {/if}
-      </section>
+    {#if allocateComplete}
+      <SolveFirstPause title="Every package now owns floor space." message="The positions matter because each package occupies real, limited cells." actionLabel="Release finished work" onContinue={enterFree} />
+    {:else if phase === 'free' && releaseRemaining === 0}
+      <SolveFirstPause title="Clearing made those cells reusable." message="The other packages remained protected because their customers were still using them." actionLabel="Begin the next shift" onContinue={enterFragment} />
+    {:else if phase === 'fragment' && fragmentFailed}
+      <SolveFirstPause title="Eight free cells. No five-cell opening." message="The total is large enough, but the gaps are the wrong shape. Keep this failed arrangement as evidence." actionLabel="Investigate another fault" onContinue={enterLeak} />
+    {:else if phase === 'leak' && leakCleared}
+      <SolveFirstPause title="The locked package is gone—but useful MAP work vanished too." message="Stopping the owner reclaimed everything it held. The forgotten allocation could not be cleared on its own." actionLabel="Recover the scattered floor" onContinue={enterCompact} />
+    {:else if phase === 'compact' && compactComplete}
+      <SolveFirstPause title={`The large job fits after ${compactMoves} live moves.`} message="No capacity was added. You paid for a wider opening by relocating active packages while the floor paused." actionLabel="Install the warehouse upgrade" onContinue={enterPage} />
+    {:else if phase === 'page' && pageComplete}
+      <SolveFirstPause title="One package now lives in four separate places." message="The clipboard preserves the piece order, so physical adjacency is no longer required." actionLabel="Run the final shift" onContinue={enterTransfer} />
+    {:else if phase === 'transfer' && transferComplete}
+      <SolveFirstPause title="Both workloads are live." message="You kept the camera contiguous and used tracked pieces for the map. The warehouse can now reveal its real identity." actionLabel="Reveal the computer system" onContinue={beginReveal} />
+    {:else if phase === 'compact' && !showHint}
+      <button class="hint-button" type="button" on:click={useHint}>Need a nudge?</button>
+    {:else if phase === 'compact' && showHint}
+      <p class="hint">Try filling the first row from the left, then the second. An empty third row gives the five-cell job room.</p>
     {/if}
   {/if}
 </div>
 
 <style>
-  .memory-game {
-    position: relative;
-    width: 100%;
-    max-width: 660px;
-    margin: 0 auto;
-    color: var(--qx-text);
-    font-family: var(--qx-font);
-  }
-
+  .memory-game { width: 100%; max-width: 720px; margin: 0 auto; position: relative; color: var(--qx-text); font-family: var(--qx-font); }
   button { font: inherit; }
-  button:focus-visible { outline: 3px solid var(--qx-accent); outline-offset: 3px; }
-  button:disabled { cursor: not-allowed; opacity: .62; }
-
-  .exit {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    width: 44px;
-    height: 44px;
-    border: 1.5px solid var(--qx-border);
-    border-radius: 50%;
-    background: var(--qx-surface);
-    color: var(--qx-text);
-    cursor: pointer;
-    font-size: 20px;
-  }
-
-  header, .intro, .reveal { text-align: center; }
-  header { padding: 2px 52px 8px; }
-  header h2, .intro h2, .reveal h2 {
-    margin: 4px 0 0;
-    font-size: clamp(22px, 5vw, 30px);
-    font-weight: 950;
-    line-height: 1.08;
-  }
-
-  .eyebrow {
-    color: var(--qx-accent-text);
-    font-size: 10px;
-    font-weight: 950;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-  }
-
-  .intro, .reveal {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 4px;
-  }
-  .intro p, .intro > strong, .reveal > p {
-    max-width: 48ch;
-    margin: 0;
-    color: var(--qx-text-dim);
-    font-size: 14px;
-    line-height: 1.55;
-  }
-  .intro > strong { color: var(--qx-text); }
-
-  .rack-mark {
-    display: grid;
-    grid-template-columns: repeat(4, 18px);
-    gap: 5px;
-    padding: 14px;
-    border: 2px solid var(--qx-text);
-    background: var(--qx-surface-2);
-    box-shadow: 5px 5px 0 var(--qx-border-2);
-  }
-  .rack-mark i {
-    width: 18px;
-    height: 18px;
-    border: 1px solid var(--qx-border-2);
-    background: var(--qx-surface);
-  }
-  .rack-mark i.lit { background: var(--qx-accent); }
-
-  .rail {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin: 3px 0 0;
-    flex-wrap: wrap;
-  }
-  .rail span {
-    padding: 5px 9px;
-    border: 1px solid var(--qx-border);
-    border-radius: 999px;
-    background: var(--qx-surface-2);
-    color: var(--qx-text-faint);
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-  }
-  .rail span.current {
-    border-color: var(--qx-accent);
-    background: var(--qx-accent-soft);
-    color: var(--qx-accent-text);
-  }
-  .rail span.done {
-    border-color: var(--qx-green);
-    background: var(--qx-green-soft);
-    color: var(--qx-green-text);
-  }
-  .hidden-note {
-    margin: 7px 0 14px;
-    color: var(--qx-text-faint);
-    font-size: 10px;
-    font-weight: 800;
-    text-align: center;
-    text-transform: uppercase;
-  }
-
-  .stage {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .stage-copy span, .transfer-card span {
-    color: var(--qx-accent-text);
-    font-size: 10px;
-    font-weight: 950;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-  }
-  .stage-copy h3 {
-    margin: 3px 0;
-    font-size: 18px;
-    font-weight: 950;
-  }
-  .stage-copy p, .transfer-card p {
-    margin: 0;
-    color: var(--qx-text-dim);
-    font-size: 13px;
-    line-height: 1.45;
-  }
-
-  .rack {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 4px;
-    padding: 9px;
-    border: 2px solid var(--qx-text);
-    border-radius: 4px;
-    background: var(--qx-surface-2);
-    box-shadow: 5px 5px 0 var(--qx-border-2);
-  }
-  .rack.selectable { grid-template-columns: repeat(6, minmax(44px, 1fr)); }
-  .slot {
-    display: grid;
-    place-items: center;
-    min-width: 0;
-    min-height: 46px;
-    border: 1.5px solid var(--qx-text);
-    border-radius: 2px;
-    background: var(--qx-accent);
-    color: var(--qx-bg);
-    font-size: 11px;
-    font-weight: 950;
-  }
-  .slot.free {
-    border-style: dashed;
-    border-color: var(--qx-border-2);
-    background: var(--qx-surface);
-    color: var(--qx-text-faint);
-  }
-  button.slot { cursor: pointer; padding: 0; }
-  button.slot.selected {
-    border-style: solid;
-    border-color: var(--qx-green);
-    background: var(--qx-green);
-    color: var(--qx-bg);
-  }
-
-  .meter {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-  }
-  .meter span {
-    flex: 1;
-    min-width: 105px;
-    padding: 7px 9px;
-    border: 1px solid var(--qx-border);
-    background: var(--qx-surface-2);
-    color: var(--qx-text-dim);
-    font-size: 11px;
-    font-weight: 750;
-    text-align: center;
-  }
-  .meter b { color: var(--qx-text); }
-
-  .size-picker, .arrangements, .transfer-options {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
-  }
-  .arrangements, .transfer-options { grid-template-columns: repeat(2, 1fr); }
-  .size-picker button, .arrangements button, .transfer-options button {
-    min-height: 46px;
-    padding: 7px 10px;
-    border: 1.5px solid var(--qx-border-2);
-    border-radius: 4px;
-    background: var(--qx-surface);
-    color: var(--qx-text);
-    cursor: pointer;
-    font-size: 11.5px;
-    font-weight: 850;
-  }
-  .size-picker button.active, .arrangements button.active {
-    border-color: var(--qx-accent);
-    background: var(--qx-accent-soft);
-    color: var(--qx-accent-text);
-  }
-
-  .primary {
-    width: 100%;
-    min-height: 48px;
-    padding: 0 18px;
-    border: 0;
-    border-radius: 4px;
-    background: var(--qx-accent);
-    color: var(--qx-bg);
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 950;
-    letter-spacing: .02em;
-  }
-  .primary:not(:disabled):active { transform: translateY(1px); }
-
-  .result, .hint {
-    display: grid;
-    gap: 3px;
-    padding: 11px 12px;
-    border: 1.5px solid var(--qx-border);
-    border-radius: 4px;
-    font-size: 12px;
-    line-height: 1.4;
-  }
-  .result.success {
-    border-color: var(--qx-green);
-    background: var(--qx-green-soft);
-    color: var(--qx-green-text);
-  }
-  .result.failure, .hint {
-    border-color: var(--qx-danger);
-    background: var(--qx-danger-soft);
-    color: var(--qx-danger-text);
-  }
-  .hint-button {
-    align-self: center;
-    min-height: 44px;
-    border: 0;
-    background: transparent;
-    color: var(--qx-accent-text);
-    cursor: pointer;
-    font-weight: 850;
-    text-decoration: underline;
-  }
-
-  .transfer-card {
-    display: grid;
-    gap: 10px;
-    padding: 12px;
-    border: 1.5px solid var(--qx-border);
-    border-radius: 4px;
-    background: var(--qx-surface);
-  }
-  .transfer-card.solved {
-    border-color: var(--qx-green);
-    background: var(--qx-green-soft);
-  }
-
-  .concept-grid {
-    display: grid;
-    width: 100%;
-    gap: 8px;
-  }
-  .concept-grid article {
-    display: grid;
-    gap: 3px;
-    padding: 11px 12px;
-    border: 1px solid var(--qx-border);
-    border-left: 4px solid var(--qx-accent);
-    background: var(--qx-surface);
-    text-align: left;
-  }
-  .concept-grid b { font-size: 13px; }
-  .concept-grid span { color: var(--qx-text-dim); font-size: 12px; line-height: 1.45; }
-
-  .mapping {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .mapping span {
-    padding: 5px 9px;
-    border: 1px solid var(--qx-border);
-    border-radius: 999px;
-    background: var(--qx-surface-2);
-    color: var(--qx-text-dim);
-    font-size: 10px;
-    font-weight: 800;
-  }
-
-  .reward-panel {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px 14px;
-    border: 1.5px solid var(--qx-accent);
-    border-radius: 4px;
-    background: var(--qx-accent-soft);
-    text-align: left;
-  }
-  .reward-panel span {
-    display: block;
-    color: var(--qx-accent-text);
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-  .reward-panel strong { font-size: 15px; }
+  button:focus-visible { outline: 3px solid var(--qx-accent); outline-offset: 2px; }
+  .exit { position: absolute; top: 0; left: 0; z-index: 5; width: 44px; height: 44px; border: 1.5px solid var(--qx-border); border-radius: 50%; background: var(--qx-surface); color: var(--qx-text); cursor: pointer; font-size: 20px; }
+  header { min-height: 46px; padding: 1px 54px 8px; text-align: center; }
+  h2, h3, p { margin-top: 0; }
+  header h2 { margin-bottom: 0; font-size: 22px; font-weight: 950; }
+  .eyebrow, .mission > span { color: var(--qx-accent-text); font-size: 9px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+  .intro, .reveal { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 8px 2px; text-align: center; }
+  .intro h2, .reveal h2 { max-width: 22ch; margin: 0; font-size: clamp(24px, 5vw, 34px); font-weight: 950; line-height: 1.08; }
+  .intro p, .intro > strong, .reveal > p { max-width: 52ch; margin: 0; color: var(--qx-text-dim); font-size: 14px; line-height: 1.55; }
+  .intro > strong, .reveal strong { color: var(--qx-text); }
+  .robot-mark { width: 94px; height: 82px; display: grid; place-items: center; border: 2px solid var(--qx-text); border-radius: 8px; background: var(--qx-surface-2); box-shadow: 6px 6px 0 var(--qx-border-2); }
+  .robot-mark i { width: 44px; height: 24px; border: 2px solid var(--qx-text); background: repeating-linear-gradient(90deg, var(--qx-accent) 0 7px, var(--qx-surface) 7px 14px); }
+  .robot-mark b { font-size: 11px; letter-spacing: .13em; }
+  .keys, .translation-grid { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; }
+  .keys span, .frozen-label { padding: 6px 10px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); color: var(--qx-text-dim); font-size: 10px; font-weight: 800; }
+  .primary { width: 100%; min-height: 48px; border: 0; border-radius: 4px; background: var(--qx-accent); color: var(--qx-bg); cursor: pointer; font-size: 13px; font-weight: 950; }
+  .rail { display: flex; justify-content: center; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
+  .rail span { padding: 4px 7px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); color: var(--qx-text-faint); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+  .rail span.current { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .rail span.done { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .mission { padding: 10px 12px; border-left: 4px solid var(--qx-accent); background: var(--qx-surface-2); }
+  .mission h3 { margin: 2px 0; font-size: 16px; font-weight: 950; }
+  .mission p { margin: 0; color: var(--qx-text-dim); font-size: 12px; line-height: 1.4; }
+  .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 9px 0; }
+  .dashboard span { padding: 6px; border: 1px solid var(--qx-border); background: var(--qx-surface); text-align: center; }
+  .dashboard small { display: block; color: var(--qx-text-faint); font-size: 8px; font-weight: 850; text-transform: uppercase; }
+  .dashboard b { font-size: 13px; font-variant-numeric: tabular-nums; }
+  .warehouse { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 7px; align-items: stretch; }
+  .dock { position: relative; min-height: 190px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 2px dashed var(--qx-border-2); border-radius: 4px; background: repeating-linear-gradient(135deg, var(--qx-surface-2) 0 9px, var(--qx-surface) 9px 18px); color: var(--qx-text); cursor: pointer; }
+  .dock span { font-size: 8px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+  .dock b { font-size: 20px; }
+  .dock small { color: var(--qx-text-dim); font-size: 9px; }
+  .dock i, .cell i { position: absolute; width: 22px; height: 17px; display: grid; place-items: center; border: 2px solid var(--qx-text); border-radius: 3px; background: var(--qx-green); color: var(--qx-bg); font-size: 10px; font-style: normal; box-shadow: 2px 2px 0 var(--qx-text); }
+  .dock i { bottom: 8px; }
+  .floor { display: grid; grid-template-columns: repeat(6, minmax(44px, 1fr)); gap: 3px; padding: 6px; border: 2px solid var(--qx-text); border-radius: 4px; background: var(--qx-surface-3); box-shadow: 5px 5px 0 var(--qx-border-2); }
+  .cell { position: relative; min-width: 44px; min-height: 58px; overflow: hidden; border: 1.5px dashed var(--qx-border-2); border-radius: 2px; background: var(--qx-surface); color: var(--qx-text-faint); cursor: pointer; }
+  .cell small { position: absolute; top: 3px; left: 4px; font-size: 7px; font-weight: 850; }
+  .cell b { font-size: 12px; }
+  .cell em { position: absolute; right: 2px; bottom: 2px; color: inherit; font-size: 7px; font-style: normal; font-weight: 950; }
+  .cell.occupied { border-style: solid; border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
+  .cell.released { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); animation: pulse 1.2s ease-in-out infinite; }
+  .cell.leaked { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
+  .cell.page { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .cell i { left: 50%; bottom: 5px; transform: translateX(-50%); }
+  .cell.forklift, .dock.forklift { outline: 3px solid var(--qx-green); outline-offset: -3px; }
+  .load-status { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--qx-border); background: var(--qx-surface-2); }
+  .load-status > span { color: var(--qx-text-faint); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+  .load-status b { font-size: 12px; }
+  .load-status small { color: var(--qx-text-dim); font-size: 9px; }
+  .clipboard { display: flex; align-items: center; gap: 7px; margin-top: 8px; padding: 8px 10px; border: 2px solid var(--qx-green); background: var(--qx-green-soft); }
+  .clipboard div { display: grid; margin-right: auto; text-align: left; }
+  .clipboard span { color: var(--qx-green-text); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+  .clipboard b, .clipboard small { font-size: 10px; }
+  .clipboard small { padding: 3px 6px; border: 1px solid var(--qx-green); background: var(--qx-surface); color: var(--qx-green-text); }
+  .wall-tool { width: 100%; min-height: 50px; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; padding: 8px 12px; border: 2px solid var(--qx-text); border-radius: 3px; background: var(--qx-surface); color: var(--qx-text); cursor: pointer; text-align: left; }
+  .wall-tool b { font-size: 11px; }
+  .wall-tool span { color: var(--qx-text-dim); font-size: 10px; }
+  .wall-tool.slicer { border-color: var(--qx-green); }
+  .wall-tool.kill { border-color: var(--qx-danger); background: var(--qx-danger-soft); }
+  .feedback { min-height: 35px; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--qx-border); background: var(--qx-surface-2); color: var(--qx-text-dim); font-size: 11px; font-weight: 700; line-height: 1.4; }
+  .feedback.good { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+  .feedback.bad { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
+  .controls { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 10px; }
+  .dpad { display: grid; grid-template: repeat(2, 44px) / repeat(3, 44px); gap: 3px; }
+  .dpad button, .interact { min-width: 44px; min-height: 44px; border: 1.5px solid var(--qx-border-2); border-radius: 4px; background: var(--qx-surface); color: var(--qx-text); cursor: pointer; font-weight: 950; }
+  .dpad .up { grid-area: 1 / 2; } .dpad .left { grid-area: 2 / 1; } .dpad .down { grid-area: 2 / 2; } .dpad .right { grid-area: 2 / 3; }
+  .interact { min-width: 150px; min-height: 82px; display: grid; place-content: center; border-color: var(--qx-accent); background: var(--qx-accent); color: var(--qx-bg); }
+  .interact span { font-size: 8px; opacity: .8; }
+  .hint-button { display: block; min-height: 44px; margin: 8px auto 0; border: 0; background: transparent; color: var(--qx-accent-text); cursor: pointer; font-weight: 850; text-decoration: underline; }
+  .hint { margin: 8px 0 0; padding: 9px; border: 1px solid var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 11px; text-align: center; }
+  .translation-grid { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); }
+  .translation-grid span { display: grid; padding: 9px; border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-text-dim); font-size: 11px; text-align: left; }
+  .translation-grid b { color: var(--qx-text); font-size: 9px; text-transform: uppercase; }
+  .metric-replay, .comparison { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .metric-replay span, .comparison article { display: grid; gap: 3px; padding: 10px; border: 1px solid var(--qx-border); background: var(--qx-surface); }
+  .metric-replay b { color: var(--qx-accent-text); font-size: 23px; }
+  .metric-replay span, .comparison span { color: var(--qx-text-dim); font-size: 10px; }
+  .copy-counter { display: grid; padding: 12px 28px; border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); }
+  .copy-counter b { font-size: 32px; }
+  .copy-counter span { color: var(--qx-text-dim); font-size: 10px; }
+  .page-table { width: 100%; max-width: 390px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); }
+  .page-table > div { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--qx-border); }
+  .page-table span, .page-table b { padding: 7px; font-size: 11px; }
+  .comparison { grid-template-columns: repeat(2, 1fr); }
+  .comparison article { text-align: left; }
+  .reward-panel, .complete-panel { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1.5px solid var(--qx-accent); background: var(--qx-accent-soft); text-align: left; }
+  .reward-panel span { display: block; color: var(--qx-accent-text); font-size: 9px; font-weight: 900; text-transform: uppercase; }
   .reward-panel > b { color: var(--qx-accent-text); font-size: 19px; }
-
-  @media (max-width: 560px) {
-    .memory-game { max-width: 100%; }
-    .rack { gap: 2px; padding: 6px; }
-    .slot { min-height: 44px; font-size: 9px; }
-    .rack.selectable { grid-template-columns: repeat(6, minmax(44px, 1fr)); }
-    .arrangements, .transfer-options { grid-template-columns: 1fr; }
+  .complete-panel { display: grid; border-color: var(--qx-green); background: var(--qx-green-soft); }
+  .complete-panel span { color: var(--qx-green-text); font-size: 11px; }
+  .reveal-floor { width: 100%; grid-template-columns: 100px minmax(0, 1fr); text-align: left; }
+  .reveal-floor .dock { min-height: 150px; }
+  .technical .cell small { color: var(--qx-text-faint); }
+  @keyframes pulse { 50% { filter: brightness(1.1); box-shadow: inset 0 0 0 2px var(--qx-green); } }
+  @media (max-width: 600px) {
+    .warehouse { grid-template-columns: 1fr; }
+    .dock { min-height: 58px; display: grid; grid-template-columns: 1fr auto auto; padding: 7px 12px; }
+    .dock i { right: 8px; bottom: 50%; transform: translateY(50%); }
+    .floor { grid-template-columns: repeat(6, minmax(44px, 1fr)); overflow-x: auto; }
+    .cell { min-height: 52px; }
+    .load-status { grid-template-columns: auto 1fr; }
+    .load-status small { grid-column: 2; }
+    .clipboard { flex-wrap: wrap; }
+    .controls { justify-content: space-between; gap: 8px; }
+    .interact { flex: 1; min-width: 110px; }
+    .reveal-floor { grid-template-columns: 1fr; }
+    .reveal-floor .dock { min-height: 48px; }
   }
-
+  @media (max-width: 390px) {
+    .dashboard { grid-template-columns: repeat(2, 1fr); }
+    .floor { grid-template-columns: repeat(6, 44px); }
+    .translation-grid, .comparison { grid-template-columns: 1fr; }
+    .metric-replay { grid-template-columns: repeat(3, 1fr); }
+  }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 </style>

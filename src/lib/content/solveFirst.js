@@ -89,8 +89,8 @@ const SOLVE_FIRST = {
     track: 'computer',
     kind: 'memory-allocation',
     eyebrow: 'Unmarked problem 15',
-    title: 'Clear the Launch Rack',
-    sub: 'No lesson first. Fit jobs into a crowded flight computer, recover space that looks unusable, and uncover how memory is allocated.',
+    title: 'RAM Page: Warehouse Worker',
+    sub: 'No lesson first. Operate a package warehouse, create and recover scattered space, then uncover how a computer allocates memory.',
     rewardLabel: 'Memory Marshal'
   },
   'matrices': {
