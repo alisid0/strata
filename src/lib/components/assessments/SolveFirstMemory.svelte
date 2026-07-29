@@ -1,134 +1,86 @@
 <script>
-  import { onMount } from 'svelte';
   import SolveFirstPause from './SolveFirstPause.svelte';
 
   export let config;
   export let onDone = () => {};
   export let onExit = () => {};
 
-  const COLS = 6;
-  const ROWS = 3;
-  const CELL_COUNT = COLS * ROWS;
-  const RELEASE_IDS = ['B', 'D', 'F'];
-  const ALLOCATE_QUEUE = [
-    { id: 'A', size: 3, process: 'NAV' },
-    { id: 'B', size: 2, process: 'COMMS' },
-    { id: 'C', size: 3, process: 'MAP' },
-    { id: 'D', size: 2, process: 'AUDIO' },
-    { id: 'E', size: 3, process: 'NAV' },
-    { id: 'F', size: 2, process: 'COMMS' }
-  ];
-  const FRAGMENTED = [
-    { id: 'A', size: 2, start: 0, process: 'NAV' },
-    { id: 'C', size: 2, start: 3, process: 'MAP' },
-    { id: 'E', size: 2, start: 6, process: 'NAV' },
-    { id: 'G', size: 2, start: 9, process: 'SENSOR' },
-    { id: 'H', size: 2, start: 12, process: 'DISPLAY' }
-  ];
-  const LEAK_LAYOUT = [
-    { id: 'A', size: 2, start: 0, process: 'NAV' },
-    { id: 'L', size: 2, start: 3, process: 'MAP', leaked: true },
-    { id: 'M', size: 2, start: 6, process: 'MAP' },
-    { id: 'G', size: 2, start: 9, process: 'SENSOR' },
-    { id: 'H', size: 2, start: 12, process: 'DISPLAY' }
-  ];
-  const PAGED_LAYOUT = [
-    { id: 'A', size: 2, start: 0, process: 'NAV' },
-    { id: 'B', size: 2, start: 3, process: 'COMMS' },
-    { id: 'C', size: 2, start: 6, process: 'SENSOR' },
-    { id: 'D', size: 2, start: 9, process: 'DISPLAY' },
-    { id: 'E', size: 2, start: 12, process: 'AUDIO' }
-  ];
+  const CAPACITY = 32;      // addresses 0x00 .. 0x1F
+  const PAGE_SIZE = 4;      // fixed page / frame size for the paging stage
 
-  const STAGES = ['allocate', 'free', 'fragment', 'leak', 'compact', 'page', 'transfer', 'reveal'];
-  const STAGE_LABELS = {
-    allocate: 'Place',
-    free: 'Clear',
-    fragment: 'Fit',
-    leak: 'Fault',
-    compact: 'Move',
-    page: 'Slice',
-    transfer: 'Run',
-    reveal: 'Reveal'
+  const HUE = {
+    rust: '#b5502a',
+    green: '#3f8f5a',
+    amber: '#c0872e',
+    slate: '#4a6d8c',
+    mauve: '#7d5a86',
+    teal: '#2f827a'
   };
 
+  const STAGES = ['allocate', 'free', 'fragment', 'policy', 'compact', 'page', 'reveal'];
+  const STAGE_LABELS = {
+    allocate: 'malloc',
+    free: 'free',
+    fragment: 'Frag',
+    policy: 'Fit',
+    compact: 'Move',
+    page: 'Page',
+    reveal: 'Map'
+  };
+
+  // Fixed evidence used verbatim in the synthesis.
+  const FRAG_EVIDENCE = { free: 12, largest: 4, request: 6 };
+
   let phase = 'intro';
-  let allocations = [];
-  let incoming = [];
-  let carrying = null;
-  let forklift = { row: 0, col: -1 };
+  let blocks = [];   // { id, label, size, addr, color, exited?, paged?, pageOf?, page?, used? }
+  let queue = [];    // pending requests { id, label, size, color, paged?, pageOf?, page?, used? }
   let message = '';
   let messageTone = 'neutral';
-  let allocateComplete = false;
-  let fragmentFailed = false;
-  let leakAttempted = false;
-  let leakCleared = false;
-  let compactMoves = 0;
-  let compactComplete = false;
-  let pageComplete = false;
-  let transferComplete = false;
+
+  let allocateDone = false;
+  let freedCount = 0;
+  let freeDone = false;
+  let fragFailed = false;
+  let policyFail = false;
+  let policyDone = false;
+  let compactCopies = 0;
+  let compactDone = false;
+  let pageDone = false;
   let revealBeat = 0;
   let usedHint = false;
   let showHint = false;
-  let placementFailures = 0;
-  let transferFailures = 0;
   let recorded = false;
 
-  $: occupied = buildOccupied(allocations);
-  $: cells = Array.from({ length: CELL_COUNT }, (_, index) => occupied.get(index) || null);
-  $: currentRequest = incoming[0] || null;
-  $: usedCells = occupied.size;
-  $: freeCells = CELL_COUNT - usedCells;
-  $: largestGap = getLargestGap(allocations);
-  $: pageRows = allocations
-    .filter((item) => item.parent)
+  $: regions = regionsOf(blocks);
+  $: holes = regions.filter((r) => r.type === 'free');
+  $: freeTotal = holes.reduce((sum, h) => sum + h.size, 0);
+  $: usedTotal = CAPACITY - freeTotal;
+  $: largestHole = holes.reduce((max, h) => Math.max(max, h.size), 0);
+  $: request = queue[0] || null;
+  $: need = request ? (request.paged ? PAGE_SIZE : request.size) : 0;
+  $: pageTable = blocks
+    .filter((b) => b.pageOf)
     .sort((a, b) => a.page - b.page)
-    .map((item) => ({ page: item.page, frame: item.start }));
-  $: releaseRemaining = RELEASE_IDS.filter((id) => allocations.some((item) => item.id === id)).length;
+    .map((b) => ({ label: b.label, page: b.page, frame: b.addr / PAGE_SIZE, addr: b.addr, used: b.used, size: b.size }));
+  $: internalFrag = blocks.filter((b) => b.pageOf).reduce((sum, b) => sum + (b.size - (b.used ?? b.size)), 0);
   $: stageIndex = Math.max(0, STAGES.indexOf(phase));
-  $: reward = Math.min(15, 10 + (usedHint ? 0 : 2) + (transferFailures ? 1 : 3));
+  $: reward = Math.min(15, 10 + (usedHint ? 0 : 2) + (policyFail ? 1 : 3));
 
-  function buildOccupied(items, ignoreId = null) {
-    const map = new Map();
-    for (const item of items) {
-      if (ignoreId && item.id === ignoreId) continue;
-      for (let offset = 0; offset < item.size; offset += 1) map.set(item.start + offset, item);
+  function addr(n) {
+    return `0x${n.toString(16).toUpperCase().padStart(2, '0')}`;
+  }
+
+  function regionsOf(list) {
+    const sorted = [...list].sort((a, b) => a.addr - b.addr);
+    const out = [];
+    let cursor = 0;
+    for (const blk of sorted) {
+      if (blk.addr > cursor) out.push({ type: 'free', addr: cursor, size: blk.addr - cursor });
+      out.push({ type: 'block', addr: blk.addr, size: blk.size, block: blk });
+      cursor = blk.addr + blk.size;
     }
-    return map;
-  }
-
-  function getLargestGap(items) {
-    const map = buildOccupied(items);
-    let largest = 0;
-    for (let row = 0; row < ROWS; row += 1) {
-      let run = 0;
-      for (let col = 0; col < COLS; col += 1) {
-        if (map.has(row * COLS + col)) run = 0;
-        else {
-          run += 1;
-          largest = Math.max(largest, run);
-        }
-      }
-    }
-    return largest;
-  }
-
-  function atIndex() {
-    return forklift.col < 0 ? -1 : forklift.row * COLS + forklift.col;
-  }
-
-  function allocationAt(index) {
-    return occupied.get(index) || null;
-  }
-
-  function canPlace(item, start) {
-    if (!item || start < 0 || start >= CELL_COUNT) return false;
-    const col = start % COLS;
-    if (col + item.size > COLS) return false;
-    for (let offset = 0; offset < item.size; offset += 1) {
-      if (occupied.has(start + offset)) return false;
-    }
-    return true;
+    if (cursor < CAPACITY) out.push({ type: 'free', addr: cursor, size: CAPACITY - cursor });
+    return out;
   }
 
   function setFeedback(text, tone = 'neutral') {
@@ -136,206 +88,223 @@
     messageTone = tone;
   }
 
-  function resetForklift() {
-    forklift = { row: 0, col: -1 };
-    carrying = null;
-  }
-
   function begin() {
+    enterAllocate();
+  }
+
+  function enterAllocate() {
     phase = 'allocate';
-    allocations = [];
-    incoming = ALLOCATE_QUEUE.map((item) => ({ ...item }));
-    resetForklift();
-    setFeedback('Tap the conveyor to collect a package, then tap the floor space where it should live.');
-  }
-
-  function move(direction) {
-    if (phase === 'intro' || phase === 'reveal') return;
-    let { row, col } = forklift;
-    if (direction === 'left') {
-      if (col > 0) col -= 1;
-      else if (col === 0 && row === 0) col = -1;
-    } else if (direction === 'right') {
-      if (col === -1) col = 0;
-      else if (col < COLS - 1) col += 1;
-    } else if (direction === 'up' && col >= 0) row = Math.max(0, row - 1);
-    else if (direction === 'down' && col >= 0) row = Math.min(ROWS - 1, row + 1);
-    forklift = { row, col };
-  }
-
-  function interact() {
-    if (!STAGES.includes(phase) || phase === 'reveal') return;
-    const index = atIndex();
-
-    if (index === -1) {
-      if (carrying) {
-        incoming = [carrying, ...incoming];
-        setFeedback(`${carrying.id} returned to the conveyor.`, 'neutral');
-        carrying = null;
-      } else if (currentRequest) {
-        carrying = currentRequest;
-        incoming = incoming.slice(1);
-        setFeedback(`${carrying.id} collected: ${carrying.size} cell${carrying.size === 1 ? '' : 's'} wide.`, 'neutral');
-      } else {
-        setFeedback('The conveyor is empty.', 'neutral');
-      }
-      return;
-    }
-
-    if (carrying) {
-      if (!canPlace(carrying, index)) {
-        placementFailures += 1;
-        if (phase === 'fragment') fragmentFailed = true;
-        if (phase === 'transfer') transferFailures += 1;
-        setFeedback(
-          `${carrying.id} needs ${carrying.size} adjacent open cell${carrying.size === 1 ? '' : 's'} on one row.`,
-          'bad'
-        );
-        return;
-      }
-      const placed = { ...carrying, start: index };
-      allocations = [...allocations, placed];
-      setFeedback(`${placed.id} placed at floor cell ${index + 1}.`, 'good');
-      if (phase === 'compact' && placed.movedFrom !== undefined) compactMoves += 1;
-      carrying = null;
-      afterPlacement(placed);
-      return;
-    }
-
-    const item = allocationAt(index);
-    if (!item) {
-      setFeedback('Open cell. Bring a package here to allocate it.', 'neutral');
-      return;
-    }
-    if (item.leaked) {
-      leakAttempted = true;
-      setFeedback(`${item.id} is locked. Its release signal is gone, but the floor still marks it as occupied.`, 'bad');
-      return;
-    }
-    if (item.released) {
-      allocations = allocations.filter((entry) => entry.id !== item.id);
-      setFeedback(`${item.id} cleared. ${item.size} cells are free again.`, 'good');
-      return;
-    }
-    if (phase === 'compact') {
-      allocations = allocations.filter((entry) => entry.id !== item.id);
-      carrying = { ...item, movedFrom: item.start };
-      setFeedback(`${item.id} lifted. The warehouse is paused while live data moves.`, 'neutral');
-      return;
-    }
-    setFeedback(`${item.id} is still active. It cannot be cleared yet.`, 'bad');
-  }
-
-  function useConveyor() {
-    forklift = { row: 0, col: -1 };
-    interact();
-  }
-
-  function useFloorCell(index) {
-    forklift = { row: Math.floor(index / COLS), col: index % COLS };
-    interact();
-  }
-
-  function afterPlacement(item) {
-    if (phase === 'allocate' && incoming.length === 0 && allocations.length === ALLOCATE_QUEUE.length) {
-      allocateComplete = true;
-    }
-    if (phase === 'compact' && item.id === 'X') compactComplete = true;
-    if (phase === 'page' && item.parent === 'P' && allocations.filter((entry) => entry.parent === 'P').length === 4) {
-      pageComplete = true;
-    }
-    if (phase === 'transfer') {
-      const camDone = allocations.some((entry) => entry.id === 'CAM');
-      const mapPages = allocations.filter((entry) => entry.parent === 'MAP').length;
-      if (camDone && mapPages === 4) transferComplete = true;
-    }
+    blocks = [];
+    queue = [
+      { id: 'NAV', label: 'NAV', size: 6, color: HUE.rust },
+      { id: 'MAP', label: 'MAP', size: 4, color: HUE.green },
+      { id: 'AUDIO', label: 'AUDIO', size: 5, color: HUE.amber }
+    ];
+    allocateDone = false;
+    setFeedback('malloc(6) for NAV is waiting. Tap a free region large enough and it takes the low address.');
   }
 
   function enterFree() {
     phase = 'free';
-    allocateComplete = false;
-    allocations = allocations.map((item) => RELEASE_IDS.includes(item.id) ? { ...item, released: true } : item);
-    incoming = [];
-    resetForklift();
-    setFeedback('Three customers have finished. Find the pulsing packages and clear them.');
+    blocks = [
+      { id: 'NAV', label: 'NAV', size: 6, addr: 0, color: HUE.rust },
+      { id: 'MAP', label: 'MAP', size: 4, addr: 6, color: HUE.green, exited: true },
+      { id: 'AUDIO', label: 'AUDIO', size: 5, addr: 10, color: HUE.amber },
+      { id: 'NET', label: 'NET', size: 4, addr: 15, color: HUE.slate, exited: true },
+      { id: 'SCAN', label: 'SCAN', size: 6, addr: 19, color: HUE.mauve },
+      { id: 'LOG', label: 'LOG', size: 4, addr: 25, color: HUE.teal }
+    ];
+    queue = [];
+    freedCount = 0;
+    freeDone = false;
+    setFeedback('MAP and NET have exited (pulsing). Free both, then a new request will reuse the space.');
   }
 
   function enterFragment() {
     phase = 'fragment';
-    allocations = FRAGMENTED.map((item) => ({ ...item }));
-    incoming = [{ id: 'X', size: 5, process: 'SCAN' }];
-    fragmentFailed = false;
-    resetForklift();
-    setFeedback('A five-cell scan job is waiting. The dashboard says eight cells are free.');
+    blocks = [
+      { id: 'NAV', label: 'NAV', size: 4, addr: 0, color: HUE.rust },
+      { id: 'MAP', label: 'MAP', size: 4, addr: 8, color: HUE.green },
+      { id: 'AUDIO', label: 'AUDIO', size: 4, addr: 15, color: HUE.amber },
+      { id: 'NET', label: 'NET', size: 4, addr: 22, color: HUE.slate },
+      { id: 'SCAN', label: 'SCAN', size: 4, addr: 28, color: HUE.mauve }
+    ];
+    queue = [{ id: 'RENDER', label: 'RENDER', size: 6, color: HUE.teal }];
+    fragFailed = false;
+    setFeedback('malloc(6) for RENDER. The free counter says 12 bytes are open. Try to place it.');
   }
 
-  function enterLeak() {
-    phase = 'leak';
-    allocations = LEAK_LAYOUT.map((item) => ({ ...item }));
-    incoming = [];
-    leakAttempted = false;
-    leakCleared = false;
-    resetForklift();
-    setFeedback('Package L has no release signal. Tap it and try to clear it.');
-  }
-
-  function killProcess() {
-    allocations = allocations.filter((item) => item.process !== 'MAP');
-    leakCleared = true;
-    setFeedback('MAP process terminated. Its leaked package and its useful package were both reclaimed.', 'good');
+  function enterPolicy() {
+    phase = 'policy';
+    blocks = [
+      { id: 'SYS', label: 'SYS', size: 6, addr: 0, color: HUE.slate, fixed: true },
+      { id: 'DB', label: 'DB', size: 4, addr: 10, color: HUE.mauve, fixed: true },
+      { id: 'GPU', label: 'GPU', size: 12, addr: 20, color: HUE.amber, fixed: true }
+    ];
+    // Two holes remain: 4 bytes at 0x06 and 6 bytes at 0x0E.
+    queue = [
+      { id: 'R1', label: 'JOB', size: 4, color: HUE.rust },
+      { id: 'R2', label: 'APP', size: 6, color: HUE.green }
+    ];
+    policyFail = false;
+    policyDone = false;
+    setFeedback('Two requests, two holes (4 bytes and 6 bytes). Place malloc(4) first. Your hole choice decides if malloc(6) still fits.');
   }
 
   function enterCompact() {
     phase = 'compact';
-    allocations = FRAGMENTED.map((item) => ({ ...item }));
-    incoming = [{ id: 'X', size: 5, process: 'SCAN' }];
-    compactMoves = 0;
-    compactComplete = false;
-    resetForklift();
-    setFeedback('Move live packages until one row has five adjacent open cells. Every move pauses the floor.');
+    blocks = [
+      { id: 'NAV', label: 'NAV', size: 4, addr: 0, color: HUE.rust },
+      { id: 'MAP', label: 'MAP', size: 4, addr: 7, color: HUE.green },
+      { id: 'AUDIO', label: 'AUDIO', size: 4, addr: 14, color: HUE.amber },
+      { id: 'NET', label: 'NET', size: 4, addr: 21, color: HUE.slate },
+      { id: 'SCAN', label: 'SCAN', size: 4, addr: 28, color: HUE.mauve }
+    ];
+    queue = [{ id: 'MODEL', label: 'MODEL', size: 8, color: HUE.teal }];
+    compactCopies = 0;
+    compactDone = false;
+    showHint = false;
+    setFeedback('malloc(8) for MODEL cannot fit: 12 bytes free, largest hole 4. Tap a block to slide it toward 0x00 and merge the gaps.');
   }
 
   function enterPage() {
     phase = 'page';
-    allocations = PAGED_LAYOUT.map((item) => ({ ...item }));
-    incoming = [{ id: 'P', size: 4, process: 'FORECAST' }];
-    pageComplete = false;
-    resetForklift();
-    setFeedback('A four-cell forecast package has arrived. No row has four adjacent openings.');
-  }
-
-  function sliceCarried() {
-    if (!carrying || carrying.size <= 1 || !['page', 'transfer'].includes(phase)) return;
-    const parent = carrying.id;
-    const pieces = Array.from({ length: carrying.size }, (_, page) => ({
-      id: `${parent}${page}`,
-      parent,
-      page,
-      size: 1,
-      process: carrying.process
-    }));
-    carrying = pieces[0];
-    incoming = [...pieces.slice(1), ...incoming];
-    setFeedback(`${parent} split into ${pieces.length} tracked pieces. The clipboard will remember every location.`, 'good');
-  }
-
-  function enterTransfer() {
-    phase = 'transfer';
-    allocations = PAGED_LAYOUT.map((item) => ({ ...item }));
-    incoming = [
-      { id: 'CAM', size: 3, process: 'CAMERA' },
-      { id: 'MAP', size: 4, process: 'MAP' }
+    blocks = [
+      { id: 'NAV', label: 'NAV', size: 4, addr: 0, color: HUE.rust, fixed: true },
+      { id: 'MAP', label: 'MAP', size: 4, addr: 8, color: HUE.green, fixed: true },
+      { id: 'AUDIO', label: 'AUDIO', size: 4, addr: 16, color: HUE.amber, fixed: true },
+      { id: 'NET', label: 'NET', size: 4, addr: 24, color: HUE.slate, fixed: true }
     ];
-    transferComplete = false;
-    transferFailures = 0;
-    resetForklift();
-    setFeedback('Final shift: load both jobs. The camera strip must remain whole. The map tiles may be tracked separately.');
+    // Free frames: 0x04, 0x0C, 0x14, 0x1C (scattered, non-adjacent).
+    queue = [{ id: 'STREAM', label: 'STREAM', size: 6, color: HUE.teal, paged: true }];
+    pageDone = false;
+    setFeedback('STREAM needs 6 bytes, but no free frames are next to each other. Split it into fixed pages first.');
+  }
+
+  function place(region) {
+    if (!request) {
+      setFeedback('No request is waiting.', 'neutral');
+      return;
+    }
+    if (region.type !== 'free') return;
+    if (region.size < need) {
+      if (phase === 'fragment') fragFailed = true;
+      if (phase === 'policy') policyFail = true;
+      setFeedback(
+        `malloc failed: ${request.label} needs ${need} contiguous byte${need === 1 ? '' : 's'}, this hole holds ${region.size}.`,
+        'bad'
+      );
+      return;
+    }
+    const blk = {
+      id: request.id,
+      label: request.label,
+      size: need,
+      addr: region.addr,
+      color: request.color,
+      paged: request.paged
+    };
+    if (request.pageOf !== undefined) {
+      blk.pageOf = request.pageOf;
+      blk.page = request.page;
+      blk.used = request.used;
+    }
+    blocks = [...blocks, blk];
+    queue = queue.slice(1);
+    const at = addr(region.addr);
+    if (blk.pageOf !== undefined) {
+      setFeedback(`${blk.label} page ${blk.page} placed in frame ${region.addr / PAGE_SIZE} at ${at}.`, 'good');
+    } else {
+      setFeedback(`${blk.label} allocated at ${at}. The pointer ${blk.label} now holds ${at}.`, 'good');
+    }
+    afterPlace(blk);
+  }
+
+  function afterPlace(blk) {
+    if (phase === 'allocate' && queue.length === 0) allocateDone = true;
+    else if (phase === 'free' && blk.id === 'CACHE') freeDone = true;
+    else if (phase === 'policy' && blocks.some((b) => b.id === 'R1') && blocks.some((b) => b.id === 'R2')) policyDone = true;
+    else if (phase === 'compact' && blk.id === 'MODEL') compactDone = true;
+    else if (phase === 'page' && blk.pageOf === 'STREAM' && blocks.filter((b) => b.pageOf === 'STREAM').length === 2) pageDone = true;
+  }
+
+  function onBlock(blk) {
+    if (phase === 'free') {
+      if (!blk.exited) {
+        setFeedback(`${blk.label} is still in use. Only an exited program can be freed.`, 'bad');
+        return;
+      }
+      blocks = blocks.filter((b) => b.id !== blk.id);
+      setFeedback(`free(${blk.label}) returned ${blk.size} bytes at ${addr(blk.addr)} to the pool.`, 'good');
+      freedCount += 1;
+      if (freedCount >= 2 && !blocks.some((b) => b.id === 'CACHE') && queue.length === 0) {
+        queue = [{ id: 'CACHE', label: 'CACHE', size: 4, color: HUE.teal }];
+        setFeedback('Both blocks freed. Now malloc(4) for CACHE and reuse a freed hole.', 'good');
+      }
+      return;
+    }
+    if (phase === 'compact') {
+      slide(blk);
+      return;
+    }
+    if ((phase === 'allocate' || phase === 'policy') && !blk.fixed) {
+      // Undo: return this block to the front of the request queue.
+      blocks = blocks.filter((b) => b.id !== blk.id);
+      queue = [{ id: blk.id, label: blk.label, size: blk.size, color: blk.color }, ...queue];
+      if (phase === 'policy') policyDone = false;
+      setFeedback(`free(${blk.label}). It is back in the request queue, so you can place it elsewhere.`, 'neutral');
+      return;
+    }
+    if (phase === 'page' && blk.pageOf) {
+      blocks = blocks.filter((b) => b.id !== blk.id);
+      queue = [{ id: blk.id, label: blk.label, size: blk.size, color: blk.color, paged: true, pageOf: blk.pageOf, page: blk.page, used: blk.used }, ...queue];
+      pageDone = false;
+      setFeedback(`${blk.label} page ${blk.page} lifted. Drop it in a different free frame.`, 'neutral');
+      return;
+    }
+    setFeedback(`${blk.label} is a running allocation. Route the request around it.`, 'bad');
+  }
+
+  function slide(blk) {
+    const sorted = [...blocks].sort((a, b) => a.addr - b.addr);
+    const idx = sorted.findIndex((b) => b.id === blk.id);
+    const target = idx === 0 ? 0 : sorted[idx - 1].addr + sorted[idx - 1].size;
+    if (target === blk.addr) {
+      setFeedback(`${blk.label} is already packed against the block below it.`, 'neutral');
+      return;
+    }
+    const from = blk.addr;
+    blocks = blocks.map((b) => (b.id === blk.id ? { ...b, addr: target } : b));
+    compactCopies += 1;
+    setFeedback(`${blk.label} copied ${addr(from)} to ${addr(target)}, pointer updated. ${compactCopies} block copies so far.`, 'neutral');
+  }
+
+  function splitPages() {
+    const req = queue[0];
+    if (!req || !req.paged || req.pageOf !== undefined) return;
+    const pages = Math.ceil(req.size / PAGE_SIZE);
+    const pieces = Array.from({ length: pages }, (_, page) => ({
+      id: `${req.id}-P${page}`,
+      label: req.label,
+      pageOf: req.id,
+      page,
+      size: PAGE_SIZE,
+      used: Math.min(PAGE_SIZE, req.size - page * PAGE_SIZE),
+      color: req.color,
+      paged: true
+    }));
+    queue = [...pieces, ...queue.slice(1)];
+    setFeedback(`${req.label} split into ${pages} pages of ${PAGE_SIZE} bytes. Each page can go in any free frame.`, 'good');
+  }
+
+  function useHint() {
+    usedHint = true;
+    showHint = true;
   }
 
   function beginReveal() {
     phase = 'reveal';
     revealBeat = 0;
-    resetForklift();
   }
 
   function nextReveal() {
@@ -352,121 +321,84 @@
         patternFound: true,
         compared: true,
         transferred: true,
-        transferFirstTry: transferFailures === 0,
+        transferFirstTry: policyFail === false,
         usedHint
       });
     }
     revealBeat = 5;
   }
 
-  function useHint() {
-    usedHint = true;
-    showHint = true;
+  function segStyle(size, extra = '') {
+    return `flex-grow:${size};${extra}`;
   }
-
-  function formatAddress(index) {
-    return `0x${index.toString(16).toUpperCase().padStart(2, '0')}`;
-  }
-
-  function keydown(event) {
-    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target?.tagName)) return;
-    const key = event.key.toLowerCase();
-    const directions = {
-      arrowleft: 'left', a: 'left',
-      arrowright: 'right', d: 'right',
-      arrowup: 'up', w: 'up',
-      arrowdown: 'down', s: 'down'
-    };
-    if (directions[key]) {
-      event.preventDefault();
-      move(directions[key]);
-    } else if (key === ' ' || key === 'enter') {
-      event.preventDefault();
-      interact();
-    }
-  }
-
-  onMount(() => {
-    window.addEventListener('keydown', keydown);
-    return () => window.removeEventListener('keydown', keydown);
-  });
 </script>
 
-<div class="memory-game" class:technical={phase === 'reveal' && revealBeat >= 1}>
+<div class="alloc-game" class:technical={phase === 'reveal'}>
   {#if phase === 'intro'}
     <button class="exit" type="button" on:click={onExit} aria-label="Return to all workshops">←</button>
     <section class="intro">
       <span class="eyebrow">{config.eyebrow}</span>
-      <div class="robot-mark" aria-hidden="true"><i></i><b>R.A.M.</b></div>
-      <h2>RAM Page: Warehouse Worker</h2>
-      <p>The launch warehouse receives packages that must stay on its limited floor while customers use them.</p>
-      <strong>Place packages, clear finished work, and keep the launch computer running. No timer. Failed experiments are evidence.</strong>
-      <button class="primary" type="button" on:click={begin}>Start the first shift</button>
+      <div class="strip mini" aria-hidden="true">
+        <span class="seg block" style="flex-grow:3;background:{HUE.rust}"></span>
+        <span class="seg hole" style="flex-grow:2"></span>
+        <span class="seg block" style="flex-grow:2;background:{HUE.green}"></span>
+        <span class="seg hole" style="flex-grow:1"></span>
+        <span class="seg block" style="flex-grow:3;background:{HUE.slate}"></span>
+        <span class="seg hole" style="flex-grow:1"></span>
+      </div>
+      <h2>You are the memory allocator.</h2>
+      <p>Programs ask for memory with <code>malloc(n)</code>. You choose where each block lives on one strip of addresses, free blocks when programs exit, and keep the strip usable.</p>
+      <strong>No timer. A failed allocation is evidence about how memory really behaves, not a mistake.</strong>
+      <button class="primary" type="button" on:click={begin}>Start allocating</button>
     </section>
 
   {:else if phase === 'reveal'}
     <section class="reveal">
-      <span class="eyebrow">Concept uncovered · {revealBeat + 1}/5</span>
+      <span class="eyebrow">Synthesis · {Math.min(revealBeat + 1, 5)}/5</span>
 
       {#if revealBeat === 0}
-        <h2>You were managing a computer’s working memory.</h2>
-        <p>The final warehouse is frozen exactly where you left it. Nothing new is replacing the experience; the system you operated is about to change names.</p>
-        <div class="frozen-label">Same positions · technical labels arriving</div>
+        <h2>You just ran a memory allocator.</h2>
+        <p>Every choice you made has a standard name. Here is the whole system, one decision at a time.</p>
       {:else if revealBeat === 1}
-        <h2>The warehouse was RAM.</h2>
-        <div class="translation-grid">
-          <span><b>Floor</b>RAM</span>
-          <span><b>Grid cell</b>Memory address</span>
-          <span><b>Package</b>Allocated block</span>
-          <span><b>Conveyor</b>Allocation request queue</span>
-          <span><b>Forklift</b>Memory manager</span>
-          <span><b>Clear signal</b>Deallocation request</span>
-        </div>
-      {:else if revealBeat === 2}
-        <h2>Enough free memory can still be unusable.</h2>
+        <h2>External fragmentation blocked a request.</h2>
         <div class="metric-replay">
-          <span><b>8</b> cells free in total</span>
-          <span><b>4</b> largest continuous opening</span>
-          <span><b>5</b> cells requested together</span>
+          <span><b>{FRAG_EVIDENCE.free}</b>bytes free in total</span>
+          <span><b>{FRAG_EVIDENCE.largest}</b>largest single hole</span>
+          <span><b>{FRAG_EVIDENCE.request}</b>bytes requested together</span>
         </div>
-        <p>The request failed because the free cells were split into smaller gaps. That is <strong>external fragmentation</strong>.</p>
+        <p><code>malloc</code> needs <strong>contiguous</strong> bytes. Scattered holes can hold plenty of free memory and still reject a block. That gap between total-free and largest-hole is external fragmentation.</p>
+      {:else if revealBeat === 2}
+        <h2>The allocation policy changed the result.</h2>
+        <div class="comparison">
+          <article><b>First-fit</b><span>Use the first hole big enough. Fast, but it splits large holes early and can block the next big request.</span></article>
+          <article><b>Best-fit</b><span>Use the tightest hole that fits. Preserves large holes for large requests, at the cost of small leftover slivers.</span></article>
+        </div>
+        <p>Same two requests, same two holes. Filling the tight hole first let both fit; taking the big hole first did not.</p>
       {:else if revealBeat === 3}
-        <h2>Compaction recovered space—but moving live data cost work.</h2>
+        <h2>Compaction bought contiguous space with copies.</h2>
         <div class="copy-counter">
-          <b>{compactMoves}</b>
-          <span>live block move{compactMoves === 1 ? '' : 's'} during your recovery</span>
+          <b>{compactCopies}</b>
+          <span>live block cop{compactCopies === 1 ? 'y' : 'ies'} during your recovery</span>
         </div>
-        <p><strong>Compaction</strong> combines gaps by copying allocated blocks elsewhere. The floor pauses because addresses and data must be updated safely.</p>
+        <p>Sliding live blocks together merges the holes into one, but every move copies bytes and rewrites a pointer, so the program must pause while it happens.</p>
       {:else}
-        <h2>Paging removed the need for one physical block.</h2>
-        <div class="page-table reveal-table">
-          <div><b>Virtual page</b><b>Physical frame</b></div>
-          {#each pageRows.slice(-4) as row}
-            <div><span>MAP P{row.page}</span><span>Frame {row.frame}</span></div>
+        <h2>Paging removed the need for contiguous space.</h2>
+        <div class="page-table">
+          <div class="pt-head"><b>Virtual page</b><b>Physical frame</b></div>
+          {#each pageTable as row}
+            <div class="pt-row"><span>{row.label} P{row.page}</span><span>frame {row.frame} · {addr(row.addr)}</span></div>
           {/each}
         </div>
-        <p>The slicer created fixed-size <strong>pages</strong>. Each occupied a separate physical <strong>frame</strong>, and the <strong>page table</strong> preserved their logical order.</p>
+        <p>Fixed <strong>pages</strong> dropped into any free <strong>frames</strong>, and the <strong>page table</strong> remembered the mapping, so external fragmentation is gone. The cost is <strong>internal fragmentation</strong>: the last page wasted <b>{internalFrag}</b> bytes.</p>
         <div class="comparison">
-          <article><b>Contiguous allocation</b><span>Simple, one block, adjacent space required.</span></article>
-          <article><b>Paging</b><span>Separate frames, page table required, no external fragmentation.</span></article>
+          <article><b>Contiguous</b><span>Simple, one block, needs adjacent space, suffers external fragmentation, may need compaction.</span></article>
+          <article><b>Paging</b><span>Any free frames, needs a page table, no external fragmentation, some internal fragmentation.</span></article>
         </div>
       {/if}
 
-      <div class="warehouse reveal-floor" aria-label="Final memory floor">
-        <div class="dock"><span>{revealBeat >= 1 ? 'Request queue' : 'Belt'}</span></div>
-        <div class="floor">
-          {#each Array(CELL_COUNT) as _, index}
-            <div class="cell" class:occupied={!!cells[index]} class:page={!!cells[index]?.parent}>
-              <small>{revealBeat >= 1 ? formatAddress(index) : index + 1}</small>
-              <b>{cells[index]?.parent ? `${cells[index].parent} P${cells[index].page}` : cells[index]?.id || ''}</b>
-            </div>
-          {/each}
-        </div>
-      </div>
-
       {#if revealBeat < 4}
         <button class="primary" type="button" on:click={nextReveal}>
-          {revealBeat === 0 ? 'Translate the warehouse' : revealBeat === 1 ? 'Replay the failed request' : revealBeat === 2 ? 'Name the moving cost' : 'Reveal the slicer'}
+          {revealBeat === 0 ? 'Replay the blocked request' : revealBeat === 1 ? 'Compare the policies' : revealBeat === 2 ? 'Count the compaction cost' : 'See the paging trade'}
         </button>
       {:else if revealBeat === 4}
         <div class="reward-panel">
@@ -475,7 +407,7 @@
         </div>
         <button class="primary" type="button" on:click={nextReveal}>Complete discovery</button>
       {:else}
-        <div class="complete-panel"><b>Memory allocation mapped.</b><span>Your warehouse decisions now have their computer-science names.</span></div>
+        <div class="complete-panel"><b>Memory allocation mapped.</b><span>malloc, free, fragmentation, policy, compaction, and paging, all from one strip of addresses.</span></div>
         <button class="primary" type="button" on:click={onExit}>Return to workshops</button>
       {/if}
     </section>
@@ -483,8 +415,8 @@
   {:else}
     <button class="exit" type="button" on:click={onExit} aria-label="Return to all workshops">←</button>
     <header>
-      <span class="eyebrow">{config.eyebrow} · Warehouse shift</span>
-      <h2>RAM Page</h2>
+      <span class="eyebrow">{config.eyebrow} · Allocator console</span>
+      <h2>The Allocator</h2>
     </header>
 
     <div class="rail" aria-label="Discovery progress">
@@ -495,276 +427,239 @@
 
     <section class="mission">
       {#if phase === 'allocate'}
-        <span>Shift 1 · Intake</span><h3>Give every package a home.</h3>
-        <p>Packages must lie horizontally in one unbroken row. Where they go is your decision.</p>
+        <span>malloc · allocate</span><h3>Give each request contiguous bytes.</h3>
+        <p>Tap a free region at least as wide as the request. The block takes the low address and returns it as a pointer.</p>
       {:else if phase === 'free'}
-        <span>Shift 2 · Release</span><h3>Clear only finished packages.</h3>
-        <p>A pulsing package is no longer needed. Active packages must remain untouched.</p>
+        <span>free · reuse</span><h3>Return exited blocks to the pool.</h3>
+        <p>Free the pulsing blocks, then allocate the new request into space a freed block left behind.</p>
       {:else if phase === 'fragment'}
-        <span>Shift 3 · Pressure</span><h3>Load the five-cell scan job.</h3>
-        <p>The dashboard reports enough total room. Test whether the floor can accept it.</p>
-      {:else if phase === 'leak'}
-        <span>Shift 4 · Fault</span><h3>Investigate package L.</h3>
-        <p>Its customer has gone, but no release signal arrived.</p>
+        <span>external fragmentation</span><h3>Allocate the six-byte request.</h3>
+        <p>The free counter looks large. Test whether any single hole can actually hold it.</p>
+      {:else if phase === 'policy'}
+        <span>first-fit vs best-fit</span><h3>Choose the hole that keeps both fitting.</h3>
+        <p>Place malloc(4), then malloc(6). Tap a block to free it and try again if the second one will not fit.</p>
       {:else if phase === 'compact'}
-        <span>Shift 5 · Recovery</span><h3>Build one five-cell opening.</h3>
-        <p>Lift active packages and relocate them. The floor pauses for every move.</p>
-      {:else if phase === 'page'}
-        <span>Shift 6 · Upgrade</span><h3>Use the new pallet slicer.</h3>
-        <p>Split the waiting package, scatter its pieces, and watch the clipboard track them.</p>
+        <span>compaction</span><h3>Merge the scattered holes.</h3>
+        <p>Tap live blocks to slide them toward 0x00. Each move copies bytes and updates a pointer.</p>
       {:else}
-        <span>Final shift · No instructions</span><h3>Load the camera and map jobs.</h3>
-        <p>The camera strip must remain whole. The map tiles may live separately.</p>
+        <span>paging · frames</span><h3>Split the request across free frames.</h3>
+        <p>Break the request into fixed pages, then drop each page into any free frame. Watch the page table fill.</p>
       {/if}
     </section>
 
     <div class="dashboard">
-      <span><small>Used</small><b>{usedCells}/{CELL_COUNT}</b></span>
-      <span><small>Free</small><b>{freeCells}</b></span>
-      <span><small>Largest opening</small><b>{largestGap}</b></span>
-      <span><small>Moves</small><b>{compactMoves}</b></span>
+      <span><small>Used</small><b>{usedTotal}/{CAPACITY}</b></span>
+      <span><small>Free</small><b>{freeTotal}</b></span>
+      <span><small>Largest hole</small><b>{largestHole}</b></span>
+      <span><small>Copies</small><b>{compactCopies}</b></span>
     </div>
 
-    <div class="warehouse">
-      <button
-        class="dock"
-        class:forklift={forklift.col === -1}
-        type="button"
-        aria-label="Conveyor gate"
-        on:click={useConveyor}
-      >
-        <span class="belt-label">Incoming conveyor</span>
-        <span class="belt" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
-        {#if currentRequest}
-          <span class="incoming-crate" style={`--crate-size:${currentRequest.size}`}>
-            <b>{currentRequest.id}</b><small>{currentRequest.size} cells</small>
-          </span>
-        {:else}
-          <small class="belt-empty">No package waiting</small>
-        {/if}
-        {#if forklift.col === -1}
-          <span class="forklift-sprite docked" aria-hidden="true"><i></i><b></b><em></em></span>
-        {/if}
-      </button>
+    {#if request}
+      <div class="request" style={`--req:${request.color}`}>
+        <span class="tag">Request</span>
+        <b>{request.pageOf !== undefined ? `${request.label} · page ${request.page}` : `${request.label} · malloc(${request.size})`}</b>
+        <small>needs {need} {request.pageOf !== undefined ? 'byte frame' : 'contiguous bytes'}{request.pageOf !== undefined && request.used < PAGE_SIZE ? ` (${request.used} used)` : ''}</small>
+      </div>
+    {/if}
 
-      <div class="floor-wrap">
-        <div class="floor" aria-label="Warehouse floor">
-          {#each Array(CELL_COUNT) as _, index}
-            {@const row = Math.floor(index / COLS)}
-            {@const col = index % COLS}
+    <div class="strip-wrap">
+      <div class="strip" class:paged={phase === 'page'} aria-label="Memory address strip">
+        {#each regions as r}
+          {#if r.type === 'block'}
             <button
               type="button"
-              class="cell"
-              class:occupied={!!cells[index]}
-              class:forklift={forklift.row === row && forklift.col === col}
-              aria-label={cells[index]
-                ? `Floor cell ${index + 1}, package ${cells[index].id}${cells[index].leaked ? ', locked package' : cells[index].released ? ', ready to clear' : ''}`
-                : `Floor cell ${index + 1}, open`}
-              on:click={() => useFloorCell(index)}
+              class="seg block"
+              class:fixed={r.block.fixed}
+              class:exited={r.block.exited}
+              class:pagepiece={r.block.pageOf}
+              style={segStyle(r.size, `background:${r.block.color}`)}
+              aria-label={`${r.block.label} block, ${r.block.size} bytes at ${addr(r.addr)}`}
+              on:click={() => onBlock(r.block)}
             >
-              <small>{index + 1}</small>
+              {#if r.block.used !== undefined && r.block.used < r.block.size}
+                <span class="waste" style={`width:${((r.block.size - r.block.used) / r.block.size) * 100}%`}></span>
+              {/if}
+              <b>{r.block.pageOf ? `P${r.block.page}` : r.block.label}</b>
+              <small>{addr(r.addr)}</small>
+              {#if r.block.exited}<em>exited</em>{/if}
             </button>
-          {/each}
-        </div>
-
-        <div class="crate-layer" aria-hidden="true">
-          {#each allocations as item (item.id)}
-            <div
-              class="crate"
-              class:released={item.released}
-              class:leaked={item.leaked}
-              class:page={item.parent}
-              style={`grid-column:${item.start % COLS + 1} / span ${item.size};grid-row:${Math.floor(item.start / COLS) + 1};`}
+          {:else}
+            <button
+              type="button"
+              class="seg hole"
+              class:fits={request && r.size >= need}
+              style={segStyle(r.size)}
+              aria-label={`Free hole, ${r.size} bytes at ${addr(r.addr)}`}
+              on:click={() => place(r)}
             >
-              <b>{item.parent ? `${item.parent}${item.page}` : item.id}</b>
-              {#if item.released}<span>COLLECT</span>{/if}
-              {#if item.leaked}<span>LOCKED</span>{/if}
-            </div>
-          {/each}
-          {#if forklift.col >= 0}
-            <span
-              class="forklift-sprite"
-              style={`grid-column:${forklift.col + 1};grid-row:${forklift.row + 1};`}
-            ><i></i><b></b><em></em></span>
+              <b>{r.size}B</b>
+              <small>{addr(r.addr)}</small>
+            </button>
           {/if}
-        </div>
+        {/each}
+      </div>
+      <div class="ruler" aria-hidden="true">
+        <span>0x00</span><span>0x08</span><span>0x10</span><span>0x18</span><span class="end">0x1F</span>
       </div>
     </div>
 
-    <div class="load-status">
-      <span>Forklift</span>
-      {#if carrying}
-        <b>Carrying {carrying.id}</b><small>{carrying.size} cell{carrying.size === 1 ? '' : 's'} wide</small>
-      {:else}
-        <b>Empty</b><small>Tap the conveyor or a package</small>
-      {/if}
-    </div>
-
-    {#if pageRows.length && ['page', 'transfer'].includes(phase)}
+    {#if pageTable.length && phase === 'page'}
       <aside class="clipboard">
-        <div><span>Manager’s clipboard</span><b>Piece → floor cell</b></div>
-        {#each pageRows as row}<small>P{row.page} → {row.frame + 1}</small>{/each}
+        <div><span>Page table</span><b>page → frame</b></div>
+        {#each pageTable as row}<small>{row.label} P{row.page} → frame {row.frame}</small>{/each}
       </aside>
     {/if}
 
-    {#if carrying?.size > 1 && ['page', 'transfer'].includes(phase)}
-      <button class="wall-tool slicer" type="button" on:click={sliceCarried}>
-        <b>PALLET SLICER</b><span>Split {carrying.id} into {carrying.size} tracked pieces</span>
+    {#if phase === 'page' && request && request.paged && request.pageOf === undefined}
+      <button class="wall-tool slicer" type="button" on:click={splitPages}>
+        <b>SPLIT INTO PAGES</b><span>Divide {request.label} into {Math.ceil(request.size / PAGE_SIZE)} fixed {PAGE_SIZE}-byte pages</span>
       </button>
     {/if}
 
-    {#if phase === 'leak' && leakAttempted && !leakCleared}
-      <button class="wall-tool kill" type="button" on:click={killProcess}>
-        <b>PROCESS KILL · MAP</b><span>Force-stop the owner and reclaim its whole section</span>
-      </button>
-    {/if}
+    <div class="load-status">
+      <span>Allocator</span>
+      {#if request}
+        <b>Serving {request.label}</b><small>{phase === 'free' ? 'reuse a freed hole' : phase === 'page' ? 'drop the page in a free frame' : 'tap a hole that fits'}</small>
+      {:else}
+        <b>Idle</b><small>{phase === 'free' ? 'free the pulsing blocks' : phase === 'compact' ? 'slide blocks to merge holes' : 'queue clear'}</small>
+      {/if}
+    </div>
 
     <div class="feedback" class:good={messageTone === 'good'} class:bad={messageTone === 'bad'} aria-live="polite">{message}</div>
 
-    {#if allocateComplete}
-      <SolveFirstPause title="Every package now owns floor space." message="The positions matter because each package occupies real, limited cells." actionLabel="Release finished work" onContinue={enterFree} />
-    {:else if phase === 'free' && releaseRemaining === 0}
-      <SolveFirstPause title="Clearing made those cells reusable." message="The other packages remained protected because their customers were still using them." actionLabel="Begin the next shift" onContinue={enterFragment} />
-    {:else if phase === 'fragment' && fragmentFailed}
-      <SolveFirstPause title="Eight free cells. No five-cell opening." message="The total is large enough, but the gaps are the wrong shape. Keep this failed arrangement as evidence." actionLabel="Investigate another fault" onContinue={enterLeak} />
-    {:else if phase === 'leak' && leakCleared}
-      <SolveFirstPause title="The locked package is gone—but useful MAP work vanished too." message="Stopping the owner reclaimed everything it held. The forgotten allocation could not be cleared on its own." actionLabel="Recover the scattered floor" onContinue={enterCompact} />
-    {:else if phase === 'compact' && compactComplete}
-      <SolveFirstPause title={`The large job fits after ${compactMoves} live moves.`} message="No capacity was added. You paid for a wider opening by relocating active packages while the floor paused." actionLabel="Install the warehouse upgrade" onContinue={enterPage} />
-    {:else if phase === 'page' && pageComplete}
-      <SolveFirstPause title="One package now lives in four separate places." message="The clipboard preserves the piece order, so physical adjacency is no longer required." actionLabel="Run the final shift" onContinue={enterTransfer} />
-    {:else if phase === 'transfer' && transferComplete}
-      <SolveFirstPause title="Both workloads are live." message="You kept the camera contiguous and used tracked pieces for the map. The warehouse can now reveal its real identity." actionLabel="Reveal the computer system" onContinue={beginReveal} />
+    {#if phase === 'allocate' && allocateDone}
+      <SolveFirstPause title="Three blocks, three start addresses." message="Each malloc reserved contiguous bytes and returned the low address as a pointer. Now some programs will exit." actionLabel="Free some memory" onContinue={enterFree} />
+    {:else if phase === 'free' && freeDone}
+      <SolveFirstPause title="Freed space went straight back to the pool." message="The new request reused the hole an exited block left behind. Blocks still in use were never touched." actionLabel="Raise the pressure" onContinue={enterFragment} />
+    {:else if phase === 'fragment' && fragFailed}
+      <SolveFirstPause title="Twelve bytes free, but no hole holds six." message="This is external fragmentation: the free memory is real but scattered across holes too small to use. Keep this failed request as evidence." actionLabel="Choose the hole smarter" onContinue={enterPolicy} />
+    {:else if phase === 'policy' && policyDone}
+      <SolveFirstPause title="The hole you picked decided the outcome." message="Filling the tight hole first (best-fit) kept the large hole whole for the six-byte request. Taking the first hole that fit (first-fit) would have split it and blocked the second request." actionLabel="Recover fragmented space" onContinue={enterCompact} />
+    {:else if phase === 'compact' && compactDone}
+      <SolveFirstPause title={`One large hole recovered after ${compactCopies} block copies.`} message="No capacity was added. You paid for contiguous space by copying live blocks and rewriting their pointers while the program paused." actionLabel="Try a different design" onContinue={enterPage} />
+    {:else if phase === 'page' && pageDone}
+      <SolveFirstPause title="The request ran without one contiguous block." message="Paging placed fixed pages in scattered free frames and recorded them in the page table. The half-empty last page is the new cost." actionLabel="Map the whole system" onContinue={beginReveal} />
     {:else if phase === 'compact' && !showHint}
       <button class="hint-button" type="button" on:click={useHint}>Need a nudge?</button>
     {:else if phase === 'compact' && showHint}
-      <p class="hint">Try filling the first row from the left, then the second. An empty third row gives the five-cell job room.</p>
+      <p class="hint">Tap NAV, then MAP, then each block left to right. Every tap slides that block down against the one below it, and the free space collects at the top.</p>
     {/if}
   {/if}
 </div>
 
 <style>
-  .memory-game { width: 100%; max-width: 720px; margin: 0 auto; position: relative; color: var(--qx-text); font-family: var(--qx-font); }
+  .alloc-game { width: 100%; max-width: 720px; margin: 0 auto; position: relative; color: var(--qx-text); font-family: var(--qx-font); }
   button { font: inherit; }
   button:focus-visible { outline: 3px solid var(--qx-accent); outline-offset: 2px; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
   .exit { position: absolute; top: 0; left: 0; z-index: 5; width: 44px; height: 44px; border: 1.5px solid var(--qx-border); border-radius: 50%; background: var(--qx-surface); color: var(--qx-text); cursor: pointer; font-size: 20px; }
   header { min-height: 46px; padding: 1px 54px 8px; text-align: center; }
   h2, h3, p { margin-top: 0; }
   header h2 { margin-bottom: 0; font-size: 22px; font-weight: 950; }
   .eyebrow, .mission > span { color: var(--qx-accent-text); font-size: 9px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+
   .intro, .reveal { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 8px 2px; text-align: center; }
-  .intro h2, .reveal h2 { max-width: 22ch; margin: 0; font-size: clamp(24px, 5vw, 34px); font-weight: 950; line-height: 1.08; }
-  .intro p, .intro > strong, .reveal > p { max-width: 52ch; margin: 0; color: var(--qx-text-dim); font-size: 14px; line-height: 1.55; }
+  .intro h2, .reveal h2 { max-width: 24ch; margin: 0; font-size: clamp(24px, 5vw, 34px); font-weight: 950; line-height: 1.08; }
+  .intro p, .intro > strong, .reveal > p { max-width: 56ch; margin: 0; color: var(--qx-text-dim); font-size: 14px; line-height: 1.55; }
   .intro > strong, .reveal strong { color: var(--qx-text); }
-  .robot-mark { width: 94px; height: 82px; display: grid; place-items: center; border: 2px solid var(--qx-text); border-radius: 8px; background: var(--qx-surface-2); box-shadow: 6px 6px 0 var(--qx-border-2); }
-  .robot-mark i { width: 44px; height: 24px; border: 2px solid var(--qx-text); background: repeating-linear-gradient(90deg, var(--qx-accent) 0 7px, var(--qx-surface) 7px 14px); }
-  .robot-mark b { font-size: 11px; letter-spacing: .13em; }
-  .translation-grid { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; }
-  .frozen-label { padding: 6px 10px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); color: var(--qx-text-dim); font-size: 10px; font-weight: 800; }
-  .primary { width: 100%; min-height: 48px; border: 0; border-radius: 4px; background: var(--qx-accent); color: var(--qx-bg); cursor: pointer; font-size: 13px; font-weight: 950; }
+  .primary { width: 100%; max-width: 360px; min-height: 48px; border: 0; border-radius: 4px; background: var(--qx-accent); color: var(--qx-bg); cursor: pointer; font-size: 13px; font-weight: 950; }
+
   .rail { display: flex; justify-content: center; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
   .rail span { padding: 4px 7px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); color: var(--qx-text-faint); font-size: 8px; font-weight: 900; text-transform: uppercase; }
   .rail span.current { border-color: var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); }
   .rail span.done { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
+
   .mission { padding: 10px 12px; border-left: 4px solid var(--qx-accent); background: var(--qx-surface-2); }
   .mission h3 { margin: 2px 0; font-size: 16px; font-weight: 950; }
   .mission p { margin: 0; color: var(--qx-text-dim); font-size: 12px; line-height: 1.4; }
+
   .dashboard { display: flex; justify-content: flex-end; gap: 5px; margin: 8px 0; flex-wrap: wrap; }
-  .dashboard span { min-width: 76px; padding: 5px 8px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface); text-align: center; }
+  .dashboard span { min-width: 74px; padding: 5px 8px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface); text-align: center; }
   .dashboard small { display: block; color: var(--qx-text-faint); font-size: 8px; font-weight: 850; text-transform: uppercase; }
   .dashboard b { font-size: 13px; font-variant-numeric: tabular-nums; }
-  .warehouse { position: relative; overflow: hidden; border: 2px solid var(--qx-text); border-radius: 8px; background: var(--qx-surface-3); box-shadow: 6px 6px 0 var(--qx-border-2); }
-  .dock { position: relative; width: 100%; min-height: 82px; overflow: hidden; display: block; border: 0; border-bottom: 2px solid var(--qx-text); background: var(--qx-surface-2); color: var(--qx-text); cursor: pointer; text-align: left; }
-  .belt-label { position: absolute; top: 7px; left: 12px; z-index: 3; color: var(--qx-text-dim); font-size: 8px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
-  .belt { position: absolute; inset: 28px 0 10px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 5px 10px; border-top: 2px solid var(--qx-border-2); border-bottom: 2px solid var(--qx-border-2); background: var(--qx-surface); }
-  .belt i { display: block; border-radius: 999px; background: repeating-linear-gradient(90deg, var(--qx-border-2) 0 6px, var(--qx-surface-3) 6px 12px); }
-  .incoming-crate { --crate-size: 1; position: absolute; z-index: 2; top: 31px; left: 48%; width: clamp(66px, calc(var(--crate-size) * 11%), 190px); height: 42px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 2px solid var(--qx-accent); border-radius: 4px; background: var(--qx-accent); box-shadow: inset 0 0 0 3px var(--qx-accent-soft), 4px 4px 0 color-mix(in srgb, var(--qx-text) 24%, transparent); color: var(--qx-bg); transform: translateX(-50%); }
-  .incoming-crate::before, .crate::before { content: ''; position: absolute; inset: 5px; border: 1px dashed color-mix(in srgb, currentColor 50%, transparent); pointer-events: none; }
-  .incoming-crate b { font-size: 18px; }
-  .incoming-crate small { font-size: 9px; font-weight: 800; }
-  .belt-empty { position: absolute; z-index: 2; top: 45px; left: 50%; color: var(--qx-text-faint); font-size: 9px; font-weight: 800; transform: translateX(-50%); }
-  .floor-wrap { position: relative; }
-  .floor { display: grid; grid-template-columns: repeat(6, minmax(44px, 1fr)); grid-template-rows: repeat(3, 76px); gap: 4px; padding: 9px; background: repeating-linear-gradient(0deg, transparent 0 15px, color-mix(in srgb, var(--qx-text) 4%, transparent) 15px 16px), var(--qx-surface-3); }
-  .cell { position: relative; z-index: 1; min-width: 44px; min-height: 64px; overflow: hidden; border: 1.5px dashed var(--qx-border-2); border-radius: 3px; background: color-mix(in srgb, var(--qx-surface) 82%, transparent); color: var(--qx-text-faint); cursor: pointer; }
-  .cell:hover { border-color: var(--qx-accent); background: var(--qx-surface); }
-  .cell small { position: absolute; top: 4px; left: 5px; font-size: 7px; font-weight: 900; }
-  .cell.occupied { border-style: solid; border-color: color-mix(in srgb, var(--qx-accent) 42%, var(--qx-border)); background: var(--qx-accent-soft-2); }
-  .cell.forklift { outline: 3px solid var(--qx-green); outline-offset: -4px; }
-  .crate-layer { position: absolute; z-index: 2; inset: 9px; display: grid; grid-template-columns: repeat(6, minmax(44px, 1fr)); grid-template-rows: repeat(3, 76px); gap: 4px; pointer-events: none; }
-  .crate { position: relative; align-self: center; height: 54px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--qx-accent-text); border-radius: 4px; background: var(--qx-accent); box-shadow: inset 0 0 0 3px var(--qx-accent-soft), 3px 3px 0 color-mix(in srgb, var(--qx-text) 25%, transparent); color: var(--qx-bg); }
-  .crate b { position: relative; z-index: 1; font-size: 17px; font-weight: 950; }
-  .crate span { position: absolute; right: 7px; bottom: 5px; z-index: 1; font-size: 7px; font-weight: 950; letter-spacing: .08em; }
-  .crate.released { border-color: var(--qx-green-text); background: var(--qx-green); animation: pulse 1.2s ease-in-out infinite; }
-  .crate.leaked { border-color: var(--qx-danger-text); background: var(--qx-danger); }
-  .crate.page { border-color: var(--qx-green-text); background: var(--qx-green); }
-  .forklift-sprite { position: relative; z-index: 5; align-self: end; justify-self: center; width: 38px; height: 45px; display: block; filter: drop-shadow(2px 3px 0 color-mix(in srgb, var(--qx-text) 35%, transparent)); }
-  .forklift-sprite::before { content: ''; position: absolute; left: 7px; bottom: 7px; width: 24px; height: 23px; border: 2px solid var(--qx-green-text); border-radius: 5px 5px 3px 3px; background: var(--qx-green); }
-  .forklift-sprite::after { content: ''; position: absolute; left: 12px; top: 3px; width: 15px; height: 18px; border: 3px solid var(--qx-text); border-bottom: 0; border-radius: 3px 3px 0 0; }
-  .forklift-sprite i, .forklift-sprite b { position: absolute; bottom: 2px; width: 8px; height: 8px; border: 2px solid var(--qx-text); border-radius: 50%; background: var(--qx-surface); }
-  .forklift-sprite i { left: 5px; } .forklift-sprite b { right: 3px; }
-  .forklift-sprite em { position: absolute; right: -5px; bottom: 5px; width: 15px; height: 3px; border-top: 3px solid var(--qx-text); border-right: 3px solid var(--qx-text); font-style: normal; }
-  .forklift-sprite.docked { position: absolute; right: 15px; bottom: 12px; }
+
+  .request { display: flex; align-items: center; gap: 8px; margin: 6px 0; padding: 8px 12px; border: 2px solid var(--req, var(--qx-accent)); border-radius: 4px; background: color-mix(in srgb, var(--req, var(--qx-accent)) 12%, var(--qx-surface)); }
+  .request .tag { color: var(--qx-text-faint); font-size: 8px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+  .request b { font-size: 13px; font-weight: 950; }
+  .request small { margin-left: auto; color: var(--qx-text-dim); font-size: 10px; font-weight: 700; }
+
+  .strip-wrap { margin-top: 2px; }
+  .strip { position: relative; display: flex; gap: 3px; width: 100%; height: 68px; padding: 4px; border: 2px solid var(--qx-text); border-radius: 6px; background: var(--qx-surface-3); box-shadow: 5px 5px 0 var(--qx-border-2); box-sizing: border-box; }
+  .strip.paged { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 2px), color-mix(in srgb, var(--qx-text) 22%, transparent) calc(12.5% - 2px) 12.5%); }
+  .seg { position: relative; flex-basis: 0; flex-grow: 1; min-width: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; border: 0; border-radius: 3px; }
+  .seg.block { color: var(--qx-bg); cursor: pointer; box-shadow: inset 0 0 0 2px color-mix(in srgb, #000 16%, transparent); }
+  .seg.block::before { content: ''; position: absolute; inset: 3px; border: 1px dashed color-mix(in srgb, #fff 55%, transparent); pointer-events: none; }
+  .seg.block b { position: relative; z-index: 1; font-size: 12px; font-weight: 950; line-height: 1; }
+  .seg.block small { position: relative; z-index: 1; font-size: 8px; font-weight: 800; opacity: .9; font-variant-numeric: tabular-nums; }
+  .seg.block em { position: relative; z-index: 1; margin-top: 1px; font-size: 7px; font-weight: 900; font-style: normal; letter-spacing: .06em; text-transform: uppercase; }
+  .seg.block.fixed { cursor: default; }
+  .seg.block.exited { animation: pulse 1.15s ease-in-out infinite; }
+  .seg .waste { position: absolute; top: 0; right: 0; bottom: 0; z-index: 0; background-image: repeating-linear-gradient(45deg, color-mix(in srgb, #000 26%, transparent) 0 4px, transparent 4px 8px); }
+  .seg.hole { background: color-mix(in srgb, var(--qx-surface) 78%, transparent); color: var(--qx-text-faint); cursor: pointer; border: 1.5px dashed var(--qx-border-2); }
+  .seg.hole b { font-size: 11px; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .seg.hole small { font-size: 7px; font-weight: 800; }
+  .seg.hole.fits { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); animation: fitpulse 1.2s ease-in-out infinite; }
+  .ruler { display: flex; justify-content: space-between; margin-top: 3px; padding: 0 2px; color: var(--qx-text-faint); font-size: 8px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .ruler .end { color: var(--qx-text-dim); }
+  .strip.mini { height: 30px; max-width: 300px; box-shadow: 3px 3px 0 var(--qx-border-2); }
+  .strip.mini .seg { min-width: 0; }
+
+  .clipboard { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-top: 8px; padding: 8px 10px; border: 2px solid var(--qx-green); background: var(--qx-green-soft); }
+  .clipboard div { display: grid; margin-right: auto; text-align: left; }
+  .clipboard span { color: var(--qx-green-text); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+  .clipboard b, .clipboard small { font-size: 10px; }
+  .clipboard small { padding: 3px 6px; border: 1px solid var(--qx-green); background: var(--qx-surface); color: var(--qx-green-text); font-variant-numeric: tabular-nums; }
+
+  .wall-tool { width: 100%; min-height: 50px; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; padding: 8px 12px; border: 2px solid var(--qx-green); border-radius: 3px; background: var(--qx-surface); color: var(--qx-text); cursor: pointer; text-align: left; }
+  .wall-tool b { font-size: 11px; }
+  .wall-tool span { color: var(--qx-text-dim); font-size: 10px; }
+
   .load-status { display: flex; gap: 8px; align-items: center; margin-top: 9px; padding: 7px 10px; border: 1px solid var(--qx-border); border-radius: 999px; background: var(--qx-surface-2); }
   .load-status > span { color: var(--qx-text-faint); font-size: 8px; font-weight: 900; text-transform: uppercase; }
   .load-status b { font-size: 12px; }
   .load-status small { margin-left: auto; color: var(--qx-text-dim); font-size: 9px; }
-  .clipboard { display: flex; align-items: center; gap: 7px; margin-top: 8px; padding: 8px 10px; border: 2px solid var(--qx-green); background: var(--qx-green-soft); }
-  .clipboard div { display: grid; margin-right: auto; text-align: left; }
-  .clipboard span { color: var(--qx-green-text); font-size: 8px; font-weight: 900; text-transform: uppercase; }
-  .clipboard b, .clipboard small { font-size: 10px; }
-  .clipboard small { padding: 3px 6px; border: 1px solid var(--qx-green); background: var(--qx-surface); color: var(--qx-green-text); }
-  .wall-tool { width: 100%; min-height: 50px; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; padding: 8px 12px; border: 2px solid var(--qx-text); border-radius: 3px; background: var(--qx-surface); color: var(--qx-text); cursor: pointer; text-align: left; }
-  .wall-tool b { font-size: 11px; }
-  .wall-tool span { color: var(--qx-text-dim); font-size: 10px; }
-  .wall-tool.slicer { border-color: var(--qx-green); }
-  .wall-tool.kill { border-color: var(--qx-danger); background: var(--qx-danger-soft); }
+
   .feedback { min-height: 30px; margin-top: 8px; padding: 7px 10px; border-left: 4px solid var(--qx-border-2); background: var(--qx-surface-2); color: var(--qx-text-dim); font-size: 11px; font-weight: 700; line-height: 1.4; }
   .feedback.good { border-color: var(--qx-green); background: var(--qx-green-soft); color: var(--qx-green-text); }
   .feedback.bad { border-color: var(--qx-danger); background: var(--qx-danger-soft); color: var(--qx-danger-text); }
   .hint-button { display: block; min-height: 44px; margin: 8px auto 0; border: 0; background: transparent; color: var(--qx-accent-text); cursor: pointer; font-weight: 850; text-decoration: underline; }
   .hint { margin: 8px 0 0; padding: 9px; border: 1px solid var(--qx-accent); background: var(--qx-accent-soft); color: var(--qx-accent-text); font-size: 11px; text-align: center; }
-  .translation-grid { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); }
-  .translation-grid span { display: grid; padding: 9px; border: 1px solid var(--qx-border); background: var(--qx-surface); color: var(--qx-text-dim); font-size: 11px; text-align: left; }
-  .translation-grid b { color: var(--qx-text); font-size: 9px; text-transform: uppercase; }
-  .metric-replay, .comparison { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
-  .metric-replay span, .comparison article { display: grid; gap: 3px; padding: 10px; border: 1px solid var(--qx-border); background: var(--qx-surface); }
+
+  .metric-replay, .comparison { width: 100%; display: grid; gap: 7px; }
+  .metric-replay { grid-template-columns: repeat(3, 1fr); }
+  .comparison { grid-template-columns: repeat(2, 1fr); }
+  .metric-replay span, .comparison article { display: grid; gap: 3px; padding: 10px; border: 1px solid var(--qx-border); background: var(--qx-surface); text-align: left; }
+  .metric-replay span { text-align: center; }
   .metric-replay b { color: var(--qx-accent-text); font-size: 23px; }
   .metric-replay span, .comparison span { color: var(--qx-text-dim); font-size: 10px; }
+  .comparison b { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
   .copy-counter { display: grid; padding: 12px 28px; border: 2px solid var(--qx-accent); background: var(--qx-accent-soft); }
   .copy-counter b { font-size: 32px; }
   .copy-counter span { color: var(--qx-text-dim); font-size: 10px; }
   .page-table { width: 100%; max-width: 390px; border: 1px solid var(--qx-border-2); background: var(--qx-surface); }
   .page-table > div { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--qx-border); }
-  .page-table span, .page-table b { padding: 7px; font-size: 11px; }
-  .comparison { grid-template-columns: repeat(2, 1fr); }
-  .comparison article { text-align: left; }
+  .page-table .pt-head b { padding: 7px; font-size: 9px; text-transform: uppercase; letter-spacing: .05em; }
+  .page-table .pt-row span { padding: 7px; font-size: 11px; font-variant-numeric: tabular-nums; }
+
   .reward-panel, .complete-panel { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1.5px solid var(--qx-accent); background: var(--qx-accent-soft); text-align: left; }
   .reward-panel span { display: block; color: var(--qx-accent-text); font-size: 9px; font-weight: 900; text-transform: uppercase; }
   .reward-panel > b { color: var(--qx-accent-text); font-size: 19px; }
   .complete-panel { display: grid; border-color: var(--qx-green); background: var(--qx-green-soft); }
   .complete-panel span { color: var(--qx-green-text); font-size: 11px; }
-  .reveal-floor { width: 100%; text-align: left; }
-  .reveal-floor .dock { min-height: 48px; padding: 15px 12px 0; box-sizing: border-box; }
-  .reveal-floor .floor { grid-template-rows: repeat(3, 54px); }
-  .technical .cell small { color: var(--qx-text-faint); }
-  @keyframes pulse { 50% { filter: brightness(1.1); box-shadow: inset 0 0 0 2px var(--qx-green); } }
+
+  @keyframes pulse { 50% { filter: brightness(1.14); box-shadow: inset 0 0 0 2px #fff; } }
+  @keyframes fitpulse { 50% { border-color: var(--qx-green-text); background: color-mix(in srgb, var(--qx-green) 24%, var(--qx-surface)); } }
+
   @media (max-width: 600px) {
-    .dock { min-height: 76px; }
-    .floor { grid-template-columns: repeat(6, minmax(44px, 1fr)); grid-template-rows: repeat(3, 62px); overflow-x: auto; }
-    .crate-layer { grid-template-columns: repeat(6, minmax(44px, 1fr)); grid-template-rows: repeat(3, 62px); }
-    .cell { min-height: 52px; }
-    .crate { height: 44px; }
-    .forklift-sprite { transform: scale(.86); }
-    .clipboard { flex-wrap: wrap; }
-    .reveal-floor .floor { grid-template-rows: repeat(3, 48px); }
-  }
-  @media (max-width: 390px) {
+    .strip { height: 76px; }
+    .seg { min-width: 26px; }
     .dashboard { justify-content: stretch; }
-    .dashboard span { flex: 1 1 38%; }
-    .floor { grid-template-columns: repeat(6, 44px); }
-    .crate-layer { grid-template-columns: repeat(6, 44px); }
-    .translation-grid, .comparison { grid-template-columns: 1fr; }
-    .metric-replay { grid-template-columns: repeat(3, 1fr); }
+    .dashboard span { flex: 1 1 40%; }
+  }
+  @media (max-width: 420px) {
+    .metric-replay, .comparison { grid-template-columns: 1fr; }
+    .strip-wrap { overflow-x: auto; }
+    .strip { min-width: 360px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
