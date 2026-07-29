@@ -1,4 +1,6 @@
 <script>
+  import { isSafeMathExpr } from '../../content/safeMathExpr.js';
+
   // Clean coordinate plane — minimal, textbook-style, theme-aware (light/dark).
   // spec: {
   //   xRange: [min, max], yRange: [min, max],
@@ -58,6 +60,7 @@
 
   function makeFn(fn) {
     if (typeof fn === 'function') return fn;
+    if (!isSafeMathExpr(fn)) return () => NaN;
     try { const f = new Function('x', 'with(Math){return (' + fn + ');}'); return x => f(x); }
     catch (_) { return () => NaN; }
   }

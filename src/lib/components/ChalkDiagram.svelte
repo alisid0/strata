@@ -1,4 +1,6 @@
 <script>
+  import { isSafeMathExpr } from '../content/safeMathExpr.js';
+
   export let spec = null;
 
   const W = 260, H = 200;
@@ -11,6 +13,7 @@
   function toY(y) { return PY - y * SCALE; }
 
   function curvePoints(fnStr, domain, n) {
+    if (!isSafeMathExpr(fnStr)) return [];
     const fn = new Function('x', 'with(Math){return (' + fnStr + ')}');
     n = n || 80;
     const pts = [];
