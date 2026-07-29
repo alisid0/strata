@@ -1,11 +1,44 @@
 # Current state and what's left
 
-Last updated: 2026-07-25, end of the Solve First port session.
-Single source of truth for where this work stands. Supersedes earlier versions.
+Last updated: 2026-07-29.
+Current release actions are below. The remainder of this document is retained
+as the archived 2026-07-25 Solve First port record.
 
 ---
 
-## Where things stand
+## Current release state
+
+| | Status |
+|---|---|
+| Solve First port and deeper mechanism pass | ✅ integrated |
+| Phase 1.1 Learn → Solve → Recall loop | ✅ on `main` |
+| Current paired Solve First journeys | ✅ 14 |
+| Production and staging builds | ✅ passing |
+| Expansion, Solve First and arcade regression suites | ✅ passing |
+| Production stable URL | ✅ tracked build verified 2026-07-29 |
+| F-01 sanitiser | ✅ tracked and live |
+| F-02 report-only security headers | ✅ tracked and live |
+| F-10 immutable asset caching | ✅ tracked and live |
+| CSP reporting endpoint and enforcement decision | ⬜ still open |
+
+The production regression described by local commit `beeb166` is resolved.
+Live Terms contains the real support address, the expected security headers are
+present, and the current hashed application asset is served as immutable.
+
+Local staging commit `5308752` was audited before release. Its five assessment
+patches are identical to tracked commit `c84831d`; subsequent production work
+replaced the old limits and network implementations and expanded the catalogue.
+Replaying `5308752` would therefore regress the current app rather than add new
+work.
+
+The local image `public/images/card-34-floor0-v1.png` is deliberately not part
+of this release: no live content or media resolver references it. Connect it
+through the authoritative Reader media path in a separately reviewed content
+change if it is still wanted.
+
+---
+
+## Archived 2026-07-25 session record
 
 | | Status |
 |---|---|

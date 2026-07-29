@@ -1,6 +1,6 @@
 # Qubix public-beta checklist — the authoritative list
 
-Last reconciled: 2026-07-22
+Last reconciled: 2026-07-29
 
 The single source of truth for what is done and what remains before a public
 beta. Where `LAUNCH-HANDOVER.md` or other docs conflict with this, this wins.
@@ -46,9 +46,9 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 | ✅ | F-07 report details immutable after submit | `0005` |
 | ✅ | F-08 under-13 age band removed | `0005` + Onboarding |
 | ✅ | F-09 legacy tables retired | `0005` |
-| 🟡 | F-01 HTML sanitiser at all DB render sites | `origin/staging`, 47 tests pass — **not yet on main/prod** |
-| 🟡 | F-02 security headers (CSP report-only, HSTS, frame-deny, nosniff) | `origin/staging` — **not yet on main/prod** |
-| 🟡 | F-10 immutable asset caching | `origin/staging` — **not yet on main/prod** |
+| ✅ | F-01 HTML sanitiser at all DB render sites | on `main`; sanitiser suite passes; tracked bundle live 2026-07-29 |
+| ✅ | F-02 security headers (CSP report-only, HSTS, frame-deny, nosniff) | verified on stable production URL 2026-07-29 |
+| ✅ | F-10 immutable asset caching | verified on the live hashed application asset 2026-07-29 |
 | ⬜ | CSP reporting endpoint stood up | `api/csp-report.js` drafted dormant; `CSP-REPORTING.md` |
 | ⬜ | CSP flipped report-only → enforcing after observation | after endpoint + 1–2 wk watch |
 
@@ -103,8 +103,8 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 
 Most items above are parallel. The chain that actually gates a closed beta:
 
-1. **Merge `origin/staging` → `main`, deploy.** Ships F-01/F-02/F-10 to
-   production. (Codex — client + docs only, no migration.)
+1. ~~**Merge and deploy F-01/F-02/F-10.**~~ Complete and verified on the stable
+   production URL on 2026-07-29.
 2. **Stand up the CSP reporting endpoint, observe, then enforce.** Until the
    flip, the sanitiser is the only active XSS defence — acceptable for a closed
    beta, not for a wide launch.

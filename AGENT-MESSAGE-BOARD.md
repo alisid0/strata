@@ -25,7 +25,8 @@ database migrations, expose secrets, or merge branches.
 - Staging Supabase: `Qubix Staging` (`atmmfkhjsdqqwnhqifxm`).
 - Legacy production ref `xzesbcrlnbesmvxmgotp` is retired. Never restore it to
   app configuration or runtime media URLs.
-- Current production app release: commit `7678004`, deployed 2026-07-21.
+- Production source is GitHub `main`; the stable URL was last verified against
+  the tracked production bundle on 2026-07-29.
 - Production contains 1,145 public cards. No legacy users, identities, progress,
   sessions, reports, screenshots, or other private data were migrated.
 - Production deployment is manual.
@@ -36,7 +37,24 @@ database migrations, expose secrets, or merge branches.
 - Historical messages below record what was true when written. This shared
   current-state block and the first-read docs override older `blocked` notes.
 
-### Status update — 2026-07-25 (supersedes older process assumptions)
+### Status update — 2026-07-29
+
+- The production regression recorded in local commit `beeb166` is closed.
+  `https://strata-nine-pi.vercel.app` serves the tracked repository: the Terms
+  page has `admin@arcavetech.co.uk`, the CSP report-only, frame-deny and HSTS
+  headers are present, and hashed assets use immutable caching.
+- Phase 1.1 and the current 14 paired Solve First journeys are on GitHub
+  `main`. Production deployment remains manual and must originate from
+  `release-solve-first-live` / the tracked Vercel project.
+- Local staging commit `5308752` was reconciled rather than replayed. Its five
+  assessment-component patches are identical to tracked commit `c84831d`; its
+  older Workshop catalogue has since been superseded. No unique workshop logic
+  remains stranded on that branch.
+- `public/images/card-34-floor0-v1.png` remains an unreferenced local asset. It
+  is not a deployable update until reviewed against the live content authority
+  and connected through the Reader media resolver.
+
+### Historical status update — 2026-07-25
 
 - **Codex is no longer in the loop.** Reviews and sign-off are Claude's, acting
   as reviewer of record. The two-agent inbox flow below is historical.
