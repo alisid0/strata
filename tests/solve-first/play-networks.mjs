@@ -71,6 +71,7 @@ await click('Fault pattern proven');
 for (const design of ['Shared middle', 'Radio cloud', 'Many paths']) {
   await click(design, '.blueprint-grid button');
   await click('Deploy network');
+  await click(design === 'Many paths' ? 'Review all three jobs' : 'Continue to the next job');
 }
 assert(text().includes('Jobs complete'), 'three constraint missions accept the matching designs');
 await click('Jobs complete');
@@ -94,7 +95,10 @@ await click('Calibration secured');
 for (const sample of all('.sample-row button')) await clickElement(sample);
 await click('Tanker B');
 await click('Pattern found');
-for (let shift = 0; shift < 4; shift += 1) await click('Advance 2 minutes');
+for (let shift = 0; shift < 4; shift += 1) {
+  await click('Advance 2 minutes');
+  await click(shift === 3 ? 'Review the completed forecourt' : 'Continue to the next shift');
+}
 assert(text().includes('Forecourt saved'), 'four-shift flow-control game completes');
 await click('Forecourt saved');
 await click('30 L/min');

@@ -9,6 +9,7 @@
   // The reveal names polar coordinates and rose curves.
   // Pure SVG — Qubix tokens native, every state testable.
   import ArcadeShell from './ArcadeShell.svelte';
+  import SolveFirstPause from './SolveFirstPause.svelte';
   import { fly } from 'svelte/transition';
   import { playAward, playBonus } from '../../sfx.js';
 
@@ -87,6 +88,8 @@
   let phase = 'briefing';              // briefing | play | reveal
   let score = 0;
   let recorded = false;
+  let pauseKind = '';
+  let solvedOption = '';
 
   // m1
   let aimR = 80, aimTh = 90, blipIx = 0, tagged = 0, m1Flash = '';
@@ -109,40 +112,38 @@
   function startMission(m) {
     mission = m;
     phase = 'briefing';
+    pauseKind = '';
+    solvedOption = '';
     if (m === 0) { blipIx = 0; tagged = 0; aimR = 80; aimTh = 90; }
     if (m === 1 || m === 3) { qIx = 0; qTries = 0; qWrong = false; }
     if (m === 2) { roundIx = 0; fenceA = 80; fenceK = 2; }
   }
 
   function fireTag() {
-    if (phase !== 'play' || mission !== 0) return;
+    if (phase !== 'play' || mission !== 0 || pauseKind) return;
     const dTh = Math.min(Math.abs(aimTh - m1blip.th), 360 - Math.abs(aimTh - m1blip.th));
     const hit = Math.abs(aimR - m1blip.r) <= AIM_TOL_R && dTh <= AIM_TOL_TH;
     m1Flash = hit ? 'TAGGED ✓' : 'MISS — check both dials';
-    setTimeout(() => { m1Flash = ''; }, 900);
-    if (!hit) return;
+    if (!hit) {
+      setTimeout(() => { m1Flash = ''; }, 900);
+      return;
+    }
     tagged += 1;
     score += 110;
     try { playBonus(); } catch (_) {}
-    if (blipIx < M1_BLIPS.length - 1) blipIx += 1;
-    else setTimeout(() => startMission(1), 800);
+    pauseKind = 'tag';
   }
 
   function answerMcq(opt) {
+    if (pauseKind) return;
     qTries += 1;
     if (!opt.ok) { qWrong = true; return; }
     if (qTries === 1) mcqFirstTries += 1;
     score += Math.max(60, 200 - (qTries - 1) * 70);
     try { playAward(); } catch (_) {}
     qWrong = false;
-    qTries = 0;
-    if (mission === 1) {
-      if (qIx < M2_QUESTIONS.length - 1) qIx += 1;
-      else startMission(2);
-    } else {
-      phase = 'reveal';
-      finishGame();
-    }
+    solvedOption = opt.label;
+    pauseKind = 'mcq';
   }
 
   function rosePath(a, k) {
@@ -165,20 +166,50 @@
     : [];
 
   function energize() {
-    if (phase !== 'play' || mission !== 2) return;
+    if (phase !== 'play' || mission !== 2 || pauseKind) return;
     if (blockedList.every(Boolean)) {
       score += 200;
       m3Flash = 'RAID REPELLED ✓';
       try { playBonus(); } catch (_) {}
-      setTimeout(() => {
-        m3Flash = '';
-        if (roundIx < M3_ROUNDS.length - 1) { roundIx += 1; fenceA = 80; fenceK = 2; }
-        else startMission(3);
-      }, 900);
+      pauseKind = 'fence';
     } else {
       const leak = m3round.raidsDeg.filter((b, i) => !blockedList[i]);
       m3Flash = `BREACH at ${leak.slice(0, 3).join('°, ')}° — tips must point down every raid bearing`;
       setTimeout(() => { m3Flash = ''; }, 1600);
+    }
+  }
+
+  function continueAfterResult() {
+    if (pauseKind === 'tag') {
+      pauseKind = '';
+      m1Flash = '';
+      if (blipIx < M1_BLIPS.length - 1) blipIx += 1;
+      else startMission(1);
+      return;
+    }
+    if (pauseKind === 'mcq') {
+      pauseKind = '';
+      solvedOption = '';
+      qTries = 0;
+      if (mission === 1) {
+        if (qIx < M2_QUESTIONS.length - 1) qIx += 1;
+        else startMission(2);
+      } else {
+        phase = 'reveal';
+        finishGame();
+      }
+      return;
+    }
+    if (pauseKind === 'fence') {
+      pauseKind = '';
+      m3Flash = '';
+      if (roundIx < M3_ROUNDS.length - 1) {
+        roundIx += 1;
+        fenceA = 80;
+        fenceK = 2;
+      } else {
+        startMission(3);
+      }
     }
   }
 
@@ -254,7 +285,7 @@
         <p>{m2q.q}</p>
         <div class="opts">
           {#each m2q.options as opt (opt.label)}
-            <button class="opt" on:click={() => answerMcq(opt)}>{opt.label}</button>
+            <button class="opt" disabled={!!pauseKind} on:click={() => answerMcq(opt)}>{opt.label}</button>
           {/each}
         </div>
         {#if qWrong}<p class="wrong">{m2q.hint}</p>{/if}
@@ -264,10 +295,22 @@
         <p>{M4.q}</p>
         <div class="opts">
           {#each M4.options as opt (opt.label)}
-            <button class="opt" on:click={() => answerMcq(opt)}>{opt.label}</button>
+            <button class="opt" disabled={!!pauseKind} on:click={() => answerMcq(opt)}>{opt.label}</button>
           {/each}
         </div>
         {#if qWrong}<p class="wrong">{M4.hint}</p>{/if}
+      {/if}
+      {#if pauseKind === 'mcq'}
+        <SolveFirstPause
+          title="The two coordinate languages point to the same place"
+          message={mission === 1
+            ? `Keep “${solvedOption}” beside the radar address. Range supplies the length; cosine and sine split it into across and up.`
+            : 'The equation fixes every petal tip. Notice that multiplying the angle inside cosine controls the repeated bearings.'}
+          actionLabel={mission === 1
+            ? qIx < M2_QUESTIONS.length - 1 ? 'Continue to the next translation' : 'Continue to the fence'
+            : 'Reveal the concept'}
+          onContinue={continueAfterResult}
+        />
       {/if}
     </div>
 
@@ -316,19 +359,34 @@
     {#if mission === 0}
       <div class="controls">
         <label class="ctl"><span>Range · {aimR}</span>
-          <input type="range" min="30" max="130" step="2" bind:value={aimR} aria-label="Range dial" /></label>
+          <input type="range" min="30" max="130" step="2" bind:value={aimR} aria-label="Range dial" disabled={!!pauseKind} /></label>
         <label class="ctl"><span>Bearing · {aimTh}°</span>
-          <input type="range" min="0" max="359" step="1" bind:value={aimTh} aria-label="Bearing dial" /></label>
-        <button class="primary wide" on:click={fireTag}>Tag the blip ▸ ({tagged}/{M1_BLIPS.length})</button>
+          <input type="range" min="0" max="359" step="1" bind:value={aimTh} aria-label="Bearing dial" disabled={!!pauseKind} /></label>
+        <button class="primary wide" on:click={fireTag} disabled={!!pauseKind}>Tag the blip ▸ ({tagged}/{M1_BLIPS.length})</button>
       </div>
     {:else}
       <div class="controls">
         <label class="ctl"><span>Fence size · a = {fenceA}</span>
-          <input type="range" min="40" max="130" step="2" bind:value={fenceA} aria-label="Fence size a" /></label>
+          <input type="range" min="40" max="130" step="2" bind:value={fenceA} aria-label="Fence size a" disabled={!!pauseKind} /></label>
         <label class="ctl"><span>Resonance · k = {fenceK}</span>
-          <input type="range" min="1" max="6" step="1" bind:value={fenceK} aria-label="Resonance k" /></label>
-        <button class="primary wide" on:click={energize}>Energize the fence ▸</button>
+          <input type="range" min="1" max="6" step="1" bind:value={fenceK} aria-label="Resonance k" disabled={!!pauseKind} /></label>
+        <button class="primary wide" on:click={energize} disabled={!!pauseKind}>Energize the fence ▸</button>
       </div>
+    {/if}
+    {#if pauseKind === 'tag'}
+      <SolveFirstPause
+        title={`Blip ${blipIx + 1} is tagged`}
+        message={`The same point needed two inputs: range ${m1blip.r} set how far, and bearing ${m1blip.th}° set which direction. Keep the reticle on the solved blip while you compare them.`}
+        actionLabel={blipIx < M1_BLIPS.length - 1 ? 'Continue to the next blip' : 'Continue to translation'}
+        onContinue={continueAfterResult}
+      />
+    {:else if pauseKind === 'fence'}
+      <SolveFirstPause
+        title="Every raid bearing meets a petal tip"
+        message={`The solved fence blocks ${m3round.raidsDeg.length} directions. Size made it reach the raiders; resonance and alignment decided where its tips pointed.`}
+        actionLabel={roundIx < M3_ROUNDS.length - 1 ? 'Continue to the rotated raid' : 'Continue to the formula'}
+        onContinue={continueAfterResult}
+      />
     {/if}
   {/if}
 </ArcadeShell>

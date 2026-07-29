@@ -2,6 +2,7 @@
   // Boundary Runner — Solve First limits discovery arcade game v3.
   // Six missions with ArcadeShell HUD, SVG playfield, probe controls.
   import ArcadeShell from './ArcadeShell.svelte';
+  import SolveFirstPause from './SolveFirstPause.svelte';
   import { fly } from 'svelte/transition';
   import { generateLevel, LEVEL_NAMES, LEVEL_DESCRIPTIONS, LEVEL_HINTS, computeReward } from '../../content/boundaryRunner.js';
 
@@ -28,6 +29,7 @@
   let samples = [], activeSide = 'left';
   let prediction = null, predictionCorrect = false, levelCleared = false;
   let mistakes = 0, hintVisible = false;
+  let pendingBeat = '';
   // Reactor-specific
   let reactorStage = 0;
   // Far-Horizon-specific
@@ -71,7 +73,7 @@
   }
 
   function moveProbe(side, delta) {
-    if (!level || levelCleared) return;
+    if (!level || levelCleared || pendingBeat) return;
     const p = probes[side];
     const a = boundaryA;
     let nx = p.x + delta;
@@ -84,7 +86,7 @@
   }
 
   function sampleProbe(side) {
-    if (!level || levelCleared || !activeFn) return;
+    if (!level || levelCleared || pendingBeat || !activeFn) return;
     const p = probes[side];
     if (!p.active) return;
     const x = p.x, y = activeFn(x);
@@ -113,6 +115,7 @@
   function startLevel(ix) {
     levelIx = ix;
     level = generateLevel(ix, Date.now());
+    pendingBeat = '';
     reactorStage = 0; farStage = 0; corridorRound = 0;
     initProbes(level, 0);
     clearSamples();
@@ -126,13 +129,12 @@
   // Reactor: advance stage
   function advanceReactor() {
     if (reactorStage < level.stages.length - 1) {
-      reactorStage++; initProbes(level, reactorStage); clearSamples(false);
-      announce('Reactor stage ' + (reactorStage+1) + ' of ' + level.stages.length);
+      pendingBeat = 'reactor';
     } else { levelCleared = true; combo++; arcadeScore += (100 + combo * 20); }
   }
 
   function answerReactorStage(answer) {
-    if (!activeReactor || !evidenceReady) return;
+    if (!activeReactor || !evidenceReady || pendingBeat) return;
     const correct = activeReactor.answer;
     if (answer === correct) { advanceReactor(); }
     else { mistakes++; }
@@ -140,14 +142,12 @@
 
   // Far Horizon: two-stage progression
   function submitFarPrediction() {
-    if (!level || level.kind !== 'farHorizon' || !farEvidenceReady) return;
+    if (!level || level.kind !== 'farHorizon' || !farEvidenceReady || pendingBeat) return;
     const target = farStage === 0 ? level.L : level.L2;
     if (Math.abs(Number(farPrediction) - target) < 1) {
       farCorrect = true;
       if (farStage === 0) {
-        farStage = 1; farPrediction = null; farCorrect = false;
-        samples = []; initProbes(level, 0); hintVisible = false;
-        announce('Stage 2: rational asymptote');
+        pendingBeat = 'far';
       } else {
         levelCleared = true; combo++; arcadeScore += (100 + combo * 20);
       }
@@ -174,7 +174,7 @@
     : { min: 0.01, max: 3, step: 0.01 };
 
   function testCorridor() {
-    if (!activeCorridor || !corridorDelta) return;
+    if (!activeCorridor || !corridorDelta || pendingBeat) return;
     const { x0, fn, L, epsilon } = activeCorridor;
     let allPass = true;
     for (let i = 0; i < 80; i++) {
@@ -185,10 +185,39 @@
     if (allPass) {
       combo++; arcadeScore += (150 + combo * 20);
       if (corridorRound < corridorRounds.length - 1) {
-        corridorRound++; corridorDelta = null; corridorTested = false; corridorPassed = false;
-        announce('Round ' + (corridorRound+1) + ': tighter tolerance');
+        pendingBeat = 'corridor';
       } else { levelCleared = true; }
     } else { mistakes++; }
+  }
+
+  function continueBeat() {
+    if (pendingBeat === 'reactor') {
+      pendingBeat = '';
+      reactorStage++;
+      initProbes(level, reactorStage);
+      clearSamples(false);
+      announce('Reactor stage ' + (reactorStage + 1) + ' of ' + level.stages.length);
+      return;
+    }
+    if (pendingBeat === 'far') {
+      pendingBeat = '';
+      farStage = 1;
+      farPrediction = null;
+      farCorrect = false;
+      samples = [];
+      initProbes(level, 0);
+      hintVisible = false;
+      announce('Stage 2: rational asymptote');
+      return;
+    }
+    if (pendingBeat === 'corridor') {
+      pendingBeat = '';
+      corridorRound++;
+      corridorDelta = null;
+      corridorTested = false;
+      corridorPassed = false;
+      announce('Round ' + (corridorRound + 1) + ': tighter tolerance');
+    }
   }
 
   function clearLevel() {
@@ -213,7 +242,7 @@
   function restart() {
     levelIx = -1; hintUsed = false; recorded = false; arcadeScore = 0; combo = 0;
     levelResults = []; phase = 'briefing'; level = null; samples = [];
-    hintVisible = false; reactorStage = 0; farStage = 0; corridorRound = 0;
+    hintVisible = false; pendingBeat = ''; reactorStage = 0; farStage = 0; corridorRound = 0;
   }
 
   // Keyboard: only when playfield is focused
@@ -474,6 +503,24 @@
             {/if}
           {/if}
         </div>
+      {/if}
+
+      {#if pendingBeat}
+        <SolveFirstPause
+          title={pendingBeat === 'reactor'
+            ? `Reactor check ${reactorStage + 1} is correct`
+            : pendingBeat === 'far' ? 'The first long-run pattern is locked'
+            : `Safety corridor ${corridorRound + 1} held`}
+          message={pendingBeat === 'reactor'
+            ? 'Keep the readings from both sides visible. They support this conclusion; the next check will change the boundary and ask whether the same reasoning survives.'
+            : pendingBeat === 'far'
+              ? 'The exponential settled toward one output as the input travelled farther out. Hold that evidence before comparing it with a different function.'
+              : `Every tested input inside δ = ${corridorDelta} kept the output within the stated tolerance. The next round will tighten the requirement.`}
+          actionLabel={pendingBeat === 'reactor'
+            ? 'Continue to the next reactor check'
+            : pendingBeat === 'far' ? 'Continue to the second pattern' : 'Continue to the tighter corridor'}
+          onContinue={continueBeat}
+        />
       {/if}
 
       {#if levelCleared}

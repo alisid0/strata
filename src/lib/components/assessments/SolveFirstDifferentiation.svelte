@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
+  import SolveFirstPause from './SolveFirstPause.svelte';
 
   export let config;
   export let onDone = () => {};
@@ -37,6 +38,7 @@
   let shiftLog = [];
   let gameMistakes = 0;
   let gameMessage = '';
+  let pendingShift = null;
 
   let transferPick = '';
   let transferMistakes = 0;
@@ -87,7 +89,7 @@
   }
 
   function runShift() {
-    if (gameReady) return;
+    if (gameReady || pendingShift) return;
     const shift = SHIFTS[shiftIndex];
     const change = (deliveryRate - shift.demand) * 2;
     const projected = stationLevel + change;
@@ -100,18 +102,25 @@
       return;
     }
 
-    shiftLog = [...shiftLog, {
+    const result = {
       label: shift.label,
       demand: shift.demand,
       delivery: deliveryRate,
       change,
       after: projected
-    }];
+    };
+    shiftLog = [...shiftLog, result];
     stationLevel = projected;
-    shiftIndex += 1;
+    pendingShift = result;
     gameMessage = change === 0
       ? 'Balanced: fuel entered as fast as customers drew it out.'
       : `Safe. The tank changed by ${change > 0 ? '+' : ''}${change} L over two minutes.`;
+  }
+
+  function continueShift() {
+    if (!pendingShift) return;
+    shiftIndex += 1;
+    pendingShift = null;
     if (shiftIndex < SHIFTS.length) deliveryRate = SHIFTS[shiftIndex].demand;
   }
 
@@ -160,6 +169,7 @@
     shiftLog = [];
     gameMistakes = 0;
     gameMessage = '';
+    pendingShift = null;
     transferPick = '';
     transferMistakes = 0;
   }
@@ -321,7 +331,7 @@
 
           {#if !gameReady}
             <label for="delivery-rate">Tanker delivery rate</label>
-            <select id="delivery-rate" bind:value={deliveryRate}>
+            <select id="delivery-rate" bind:value={deliveryRate} disabled={!!pendingShift}>
               {#each DELIVERY_OPTIONS as rate}<option value={rate}>{rate} L/min in</option>{/each}
             </select>
             <div class="live-equation">
@@ -330,11 +340,20 @@
                 {deliveryRate} − {currentShift.demand} = {deliveryRate - currentShift.demand > 0 ? '+' : ''}{deliveryRate - currentShift.demand} L/min
               </strong>
             </div>
-            <button class="pump-action" on:click={runShift}>Advance 2 minutes</button>
+            <button class="pump-action" on:click={runShift} disabled={!!pendingShift}>Advance 2 minutes</button>
           {/if}
         </div>
 
         {#if gameMessage}<div class:success-note={gameReady || shiftLog.length} class:error-note={gameMessage.includes('would')}>{gameMessage}</div>{/if}
+
+        {#if pendingShift}
+          <SolveFirstPause
+            title={`${pendingShift.label}: tank ${pendingShift.change === 0 ? 'held steady' : pendingShift.change > 0 ? 'rose' : 'fell'}`}
+            message={`Delivery was ${pendingShift.delivery} L/min and demand was ${pendingShift.demand} L/min. Their difference was ${pendingShift.change / 2} L/min, producing a ${pendingShift.change > 0 ? '+' : ''}${pendingShift.change} L change over two minutes.`}
+            actionLabel={shiftIndex < SHIFTS.length - 1 ? 'Continue to the next shift' : 'Review the completed forecourt'}
+            onContinue={continueShift}
+          />
+        {/if}
 
         {#if shiftLog.length}
           <div class="shift-log" aria-label="Completed shifts">

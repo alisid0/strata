@@ -10,6 +10,7 @@
   //
   // Pure SVG (no canvas): Qubix tokens work natively, every state testable.
   import ArcadeShell from './ArcadeShell.svelte';
+  import SolveFirstPause from './SolveFirstPause.svelte';
   import { fly } from 'svelte/transition';
   import { playAward, playBonus } from '../../sfx.js';
 
@@ -79,6 +80,7 @@
   let m3Shots = 0, m3Done = false;
 
   let recorded = false;
+  let pauseKind = '';
 
   const rad = (d) => (d * Math.PI) / 180;
   $: across = L * Math.cos(rad(theta));
@@ -102,6 +104,7 @@
   function startMission(m) {
     mission = m;
     phase = 'briefing';
+    pauseKind = '';
     flash = null;
     theta = 45;
     if (m === 0) { L = M1.L; rescueIx = 0; logRows = []; }
@@ -119,33 +122,36 @@
   }
 
   function dispatch() {
-    if (phase !== 'play') return;
+    if (phase !== 'play' || pauseKind) return;
     if (mission === 0) {
       const t = M1.rescues[rescueIx];
       const hit = Math.abs(tipX - (BX + t.x)) < TOL && Math.abs(tipY - (BY - t.y)) < TOL;
       logRows = [...logRows.slice(-3), { theta: Math.round(theta), across: Math.round(across), up: Math.round(up), hit }];
       flash = hit ? 'hit' : 'miss';
-      setTimeout(() => { flash = null; }, 650);
-      if (!hit) return;
+      if (!hit) {
+        setTimeout(() => { flash = null; }, 650);
+        return;
+      }
       score += 100;
       try { playBonus(); } catch (_) {}
-      if (rescueIx < M1.rescues.length - 1) rescueIx += 1;
-      else setTimeout(() => startMission(1), 700);
+      pauseKind = 'rescue';
     } else if (mission === 2) {
       m3Shots += 1;
       const hit = Math.abs(theta - M3.theta) <= M3.tolDeg;
       flash = hit ? 'hit' : 'miss';
-      setTimeout(() => { flash = null; }, 650);
-      if (!hit) return;
+      if (!hit) {
+        setTimeout(() => { flash = null; }, 650);
+        return;
+      }
       m3Done = true;
       score += m3Shots === 1 ? 300 : 120;
       try { playAward(); } catch (_) {}
-      setTimeout(() => { phase = 'reveal'; finishGame(); }, 750);
+      pauseKind = 'final';
     }
   }
 
   function m2Extend() {
-    if (phase !== 'play' || mission !== 1) return;
+    if (phase !== 'play' || mission !== 1 || pauseKind) return;
     const r = m2round;
     m2Rows = [...m2Rows, {
       L: Math.round(L),
@@ -155,18 +161,56 @@
       up: Math.round(L * Math.sin(rad(r.theta)))
     }];
     try { playBonus(); } catch (_) {}
-    if (m2Stage === 0) { m2Stage = 1; L = r.L2; }
-    else if (m2Stage === 1) { m2Stage = 2; phase = 'commit'; commitWrong = false; commitTries = 0; }
+    pauseKind = 'measure';
   }
 
   function answerCommit(opt) {
+    if (pauseKind) return;
     commitTries += 1;
     if (!opt.ok) { commitWrong = true; return; }
     if (commitTries === 1) commitFirstTries += 1;
     score += Math.max(60, 220 - (commitTries - 1) * 80);
     try { playAward(); } catch (_) {}
-    if (roundIx < M2.rounds.length - 1) { phase = 'play'; enterRound(roundIx + 1); }
-    else startMission(2);
+    pauseKind = 'prediction';
+  }
+
+  function continueAfterResult() {
+    if (pauseKind === 'rescue') {
+      pauseKind = '';
+      flash = null;
+      if (rescueIx < M1.rescues.length - 1) rescueIx += 1;
+      else startMission(1);
+      return;
+    }
+    if (pauseKind === 'measure') {
+      pauseKind = '';
+      if (m2Stage === 0) {
+        m2Stage = 1;
+        L = m2round.L2;
+      } else {
+        m2Stage = 2;
+        phase = 'commit';
+        commitWrong = false;
+        commitTries = 0;
+      }
+      return;
+    }
+    if (pauseKind === 'prediction') {
+      pauseKind = '';
+      if (roundIx < M2.rounds.length - 1) {
+        phase = 'play';
+        enterRound(roundIx + 1);
+      } else {
+        startMission(2);
+      }
+      return;
+    }
+    if (pauseKind === 'final') {
+      pauseKind = '';
+      flash = null;
+      phase = 'reveal';
+      finishGame();
+    }
   }
 
   function finishGame() {
@@ -194,7 +238,7 @@
   }
 
   function handleKey(e) {
-    if (phase !== 'play') return;
+    if (phase !== 'play' || pauseKind) return;
     if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { theta = Math.max(0, theta - 1); e.preventDefault(); }
     if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { theta = Math.min(90, theta + 1); e.preventDefault(); }
     if (e.key === ' ' || e.key === 'Enter') {
@@ -282,8 +326,8 @@
       {/if}
       <div class="controls">
         <label class="ctl"><span>Arm angle · {Math.round(theta)}°</span>
-          <input type="range" min="0" max="90" step="1" bind:value={theta} aria-label="Arm angle" /></label>
-        <button class="primary" on:click={dispatch}>Dispatch the hook ▸</button>
+          <input type="range" min="0" max="90" step="1" bind:value={theta} aria-label="Arm angle" disabled={!!pauseKind} /></label>
+        <button class="primary" on:click={dispatch} disabled={!!pauseKind}>Dispatch the hook ▸</button>
       </div>
 
     {:else if mission === 1}
@@ -294,7 +338,7 @@
             What will <b>{m2round.ask === 'across' ? 'ACROSS' : 'UP'}</b> measure?</p>
           <div class="opts">
             {#each m2round.options as opt (opt.label)}
-              <button class="opt" on:click={() => answerCommit(opt)}>{opt.label}</button>
+              <button class="opt" disabled={!!pauseKind} on:click={() => answerCommit(opt)}>{opt.label}</button>
             {/each}
           </div>
           {#if commitWrong}
@@ -312,7 +356,7 @@
           </div>
         {/if}
         <div class="controls">
-          <button class="primary" on:click={m2Extend}>
+          <button class="primary" on:click={m2Extend} disabled={!!pauseKind}>
             Extend to {m2Stage === 0 ? m2round.L1 : m2round.L2} and measure ▸
           </button>
         </div>
@@ -322,9 +366,33 @@
       <p class="tip">One shot counts. UP-RATIO(37°) = 0.60 · ACROSS-RATIO(37°) = 0.80 · arm locked at {M3.L}. Shots taken: {m3Shots}.</p>
       <div class="controls">
         <label class="ctl"><span>Arm angle · {Math.round(theta)}°</span>
-          <input type="range" min="0" max="90" step="1" bind:value={theta} aria-label="Arm angle" /></label>
-        <button class="primary" on:click={dispatch} disabled={m3Done}>Take the shot ▸</button>
+          <input type="range" min="0" max="90" step="1" bind:value={theta} aria-label="Arm angle" disabled={!!pauseKind} /></label>
+        <button class="primary" on:click={dispatch} disabled={m3Done || !!pauseKind}>Take the shot ▸</button>
       </div>
+    {/if}
+    {#if pauseKind}
+      <SolveFirstPause
+        title={pauseKind === 'rescue'
+          ? `Climber ${rescueIx + 1} is safely hooked`
+          : pauseKind === 'measure' ? `Measurement ${m2Stage + 1} recorded`
+          : pauseKind === 'prediction' ? 'Your prediction held when the arm extended'
+          : 'The ratio data found the correct angle'}
+        message={pauseKind === 'rescue'
+          ? `At ${Math.round(theta)}°, the same arm produced ${Math.round(across)} across and ${Math.round(up)} up. Keep the triangle visible and notice the trade-off.`
+          : pauseKind === 'measure'
+            ? `Length changed, but across ÷ length stayed ${m2Rows[m2Rows.length - 1].acrossRatio} and up ÷ length stayed ${m2Rows[m2Rows.length - 1].upRatio}. The angle is holding both ratios steady.`
+            : pauseKind === 'prediction'
+              ? `The ${m2round.theta}° angle preserved its ratio at a new length. The measurement followed ratio × length, exactly as your answer predicted.`
+              : `A 0.80 across-ratio and 0.60 up-ratio placed a 250-unit arm at across 200, up 150. The screen now shows the complete triangle you built.`}
+        actionLabel={pauseKind === 'rescue'
+          ? rescueIx < M1.rescues.length - 1 ? 'Continue to the next climber' : 'Continue to the ratio test'
+          : pauseKind === 'measure'
+            ? m2Stage === 0 ? 'Continue to the longer arm' : 'Make a prediction'
+            : pauseKind === 'prediction'
+              ? roundIx < M2.rounds.length - 1 ? 'Continue to the next angle' : 'Continue to the final rescue'
+              : 'Reveal the concept'}
+        onContinue={continueAfterResult}
+      />
     {/if}
   {/if}
 </ArcadeShell>

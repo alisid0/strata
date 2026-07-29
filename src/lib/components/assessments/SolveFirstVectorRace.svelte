@@ -9,6 +9,7 @@
   // momentum bite. Only at the end is it named: vectors, velocity + acceleration,
   // tip-to-tail addition. Same contract as the other arcade discoveries.
   import ArcadeShell from './ArcadeShell.svelte';
+  import SolveFirstPause from './SolveFirstPause.svelte';
   import { playAward, playBonus } from '../../sfx.js';
 
   export let config;
@@ -55,6 +56,7 @@
   let moves = 0, crashes = 0, cleared = 0;
   let arcadeScore = 0, combo = 0;
   let crashFlash = false;
+  let trackCleared = false;
   let recorded = false;
 
   $: level = LEVELS[levelIx];
@@ -63,6 +65,7 @@
   function loadLevel() {
     const s = LEVELS[levelIx].start;
     cx = s[0]; cy = s[1]; vx = 0; vy = 0; moves = 0; crashFlash = false;
+    trackCleared = false;
   }
 
   function segOK(x0, y0, x1, y1) {
@@ -101,20 +104,43 @@
   })();
 
   function move(c) {
-    if (phase !== 'play') return;
+    if (phase !== 'play' || trackCleared) return;
     moves += 1;
     if (c.fin) {
+      const finalVx = c.nx - cx;
+      const finalVy = c.ny - cy;
       cleared += 1; combo += 1;
       arcadeScore += (180 + Math.max(0, 60 - moves * 3)) * Math.max(1, combo);
       try { (combo > 1 ? playBonus : playAward)(); } catch (_) {}
-      if (levelIx < LEVELS.length - 1) { levelIx += 1; loadLevel(); }
-      else { phase = 'predict'; predictWrong = false; }
+      cx = c.dispX;
+      cy = c.dispY;
+      vx = finalVx;
+      vy = finalVy;
+      trackCleared = true;
     } else if (!c.ok) {
       crashes += 1; combo = 0; crashFlash = true;
       setTimeout(() => { crashFlash = false; }, 320);
       loadLevel();
     } else {
       vx = c.nx - cx; vy = c.ny - cy; cx = c.nx; cy = c.ny;
+    }
+  }
+
+  function moveByKey(event, candidate) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    move(candidate);
+  }
+
+  function continueAfterTrack() {
+    if (!trackCleared) return;
+    if (levelIx < LEVELS.length - 1) {
+      levelIx += 1;
+      loadLevel();
+    } else {
+      trackCleared = false;
+      phase = 'predict';
+      predictWrong = false;
     }
   }
 
@@ -203,12 +229,14 @@
         </defs>
 
         <!-- candidate moves -->
-        {#each candidates as c}
-          <circle class="cand" class:fin={c.fin} class:crash={!c.ok && !c.fin} class:coast={c.coast}
-            data-cx={c.nx} data-cy={c.ny} data-ok={c.ok || c.fin}
-            cx={cx2(c.dispX)} cy={cy2(c.dispY)} r={c.coast ? 5 : 7}
-            on:click={() => move(c)} role="button" tabindex="0" />
-        {/each}
+        {#if !trackCleared}
+          {#each candidates as c}
+            <circle class="cand" class:fin={c.fin} class:crash={!c.ok && !c.fin} class:coast={c.coast}
+              data-cx={c.nx} data-cy={c.ny} data-ok={c.ok || c.fin}
+              cx={cx2(c.dispX)} cy={cy2(c.dispY)} r={c.coast ? 5 : 7}
+              on:click={() => move(c)} on:keydown={(event) => moveByKey(event, c)} role="button" tabindex="0" />
+          {/each}
+        {/if}
 
         <!-- the car -->
         <circle class="car" data-cx={cx} data-cy={cy} cx={cx2(cx)} cy={cy2(cy)} r="6" />
@@ -216,6 +244,14 @@
     </div>
 
     <p class="hint">Velocity <b>({vx}, {vy})</b> — tap a dot to nudge it. The faint ring is "coast" (no nudge).</p>
+    {#if trackCleared}
+      <SolveFirstPause
+        title="The finish line is crossed"
+        message="Leave the final velocity on screen for a moment. The car did not move straight to your tap: its old velocity carried forward, then your nudge changed it."
+        actionLabel={levelIx < LEVELS.length - 1 ? 'Continue to the next track' : 'Continue to the final check'}
+        onContinue={continueAfterTrack}
+      />
+    {/if}
   {/if}
 </ArcadeShell>
 

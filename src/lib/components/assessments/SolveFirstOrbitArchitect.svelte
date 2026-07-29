@@ -11,6 +11,7 @@
   //   Transfer — read a standard-form equation, place the anchors.
   // Pure SVG — Qubix tokens native, every state testable.
   import ArcadeShell from './ArcadeShell.svelte';
+  import SolveFirstPause from './SolveFirstPause.svelte';
   import { fly } from 'svelte/transition';
   import { playAward, playBonus } from '../../sfx.js';
 
@@ -72,6 +73,7 @@
   let hx = 0, hy = 0;                  // rig centre offset (h, k)
   let caught = {};
   let flashMsg = '';
+  let sweepComplete = false;
   let score = 0, sweepsDone = 0;
   let transferTries = 0, transferWrong = false;
   let dragging = null;                 // 'f1' | 'f2' | 'rig'
@@ -96,7 +98,7 @@
   $: onPath = debris.map((p) => Math.abs(distSum(p, f1, f2) - rope) < TOL);
 
   function sweep() {
-    if (phase !== 'play' || !bOK) return;
+    if (phase !== 'play' || !bOK || sweepComplete) return;
     let newCatch = false;
     debris.forEach((p, i) => {
       if (!caught[i] && onPath[i]) { caught[i] = true; newCatch = true; score += 90; }
@@ -111,18 +113,22 @@
     if (debris.every((_, i) => caught[i])) {
       sweepsDone += 1;
       flashMsg = 'ORBIT COMPLETE ✓';
-      setTimeout(() => {
-        flashMsg = '';
-        caught = {};
-        if (sweepIx < M.sweeps.length - 1) {
-          sweepIx += 1;
-        } else if (mission < MISSIONS.length - 1) {
-          startMission(mission + 1);
-        } else {
-          phase = 'transfer';
-          transferWrong = false;
-        }
-      }, 900);
+      sweepComplete = true;
+    }
+  }
+
+  function continueAfterSweep() {
+    if (!sweepComplete) return;
+    sweepComplete = false;
+    flashMsg = '';
+    caught = {};
+    if (sweepIx < M.sweeps.length - 1) {
+      sweepIx += 1;
+    } else if (mission < MISSIONS.length - 1) {
+      startMission(mission + 1);
+    } else {
+      phase = 'transfer';
+      transferWrong = false;
     }
   }
 
@@ -130,6 +136,7 @@
     mission = m;
     sweepIx = 0;
     caught = {};
+    sweepComplete = false;
     phase = 'briefing';
     rope = 180;
     sep = MISSIONS[m].sep ?? 90;
@@ -177,7 +184,7 @@
     };
   }
   function down(e) {
-    if (phase !== 'play') return;
+    if (phase !== 'play' || sweepComplete) return;
     const p = svgPoint(e);
     const near = (q, rr) => Math.hypot(p.x - q.x, p.y - q.y) < rr;
     if (!M.sepLocked && near(f1, 20)) dragging = 'f1';
@@ -186,7 +193,7 @@
     if (dragging) svgEl.setPointerCapture?.(e.pointerId);
   }
   function moveDrag(e) {
-    if (!dragging || phase !== 'play') return;
+    if (!dragging || phase !== 'play' || sweepComplete) return;
     const p = svgPoint(e);
     if (dragging === 'rig') {
       hx = Math.max(-150, Math.min(150, p.x));
@@ -305,12 +312,22 @@
 
     <div class="controls">
       <label class="ctl"><span>Rope length · {Math.round(rope)}</span>
-        <input type="range" min={minRope} max="320" step="2" bind:value={rope} aria-label="Rope length" /></label>
+        <input type="range" min={minRope} max="320" step="2" bind:value={rope} aria-label="Rope length" disabled={sweepComplete} /></label>
       <label class="ctl" class:locked={M.sepLocked}><span>Anchor spread · {Math.round(sep)}</span>
-        <input type="range" min="0" max="240" step="2" bind:value={sep} disabled={M.sepLocked}
+        <input type="range" min="0" max="240" step="2" bind:value={sep} disabled={M.sepLocked || sweepComplete}
           on:input={() => { if (sep > rope - 12) sep = rope - 12; }} aria-label="Anchor separation" /></label>
-      <button class="primary wide" on:click={sweep} disabled={!bOK}>Sweep the orbit ▸</button>
+      <button class="primary wide" on:click={sweep} disabled={!bOK || sweepComplete}>Sweep the orbit ▸</button>
     </div>
+    {#if sweepComplete}
+      <SolveFirstPause
+        title="The rope passed through every debris point"
+        message="Compare the two distance readouts while the solved orbit is still visible: their sum stays equal to the rope length at every caught point."
+        actionLabel={sweepIx < M.sweeps.length - 1
+          ? 'Continue to the next sweep'
+          : mission < MISSIONS.length - 1 ? 'Continue to the next mission' : 'Continue to the final check'}
+        onContinue={continueAfterSweep}
+      />
+    {/if}
   {/if}
 </ArcadeShell>
 

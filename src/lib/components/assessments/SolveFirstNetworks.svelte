@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
+  import SolveFirstPause from './SolveFirstPause.svelte';
 
   export let config;
   export let onDone = () => {};
@@ -55,6 +56,7 @@
   let missionChoice = '';
   let missionLog = [];
   let missionMistakes = 0;
+  let missionAccepted = false;
 
   let transferChoice = '';
   let transferMistakes = 0;
@@ -132,7 +134,7 @@
   }
 
   function deployMission() {
-    if (!missionChoice || missionReady) return;
+    if (!missionChoice || missionReady || missionAccepted) return;
     const correct = missionChoice === currentMission.answer;
     if (!correct) {
       missionMistakes += 1;
@@ -144,8 +146,15 @@
       return;
     }
     missionLog = [...missionLog, { label: currentMission.label, choice: missionChoice }];
+    missionAccepted = true;
+    status = 'Network accepted. Keep the constraint and the working design together before loading the next job.';
+  }
+
+  function continueMission() {
+    if (!missionAccepted) return;
     missionIndex += 1;
     missionChoice = '';
+    missionAccepted = false;
     status = missionIndex === MISSIONS.length
       ? 'All three networks passed their real-world constraint.'
       : 'Network accepted. New job loaded.';
@@ -199,6 +208,7 @@
     missionChoice = '';
     missionLog = [];
     missionMistakes = 0;
+    missionAccepted = false;
     transferChoice = '';
     transferMistakes = 0;
   }
@@ -414,27 +424,38 @@
           {/if}
           <div class="job-progress">
             {#each MISSIONS as job, i}
-              <span class:done={i < missionIndex} class:active={i === missionIndex}>{i < missionIndex ? '✓' : i + 1} · {job.label}</span>
+              <span class:done={i < missionIndex || (missionAccepted && i === missionIndex)} class:active={i === missionIndex}>
+                {i < missionIndex || (missionAccepted && i === missionIndex) ? '✓' : i + 1} · {job.label}
+              </span>
             {/each}
           </div>
 
           {#if !missionReady}
             <div class="blueprint-grid" role="radiogroup" aria-label="Choose a network design">
-              <button role="radio" aria-checked={missionChoice === 'centre'} class:active={missionChoice === 'centre'} on:click={() => missionChoice = 'centre'}>
+              <button role="radio" aria-checked={missionChoice === 'centre'} class:active={missionChoice === 'centre'} disabled={missionAccepted} on:click={() => missionChoice = 'centre'}>
                 <i class="bp centre-bp"></i><strong>Shared middle</strong><small>one link per machine</small>
               </button>
-              <button role="radio" aria-checked={missionChoice === 'radio'} class:active={missionChoice === 'radio'} on:click={() => missionChoice = 'radio'}>
+              <button role="radio" aria-checked={missionChoice === 'radio'} class:active={missionChoice === 'radio'} disabled={missionAccepted} on:click={() => missionChoice = 'radio'}>
                 <i class="bp radio-bp">)))</i><strong>Radio cloud</strong><small>no data cables</small>
               </button>
-              <button role="radio" aria-checked={missionChoice === 'web'} class:active={missionChoice === 'web'} on:click={() => missionChoice = 'web'}>
+              <button role="radio" aria-checked={missionChoice === 'web'} class:active={missionChoice === 'web'} disabled={missionAccepted} on:click={() => missionChoice = 'web'}>
                 <i class="bp web-bp">╳</i><strong>Many paths</strong><small>backup routes</small>
               </button>
             </div>
-            <button class="test-action" disabled={!missionChoice} on:click={deployMission}>Deploy network</button>
+            <button class="test-action" disabled={!missionChoice || missionAccepted} on:click={deployMission}>Deploy network</button>
           {/if}
         </div>
 
-        {#if status}<div class:success-note={missionReady || missionLog.length === missionIndex} class:error-note={!missionReady && status.includes('Try') || status.includes('exceed') || status.includes('isolated')}>{status}</div>{/if}
+        {#if status}<div class:success-note={missionReady || missionAccepted || missionLog.length === missionIndex} class:error-note={!missionReady && status.includes('Try') || status.includes('exceed') || status.includes('isolated')}>{status}</div>{/if}
+
+        {#if missionAccepted}
+          <SolveFirstPause
+            title={`${currentMission.label}: design accepted`}
+            message={`The ${missionChoice === 'centre' ? 'shared-middle' : missionChoice === 'radio' ? 'radio' : 'many-path'} design solved this job because it matched the stated constraint—not because one network shape is always best.`}
+            actionLabel={missionIndex < MISSIONS.length - 1 ? 'Continue to the next job' : 'Review all three jobs'}
+            onContinue={continueMission}
+          />
+        {/if}
 
         {#if missionLog.length}
           <div class="mission-log">

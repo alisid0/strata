@@ -12,6 +12,7 @@
   // The reveal names it: a sine wave IS circular motion seen sideways.
   // Pure SVG — Qubix tokens work natively, every state testable.
   import ArcadeShell from './ArcadeShell.svelte';
+  import SolveFirstPause from './SolveFirstPause.svelte';
   import { fly } from 'svelte/transition';
   import { playAward, playBonus } from '../../sfx.js';
 
@@ -112,6 +113,7 @@
     mission = m;
     rideIx = 0;
     phase = 'briefing';
+    celebrating = false;
   }
 
   function beginRide() {
@@ -125,18 +127,20 @@
     locksDone += 1;
     score += 120 + matchPct;
     try { playBonus(); } catch (_) {}
-    setTimeout(() => {
-      celebrating = false;
-      if (rideIx < M.rides.length - 1) {
-        rideIx += 1;
-        randomize(M.params);
-      } else if (mission < MISSIONS.length - 1) {
-        startMission(mission + 1);
-      } else {
-        phase = 'reveal';
-        finishGame();
-      }
-    }, 900);
+  }
+
+  function continueAfterLock() {
+    if (!celebrating) return;
+    celebrating = false;
+    if (rideIx < M.rides.length - 1) {
+      rideIx += 1;
+      randomize(M.params);
+    } else if (mission < MISSIONS.length - 1) {
+      startMission(mission + 1);
+    } else {
+      phase = 'reveal';
+      finishGame();
+    }
   }
 
   function finishGame() {
@@ -248,13 +252,25 @@
         <label class="ctl">
           <span>{dark ? RAW[k] : LABELS[k]} · {fmt(k)}</span>
           <input type="range" min={RANGES[k].min} max={RANGES[k].max} step={RANGES[k].step}
-            bind:value={params[k]} aria-label={LABELS[k]} />
+            bind:value={params[k]} aria-label={LABELS[k]} disabled={celebrating} />
         </label>
       {/each}
       <button class="lock" class:armed={matched} on:click={lockRide} disabled={!matched || celebrating}>
         {matched ? (dark ? 'TRANSMIT ▸' : 'LOCK THE RIDE ▸') : `MATCH ${matchPct}% — need 88%`}
       </button>
     </div>
+    {#if celebrating}
+      <SolveFirstPause
+        title={dark ? 'The formula rebuilt the hidden trace' : 'The two traces now agree'}
+        message={dark
+          ? 'Read the four dial values against the four terms in the formula. You produced the missing output without seeing the recording.'
+          : 'Keep the solved trace on screen. Notice which dial changed its height, spacing, starting point, or centre line.'}
+        actionLabel={rideIx < M.rides.length - 1
+          ? 'Continue to the next ride'
+          : mission < MISSIONS.length - 1 ? 'Continue to the next mission' : 'Reveal the concept'}
+        onContinue={continueAfterLock}
+      />
+    {/if}
   {/if}
 </ArcadeShell>
 
