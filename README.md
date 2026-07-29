@@ -13,6 +13,7 @@ Staging: `https://qubix-staging.vercel.app`
 - `AGENTS.md` — safe working rules for coding agents.
 - `docs/ENVIRONMENTS.md` — staging/production isolation.
 - `docs/RELEASE-MODEL.md` — how changes reach users.
+- `docs/PHASE-1.1-EXPANSION.md` — the Learn → Solve → Recall engagement loop.
 
 Do not use `content-drafts/` or archived exports to count live BBs or floors.
 Run `pnpm run audit:live-media` first.

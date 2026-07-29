@@ -12,6 +12,7 @@ const SOLVE_FIRST = {
   'logic-gates': {
     id: 'lockers-and-or',
     moduleId: 'logic-gates',
+    conceptLabel: 'Logic gates',
     pathId: 'BIT_001',
     track: 'computer',
     kind: 'logic-vault',
@@ -23,6 +24,7 @@ const SOLVE_FIRST = {
   'forces-waves': {
     id: 'forces-stop-the-cart',
     moduleId: 'forces-waves',
+    conceptLabel: 'Balanced forces',
     pathId: 'PHYS_001',
     track: 'physics',
     kind: 'force-lab',
@@ -34,6 +36,7 @@ const SOLVE_FIRST = {
   'line-core': {
     id: 'coordinate-find-the-signal',
     moduleId: 'line-core',
+    conceptLabel: 'Coordinates',
     pathId: 'LINE_001',
     track: 'mathematics',
     kind: 'coordinate-signal',
@@ -45,6 +48,7 @@ const SOLVE_FIRST = {
   'limits': {
     id: 'limits-recover-the-reading',
     moduleId: 'limits',
+    conceptLabel: 'Limits',
     pathId: 'MATH_LIMITS',
     track: 'mathematics',
     kind: 'boundary-runner',
@@ -56,6 +60,7 @@ const SOLVE_FIRST = {
   'differentiation': {
     id: 'differentiation-forecourt-flow',
     moduleId: 'differentiation',
+    conceptLabel: 'Differentiation',
     pathId: 'MATH_DIFF',
     track: 'mathematics',
     kind: 'fuel-rate',
@@ -67,6 +72,7 @@ const SOLVE_FIRST = {
   'networks-cloud': {
     id: 'networks-connect-the-computers',
     moduleId: 'networks-cloud',
+    conceptLabel: 'Computer networks',
     pathId: 'COMP_NETWORKS_SECURITY',
     track: 'computer',
     kind: 'network-routing',
@@ -78,6 +84,7 @@ const SOLVE_FIRST = {
   'matrices': {
     id: 'matrices-warp-the-grid',
     moduleId: 'matrices',
+    conceptLabel: 'Matrices',
     pathId: 'MATH_MATRICES',
     track: 'mathematics',
     kind: 'matrix-warp',
@@ -89,6 +96,7 @@ const SOLVE_FIRST = {
   'probability': {
     id: 'probability-trust-the-detector',
     moduleId: 'probability',
+    conceptLabel: 'Probability',
     pathId: 'MATH_PROBABILITY',
     track: 'mathematics',
     kind: 'bayes-screen',
@@ -100,6 +108,7 @@ const SOLVE_FIRST = {
   'motion': {
     id: 'motion-trajectory',
     moduleId: 'motion',
+    conceptLabel: 'Projectile motion',
     pathId: 'PHY_MOTION_FOUNDATIONS',
     track: 'physics',
     kind: 'projectile-arc',
@@ -111,6 +120,7 @@ const SOLVE_FIRST = {
   'coord-geometry': {
     id: 'coord-geometry-vector-racer',
     moduleId: 'coord-geometry',
+    conceptLabel: 'Vectors',
     pathId: 'MATH_COORD',
     track: 'mathematics',
     kind: 'vector-race',
@@ -122,6 +132,7 @@ const SOLVE_FIRST = {
   'trigonometry': {
     id: 'trigonometry-ramp-rider',
     moduleId: 'trigonometry',
+    conceptLabel: 'Trigonometry',
     pathId: 'MATH_TRIG_ADV',
     track: 'mathematics',
     kind: 'ramp-rider',
@@ -133,6 +144,7 @@ const SOLVE_FIRST = {
   'sine-waves': {
     id: 'sine-waves-signal-hacker',
     moduleId: 'sine-waves',
+    conceptLabel: 'Sine waves',
     pathId: 'MATH_TRIG_ADV',
     track: 'mathematics',
     kind: 'signal-hacker',
@@ -144,6 +156,7 @@ const SOLVE_FIRST = {
   'conic-sections': {
     id: 'conic-sections-orbit-architect',
     moduleId: 'conic-sections',
+    conceptLabel: 'Conic sections',
     pathId: 'MATH_COORD',
     track: 'mathematics',
     kind: 'orbit-architect',
@@ -155,6 +168,7 @@ const SOLVE_FIRST = {
   'polar-coordinates': {
     id: 'polar-coordinates-polar-aegis',
     moduleId: 'polar-coordinates',
+    conceptLabel: 'Polar coordinates',
     pathId: 'MATH_TRIG_ADV',
     track: 'mathematics',
     kind: 'polar-aegis',

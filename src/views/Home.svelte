@@ -22,6 +22,12 @@
   $: streak = ($progress, progress.getStreak());
   $: ws = ($progress, progress.getWs());
   $: level = 1 + Math.floor(overall.read / 5);
+  $: expansion = ($progress, progress.getExpansionSummary());
+  $: routeProgress = expansion.routesTotal
+    ? Math.round((expansion.routesDone / expansion.routesTotal) * 100)
+    : 0;
+  $: duePairedRecall = expansion.dueRecalls[0] || null;
+  $: nextPairedRoute = expansion.partialPairs[0] || null;
 
   // ── Today's session (recall scheduler) ─────────────────────────────────────
   // Preferred: a real 3-question check from the board's topic bank. Fallback
@@ -42,6 +48,7 @@
   const SESSION_MAX = 3; // one tap reviews at most 3 boards — keeps it "~3 min"
   let recallQueue = [];
   let recallActive = null; // { cardNumber, questions } | { cardNumber, selfCheck, title }
+  let pairedRecallActive = null;
 
   function startSession() {
     recallQueue = dueCandidates.slice(0, SESSION_MAX);
@@ -73,6 +80,24 @@
     nextRecall();
   }
 
+  function startPairedRecall() {
+    pairedRecallActive = duePairedRecall;
+  }
+
+  function finishPairedRecall(passed) {
+    if (!pairedRecallActive) return;
+    progress.recordPairedRecallResult(pairedRecallActive.moduleId, passed);
+    pairedRecallActive = null;
+  }
+
+  function continuePairedJourney() {
+    if (!nextPairedRoute) return;
+    onNavigate?.('workshop', {
+      moduleId: nextPairedRoute.moduleId,
+      mode: nextPairedRoute.learnDone ? 'solve-first' : 'learn-first'
+    });
+  }
+
   $: continuePath = ($progress, Object.entries(PATHS)
     .map(([id, manifest]) => ({ id, manifest, state: progress.getPathState(id, manifest) }))
     .filter(p => p.state.boardsRead > 0 && p.state.boardsRead < p.state.boardsTotal)
@@ -86,14 +111,32 @@
   // in-progress topic -> the Daily Workout as the default coach pick. Progress
   // decides WHICH is shown, never buries the others: a persistent link keeps
   // the 5-minute mix reachable whenever it is not already the primary.
-  $: primary = dueCandidates.length
+  $: primary = duePairedRecall
+    ? {
+        kind: 'pair-recall', icon: 'workshop', label: 'READY TO RECALL',
+        title: `Recall ${duePairedRecall.conceptLabel}`,
+        meta: '2 min · connect both workshop routes',
+        cta: 'Recall', run: startPairedRecall
+      }
+    : dueCandidates.length
     ? {
         kind: 'review', icon: 'flame', label: 'CONTINUE NOW',
         title: `${dueCandidates.length} ${dueCandidates.length === 1 ? 'board' : 'boards'} due for review`,
         meta: `~${dueMinutes} min · keeps your streak`,
         cta: 'Review', run: startSession
       }
-    : continuePath
+    : nextPairedRoute
+      ? {
+          kind: 'pair-next', icon: 'workshop', label: 'COMPLETE THE PAIR',
+          title: nextPairedRoute.learnDone
+            ? `Now solve ${nextPairedRoute.conceptLabel} backwards`
+            : `Now build ${nextPairedRoute.conceptLabel} step by step`,
+          meta: nextPairedRoute.learnDone
+            ? 'Learn First complete · Solve First is next'
+            : 'Solve First complete · Learn First is next',
+          cta: 'Continue', run: continuePairedJourney
+        }
+      : continuePath
       ? {
           kind: 'continue', icon: 'chevronRight', label: 'CONTINUE NOW',
           title: `Continue ${continuePath.manifest.name}`,
@@ -165,15 +208,44 @@
     {/if}
   </div>
 
-  <button class="method-callout" on:click={() => onNavigate?.('workshop')}>
-    <span class="method-callout-mark" aria-hidden="true">LF<br />SF</span>
-    <span class="method-callout-copy">
-      <span class="method-callout-kicker">The Strata method</span>
-      <strong>Learn it forwards. Solve it backwards.</strong>
-      <small>Build a STEM concept with guidance, or meet the problem before the explanation. Same concept, opposite route.</small>
-    </span>
-    <span class="method-callout-action">Explore workshops</span>
-  </button>
+  <section class="learning-loop" aria-labelledby="learning-loop-title">
+    <div class="loop-head">
+      <div>
+        <span class="loop-kicker">Your workshop loop</span>
+        <strong id="learning-loop-title">Learn First <b>→</b> Solve First <b>→</b> Recall</strong>
+        <small>Build the idea, reverse it, then prove it stayed with you.</small>
+      </div>
+      <button on:click={() => onNavigate?.('workshop')}>Open workshops</button>
+    </div>
+    <div class="loop-progress" aria-label={`${expansion.routesDone} of ${expansion.routesTotal} workshop routes complete`}>
+      <span style={`width:${routeProgress}%`}></span>
+    </div>
+    <div class="loop-stats">
+      <span><b>{expansion.routesDone}/{expansion.routesTotal}</b> routes</span>
+      <span><b>{expansion.pairsComplete}/{expansion.totalPairs}</b> paired concepts</span>
+      <span><b>{expansion.recallsThisWeek}</b> recalls this week</span>
+    </div>
+  </section>
+
+  {#if pairedRecallActive}
+    <div class="recall-overlay" role="dialog" aria-modal="true" aria-labelledby="paired-recall-title">
+      <div class="recall-sheet paired-recall-sheet">
+        <div class="recall-kicker">TWO-WAY RECALL</div>
+        <div class="recall-title" id="paired-recall-title">{pairedRecallActive.conceptLabel}</div>
+        <div class="recall-q">Without reopening either workshop, can you reconstruct the idea from both directions?</div>
+        <div class="paired-prompts">
+          <span><b>1</b> Explain the core rule in one sentence.</span>
+          <span><b>2</b> Name the evidence or result that proves it.</span>
+        </div>
+        <div class="recall-actions">
+          <button class="recall-yes" on:click={() => finishPairedRecall(true)}>I can explain both</button>
+          <button class="recall-no" on:click={() => finishPairedRecall(false)}>I need another run</button>
+          <button class="recall-later" on:click={() => pairedRecallActive = null}>Not now</button>
+        </div>
+        <div class="recall-note">An honest retry returns tomorrow. A clear recall moves to the next interval.</div>
+      </div>
+    </div>
+  {/if}
 
   {#if recallActive}
     {#key recallActive.cardNumber}
@@ -269,62 +341,78 @@
     box-shadow: 0 24px 54px -34px rgba(0,0,0,.75);
   }
 
-  .method-callout {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 13px;
+  .learning-loop {
     margin: 0 0 clamp(28px, 5vw, 42px);
-    padding: 14px 15px;
+    padding: clamp(16px, 3vw, 20px);
     border: 1px solid var(--qx-border);
-    border-radius: 18px;
-    background: var(--qx-surface);
-    color: var(--qx-text);
+    border-radius: 20px;
+    background:
+      linear-gradient(115deg, color-mix(in srgb, var(--qx-green-soft) 48%, var(--qx-surface)), var(--qx-surface) 58%);
     box-shadow: var(--qx-shadow-card);
-    font-family: var(--qx-font);
-    text-align: left;
-    cursor: pointer;
-    transition: border-color .15s, transform .15s, background .15s;
   }
-  .method-callout:hover {
-    border-color: var(--qx-green);
-    background: color-mix(in srgb, var(--qx-green-soft) 42%, var(--qx-surface));
-    transform: translateY(-1px);
+  .loop-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
   }
-  .method-callout:focus-visible { outline: 2px solid var(--qx-green); outline-offset: 2px; }
-  .method-callout-mark {
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    border-radius: 13px;
-    background: var(--qx-text);
-    color: var(--qx-bg);
-    font-size: 8.5px;
-    font-weight: 950;
-    line-height: 1.05;
-    text-align: center;
-  }
-  .method-callout-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .method-callout-kicker {
+  .loop-head > div { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .loop-kicker {
     color: var(--qx-green-text);
     font-size: 8px;
     font-weight: 950;
     letter-spacing: .1em;
     text-transform: uppercase;
   }
-  .method-callout-copy strong { font-size: 13px; line-height: 1.25; }
-  .method-callout-copy small {
-    color: var(--qx-text-faint);
-    font-size: 9.5px;
-    line-height: 1.35;
+  .loop-head strong {
+    color: var(--qx-text);
+    font-size: clamp(14px, 2.5vw, 17px);
+    line-height: 1.25;
   }
-  .method-callout-action {
-    color: var(--qx-accent-text);
-    font-size: 9.5px;
-    font-weight: 900;
-    white-space: nowrap;
+  .loop-head strong b { color: var(--qx-accent-text); padding: 0 2px; }
+  .loop-head small { color: var(--qx-text-faint); font-size: 10px; line-height: 1.4; }
+  .loop-head button {
+    min-height: 36px;
+    flex: 0 0 auto;
+    padding: 0 13px;
+    border: 1px solid var(--qx-green);
+    border-radius: 11px;
+    background: var(--qx-green);
+    color: #fff;
+    font: 900 10px var(--qx-font);
+    cursor: pointer;
+  }
+  .loop-progress {
+    height: 6px;
+    overflow: hidden;
+    margin: 15px 0 10px;
+    border-radius: 999px;
+    background: var(--qx-surface-2);
+  }
+  .loop-progress span {
+    display: block;
+    height: 100%;
+    min-width: 3px;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--qx-accent), var(--qx-green));
+    transition: width .25s ease;
+  }
+  .loop-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .loop-stats span {
+    min-width: 0;
+    color: var(--qx-text-faint);
+    font-size: 9px;
+    line-height: 1.3;
+  }
+  .loop-stats b {
+    display: block;
+    color: var(--qx-text);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
   }
   .focus-bolt {
     width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
@@ -374,6 +462,43 @@
     font-size: 14px; font-weight: 800;
   }
   .recall-note { font-size: 11.5px; font-weight: 600; color: var(--qx-text-faint); line-height: 1.4; }
+  .paired-prompts {
+    display: grid;
+    gap: 7px;
+    text-align: left;
+  }
+  .paired-prompts span {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px;
+    border: 1px solid var(--qx-border);
+    border-radius: 12px;
+    background: var(--qx-surface-2);
+    color: var(--qx-text-dim);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .paired-prompts b {
+    width: 21px;
+    height: 21px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 7px;
+    background: var(--qx-text);
+    color: var(--qx-bg);
+    font-size: 9px;
+  }
+  .recall-later {
+    min-height: 34px;
+    border: 0;
+    background: transparent;
+    color: var(--qx-text-faint);
+    font: 800 12px var(--qx-font);
+    cursor: pointer;
+  }
   .menu-btn {
     width: 36px; height: 36px; border-radius: 11px; border: 1px solid var(--qx-border);
     background: var(--qx-surface); color: var(--qx-text-dim); font-size: 20px; line-height: 1;
@@ -416,8 +541,9 @@
     .streak-chip { grid-area: streak; justify-content: center; }
     .menu-btn.icon-btn { grid-area: snippets; }
     .menu-btn:not(.icon-btn) { grid-area: menu; }
-    .method-callout { grid-template-columns: 42px minmax(0, 1fr); }
-    .method-callout-action { display: none; }
+    .loop-head { flex-direction: column; gap: 12px; }
+    .loop-head button { width: 100%; min-height: 42px; }
+    .loop-stats { gap: 5px; }
   }
 
   @media (max-width: 340px) {

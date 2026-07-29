@@ -30,7 +30,7 @@
   let currentView = 'loading';
   let currentPathId = '';
   let currentSubjectId = 'line'; // gateway id for the Subject hub view
-  let workshopTarget = null; // module id the workshop tab should open directly
+  let workshopTarget = null; // module id, or { moduleId, mode }, opened directly
   let workshopRunning = false; // a selected workshop becomes its own focused screen
   let readerNumbers = [];
   let readerStart = 1;

@@ -2,6 +2,8 @@ import { writable, get } from 'svelte/store';
 import { supabase } from '../supabase.js';
 import { user } from './auth.js';
 import { PATHS } from '../content/paths.js';
+import { getAllSolveFirst } from '../content/solveFirst.js';
+import { buildExpansionSummary, buildPairedJourneyStates, PAIR_RECALL_INTERVALS_DAYS } from '../content/expansion.js';
 import { notifyW } from './wtoast.js';
 
 const KEY = 'strata-progress-v2';
@@ -649,6 +651,33 @@ function createProgressStore() {
       });
     },
 
+    /**
+     * A short, honest check after both directions of a concept are complete.
+     * The event reference carries the next recall stage, allowing the existing
+     * W-event sync to preserve the schedule without a new database table.
+     */
+    recordPairedRecallResult(moduleId, passed) {
+      update(data => {
+        normalizeState(data);
+        const pairs = getAllSolveFirst();
+        const journey = buildPairedJourneyStates(pairs, data)
+          .find((item) => item.moduleId === moduleId);
+        if (!journey?.completed || !journey.recallDue) return data;
+
+        const nextStage = passed
+          ? Math.min(journey.recallStage + 1, PAIR_RECALL_INTERVALS_DAYS.length - 1)
+          : 0;
+        const now = Date.now();
+        const type = passed ? 'pair_recall_pass' : 'pair_recall_retry';
+        const reward = passed ? 5 : 1;
+
+        data.activity[dayKey()] = (data.activity[dayKey()] || 0) + 1;
+        grantWs(data, type, `${moduleId}|${nextStage}|${now}`, reward, { bonus: passed });
+        persist(data);
+        return data;
+      });
+    },
+
     recordQuizResult(pathId, score, total) {
       update(data => {
         normalizeState(data);
@@ -756,6 +785,14 @@ function createProgressStore() {
         if (data.activity?.[dayKey(d)]) activeDays++;
       }
       return earned + 10 * activeDays;
+    },
+
+    getPairedJourneys() {
+      return buildPairedJourneyStates(getAllSolveFirst(), get({ subscribe }));
+    },
+
+    getExpansionSummary() {
+      return buildExpansionSummary(getAllSolveFirst(), get({ subscribe }));
     },
 
     getDueBoards(limit = 10) {

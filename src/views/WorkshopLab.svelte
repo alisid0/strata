@@ -527,7 +527,9 @@
   import { progress } from '../lib/stores/progress.js';
 
   export let onNavigate;
-  export let openTarget = null; // module id to open immediately (deep link from a topic page)
+  // A module id opens Learn First. `{ moduleId, mode: 'solve-first' }` opens
+  // the reversed route directly from the Phase 1.1 "next useful action".
+  export let openTarget = null;
   export let onRunningChange = () => {};
 
   let runId = 0;
@@ -550,14 +552,17 @@
     physics: 'units-dimensions'
   };
 
-  // Deep link from a topic page: land with the target module already open.
-  if (openTarget) {
+  // Deep link from a topic page or Home: land in the requested route.
+  const targetModuleId = typeof openTarget === 'string' ? openTarget : openTarget?.moduleId;
+  const targetMode = typeof openTarget === 'object' ? openTarget?.mode : 'learn-first';
+  if (targetModuleId) {
     for (const [tid, trk] of Object.entries(TRACKS)) {
-      if (trk.modules.some((m) => m.id === openTarget)) {
+      if (trk.modules.some((m) => m.id === targetModuleId)) {
         activeTrack = tid;
         browseCategory = tid;
-        browseMode = 'learn-first';
-        activeModuleBySubject = { ...activeModuleBySubject, [tid]: openTarget };
+        browseMode = targetMode === 'solve-first' ? 'solve-first' : 'learn-first';
+        activeModuleBySubject = { ...activeModuleBySubject, [tid]: targetModuleId };
+        if (targetMode === 'solve-first') solveFirst = getSolveFirst(targetModuleId);
         running = true;
         break;
       }
@@ -590,10 +595,15 @@
   $: hasChallenge = !!getChallengeForModule(activeModuleId);
   $: hasTest = !!getTestForModule(activeModuleId, practiceInteractions);
   $: hasSolveFirst = !!getSolveFirst(activeModuleId);
+  $: pairedJourneys = ($progress, progress.getPairedJourneys());
   // Was this module ever completed? (recordWorkshopComplete grants a one-time
   // 'workshop:<id>' W, so its presence in granted marks the module done.)
   const moduleDone = (id) => !!$progress?.ws?.granted?.[`workshop:${id}`];
-  const discoveryDone = (id) => !!$progress?.discoveries?.[id]?.firstCompletedAt;
+  const discoveryDone = (id) =>
+    !!$progress?.discoveries?.[id]?.firstCompletedAt ||
+    !!$progress?.ws?.granted?.[`discovery:${id}`];
+  const pairedJourney = (moduleId) =>
+    pairedJourneys.find((journey) => journey.moduleId === moduleId);
   const pairedLearnTitle = (item) =>
     TRACKS[item?.track]?.modules?.find((module) => module.id === item?.moduleId)?.title || 'Learn First';
   $: solveFirstCompleted = ALL_SOLVE_FIRST.filter((item) => discoveryDone(item.id)).length;
@@ -817,6 +827,7 @@
           {#if browseSolveFirst.length}
           <div class="solve-batch-grid">
             {#each browseSolveFirst as item, index (item.id)}
+              {@const pair = pairedJourney(item.moduleId)}
               <button
                 class="solve-batch-card"
                 class:done={discoveryDone(item.id)}
@@ -828,7 +839,17 @@
                   <small>Pairs with {pairedLearnTitle(item)}</small>
                   <strong>{item.title}</strong>
                 </span>
-                <span class="solve-batch-state">{discoveryDone(item.id) ? 'Replay · complete' : 'Start with the problem'}</span>
+                <span class="solve-batch-state">
+                  {#if pair?.completed}
+                    2/2 routes · recall {pair.recallDue ? 'due' : 'scheduled'}
+                  {:else if pair?.learnDone}
+                    1/2 routes · Learn First complete
+                  {:else if discoveryDone(item.id)}
+                    1/2 routes · Solve First complete
+                  {:else}
+                    0/2 routes · start with the problem
+                  {/if}
+                </span>
               </button>
             {/each}
           </div>
@@ -853,6 +874,7 @@
         </div>
         <div class="ws-grid">
           {#each browseTrack.modules as item (item.id)}
+            {@const pair = pairedJourney(item.id)}
             <button class="ws-tile" on:click={() => openModule(browseCategory, item.id)}>
               <span class="ws-tile-icon"><img src={browseTrack.icon} alt="" /></span>
               <span class="ws-tile-copy">
@@ -861,7 +883,11 @@
               </span>
               <span class="ws-tile-foot">
                 <span class="ws-chip" class:done={moduleDone(item.id)}>{moduleDone(item.id) ? 'Done ✓' : 'Learn'}</span>
-                {#if getSolveFirst(item.id)}<span class="ws-paired" title="Also available as a Solve First discovery">↻ Paired</span>{/if}
+                {#if pair}
+                  <span class="ws-paired" class:complete={pair.completed} title="Progress across Learn First and Solve First">
+                    {pair.completed ? 'Pair 2/2' : `Pair ${pair.routesDone}/2`}
+                  </span>
+                {/if}
                 {#if getChallengeForModule(item.id)}<span class="ws-bolt" title="Timed challenge mode">⚡</span>{/if}
                 {#if getTestForModule(item.id, item.getWorkshop ? item.getWorkshop() : [])}<span class="ws-bolt" title="Scored test mode">📋</span>{/if}
               </span>
@@ -1370,6 +1396,11 @@
     color: var(--qx-green-text);
     font-size: 8px;
     font-weight: 950;
+  }
+  .ws-paired.complete {
+    border-color: var(--qx-green);
+    background: var(--qx-green);
+    color: #fff;
   }
 
   .runner-header {

@@ -25,6 +25,10 @@
   $: started = ($progress, Object.values(PATHS).filter(m => m.cards.some(n => $progress.boards && $progress.boards[n] && $progress.boards[n].firstOpenedAt)).length);
   $: topicsTotal = Object.keys(PATHS).length;
   $: quizzesTaken = ($progress, Object.values($progress.quizzes || {}).reduce((a, arr) => a + (arr ? arr.length : 0), 0));
+  $: expansion = ($progress, progress.getExpansionSummary());
+  $: routeProgress = expansion.routesTotal
+    ? Math.round((expansion.routesDone / expansion.routesTotal) * 100)
+    : 0;
 
   function barH(count) {
     if (!count) return 6;
@@ -71,6 +75,25 @@
     {/each}
     <span class="consistency-summary">{activeDays} of 7 days</span>
   </div>
+
+  <section class="loop-summary" aria-labelledby="loop-summary-title">
+    <div class="loop-summary-head">
+      <div>
+        <span>Workshop progress</span>
+        <strong id="loop-summary-title">Learn → Solve → Recall</strong>
+      </div>
+      <b>{expansion.pairsComplete}/{expansion.totalPairs} pairs</b>
+    </div>
+    <div class="loop-summary-progress" aria-label={`${routeProgress}% of paired workshop routes complete`}>
+      <span style={`width:${routeProgress}%`}></span>
+    </div>
+    <div class="loop-summary-grid">
+      <div><b>{expansion.routesThisWeek}</b><span>routes this week</span></div>
+      <div><b>{expansion.pairsThisWeek}</b><span>pairs completed</span></div>
+      <div><b>{expansion.recallsThisWeek}</b><span>recalls completed</span></div>
+    </div>
+    <button on:click={() => onNavigate?.('workshop')}>Continue the workshop loop</button>
+  </section>
 
   <!-- League (local-first preview) -->
   <div class="league-head">
@@ -191,6 +214,82 @@
   .bar-fill.on { background: var(--qx-accent); }
   .bar-day { font-size: 10px; font-weight: 600; color: var(--qx-text-faint); }
   .consistency-summary { font-size: 12px; font-weight: 600; color: var(--qx-text-faint); position: absolute; bottom: -20px; right: 0; }
+
+  .loop-summary {
+    margin: 0 0 28px;
+    padding: 18px;
+    border: 1px solid var(--qx-border);
+    border-radius: 20px;
+    background:
+      linear-gradient(120deg, color-mix(in srgb, var(--qx-green-soft) 52%, var(--qx-surface)), var(--qx-surface) 62%);
+    box-shadow: var(--qx-shadow-card);
+  }
+  .loop-summary-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .loop-summary-head > div { display: flex; flex-direction: column; gap: 2px; }
+  .loop-summary-head span {
+    color: var(--qx-green-text);
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .loop-summary-head strong { color: var(--qx-text); font-size: 16px; }
+  .loop-summary-head > b {
+    color: var(--qx-text-dim);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .loop-summary-progress {
+    height: 7px;
+    overflow: hidden;
+    margin: 15px 0 12px;
+    border-radius: 999px;
+    background: var(--qx-surface-2);
+  }
+  .loop-summary-progress span {
+    display: block;
+    min-width: 3px;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--qx-accent), var(--qx-green));
+  }
+  .loop-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .loop-summary-grid div {
+    min-width: 0;
+    padding: 9px;
+    border: 1px solid color-mix(in srgb, var(--qx-border) 72%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--qx-surface) 74%, transparent);
+  }
+  .loop-summary-grid b {
+    display: block;
+    color: var(--qx-text);
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+  }
+  .loop-summary-grid span {
+    display: block;
+    margin-top: 2px;
+    color: var(--qx-text-faint);
+    font-size: 9px;
+    line-height: 1.25;
+  }
+  .loop-summary button {
+    width: 100%;
+    min-height: 40px;
+    margin-top: 12px;
+    border: 1px solid var(--qx-green);
+    border-radius: 12px;
+    background: var(--qx-green);
+    color: #fff;
+    font: 900 11px var(--qx-font);
+    cursor: pointer;
+  }
 
   /* Metrics */
   .metrics-row { display: flex; gap: 10px; margin-bottom: 20px; }
