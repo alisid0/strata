@@ -17,6 +17,9 @@
 
 :root {
   --qx-font: 'Mulish', sans-serif;
+  /* Display face for headings and big figures — editorial character over the
+     workhorse body sans. Applied to h1/h2 and anything tagged .qx-display. */
+  --qx-font-display: 'Bricolage Grotesque', 'Mulish', system-ui, sans-serif;
   --qx-radius-sm: 8px;
   --qx-radius-md: 14px;
   --qx-radius-lg: 22px;
@@ -119,6 +122,11 @@
 
   --qx-shadow-card: 0 1px 0 rgba(255,255,255,.025), 0 12px 32px -20px rgba(0,0,0,.72);
   --qx-shadow-soft: 0 30px 80px -42px rgba(0,0,0,.9);
+}
+
+:is(h1, h2, .qx-display) {
+  font-family: var(--qx-font-display);
+  letter-spacing: -0.015em;
 }
 
 .qx-shell {
