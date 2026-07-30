@@ -188,6 +188,18 @@ const SOLVE_FIRST = {
     title: 'Radar Nine',
     sub: 'No lesson first. Tag blips by range and bearing, translate the tower\'s language onto the old grid map, then program a rose-curve fence where petal alignment — not petal count — wins the raid.',
     rewardLabel: 'Polar Operator'
+  },
+  'electricity': {
+    id: 'electricity-live-wire',
+    moduleId: 'electricity',
+    conceptLabel: "Ohm's law",
+    pathId: 'PHY_ELECTRICITY',
+    track: 'physics',
+    kind: 'ohm-circuit',
+    eyebrow: 'Unmarked problem 16',
+    title: 'Live Wire',
+    sub: 'No lesson first. Drive current through a workbench circuit, keep a device from burning out, then uncover the law tying voltage, current, and resistance together.',
+    rewardLabel: 'Current Controller'
   }
 };
 
