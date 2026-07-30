@@ -301,11 +301,17 @@
     margin-bottom: clamp(24px, 5vw, 40px);
   }
   .avatar {
-    width: 46px; height: 46px; border-radius: 15px; background: var(--qx-text); color: var(--qx-bg);
-    font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    cursor: pointer; border: 1px solid color-mix(in srgb, var(--qx-text) 80%, var(--qx-border)); font-family: var(--qx-font);
-    box-shadow: var(--qx-shadow-card);
+    width: 46px; height: 46px; border-radius: 15px;
+    background: linear-gradient(150deg, color-mix(in srgb, #fff 16%, var(--qx-accent)), color-mix(in srgb, var(--qx-accent) 58%, var(--qx-text)));
+    color: #fff;
+    font-family: var(--qx-font-display); font-weight: 800; font-size: 19px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    cursor: pointer;
+    border: 1px solid color-mix(in srgb, #fff 22%, transparent);
+    box-shadow: var(--qx-shadow-card), inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent);
+    transition: transform var(--qx-duration-fast) var(--qx-ease-out);
   }
+  .avatar:hover { transform: translateY(-1px); }
   .greeting { flex: 1; min-width: 0; }
   .home-kicker {
     margin-bottom: 2px;
