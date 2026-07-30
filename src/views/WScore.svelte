@@ -283,9 +283,9 @@
     width: 100%;
     min-height: 40px;
     margin-top: 12px;
-    border: 1px solid var(--qx-green);
+    border: 1px solid var(--qx-accent);
     border-radius: 12px;
-    background: var(--qx-green);
+    background: var(--qx-accent);
     color: #fff;
     font: 900 11px var(--qx-font);
     cursor: pointer;

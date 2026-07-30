@@ -5,6 +5,7 @@
   import { displayName } from '../lib/stores/auth.js';
   import { getPathQuestions } from '../lib/content/questions.js';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
+  import SubjectMark from '../lib/components/SubjectMark.svelte';
   import SettingsMenu from '../lib/components/qubix/SettingsMenu.svelte';
   import CheckpointQuiz from '../lib/components/qubix/CheckpointQuiz.svelte';
 
@@ -273,7 +274,7 @@
   <div class="doors-grid">
     {#each doors as door (door.gid)}
       <button class="door" on:click={() => openDoor(door)}>
-        <img class="door-icon" src={door.icon} alt={door.name} />
+        <span class="door-icon"><SubjectMark subject={door.gid} size={52} /></span>
         <span class="door-name">{door.name}</span>
         <span class="door-sub">{door.tagline}</span>
       </button>
@@ -375,9 +376,9 @@
     min-height: 36px;
     flex: 0 0 auto;
     padding: 0 13px;
-    border: 1px solid var(--qx-green);
+    border: 1px solid var(--qx-accent);
     border-radius: 11px;
-    background: var(--qx-green);
+    background: var(--qx-accent);
     color: #fff;
     font: 900 10px var(--qx-font);
     cursor: pointer;
@@ -518,7 +519,7 @@
     text-align: left;
   }
   .door:hover { border-color: var(--qx-accent); transform: translateY(-2px); }
-  .door-icon { width: 52px; height: 52px; object-fit: contain; display: block; margin-bottom: 4px; }
+  .door-icon { display: block; margin-bottom: 4px; }
   .door-name { font-size: 15px; font-weight: 900; color: var(--qx-text); line-height: 1.18; letter-spacing: -.015em; }
   .door-sub { font-size: 11px; font-weight: 650; color: var(--qx-text-faint); line-height: 1.3; }
 

@@ -5,6 +5,7 @@
   // Path tab; this is the focused single-subject home.
   import { PATHS, PATH_GROUPS, ROADMAP, pathsForCard } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
+  import SubjectMark from '../lib/components/SubjectMark.svelte';
 
   export let gid = 'line';
   export let onNavigate; // (view, args?) => void
@@ -66,7 +67,7 @@
   {#if group}
     <!-- Identity + aggregate progress -->
     <div class="hero">
-      <img class="hero-icon" src={meta.icon} alt="" />
+      <span class="hero-icon"><SubjectMark subject={meta.icon} size={58} /></span>
       <div class="hero-info">
         <h1>{group.name}</h1>
         <p>{meta.tagline}</p>
@@ -141,7 +142,7 @@
 
   /* Hero */
   .hero { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; padding: clamp(17px, 4vw, 24px); border: 1px solid var(--qx-border); border-radius: 24px; background: var(--qx-surface); box-shadow: var(--qx-shadow-card); }
-  .hero-icon { width: 58px; height: 58px; border-radius: 15px; flex-shrink: 0; object-fit: cover; }
+  .hero-icon { flex-shrink: 0; display: block; }
   .hero-info { flex: 1; min-width: 0; }
   .hero-info h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 900; color: var(--qx-text); margin: 0; line-height: 1.12; letter-spacing: -.035em; }
   .hero-info p { font-size: 13px; font-weight: 600; color: var(--qx-text-dim); margin: 3px 0 10px; }
