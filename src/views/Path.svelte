@@ -4,6 +4,7 @@
   // old flat Topics browser (blueprint §5.4).
   import { PATHS, PATH_GROUPS, ROADMAP } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
+  import SubjectMark from '../lib/components/SubjectMark.svelte';
 
   export let onNavigate;
 
@@ -40,7 +41,7 @@
   {#each gateways as g (g.gid)}
     <section class="gateway-block">
       <div class="gw-head">
-        <img class="gw-icon" src={g.icon} alt={g.name} />
+        <span class="gw-icon"><SubjectMark subject={g.icon} size={42} /></span>
         <div class="gw-info">
           <div class="gw-name">{g.name}</div>
           <div class="gw-tagline">{g.tagline}</div>
@@ -54,7 +55,7 @@
       <div class="topic-grid">
         {#each g.topics as t (t.id)}
           <button class="topic-tile" on:click={() => onNavigate?.('topicDetail', t.id)}>
-            <span class="tile-icon-wrap"><img class="tile-icon" src={g.icon} alt="" /></span>
+            <span class="tile-icon-wrap"><SubjectMark subject={g.icon} size={38} /></span>
             <span class="tile-name">{t.manifest.name}</span>
             <span class="tile-meta">{t.state.boardsTotal} boards</span>
             <span class="tile-chip"
@@ -68,7 +69,7 @@
 
         {#each g.roadmap as name}
           <div class="topic-tile future">
-            <span class="tile-icon-wrap"><img class="tile-icon" src={g.icon} alt="" /></span>
+            <span class="tile-icon-wrap"><SubjectMark subject={g.icon} size={38} /></span>
             <span class="tile-name">{name}</span>
             <span class="soon-chip">Soon</span>
           </div>
@@ -94,7 +95,7 @@
     box-shadow: var(--qx-shadow-card);
   }
   .gw-head { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
-  .gw-icon { width: 42px; height: 42px; object-fit: contain; flex-shrink: 0; display: block; }
+  .gw-icon { flex-shrink: 0; display: block; }
   .gw-info { flex: 1; min-width: 0; }
   .gw-name { font-size: 17px; font-weight: 900; color: var(--qx-text); line-height: 1.2; letter-spacing: -.02em; }
   .gw-tagline { font-size: 11px; font-weight: 650; color: var(--qx-text-faint); margin-top: 2px; }
@@ -124,7 +125,7 @@
   .topic-tile:not(.future):hover { border-color: var(--qx-accent); background: var(--qx-accent-soft-2); transform: translateY(-1px); }
   .tile-icon-wrap {
     grid-row: 1 / 3;
-    width: 38px; height: 38px; border-radius: 11px; background: var(--qx-surface-2);
+    width: 38px; height: 38px; border-radius: 11px; background: transparent;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .tile-icon { width: 28px; height: 28px; object-fit: contain; display: block; }

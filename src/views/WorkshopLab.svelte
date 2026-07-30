@@ -506,6 +506,7 @@
 
 <script>
   import Workshop from '../lib/components/assessments/Workshop.svelte';
+  import SubjectMark from '../lib/components/SubjectMark.svelte';
   import SolveFirst from '../lib/components/assessments/SolveFirst.svelte';
   import SolveFirstForces from '../lib/components/assessments/SolveFirstForces.svelte';
   import SolveFirstCoordinates from '../lib/components/assessments/SolveFirstCoordinates.svelte';
@@ -745,7 +746,7 @@
         <h1>Learn forwards. Solve backwards.</h1>
         <p>Two routes through the same concept, designed to produce one thing: real understanding.</p>
       </div>
-      <img src={browseTrack.icon} alt={browseTrack.label} />
+      <SubjectMark subject={browseTrack.icon} size={52} />
     </div>
 
     <section class="method-system" aria-labelledby="method-system-title">
@@ -799,7 +800,7 @@
           aria-pressed={browseCategory === tid}
           on:click={() => browseCategory = tid}
         >
-          <span class="category-mark"><img src={trk.icon} alt="" /></span>
+          <span class="category-mark"><SubjectMark subject={trk.icon} size={30} /></span>
           <span>
             <strong>{trk.label}</strong>
             <small>
@@ -866,7 +867,7 @@
       {:else if browseTrack}
         <section class="ws-block" aria-labelledby={`workshop-category-title-${browseCategory}`}>
         <div class="ws-block-head">
-          <img class="ws-block-icon" src={browseTrack.icon} alt="" />
+          <span class="ws-block-icon"><SubjectMark subject={browseTrack.icon} size={40} /></span>
           <div class="ws-block-info">
             <div class="ws-block-name" id={`workshop-category-title-${browseCategory}`}>{browseTrack.label}</div>
             <div class="ws-block-sub">Learn First · {browseTrack.sub}</div>
@@ -877,7 +878,7 @@
           {#each browseTrack.modules as item (item.id)}
             {@const pair = pairedJourney(item.id)}
             <button class="ws-tile" on:click={() => openModule(browseCategory, item.id)}>
-              <span class="ws-tile-icon"><img src={browseTrack.icon} alt="" /></span>
+              <span class="ws-tile-icon"><SubjectMark subject={browseTrack.icon} size={40} /></span>
               <span class="ws-tile-copy">
                 <span class="ws-tile-name">{item.title}</span>
                 <span class="ws-tile-sub">{item.sub}</span>
@@ -1345,7 +1346,7 @@
   }
   .ws-tile:active { transform: scale(0.98); }
   .ws-tile-icon {
-    width: 40px; height: 40px; border-radius: 12px; background: var(--qx-surface-2);
+    width: 40px; height: 40px; border-radius: 12px; background: transparent;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .ws-tile-icon img { width: 29px; height: 29px; object-fit: contain; display: block; }
@@ -1598,9 +1599,8 @@
   }
 
   .ws-block-icon {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
+    width: 40px;
+    height: 40px;
     flex: 0 0 auto;
   }
 

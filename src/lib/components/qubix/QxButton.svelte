@@ -33,11 +33,16 @@
     box-shadow: var(--qx-shadow-card);
     transition: transform var(--qx-duration-fast) var(--qx-ease-out), box-shadow var(--qx-duration-fast) ease;
   }
+  .qx-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 22px -14px color-mix(in srgb, var(--qx-accent) 70%, transparent), var(--qx-shadow-card); }
   .qx-btn:active:not(:disabled) { transform: translateY(1px) scale(.985); box-shadow: none; }
+  .qx-btn:focus-visible { outline: 3px solid color-mix(in srgb, var(--qx-accent) 55%, transparent); outline-offset: 2px; }
   .qx-btn.full { width: 100%; }
-  .qx-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  /* Disabled reads as intentionally inert, not a faded brand button. */
+  .qx-btn:disabled { cursor: not-allowed; box-shadow: none; transform: none; }
+  .primary:disabled { background: var(--qx-surface-3); color: var(--qx-text-faintest); }
+  .secondary:disabled, .ghost:disabled { opacity: .5; }
 
-  .primary { background: var(--qx-accent); color: #ffffff; }
+  .primary { background: linear-gradient(180deg, color-mix(in srgb, #fff 12%, var(--qx-accent)), var(--qx-accent)); color: #ffffff; }
   .secondary {
     background: var(--qx-surface);
     color: var(--qx-text);
