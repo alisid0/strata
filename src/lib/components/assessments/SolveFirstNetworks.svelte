@@ -577,7 +577,7 @@
     inset: 92px -4px 0;
     pointer-events: none;
     z-index: 20;
-    opacity: .14;
+    opacity: 0;
     background: repeating-linear-gradient(
       to bottom,
       transparent 0,
@@ -653,12 +653,11 @@
     font-size: 26px;
     letter-spacing: .03em;
     line-height: 1.04;
-    text-shadow: 3px 3px 0 var(--qx-accent-soft);
   }
   .arcade-title span { display: block; color: var(--qx-accent); font-size: 34px; letter-spacing: .08em; }
   p { color: var(--qx-text-dim); font-size: 13.5px; line-height: 1.5; margin: 0; }
   .brief > p, .reveal > p { max-width: 36ch; }
-  .mission { margin-top: 7px; text-align: left; width: 100%; box-sizing: border-box; border: 2px solid var(--qx-accent); border-radius: 2px; padding: 13px 14px; background: var(--qx-accent-soft); box-shadow: 4px 4px 0 var(--qx-accent); }
+  .mission { margin-top: 7px; text-align: left; width: 100%; box-sizing: border-box; border: 1px solid color-mix(in srgb, var(--qx-accent) 38%, var(--qx-border)); border-radius: var(--qx-radius-md); padding: 13px 14px; background: var(--qx-accent-soft); box-shadow: var(--qx-shadow-card); }
   .mission span { display: block; color: var(--qx-accent-text); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
   .mission strong { display: block; color: var(--qx-text); margin-top: 4px; font-size: 14px; line-height: 1.4; }
   .brief-rules { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
@@ -673,11 +672,11 @@
   }
 
   .primary, .secondary, .test-action { min-height: 46px; width: 100%; border-radius: 999px; font-family: var(--qx-font); font-size: 14px; font-weight: 900; cursor: pointer; }
-  .primary { border: 2px solid var(--qx-text); border-radius: 3px; background: var(--qx-accent); color: var(--qx-bg); box-shadow: 4px 4px 0 var(--qx-text); text-transform: uppercase; letter-spacing: .04em; }
-  .primary:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--qx-text); }
+  .primary { border: none; border-radius: var(--qx-radius-sm); background: var(--qx-accent); color: #fff; box-shadow: var(--qx-shadow-card); }
+  .primary:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
   .primary:disabled, .test-action:disabled { opacity: .42; cursor: not-allowed; }
-  .secondary { border: 2px solid var(--qx-border-2); border-radius: 3px; background: var(--qx-surface); color: var(--qx-text-dim); box-shadow: 3px 3px 0 var(--qx-border-2); }
-  .test-action { border: 2px solid var(--qx-text); border-radius: 3px; background: var(--qx-text); color: var(--qx-bg); box-shadow: 4px 4px 0 var(--qx-pink); text-transform: uppercase; letter-spacing: .05em; }
+  .secondary { border: 1px solid var(--qx-border-2); border-radius: var(--qx-radius-sm); background: var(--qx-surface); color: var(--qx-text-dim); box-shadow: var(--qx-shadow-card); }
+  .test-action { border: 1px solid var(--qx-text); border-radius: var(--qx-radius-sm); background: var(--qx-text); color: var(--qx-bg); box-shadow: var(--qx-shadow-card); letter-spacing: .03em; }
   .start-button span { margin-right: 6px; color: var(--qx-yellow); animation: pixelBlink 1s steps(2, end) infinite; }
   .hint-link { border: none; background: none; color: var(--qx-text-faint); font-family: var(--qx-font); font-size: 11px; font-weight: 800; cursor: pointer; margin: 0 auto; min-height: 32px; }
   .hint { border-radius: 10px; padding: 9px 11px; color: var(--qx-accent-text); background: var(--qx-accent-soft); font-size: 11px; line-height: 1.4; }
