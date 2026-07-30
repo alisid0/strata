@@ -227,7 +227,7 @@
       <div class="brand">QUB<span class="acc">I</span>X</div>
       <h1 class="sr-only">Log in or sign up to Qubix</h1>
       <div class="tagline">
-        <strong>Learn forwards. Solve backwards.</strong>
+        <strong class="qx-display">Learn forwards. Solve backwards.</strong>
         <span>Two routes through difficult ideas.</span>
       </div>
 

@@ -174,7 +174,7 @@
     <button class="avatar" on:click={() => onNavigate?.('wscore')} aria-label="Your W Score">{$displayName.charAt(0).toUpperCase()}</button>
     <div class="greeting">
       <div class="home-kicker">Your learning studio</div>
-      <div class="hi">Good to see you, {$displayName}</div>
+      <div class="hi qx-display">Good to see you, {$displayName}</div>
       <div class="level">
         <span class="level-badge">Level {level}</span>
       </div>
@@ -199,7 +199,7 @@
       <span class="focus-bolt"><QxIcon name={primary.icon} size={20} /></span>
       <span class="focus-copy">
         <span class="focus-label">{primary.label}</span>
-        <span class="focus-title">{primary.title}</span>
+        <span class="focus-title qx-display">{primary.title}</span>
         <span class="focus-meta">{primary.meta}</span>
       </span>
       <span class="focus-cta">{primary.cta}</span>

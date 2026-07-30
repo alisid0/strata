@@ -46,7 +46,7 @@
 
   <!-- W hero: the primary metric -->
   <div class="w-hero">
-    <div class="w-hero-number">W {ws}</div>
+    <div class="w-hero-number qx-display">W {ws}</div>
     <div class="w-hero-sub">
       {#if ws === 0}Your journey starts here{:else}this week: {weeklyPoints} pts{/if}
     </div>

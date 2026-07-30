@@ -752,7 +752,7 @@
     <section class="method-system" aria-labelledby="method-system-title">
       <div class="method-principle">
         <span>One concept · two routes</span>
-        <strong id="method-system-title">Same destination. Opposite direction.</strong>
+        <strong id="method-system-title" class="qx-display">Same destination. Opposite direction.</strong>
         <small>Start with the explanation when the idea is new. Start with the problem when you want to prove the idea is yours.</small>
       </div>
       <div class="mode-grid" role="group" aria-label="Choose a workshop method">
