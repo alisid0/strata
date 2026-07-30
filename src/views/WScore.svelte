@@ -147,9 +147,13 @@
   .top-left { display: flex; align-items: center; gap: 10px; }
   h1 { font-size: clamp(26px, 4vw, 34px); font-weight: 900; color: var(--qx-text); margin: 0; letter-spacing: -.035em; }
   .avatar {
-    width: 40px; height: 40px; border-radius: 13px; background: var(--qx-text); color: var(--qx-bg);
-    font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    box-shadow: var(--qx-shadow-card);
+    width: 40px; height: 40px; border-radius: 13px;
+    background: linear-gradient(150deg, color-mix(in srgb, #fff 16%, var(--qx-accent)), color-mix(in srgb, var(--qx-accent) 58%, var(--qx-text)));
+    color: #fff;
+    font-family: var(--qx-font-display); font-weight: 800; font-size: 16px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    border: 1px solid color-mix(in srgb, #fff 22%, transparent);
+    box-shadow: var(--qx-shadow-card), inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent);
   }
 
   /* W hero */
