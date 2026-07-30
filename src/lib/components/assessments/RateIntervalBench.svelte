@@ -18,6 +18,7 @@
   const plotW = W - PL - PR, plotH = H - PT - PB;
   const TMAX = 6, DMAX = 18;
   const f = (t) => 0.5 * t * t;             // ½t²  ->  avg speed on [a,b] = ½(a+b)
+  const averageRate = (start, end) => (f(end) - f(start)) / (end - start);
   const sx = (t) => PL + (t / TMAX) * plotW;
   const sy = (d) => (H - PB) - (d / DMAX) * plotH;
   const mt = (px) => ((px - PL) / plotW) * TMAX;
@@ -37,7 +38,7 @@
   let svgEl;
 
   $: stage = STAGES[stageIx];
-  $: rate = (f(b) - f(a)) / (b - a);        // average speed on [a,b]
+  $: rate = averageRate(a, b);               // average speed on [a,b]
   $: dy = f(b) - f(a);
   $: dx = b - a;
   $: hit = Math.abs(rate - stage.target) < 0.001;
@@ -79,7 +80,11 @@
   function up() { active = null; }
 
   function checkMatch() {
-    if (hit && !matched) {
+    // Reactive declarations update after the event handler finishes. Compute
+    // from the just-moved endpoints here so releasing on the exact answer is
+    // accepted immediately rather than testing the previous drag position.
+    const currentRate = averageRate(a, b);
+    if (Math.abs(currentRate - stage.target) < 0.001 && !matched) {
       matched = true;
       active = null;
       const delay = reduceMotion ? 0 : 850;

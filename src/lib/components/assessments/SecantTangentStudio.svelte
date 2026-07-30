@@ -55,7 +55,6 @@
   const mX = (px) => XMIN + ((px - PL) / plotW) * (XMAX - XMIN);
   $: syF = (v) => FBOT - ((v - fRange.lo) / (fRange.hi - fRange.lo)) * (FBOT - FTOP);
   const syD = (v) => DMID - (Math.max(-DRANGE, Math.min(DRANGE, v)) / DRANGE) * DHALF;
-  const clip = (y, lo, hi) => Math.max(lo - 40, Math.min(hi + 40, y));
 
   function fRangeFor(s) {
     let lo = Infinity, hi = -Infinity;
@@ -64,21 +63,22 @@
     return { lo: lo - pad, hi: hi + pad };
   }
 
-  $: fCurve = samplePath(stage.fn, XMIN, XMAX, syF, FTOP, FBOT);
+  $: fCurve = samplePath(stage.fn, XMIN, XMAX, syF);
   $: dPainted = (visMin != null && visMax != null && visMax > visMin)
-    ? samplePath(stage.dfn, visMin, visMax, syD, DTOP, DBOT) : '';
-  function samplePath(fn, lo, hi, ys, ytop, ybot) {
+    ? samplePath(stage.dfn, visMin, visMax, syD) : '';
+  function samplePath(fn, lo, hi, ys) {
     let d = '', step = (hi - lo) / 200;
     if (step <= 0) return '';
     for (let x = lo; x <= hi + 1e-9; x += step) {
-      d += (d ? ' L' : 'M') + sx(x).toFixed(1) + ',' + clip(ys(fn(x)), ytop, ybot).toFixed(1);
+      d += (d ? ' L' : 'M') + sx(x).toFixed(1) + ',' + ys(fn(x)).toFixed(1);
     }
     return d;
   }
-  // straight line (secant or tangent) through the top panel, given slope + point
+  // Straight line in mathematical coordinates. The SVG panel clips it at the
+  // graph boundary, so it cannot spill into the derivative plot.
   function lineThrough(px, py, m) {
     const y1 = py + m * (XMIN - px), y2 = py + m * (XMAX - px);
-    return { x1: sx(XMIN), Y1: clip(syF(y1), FTOP, FBOT), x2: sx(XMAX), Y2: clip(syF(y2), FTOP, FBOT) };
+    return { x1: sx(XMIN), y1: syF(y1), x2: sx(XMAX), y2: syF(y2) };
   }
   $: sline = stage.mode === 'collapse' && !locked
     ? lineThrough(xA, stage.fn(xA), secSlope)
@@ -168,35 +168,61 @@
   <div class="st-canvas">
     <svg bind:this={svgEl} viewBox="0 0 {W} {H}"
          on:pointerdown={down} on:pointermove={move} on:pointerup={up} on:pointerleave={up}>
+      <defs>
+        <clipPath id="st-top-panel">
+          <rect x={PL} y={FTOP} width={plotW} height={FBOT - FTOP} />
+        </clipPath>
+        <clipPath id="st-derivative-panel">
+          <rect x={PL} y={DTOP} width={plotW} height={DBOT - DTOP} />
+        </clipPath>
+      </defs>
+
       <!-- panel labels + divider -->
       <text class="plab" x={PL} y={FTOP - 4}>f(x)</text>
       <line class="divider" x1="0" y1="166" x2={W} y2="166" />
       <text class="plab" x={PL} y={DTOP - 4}>f′(x) — the slope graph</text>
-      <!-- top axes -->
-      {#if fRange.lo < 0 && fRange.hi > 0}<line class="axis" x1={PL} y1={syF(0)} x2={W - PR} y2={syF(0)} />{/if}
-      <line class="axis" x1={sx(0)} y1={FTOP} x2={sx(0)} y2={FBOT} />
-      <!-- bottom axes -->
-      <line class="axis" x1={PL} y1={DMID} x2={W - PR} y2={DMID} />
-      <line class="axis" x1={sx(0)} y1={DTOP} x2={sx(0)} y2={DBOT} />
 
-      <!-- f curve -->
-      <path class="curve" d={fCurve} />
-      <!-- secant / tangent -->
-      <line class="sline" class:tan={locked || stage.mode !== 'collapse'} x1={sline.x1} y1={sline.Y1} x2={sline.x2} y2={sline.Y2} />
+      <!-- One x-scale shared by both panels. -->
+      {#each Array(7) as _, i}
+        {@const x = XMIN + i}
+        <line class="grid" x1={sx(x)} y1={FTOP} x2={sx(x)} y2={FBOT} />
+        <line class="grid" x1={sx(x)} y1={DTOP} x2={sx(x)} y2={DBOT} />
+        <text class="xtick" x={sx(x)} y={DBOT + 12} text-anchor="middle">{x}</text>
+      {/each}
 
-      <!-- painted derivative -->
-      {#if dPainted}<path class="dcurve" d={dPainted} />{/if}
-      {#if stage.mode !== 'collapse'}
-        <circle class="phead" cx={sx(xA)} cy={syD(stage.dfn(xA))} r="4.5" />
-      {/if}
+      <g clip-path="url(#st-top-panel)">
+        {#if fRange.lo < 0 && fRange.hi > 0}<line class="axis" x1={PL} y1={syF(0)} x2={W - PR} y2={syF(0)} />{/if}
+        <line class="axis" x1={sx(0)} y1={FTOP} x2={sx(0)} y2={FBOT} />
 
-      <!-- points -->
-      <circle class="anchor" cx={sx(xA)} cy={syF(stage.fn(xA))} r="6" />
-      <text class="ptl" x={sx(xA) + 8} y={syF(stage.fn(xA)) - 6}>A</text>
-      {#if stage.mode === 'collapse' && !locked}
-        <circle class="probe" class:active={active === 'B'} cx={sx(xB)} cy={syF(stage.fn(xB))} r="8" />
-        <text class="ptl" x={sx(xB) + 8} y={syF(stage.fn(xB)) - 6}>B</text>
-      {/if}
+        <path class="curve" d={fCurve} />
+        <line class="sline" class:tan={locked || stage.mode !== 'collapse'}
+              x1={sline.x1} y1={sline.y1} x2={sline.x2} y2={sline.y2} />
+
+        <!-- The secant's rise/run triangle uses the same data coordinates as
+             A, B, and the slope calculation. -->
+        {#if stage.mode === 'collapse' && !locked}
+          <line class="construction" x1={sx(xA)} y1={syF(stage.fn(xA))}
+                x2={sx(xB)} y2={syF(stage.fn(xA))} />
+          <line class="construction" x1={sx(xB)} y1={syF(stage.fn(xA))}
+                x2={sx(xB)} y2={syF(stage.fn(xB))} />
+        {/if}
+
+        <circle class="anchor" cx={sx(xA)} cy={syF(stage.fn(xA))} r="6" />
+        <text class="ptl" x={sx(xA) + 8} y={syF(stage.fn(xA)) - 6}>A</text>
+        {#if stage.mode === 'collapse' && !locked}
+          <circle class="probe" class:active={active === 'B'} cx={sx(xB)} cy={syF(stage.fn(xB))} r="8" />
+          <text class="ptl" x={sx(xB) + 8} y={syF(stage.fn(xB)) - 6}>B</text>
+        {/if}
+      </g>
+
+      <g clip-path="url(#st-derivative-panel)">
+        <line class="axis" x1={PL} y1={DMID} x2={W - PR} y2={DMID} />
+        <line class="axis" x1={sx(0)} y1={DTOP} x2={sx(0)} y2={DBOT} />
+        {#if dPainted}<path class="dcurve" d={dPainted} />{/if}
+        {#if stage.mode !== 'collapse'}
+          <circle class="phead" cx={sx(xA)} cy={syD(stage.dfn(xA))} r="4.5" />
+        {/if}
+      </g>
     </svg>
   </div>
 
@@ -245,10 +271,13 @@
   svg:active { cursor: grabbing; }
   .plab { fill: var(--qx-text-faint); font-size: 9.5px; font-weight: 800; pointer-events: none; }
   .divider { stroke: var(--qx-border); stroke-width: 1; pointer-events: none; }
+  .grid { stroke: var(--qx-border); stroke-width: 1; opacity: 0.32; pointer-events: none; }
+  .xtick { fill: var(--qx-text-faint); font-size: 8.5px; font-weight: 700; pointer-events: none; }
   .axis { stroke: var(--qx-text-faint); stroke-width: 1.1; opacity: 0.8; pointer-events: none; }
   .curve { fill: none; stroke: var(--qx-accent); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
   .sline { stroke: var(--qx-text-dim); stroke-width: 2; pointer-events: none; }
   .sline.tan { stroke: var(--qx-yellow); stroke-width: 3; }
+  .construction { stroke: var(--qx-yellow); stroke-width: 1.5; stroke-dasharray: 4 4; opacity: 0.9; pointer-events: none; }
   .dcurve { fill: none; stroke: var(--qx-green); stroke-width: 3; stroke-linecap: round; pointer-events: none; }
   .phead { fill: var(--qx-green); stroke: var(--qx-surface); stroke-width: 1.5; pointer-events: none; }
   .anchor { fill: var(--qx-accent); stroke: var(--qx-surface); stroke-width: 2; }

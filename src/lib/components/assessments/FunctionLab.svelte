@@ -1,10 +1,10 @@
 <script>
   // Transformation Lab — the graph-transformation signature lab. Drag a live
   // curve onto a ghosted target by moving its anchor (translation, c/d) and a
-  // stretch point (vertical scale, a). The progression walks translate ->
-  // stretch -> flip on a parabola, then TRANSFERS the same two controls to a
-  // different parent shape (|x|) so the learner feels that y = a·f(x−c)+d is one
-  // rule that reshapes any function. Contract matches every other engine:
+  // stretch point (vertical scale, a). Nine stages isolate right/left and
+  // vertical shifts, translation, stretch, compression, and reflection before
+  // combining the controls and transferring them to a different parent shape
+  // (|x|). Only then is y = a·f(x−c)+d revealed as the shared rule. Contract:
   // `prompt` in, `onDone(score, max)` out; a 1/1 completion gate on finish.
   export let prompt = 'Drag the curve onto its shadow. Move the anchor, then stretch.';
   export let onDone = () => {};
@@ -30,16 +30,35 @@
   const sc = (c) => (c === 0 ? '' : c > 0 ? `− ${c}` : `+ ${-c}`);
   const sd = (d) => (d === 0 ? '' : d > 0 ? `+ ${d}` : `− ${-d}`);
 
-  // ── Stages: parent + target params + which controls are live. ───────────────
+  // ── Stages: isolate one transformation at a time before combining them. ────
   const STAGES = [
-    { type: 'quadratic', name: 'Slide it over', target: { a: 1, c: 3, d: -2 }, lockA: true,
-      tip: 'Only the green anchor moves. Slide it onto the shadow’s tip.' },
-    { type: 'quadratic', name: 'Stretch it taller', target: { a: 2, c: -1, d: 1 }, lockA: false,
-      tip: 'New control: drag the amber point to stretch the curve taller.' },
-    { type: 'quadratic', name: 'Flip it over', target: { a: -1, c: -3, d: 2 }, lockA: false,
-      tip: 'Pull the amber point below the anchor — a negative stretch flips it.' },
-    { type: 'absolute', name: 'Any shape', target: { a: 2, c: 1, d: -3 }, lockA: false,
-      tip: 'Different shape, same two controls. The rule doesn’t care.' }
+    { type: 'quadratic', name: 'Move right', target: { a: 1, c: 2, d: 0 }, lockA: true, lockC: false, lockD: true,
+      tip: 'Move only sideways. Slide the green tip two squares right onto its shadow.',
+      success: 'Right by 2: the new input is x − 2.' },
+    { type: 'quadratic', name: 'Move left', target: { a: 1, c: -2, d: 0 }, lockA: true, lockC: false, lockD: true,
+      tip: 'Try the opposite direction. Move the same parent curve two squares left.',
+      success: 'Left by 2: the new input is x + 2.' },
+    { type: 'quadratic', name: 'Move up', target: { a: 1, c: 0, d: 3 }, lockA: true, lockC: true, lockD: false,
+      tip: 'Now the tip can move only vertically. Lift every output three squares.',
+      success: 'Up by 3: +3 is added outside the function.' },
+    { type: 'quadratic', name: 'Place the tip', target: { a: 1, c: 2, d: -2 }, lockA: true, lockC: false, lockD: false,
+      tip: 'Use both directions. Put the tip at (2, −2) without changing the shape.',
+      success: 'The tip is (c, d): c moves sideways; d moves vertically.' },
+    { type: 'quadratic', name: 'Stretch taller', target: { a: 2, c: 0, d: 0 }, lockA: false, lockC: true, lockD: true,
+      tip: 'Keep the tip fixed. Pull the amber point up until every height is doubled.',
+      success: 'Scale 2 doubles every output: 2f(x).' },
+    { type: 'quadratic', name: 'Compress', target: { a: 0.5, c: 0, d: 0 }, lockA: false, lockC: true, lockD: true,
+      tip: 'Bring the amber point halfway toward the tip. Make the curve wider and shallower.',
+      success: 'Scale ½ halves every output: ½f(x).' },
+    { type: 'quadratic', name: 'Reflect', target: { a: -1, c: 0, d: 0 }, lockA: false, lockC: true, lockD: true,
+      tip: 'Pull the amber point below the tip. A negative scale turns the curve upside down.',
+      success: 'A negative scale reverses every output: −f(x).' },
+    { type: 'quadratic', name: 'Build the rule', target: { a: -2, c: -2, d: 1 }, lockA: false, lockC: false, lockD: false,
+      tip: 'Now combine all three ideas: place the tip, then set the scale and direction.',
+      success: 'Together they form y = a·f(x − c) + d.' },
+    { type: 'absolute', name: 'Transfer the rule', target: { a: 1.5, c: 1, d: -2 }, lockA: false, lockC: false, lockD: false,
+      tip: 'New parent shape: |x|. Use the same three numbers to match its shadow.',
+      success: 'Same rule, new parent: transformations work on any function.' }
   ];
 
   let stageIx = 0;
@@ -55,11 +74,18 @@
   // is a + d and dragging it vertically maps straight to the scale a.
   $: stretchX = stage.lockA ? null : params.c + 1;
   $: stretchY = stage.lockA ? null : params.a + params.d;
+  $: canMoveAnchor = !stage.lockC || !stage.lockD;
+  $: revealRule = stageIx >= 7;
 
   function initStage() {
     // Start each stage away from the answer so there's something to do.
     const t = STAGES[stageIx].target;
-    params = { a: STAGES[stageIx].lockA ? t.a : 1, c: 0, d: 0 };
+    const s = STAGES[stageIx];
+    params = {
+      a: s.lockA ? t.a : 1,
+      c: s.lockC ? t.c : 0,
+      d: s.lockD ? t.d : 0
+    };
     matched = false;
   }
 
@@ -86,7 +112,7 @@
   function down(e) {
     if (matched) return;
     const { px, py } = svgPoint(e);
-    const vd = Math.hypot(px - toX(params.c), py - toY(params.d));
+    const vd = canMoveAnchor ? Math.hypot(px - toX(params.c), py - toY(params.d)) : Infinity;
     const sd_ = stage.lockA ? Infinity : Math.hypot(px - toX(stretchX), py - toY(stretchY));
     if (!stage.lockA && sd_ < vd && sd_ < 20) activeHandle = 'stretch';
     else if (vd < 22) activeHandle = 'vertex';
@@ -98,15 +124,15 @@
     if (!activeHandle || matched) return;
     const { px, py } = svgPoint(e);
     if (activeHandle === 'vertex') {
-      params.c = clampP(Math.round(toMathX(px)), -5, 5);
-      params.d = clampP(Math.round(toMathY(py)), -5, 5);
+      if (!stage.lockC) params.c = clampP(Math.round(toMathX(px)), -5, 5);
+      if (!stage.lockD) params.d = clampP(Math.round(toMathY(py)), -5, 5);
     } else {
-      let a = Math.round(toMathY(py) - params.d);
+      let a = Math.round((toMathY(py) - params.d) * 2) / 2;
       a = clampP(a, -4, 4);
-      if (a === 0) a = toMathY(py) - params.d >= 0 ? 1 : -1;
+      if (a === 0) a = toMathY(py) - params.d >= 0 ? 0.5 : -0.5;
       params.a = a;
     }
-    params = params;
+    params = { ...params };
     checkMatch();
   }
   const clampP = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -120,7 +146,7 @@
     if (near && !matched) {
       matched = true;
       activeHandle = null;
-      const delay = reduceMotion ? 0 : 700;
+      const delay = reduceMotion ? 0 : 1200;
       if (stageIx < STAGES.length - 1) {
         setTimeout(() => { stageIx += 1; initStage(); }, delay);
       } else {
@@ -135,12 +161,24 @@
 <div class="fl">
   <LabShell eyebrow={complete ? 'One rule, any shape' : stage.name}
             stage={stageIx} total={STAGES.length} done={complete} />
-  {#if !complete}
+  {#if complete}
+    <div class="fl-rule">
+      <span>The pattern you built</span>
+      <strong>y = a · f(x − c) + d</strong>
+      <small><b>a</b> scales or reflects · <b>c</b> moves sideways · <b>d</b> moves vertically</small>
+    </div>
+  {:else if revealRule}
     <div class="fl-eq">
-      f(x) =
+      y =
       <span class="p-a">{params.a}</span>{stage.type === 'absolute' ? '|x' : '(x'}
       <span class="p-c">{sc(params.c) || '− 0'}</span>{stage.type === 'absolute' ? '|' : ')²'}
       <span class="p-d">{sd(params.d) || '+ 0'}</span>
+    </div>
+  {:else}
+    <div class="fl-observe">
+      <span>parent <b>y = {stage.type === 'absolute' ? '|x|' : 'x²'}</b></span>
+      <span>tip <b>({params.c}, {params.d})</b></span>
+      {#if !stage.lockA}<span>scale <b>{params.a}</b></span>{/if}
     </div>
   {/if}
 
@@ -169,18 +207,26 @@
                   cx={toX(stretchX)} cy={toY(stretchY)} r="8" />
         {/if}
         <!-- vertex / anchor handle (c, d) -->
-        <circle class="handle vertex" class:active={activeHandle === 'vertex'}
-                cx={toX(params.c)} cy={toY(params.d)} r="9" />
+        {#if canMoveAnchor}
+          <circle class="handle vertex" class:active={activeHandle === 'vertex'}
+                  cx={toX(params.c)} cy={toY(params.d)} r="9" />
+        {:else if !stage.lockA}
+          <circle class="anchor-fixed" cx={toX(params.c)} cy={toY(params.d)} r="5" />
+        {/if}
       {/if}
     </svg>
-    {#if matched && !complete}<div class="fl-flash">Matched ✓</div>{/if}
+    {#if matched && !complete}<div class="fl-flash">{stage.success}</div>{/if}
   </div>
 
   <div class="fl-foot">
     {#if complete}
       <button class="fl-primary" on:click={() => onDone(1, 1)}>Continue</button>
     {:else}
-      <span class="fl-legend"><span class="k vertex"></span>move &nbsp; <span class="k stretch"></span>stretch</span>
+      <span class="fl-legend">
+        {#if canMoveAnchor}<span class="k vertex"></span>{stage.lockD ? 'move sideways' : stage.lockC ? 'move vertically' : 'move the tip'}{/if}
+        {#if canMoveAnchor && !stage.lockA}&nbsp; · &nbsp;{/if}
+        {#if !stage.lockA}<span class="k stretch"></span>scale / reflect{/if}
+      </span>
     {/if}
   </div>
 </div>
@@ -192,6 +238,31 @@
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
     font-size: 15px; font-weight: 700; color: var(--qx-text); white-space: nowrap;
   }
+  .fl-observe {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .fl-observe span {
+    color: var(--qx-text-dim); background: var(--qx-surface-2);
+    border: 1px solid var(--qx-border); border-radius: 8px;
+    font-size: 11.5px; font-weight: 700; padding: 4px 8px;
+  }
+  .fl-observe b { color: var(--qx-text); font-weight: 900; }
+  .fl-rule {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    border: 1px solid var(--qx-green); border-radius: 10px;
+    background: var(--qx-green-soft); padding: 8px 12px; text-align: center;
+  }
+  .fl-rule span {
+    color: var(--qx-green-text); font-size: 9.5px; font-weight: 850;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .fl-rule strong {
+    color: var(--qx-text); font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 17px;
+  }
+  .fl-rule small { color: var(--qx-text-dim); font-size: 10.5px; font-weight: 650; }
+  .fl-rule small b { color: var(--qx-green-text); }
   .p-a { color: var(--qx-yellow-text); font-weight: 800; }
   .p-c, .p-d { color: var(--qx-green-text); font-weight: 800; }
 
@@ -214,11 +285,13 @@
   .handle.vertex { fill: var(--qx-green); }
   .handle.stretch { fill: var(--qx-yellow); }
   .handle.active { stroke: var(--qx-text); }
+  .anchor-fixed { fill: var(--qx-green); stroke: var(--qx-surface); stroke-width: 2; opacity: 0.75; pointer-events: none; }
 
   .fl-flash {
     position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
     background: var(--qx-green-soft); color: var(--qx-green-text); border: 1.5px solid var(--qx-green);
-    font-size: 13px; font-weight: 800; padding: 5px 14px; border-radius: 999px;
+    width: max-content; max-width: calc(100% - 24px); text-align: center;
+    font-size: 12px; line-height: 1.25; font-weight: 800; padding: 6px 14px; border-radius: 999px;
   }
 
   .fl-foot { display: flex; justify-content: center; min-height: 40px; align-items: center; }
