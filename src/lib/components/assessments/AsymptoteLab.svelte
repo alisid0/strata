@@ -35,19 +35,21 @@
   let stageIx = 0;
   let barrierX = -4;   // learner's vertical-asymptote guess
   let horizonY = -4;   // learner's horizontal-asymptote guess
+  let verticalLocked = false;
+  let horizontalLocked = false;
   let matched = false;
   let complete = false;
   let active = null;   // 'v' | 'h' | null
   let svgEl;
 
   $: stage = STAGES[stageIx];
-  $: showV = true;                 // vertical line always drawn (locked when !activeV)
-  $: showH = stage.activeH || (stageIx >= 1); // horizontal shown from stage 2 on
 
   function initStage() {
     const s = STAGES[stageIx];
-    barrierX = s.activeV ? -4 : s.p;   // locked at the answer when not the task
-    horizonY = s.activeH ? -4 : s.q;
+    barrierX = -4;
+    horizonY = -4;
+    verticalLocked = !s.activeV;
+    horizontalLocked = !s.activeH;
     matched = false;
   }
 
@@ -72,9 +74,9 @@
     if (matched) return;
     const { px, py } = pt(e);
     // grab the active vertical line (whole line, forgiving) ...
-    if (stage.activeV && Math.abs(px - sx(barrierX)) < 16) active = 'v';
+    if (stage.activeV && !verticalLocked && Math.abs(px - sx(barrierX)) < 16) active = 'v';
     // ... or the active horizontal line
-    else if (stage.activeH && Math.abs(py - sy(horizonY)) < 16) active = 'h';
+    else if (stage.activeH && !horizontalLocked && Math.abs(py - sy(horizonY)) < 16) active = 'h';
     else return;
     e.target.setPointerCapture?.(e.pointerId);
     e.preventDefault();
@@ -89,11 +91,12 @@
   function up() { active = null; }
 
   function checkMatch() {
-    const vOk = !stage.activeV || Math.abs(barrierX - stage.p) < 0.4;
-    const hOk = !stage.activeH || Math.abs(horizonY - stage.q) < 0.4;
-    if (vOk && hOk && !matched) {
+    if (stage.activeV && Math.abs(barrierX - stage.p) < 0.4) verticalLocked = true;
+    if (stage.activeH && Math.abs(horizonY - stage.q) < 0.4) horizontalLocked = true;
+    if ((active === 'v' && verticalLocked) || (active === 'h' && horizontalLocked)) active = null;
+
+    if (verticalLocked && horizontalLocked && !matched) {
       matched = true;
-      active = null;
       const delay = reduceMotion ? 0 : 800;
       if (stageIx < STAGES.length - 1) setTimeout(() => { stageIx += 1; initStage(); }, delay);
       else setTimeout(() => { complete = true; }, delay);
@@ -133,23 +136,17 @@
       <path class="curve" d={rightBranch} />
 
       <!-- horizontal asymptote line (green) -->
-      {#if showH}
-        {@const hHit = !stage.activeH || Math.abs(horizonY - stage.q) < 0.4}
-        <line class="hline" class:locked={hHit} class:dim={!stage.activeH}
+      {#if stage.activeH}
+        <line class="hline" class:locked={horizontalLocked}
               x1="0" y1={sy(horizonY)} x2={W} y2={sy(horizonY)} />
-        {#if stage.activeH}
-          <circle class="knob h" class:active={active === 'h'} class:locked={hHit} cx={sx(5)} cy={sy(horizonY)} r="8" />
-        {/if}
+        <circle class="knob h" class:active={active === 'h'} class:locked={horizontalLocked} cx={sx(5)} cy={sy(horizonY)} r="8" />
       {/if}
 
       <!-- vertical asymptote wall (amber) -->
-      {#if showV}
-        {@const vHit = !stage.activeV || Math.abs(barrierX - stage.p) < 0.4}
-        <line class="vline" class:locked={vHit} class:dim={!stage.activeV}
+      {#if stage.activeV}
+        <line class="vline" class:locked={verticalLocked}
               x1={sx(barrierX)} y1="0" x2={sx(barrierX)} y2={H} />
-        {#if stage.activeV}
-          <circle class="knob v" class:active={active === 'v'} class:locked={vHit} cx={sx(barrierX)} cy={sy(5)} r="8" />
-        {/if}
+        <circle class="knob v" class:active={active === 'v'} class:locked={verticalLocked} cx={sx(barrierX)} cy={sy(5)} r="8" />
       {/if}
     </svg>
     {#if matched && !complete}<div class="al-flash">Locked ✓</div>{/if}
@@ -160,8 +157,12 @@
       <button class="al-primary" on:click={() => onDone(1, 1)}>Continue</button>
     {:else}
       <span class="al-legend">
-        {#if stage.activeV}<span class="k v"></span>wall (x-blows up)&nbsp;{/if}
-        {#if stage.activeH}<span class="k h"></span>line (levels off){/if}
+        {#if stage.activeV}
+          <span class="k v"></span>{verticalLocked ? `wall locked at x = ${barrierX}` : 'drag the wall (x blows up)'}&nbsp;
+        {/if}
+        {#if stage.activeH}
+          <span class="k h"></span>{horizontalLocked ? `line locked at y = ${horizonY}` : 'drag the line (curve levels off)'}
+        {/if}
       </span>
     {/if}
   </div>
@@ -182,7 +183,6 @@
 
   .vline { stroke: var(--qx-yellow); stroke-width: 2; stroke-dasharray: 6 6; pointer-events: none; }
   .hline { stroke: var(--qx-green); stroke-width: 2; stroke-dasharray: 6 6; pointer-events: none; }
-  .vline.dim, .hline.dim { opacity: 0.4; }
   .vline.locked, .hline.locked { stroke-dasharray: none; stroke-width: 2.5; }
 
   .knob { stroke: var(--qx-surface); stroke-width: 2.5; cursor: grab; }
