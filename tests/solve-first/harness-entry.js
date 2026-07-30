@@ -1,8 +1,20 @@
 import SolveFirstNetworks from '../../src/lib/components/assessments/SolveFirstNetworks.svelte';
 import SolveFirstDifferentiation from '../../src/lib/components/assessments/SolveFirstDifferentiation.svelte';
 import SolveFirstMemory from '../../src/lib/components/assessments/SolveFirstMemory.svelte';
+import SolveFirstOhm from '../../src/lib/components/assessments/SolveFirstOhm.svelte';
 
 const configs = {
+  ohm: {
+    id: 'electricity-live-wire',
+    moduleId: 'electricity',
+    pathId: 'PHY_ELECTRICITY',
+    track: 'physics',
+    kind: 'ohm-circuit',
+    eyebrow: 'Unmarked problem 16',
+    title: 'Live Wire',
+    sub: 'test',
+    rewardLabel: 'Current Controller'
+  },
   network: {
     id: 'networks-connect-the-computers',
     moduleId: 'networks-cloud',
@@ -46,7 +58,9 @@ window.__mount = (kind = 'network') => {
     ? SolveFirstDifferentiation
     : kind === 'memory'
       ? SolveFirstMemory
-      : SolveFirstNetworks;
+      : kind === 'ohm'
+        ? SolveFirstOhm
+        : SolveFirstNetworks;
   window.__app = new Component({
     target: document.getElementById('app'),
     props: {
