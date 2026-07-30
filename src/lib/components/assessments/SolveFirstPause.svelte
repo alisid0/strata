@@ -31,7 +31,7 @@
     background:
       repeating-linear-gradient(0deg, transparent 0 5px, color-mix(in srgb, var(--qx-green) 5%, transparent) 5px 6px),
       color-mix(in srgb, var(--qx-green-soft) 74%, var(--qx-surface));
-    box-shadow: 4px 4px 0 color-mix(in srgb, var(--qx-text) 18%, transparent);
+    box-shadow: var(--qx-shadow-card);
     box-sizing: border-box;
   }
 
@@ -77,7 +77,7 @@
     border: 2px solid var(--qx-green);
     border-radius: 3px;
     background: var(--qx-green);
-    box-shadow: 3px 3px 0 color-mix(in srgb, var(--qx-text) 26%, transparent);
+    box-shadow: var(--qx-shadow-card);
     color: var(--qx-green-contrast, #10210d);
     cursor: pointer;
     font: inherit;
@@ -98,8 +98,8 @@
   }
 
   button:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 color-mix(in srgb, var(--qx-text) 26%, transparent);
+    transform: translateY(1px);
+    box-shadow: none;
   }
 
   button i {
