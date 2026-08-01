@@ -18,6 +18,11 @@
   import ThreeScene from '../lib/components/media/ThreeScene.svelte';
   import CoordinatePlane from '../lib/components/media/CoordinatePlane.svelte';
   import GeoGebraPlane from '../lib/components/media/GeoGebraPlane.svelte';
+  import LineExplorer from '../lib/components/media/LineExplorer.svelte';
+  import ConceptExplorer from '../lib/components/media/ConceptExplorer.svelte';
+  import MathVisual from '../lib/components/media/MathVisual.svelte';
+  import MathMotion from '../lib/components/media/MathMotion.svelte';
+  import PixelMathScene from '../lib/components/media/PixelMathScene.svelte';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxIcon from '../lib/components/qubix/QxIcon.svelte';
   import CheckpointQuiz from '../lib/components/qubix/CheckpointQuiz.svelte';
@@ -584,6 +589,26 @@
                           {#key numbers[i] + '-' + d}
                             <ThreeScene spec={media.spec} />
                           {/key}
+                        {:else if media.type === 'math-visual'}
+                          <div class="media-diagram diagram-wrap" on:touchstart|stopPropagation on:touchmove|stopPropagation>
+                            <MathVisual spec={media.spec} />
+                          </div>
+                        {:else if media.type === 'math-motion'}
+                          <div class="media-diagram diagram-wrap" on:touchstart|stopPropagation on:touchmove|stopPropagation>
+                            <MathMotion spec={media.spec} />
+                          </div>
+                        {:else if media.type === 'pixel-math'}
+                          <div class="media-diagram diagram-wrap" on:touchstart|stopPropagation on:touchmove|stopPropagation>
+                            <PixelMathScene spec={media.spec} />
+                          </div>
+                        {:else if media.type === 'line-explorer'}
+                          <div class="media-diagram diagram-wrap" on:touchstart|stopPropagation on:touchmove|stopPropagation>
+                            <LineExplorer />
+                          </div>
+                        {:else if media.type === 'concept-explorer'}
+                          <div class="media-diagram diagram-wrap" on:touchstart|stopPropagation on:touchmove|stopPropagation>
+                            <ConceptExplorer spec={media.spec} />
+                          </div>
                         {/if}
                       </div>
                     {/if}
