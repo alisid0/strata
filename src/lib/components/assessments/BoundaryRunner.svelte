@@ -423,8 +423,14 @@
 
       <!-- Evidence panel -->
       <div class="evidence-panel" aria-live="polite">
-        <div>{level.kind === 'farHorizon' ? 'Near' : 'West'}: {leftSamples.length}{level.kind === 'farHorizon' ? '' : `/${minSamples} needed`}{#if leftSamples.length} <span class="vals">{leftSamples.map(s => s.y).join(', ')}</span>{/if}</div>
-        <div>{level.kind === 'farHorizon' ? 'Far' : 'East'}: {rightSamples.length}{level.kind === 'farHorizon' ? '' : `/${minSamples} needed`}{#if rightSamples.length} <span class="vals">{rightSamples.map(s => s.y).join(', ')}</span>{/if}</div>
+        <div>
+          <span class="evidence-status">{level.kind === 'farHorizon' ? 'Near' : 'West'}: {level.kind === 'farHorizon' ? leftSamples.length : leftSamples.length >= minSamples ? 'complete' : `${leftSamples.length}/${minSamples} needed`}</span>
+          {#if leftSamples.length}<span class="vals">{leftSamples.map(s => s.y).join(', ')}</span>{/if}
+        </div>
+        <div>
+          <span class="evidence-status">{level.kind === 'farHorizon' ? 'Far' : 'East'}: {level.kind === 'farHorizon' ? rightSamples.length : rightSamples.length >= minSamples ? 'complete' : `${rightSamples.length}/${minSamples} needed`}</span>
+          {#if rightSamples.length}<span class="vals">{rightSamples.map(s => s.y).join(', ')}</span>{/if}
+        </div>
         {#if level.kind === 'farHorizon' && !farEvidenceReady}
           <div class="evidence-hint">Collect at least three readings, including one at input 15 or beyond.</div>
         {:else if !evidenceReady && hasBothSides}
@@ -615,8 +621,10 @@
   .probe-dir { display: flex; gap: 6px; width: 100%; }
   .probe-dir button { flex: 1; min-height: 44px; min-width: 44px; border: 1px solid var(--qx-border-2); border-radius: 8px; background: var(--qx-surface-2); color: var(--qx-text); font: 800 11px/1 var(--qx-font); cursor: pointer; }
 
-  .evidence-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 6px; font-size: 10px; font-weight: 700; color: var(--qx-text-dim); }
-  .evidence-panel .vals { color: var(--qx-accent-text); font-weight: 900; }
+  .evidence-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; font-size: 10px; font-weight: 700; color: var(--qx-text-dim); }
+  .evidence-panel > div { min-width: 0; display: grid; align-content: start; gap: 3px; }
+  .evidence-status { display: block; font-weight: 850; }
+  .evidence-panel .vals { display: block; min-width: 0; color: var(--qx-accent-text); font-weight: 900; line-height: 1.35; overflow-wrap: anywhere; }
   .evidence-hint { grid-column: 1 / -1; font-size: 9px; color: var(--qx-text-faint); }
 
   .prediction-panel { border: 1.5px solid var(--qx-accent); border-radius: 12px; padding: 11px; background: var(--qx-accent-soft); display: grid; gap: 7px; }
@@ -658,5 +666,5 @@
   .reward-skills span.earned { color: var(--qx-green-text); border-color: var(--qx-green); }
   .reveal-actions { width: 100%; display: grid; gap: 7px; }
 
-  @media (max-width: 360px) { h2 { font-size: 19px; } .probe-panel { grid-template-columns: 1fr; } .pred-btns { grid-template-columns: 1fr; } }
+  @media (max-width: 360px) { h2 { font-size: 19px; } .probe-panel, .evidence-panel { grid-template-columns: 1fr; } .pred-btns { grid-template-columns: 1fr; } }
 </style>
