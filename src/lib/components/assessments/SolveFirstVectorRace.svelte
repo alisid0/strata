@@ -1,13 +1,6 @@
 <script>
-  // Vector Racer — a Solve First vectors game.
-  //
-  // The car sits at a grid point with a VELOCITY vector. Each turn it will coast
-  // by that velocity (a ghost shows where). You steer by adding a small
-  // ACCELERATION nudge: new velocity = old velocity + nudge, and the car jumps
-  // by the new velocity. Velocity carries over — so you can't stop on a dime,
-  // you plan the racing line. Three tracks (sprint / bend / hairpin) make the
-  // momentum bite. Only at the end is it named: vectors, velocity + acceleration,
-  // tip-to-tail addition. Same contract as the other arcade discoveries.
+  // Vector Racer — discover vector addition by changing a velocity vector.
+  // Each turn is deliberate: choose Δv, inspect the sum, then move.
   import ArcadeShell from './ArcadeShell.svelte';
   import SolveFirstPause from './SolveFirstPause.svelte';
   import { playAward, playBonus } from '../../sfx.js';
@@ -25,47 +18,78 @@
     { name: 'Sprint', start: [1, 5], finishPt: [13, 5],
       onTrack: (x, y) => y >= 3 && y <= 7 && x >= 1 && x <= 13,
       isFinish: (x, y) => x >= 13 && y >= 3 && y <= 7,
-      blurb: 'Reach the flag. Tap a dot to set the car\'s next velocity — build speed, then coast in.' },
+      blurb: 'Reach the flag. Choose a change vector, inspect the sum, then move by the resulting velocity.' },
     { name: 'The bend', start: [1, 8], finishPt: [7, 1],
       onTrack: (x, y) => (y >= 6 && y <= 10 && x >= 1 && x <= 9) || (x >= 5 && x <= 9 && y >= 1 && y <= 10),
       isFinish: (x, y) => y <= 1 && x >= 5 && x <= 9,
-      blurb: 'A right-angle bend. Too much speed into the corner and every move overshoots — ease off first.' },
+      blurb: 'Turn the corner by changing the across and down components one step at a time.' },
+    { name: 'Diagonal climb', start: [1, 9], finishPt: [13, 2],
+      onTrack: (x, y) => x >= 1 && x <= 13 && Math.abs(y - (9.6 - x * 0.58)) <= 2,
+      isFinish: (x, y) => x >= 13 && y >= 0 && y <= 4,
+      blurb: 'Build both components together. A diagonal velocity changes across and down on the same move.' },
+    { name: 'The chicane', start: [1, 8], finishPt: [13, 3],
+      onTrack: (x, y) =>
+        (x >= 1 && x <= 5 && y >= 6 && y <= 10) ||
+        (x >= 4 && x <= 9 && y >= 3 && y <= 7) ||
+        (x >= 8 && x <= 13 && y >= 1 && y <= 5),
+      isFinish: (x, y) => x >= 13 && y >= 1 && y <= 5,
+      blurb: 'Link two direction changes. Read the next velocity before committing to each bend.' },
     { name: 'The hairpin', start: [1, 8], finishPt: [1, 3],
       onTrack: (x, y) => (y >= 7 && y <= 9 && x >= 1 && x <= 13) || (x >= 10 && x <= 13 && y >= 2 && y <= 9) || (y >= 2 && y <= 4 && x >= 1 && x <= 13),
       isFinish: (x, y) => x <= 1 && y >= 2 && y <= 4,
-      blurb: 'A full U. Down the straight, up the side, back along the top. Momentum is everything.' }
+      blurb: 'Reverse direction by repeatedly adding small change vectors. Predict each new velocity before moving.' }
   ];
 
   let levelIx = 0;
   let cx = 1, cy = 5, vx = 0, vy = 0;
   let phase = 'play';       // play | predict | concept
 
-  // Predict beat: momentum in numbers, no track to lean on.
-  const PREDICT = {
-    intro: 'Pit-lane check. The car is coasting at velocity (4, 0). Each turn you may nudge by at most 1, and you brake as hard as possible every turn.',
-    q: 'How many turns until the car is fully stopped?',
-    options: [
-      { label: '1 turn — just stop', ok: false },
-      { label: '4 turns — speed sheds 1 per turn', ok: true },
-      { label: '8 turns — braking halves it each turn', ok: false }
-    ],
-    hint: 'Each turn: new velocity = old velocity + nudge. The biggest brake nudge is −1, so 4 → 3 → 2 → 1 → 0. Momentum only drains one notch at a time.'
-  };
-  let predictTries = 0;
-  let predictWrong = false;
+  // Transfer beat: add vectors without relying on the track.
+  const EXERCISES = [
+    {
+      intro: 'Current velocity (3, 1), change vector Δv = (−1, 1).',
+      q: 'What is the next velocity?',
+      options: [{ label: '(2, 2)', ok: true }, { label: '(4, 0)', ok: false }, { label: '(−3, 1)', ok: false }],
+      hint: 'Add matching components: (3 + −1, 1 + 1) = (2, 2).'
+    },
+    {
+      intro: 'Current velocity (−2, 3), change vector Δv = (1, −1).',
+      q: 'What is the next velocity?',
+      options: [{ label: '(−1, 2)', ok: true }, { label: '(−3, 4)', ok: false }, { label: '(2, −3)', ok: false }],
+      hint: 'Across: −2 + 1 = −1. Down: 3 + −1 = 2.'
+    },
+    {
+      intro: 'Current velocity (0, −2), change vector Δv = (−1, 1).',
+      q: 'What is the next velocity?',
+      options: [{ label: '(−1, −1)', ok: true }, { label: '(1, −3)', ok: false }, { label: '(0, −1)', ok: false }],
+      hint: 'A zero component still participates: 0 + −1 = −1, and −2 + 1 = −1.'
+    },
+    {
+      intro: 'Current velocity (2, −1). You want the next velocity to be (0, 0).',
+      q: 'Which change vector Δv will do that?',
+      options: [{ label: '(−2, 1)', ok: true }, { label: '(2, −1)', ok: false }, { label: '(−1, 0)', ok: false }],
+      hint: 'Find what cancels each component: 2 + −2 = 0 and −1 + 1 = 0.'
+    }
+  ];
+  let exerciseIx = 0;
+  let exerciseTries = 0;
+  let exerciseWrong = false;
   let moves = 0, crashes = 0, cleared = 0;
   let arcadeScore = 0, combo = 0;
   let crashFlash = false;
   let trackCleared = false;
+  let selected = null;
   let recorded = false;
 
   $: level = LEVELS[levelIx];
+  $: exercise = EXERCISES[exerciseIx];
   $: reward = Math.min(15, 8 + cleared * 2 + (crashes === 0 ? 1 : 0));
 
   function loadLevel() {
     const s = LEVELS[levelIx].start;
     cx = s[0]; cy = s[1]; vx = 0; vy = 0; moves = 0; crashFlash = false;
     trackCleared = false;
+    selected = null;
   }
 
   function segOK(x0, y0, x1, y1) {
@@ -91,20 +115,28 @@
   $: candidates = (() => {
     const list = [];
     for (let ay = -1; ay <= 1; ay++) for (let ax = -1; ax <= 1; ax++) {
-      const nx = cx + vx + ax, ny = cy + vy + ay;
+      const nextVx = vx + ax, nextVy = vy + ay;
+      const nx = cx + nextVx, ny = cy + nextVy;
       const inGrid = nx >= 0 && nx < GW && ny >= 0 && ny < GH;
       const fin = segFinish(cx, cy, nx, ny);
       const ok = inGrid && (fin || segOK(cx, cy, nx, ny));
       // display clamped into the grid so a fast winning shot never renders
       // off-screen and unclickable; win logic still uses the true nx/ny.
       const dispX = Math.max(0, Math.min(GW - 1, nx)), dispY = Math.max(0, Math.min(GH - 1, ny));
-      list.push({ ax, ay, nx, ny, dispX, dispY, ok, fin, coast: ax === 0 && ay === 0 });
+      list.push({ ax, ay, nextVx, nextVy, nx, ny, dispX, dispY, ok, fin, coast: ax === 0 && ay === 0 });
     }
     return list;
   })();
 
-  function move(c) {
+  function choose(c) {
     if (phase !== 'play' || trackCleared) return;
+    selected = c;
+  }
+
+  function move() {
+    if (phase !== 'play' || trackCleared) return;
+    const c = selected;
+    if (!c) return;
     moves += 1;
     if (c.fin) {
       const finalVx = c.nx - cx;
@@ -117,19 +149,21 @@
       vx = finalVx;
       vy = finalVy;
       trackCleared = true;
+      selected = null;
     } else if (!c.ok) {
       crashes += 1; combo = 0; crashFlash = true;
       setTimeout(() => { crashFlash = false; }, 320);
       loadLevel();
     } else {
       vx = c.nx - cx; vy = c.ny - cy; cx = c.nx; cy = c.ny;
+      selected = null;
     }
   }
 
   function moveByKey(event, candidate) {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();
-    move(candidate);
+    choose(candidate);
   }
 
   function continueAfterTrack() {
@@ -140,15 +174,22 @@
     } else {
       trackCleared = false;
       phase = 'predict';
-      predictWrong = false;
+      exerciseIx = 0;
+      exerciseTries = 0;
+      exerciseWrong = false;
     }
   }
 
   function answerPredict(opt) {
-    predictTries += 1;
-    if (!opt.ok) { predictWrong = true; combo = 0; return; }
-    arcadeScore += Math.max(40, 180 - (predictTries - 1) * 70);
+    exerciseTries += 1;
+    if (!opt.ok) { exerciseWrong = true; combo = 0; return; }
+    arcadeScore += Math.max(40, 140 - (exerciseTries - 1) * 35);
     try { playBonus(); } catch (_) {}
+    if (exerciseIx < EXERCISES.length - 1) {
+      exerciseIx += 1;
+      exerciseWrong = false;
+      return;
+    }
     phase = 'concept';
     finish();
   }
@@ -159,8 +200,8 @@
     onDone({
       id: config.id, reward, arcadeScore, cleared,
       patternFound: true, compared: true,
-      usedHint: predictTries > 1,
-      transferFirstTry: predictTries === 1 && crashes === 0
+      usedHint: exerciseTries > EXERCISES.length,
+      transferFirstTry: exerciseTries === EXERCISES.length && crashes === 0
     });
   }
 </script>
@@ -176,31 +217,35 @@
 >
   {#if phase === 'predict'}
     <div class="reveal">
-      <span class="rv-eyebrow">Final check — call it first</span>
-      <h2>Momentum, in numbers.</h2>
-      <p>{PREDICT.intro}</p>
-      <p><b>{PREDICT.q}</b></p>
+      <span class="rv-eyebrow">Vector exercise {exerciseIx + 1} of {EXERCISES.length}</span>
+      <h2>{exerciseIx === EXERCISES.length - 1 ? 'Find the missing change.' : 'Add the two vectors.'}</h2>
+      <div class="exercise-rail" aria-label={`Exercise ${exerciseIx + 1} of ${EXERCISES.length}`}>
+        {#each EXERCISES as _, i}<span class:done={i < exerciseIx} class:active={i === exerciseIx}></span>{/each}
+      </div>
+      <p>{exercise.intro}</p>
+      <p><b>{exercise.q}</b></p>
       <div class="topts">
-        {#each PREDICT.options as opt (opt.label)}
+        {#each exercise.options as opt (opt.label)}
           <button class="topt" on:click={() => answerPredict(opt)}>{opt.label}</button>
         {/each}
       </div>
-      {#if predictWrong}<p class="twrong">{PREDICT.hint}</p>{/if}
+      {#if exerciseWrong}<p class="twrong">{exercise.hint}</p>{/if}
     </div>
 
   {:else if phase === 'concept'}
     <div class="reveal">
       <span class="rv-eyebrow">Concept uncovered</span>
-      <h2>You were racing on vectors.</h2>
-      <p>The car's <b>velocity</b> is a vector — it carries over every turn (that's momentum).
-        You steered by adding an <b>acceleration</b> nudge: <b>new velocity = old velocity + nudge</b>,
-        joined tip-to-tail. Position just moves by the velocity vector each turn.</p>
-      <div class="formula">v<sub>new</sub> = v<sub>old</sub> + a &nbsp;·&nbsp; pos += v<sub>new</sub></div>
+      <h2>You steered by vector addition.</h2>
+      <p>A velocity such as <b>(3, 1)</b> means move 3 grid spaces across and 1 down.
+        You steered by adding a small <b>change vector Δv</b>. Across adds to across; down adds to down.
+        The resulting velocity determined the car's next move.</p>
+      <div class="formula">next velocity = current velocity + Δv</div>
       <div class="rv-reward">
         <div><span>Discovery distinction</span><strong>{config.rewardLabel}</strong></div>
         <span class="rv-w">+{reward} W</span>
       </div>
-      <div class="rv-skills"><span>Vector addition</span><span>Velocity & acceleration</span><span>Momentum</span></div>
+      <div class="rv-skills"><span>Vector addition</span><span>Components</span><span>Velocity vectors</span></div>
+      <p class="completion-note">Five tracks cleared · Four vector exercises completed</p>
       <button class="rv-exit" on:click={onExit}>Return to workshops</button>
     </div>
 
@@ -222,9 +267,19 @@
         {#if vx !== 0 || vy !== 0}
           <line class="vel" x1={cx2(cx)} y1={cy2(cy)} x2={cx2(cx + vx)} y2={cy2(cy + vy)} marker-end="url(#vhead)" />
         {/if}
+        {#if selected}
+          <line class="delta" x1={cx2(cx + vx)} y1={cy2(cy + vy)} x2={cx2(cx + selected.nextVx)} y2={cy2(cy + selected.nextVy)} marker-end="url(#dhead)" />
+          <line class="result" x1={cx2(cx)} y1={cy2(cy)} x2={cx2(selected.dispX)} y2={cy2(selected.dispY)} marker-end="url(#rhead)" />
+        {/if}
         <defs>
           <marker id="vhead" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
             <path d="M0,0 L7,3.5 L0,7 Z" fill="var(--qx-accent)" />
+          </marker>
+          <marker id="dhead" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 Z" fill="var(--qx-pink)" />
+          </marker>
+          <marker id="rhead" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 Z" fill="var(--qx-green)" />
           </marker>
         </defs>
 
@@ -234,7 +289,8 @@
             <circle class="cand" class:fin={c.fin} class:crash={!c.ok && !c.fin} class:coast={c.coast}
               data-cx={c.nx} data-cy={c.ny} data-ok={c.ok || c.fin}
               cx={cx2(c.dispX)} cy={cy2(c.dispY)} r={c.coast ? 5 : 7}
-              on:click={() => move(c)} on:keydown={(event) => moveByKey(event, c)} role="button" tabindex="0" />
+              class:selected={selected === c}
+              on:click={() => choose(c)} on:keydown={(event) => moveByKey(event, c)} role="button" tabindex="0" />
           {/each}
         {/if}
 
@@ -243,11 +299,26 @@
       </svg>
     </div>
 
-    <p class="hint">Velocity <b>({vx}, {vy})</b> — tap a dot to nudge it. The faint ring is "coast" (no nudge).</p>
+    <div class="vector-console">
+      <div class="equation" aria-live="polite">
+        <span>Current <b>({vx}, {vy})</b></span><i>+</i>
+        <span>Δv <b>{selected ? `(${selected.ax}, ${selected.ay})` : '(choose)'}</b></span><i>=</i>
+        <span>Next <b>{selected ? `(${selected.nextVx}, ${selected.nextVy})` : '(?, ?)'}</b></span>
+      </div>
+      <div class="changes" aria-label="Choose a change vector">
+        {#each candidates as c}
+          <button class:selected={selected === c} on:click={() => choose(c)}>({c.ax}, {c.ay})</button>
+        {/each}
+      </div>
+      <button class="move-btn" disabled={!selected} on:click={move}>
+        {selected ? `Move by (${selected.nextVx}, ${selected.nextVy})` : 'Choose Δv'}
+      </button>
+    </div>
+    <p class="hint"><b>Orange</b> current + <b>pink</b> change = <b>green</b> next velocity.</p>
     {#if trackCleared}
       <SolveFirstPause
         title="The finish line is crossed"
-        message="Leave the final velocity on screen for a moment. The car did not move straight to your tap: its old velocity carried forward, then your nudge changed it."
+        message="The orange and pink vectors added tip-to-tail to make the green velocity vector."
         actionLabel={levelIx < LEVELS.length - 1 ? 'Continue to the next track' : 'Continue to the final check'}
         onContinue={continueAfterTrack}
       />
@@ -263,13 +334,30 @@
   .road { fill: var(--qx-surface); }
   .road.fin { fill: var(--qx-green-soft); }
   .vel { stroke: var(--qx-accent); stroke-width: 2.5; opacity: 0.75; }
+  .delta { stroke: var(--qx-pink); stroke-width: 2.5; }
+  .result { stroke: var(--qx-green); stroke-width: 2.5; stroke-dasharray: 4 3; }
   .cand { fill: var(--qx-accent-soft); stroke: var(--qx-accent); stroke-width: 2; cursor: pointer; pointer-events: all; }
+  .cand.selected { fill: var(--qx-green-soft); stroke: var(--qx-green); stroke-width: 3; }
   .cand.coast { fill: var(--qx-surface-3); stroke: var(--qx-text-faint); stroke-dasharray: 3 3; }
   .cand.fin { fill: var(--qx-green); stroke: var(--qx-green-text); }
   .cand.crash { fill: var(--qx-surface-2); stroke: var(--qx-border-2); opacity: 0.4; }
   .car { fill: var(--qx-text); stroke: var(--qx-surface); stroke-width: 2; }
   .hint { font-size: 12px; font-weight: 600; color: var(--qx-text-dim); margin: 10px 0 0; text-align: center; }
   .hint b { color: var(--qx-text); font-family: ui-monospace, Menlo, monospace; }
+  .hint b:nth-of-type(1) { color: var(--qx-accent-text); }
+  .hint b:nth-of-type(2) { color: var(--qx-pink-text); }
+  .hint b:nth-of-type(3) { color: var(--qx-green-text); }
+
+  .vector-console { display: grid; gap: 8px; margin-top: 9px; }
+  .equation { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 5px; padding: 9px; border: 1px solid var(--qx-border); border-radius: 10px; background: var(--qx-surface-2); text-align: center; }
+  .equation span { color: var(--qx-text-dim); font-size: 9px; }
+  .equation b { display: block; margin-top: 2px; color: var(--qx-text); font: 850 12px ui-monospace, Menlo, monospace; }
+  .equation i { color: var(--qx-text-faint); font-style: normal; font-weight: 900; }
+  .changes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+  .changes button { min-height: 34px; border: 1px solid var(--qx-border); border-radius: 8px; background: var(--qx-surface); color: var(--qx-text-dim); font: 800 11px ui-monospace, Menlo, monospace; cursor: pointer; }
+  .changes button.selected { border-color: var(--qx-pink); background: var(--qx-accent-soft); color: var(--qx-text); }
+  .move-btn { min-height: 44px; border: 0; border-radius: 999px; background: var(--qx-green); color: var(--qx-bg); font: 900 13px var(--qx-font); cursor: pointer; }
+  .move-btn:disabled { opacity: .42; cursor: default; }
 
   .topts { width: 100%; display: grid; gap: 8px; }
   .topt {
@@ -279,8 +367,12 @@
   }
   .topt:hover { border-color: var(--qx-accent); }
   .twrong { color: var(--qx-danger-text); font-size: 12.5px; font-weight: 700; }
+  .exercise-rail { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .exercise-rail span { height: 5px; border-radius: 999px; background: var(--qx-surface-3); }
+  .exercise-rail span.active { background: var(--qx-accent); }
+  .exercise-rail span.done { background: var(--qx-green); }
 
-  .reveal { display: flex; flex-direction: column; gap: 12px; text-align: center; align-items: center; padding: 6px 2px; }
+  .reveal { display: flex; flex-direction: column; gap: 12px; text-align: center; align-items: center; justify-content: center; min-height: clamp(480px, calc(100dvh - 230px), 680px); box-sizing: border-box; padding: 18px 2px 32px; }
   .rv-eyebrow { font-size: 10px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: var(--qx-accent-text); }
   .reveal h2 { font-size: 21px; font-weight: 950; color: var(--qx-text); margin: 0; line-height: 1.15; }
   .reveal p { font-size: 13.5px; font-weight: 600; color: var(--qx-text-dim); line-height: 1.5; margin: 0; }
@@ -293,4 +385,6 @@
   .rv-skills { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
   .rv-skills span { font-size: 11px; font-weight: 700; color: var(--qx-text-dim); background: var(--qx-surface-2); border: 1px solid var(--qx-border); border-radius: 999px; padding: 4px 11px; }
   .rv-exit { margin-top: 4px; border: none; border-radius: 999px; background: var(--qx-accent); color: #fff; font-family: var(--qx-font); font-size: 14px; font-weight: 850; min-height: 44px; padding: 0 28px; cursor: pointer; }
+  .completion-note { color: var(--qx-green-text) !important; font-size: 11px !important; font-weight: 800 !important; }
+  @media (max-height: 700px) { .reveal { min-height: 0; justify-content: flex-start; padding-top: 6px; } }
 </style>

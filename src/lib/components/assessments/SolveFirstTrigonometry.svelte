@@ -31,7 +31,9 @@
     rescues: [
       { x: 173, y: 100, note: 'Low and far out.' },
       { x: 100, y: 173, note: 'High on the rock face.' },
-      { x: 141, y: 141, note: 'Dead diagonal.' }
+      { x: 141, y: 141, note: 'Dead diagonal.' },
+      { x: 193, y: 52, note: 'Very low on the outer ledge.' },
+      { x: 52, y: 193, note: 'Almost directly above the base.' }
     ]
   };
   const M2 = {
@@ -51,13 +53,33 @@
           { label: '320 — the up-ratio holds', ok: true },
           { label: '400 — full length', ok: false }
         ]
+      },
+      {
+        theta: 45, L1: 140, L2: 280, ask: 'across', L3: 360,
+        options: [
+          { label: '180 — half the length', ok: false },
+          { label: '255 — the 0.71 ratio holds', ok: true },
+          { label: '360 — full length', ok: false }
+        ]
+      },
+      {
+        theta: 65, L1: 160, L2: 240, ask: 'up', L3: 300,
+        options: [
+          { label: '127 — that is the across side', ok: false },
+          { label: '272 — the 0.91 ratio holds', ok: true },
+          { label: '195 — copy the angle', ok: false }
+        ]
       }
     ]
   };
   const M3 = {
-    L: 250, theta: 37, tolDeg: 3,
-    target: { x: 200, y: 150 },
-    brief: 'Intel from the tower:\nUP-RATIO(37°) = 0.60\nACROSS-RATIO(37°) = 0.80\n\nA climber is stranded at across 200, up 150. Arm locked at 250. Storm inbound — set the angle and take the shot.'
+    tolDeg: 3,
+    rounds: [
+      { L: 250, theta: 37, target: { x: 200, y: 150 }, upRatio: '0.60', acrossRatio: '0.80' },
+      { L: 200, theta: 30, target: { x: 173, y: 100 }, upRatio: '0.50', acrossRatio: '0.87' },
+      { L: 300, theta: 53, target: { x: 181, y: 240 }, upRatio: '0.80', acrossRatio: '0.60' }
+    ],
+    brief: 'Use the tower’s UP and ACROSS ratios to set the angle before each rescue. Three climbers, three arm lengths, one ratio triangle each.'
   };
 
   // ---------- state ----------
@@ -77,7 +99,7 @@
   let commitTries = 0, commitWrong = false, commitFirstTries = 0;
 
   // mission 3 sub-state
-  let m3Shots = 0, m3Done = false;
+  let transferIx = 0, m3Shots = 0, m3Done = false, transferFirstTries = 0;
 
   let recorded = false;
   let pauseKind = '';
@@ -87,8 +109,9 @@
   $: up = L * Math.sin(rad(theta));
   $: tipX = BX + across;
   $: tipY = BY - up;
+  $: m3round = M3.rounds[transferIx];
   $: target = mission === 0 ? M1.rescues[rescueIx]
-    : mission === 2 ? M3.target
+    : mission === 2 ? m3round.target
     : null;
   $: m2round = M2.rounds[roundIx];
 
@@ -98,7 +121,7 @@
     { name: 'One Shot', text: M3.brief }
   ];
   const REVEALS = {
-    final: 'Those two ratios have names.\n\nUP ÷ LENGTH = SINE of the angle.\nACROSS ÷ LENGTH = COSINE of the angle.\n\nThey never cared about the arm — only the tilt.\nsin 37° = 0.60, cos 37° = 0.80. You already used them.'
+    final: 'Those two ratios have names.\n\nUP ÷ LENGTH = SINE of the angle.\nACROSS ÷ LENGTH = COSINE of the angle.\n\nThey never cared about the arm’s length — only its tilt. You used the same ratios to solve three different rescue triangles.'
   };
 
   function startMission(m) {
@@ -109,7 +132,15 @@
     theta = 45;
     if (m === 0) { L = M1.L; rescueIx = 0; logRows = []; }
     if (m === 1) { roundIx = 0; enterRound(0); }
-    if (m === 2) { L = M3.L; m3Shots = 0; m3Done = false; }
+    if (m === 2) { transferIx = 0; enterTransfer(0); }
+  }
+
+  function enterTransfer(ix) {
+    transferIx = ix;
+    L = M3.rounds[ix].L;
+    theta = 45;
+    m3Shots = 0;
+    m3Done = false;
   }
 
   function enterRound(ix) {
@@ -137,13 +168,14 @@
       pauseKind = 'rescue';
     } else if (mission === 2) {
       m3Shots += 1;
-      const hit = Math.abs(theta - M3.theta) <= M3.tolDeg;
+      const hit = Math.abs(theta - m3round.theta) <= M3.tolDeg;
       flash = hit ? 'hit' : 'miss';
       if (!hit) {
         setTimeout(() => { flash = null; }, 650);
         return;
       }
       m3Done = true;
+      if (m3Shots === 1) transferFirstTries += 1;
       score += m3Shots === 1 ? 300 : 120;
       try { playAward(); } catch (_) {}
       pauseKind = 'final';
@@ -208,6 +240,10 @@
     if (pauseKind === 'final') {
       pauseKind = '';
       flash = null;
+      if (transferIx < M3.rounds.length - 1) {
+        enterTransfer(transferIx + 1);
+        return;
+      }
       phase = 'reveal';
       finishGame();
     }
@@ -219,13 +255,13 @@
     try { playAward(); } catch (_) {}
     onDone({
       id: config.id,
-      reward: Math.min(15, 8 + commitFirstTries * 2 + (m3Shots === 1 ? 3 : 1)),
+      reward: Math.min(15, 7 + commitFirstTries + transferFirstTries),
       arcadeScore: score,
       levelsCleared: 3,
-      perfectLevels: commitFirstTries + (m3Shots === 1 ? 1 : 0),
+      perfectLevels: commitFirstTries + transferFirstTries,
       patternFound: true,
       compared: true,
-      transferFirstTry: m3Shots === 1,
+      transferFirstTry: transferFirstTries === M3.rounds.length,
       usedHint: commitTries > 1
     });
   }
@@ -234,6 +270,7 @@
     recorded = false;
     score = 0;
     commitFirstTries = 0;
+    transferFirstTries = 0;
     startMission(0);
   }
 
@@ -276,6 +313,7 @@
       <p class="pre" style="color:var(--qx-green-text)">{REVEALS.final}</p>
       <div class="formula">sin θ = up / length &nbsp;·&nbsp; cos θ = across / length</div>
       <div class="rewardbox"><div><span>Discovery</span><strong>{config.rewardLabel}</strong></div></div>
+      <p class="completion-note">Five angle rescues · Four ratio investigations · Three transfer rescues</p>
       <div class="stack">
         <button class="primary" on:click={() => { finishGame(); onExit(); }}>Return to workshops</button>
         <button class="ghost" on:click={restart}>Run it again</button>
@@ -363,7 +401,10 @@
       {/if}
 
     {:else}
-      <p class="tip">One shot counts. UP-RATIO(37°) = 0.60 · ACROSS-RATIO(37°) = 0.80 · arm locked at {M3.L}. Shots taken: {m3Shots}.</p>
+      <div class="transfer-progress" aria-label={`Transfer rescue ${transferIx + 1} of ${M3.rounds.length}`}>
+        {#each M3.rounds as _, i}<span class:done={i < transferIx} class:active={i === transferIx}></span>{/each}
+      </div>
+      <p class="tip">Rescue {transferIx + 1} of {M3.rounds.length}. UP-RATIO({m3round.theta}°) = {m3round.upRatio} · ACROSS-RATIO({m3round.theta}°) = {m3round.acrossRatio} · arm locked at {m3round.L}. Shots taken: {m3Shots}.</p>
       <div class="controls">
         <label class="ctl"><span>Arm angle · {Math.round(theta)}°</span>
           <input type="range" min="0" max="90" step="1" bind:value={theta} aria-label="Arm angle" disabled={!!pauseKind} /></label>
@@ -383,14 +424,14 @@
             ? `Length changed, but across ÷ length stayed ${m2Rows[m2Rows.length - 1].acrossRatio} and up ÷ length stayed ${m2Rows[m2Rows.length - 1].upRatio}. The angle is holding both ratios steady.`
             : pauseKind === 'prediction'
               ? `The ${m2round.theta}° angle preserved its ratio at a new length. The measurement followed ratio × length, exactly as your answer predicted.`
-              : `A 0.80 across-ratio and 0.60 up-ratio placed a 250-unit arm at across 200, up 150. The screen now shows the complete triangle you built.`}
+              : `The ${m3round.acrossRatio} across-ratio and ${m3round.upRatio} up-ratio placed a ${m3round.L}-unit arm at across ${m3round.target.x}, up ${m3round.target.y}. The complete ratio triangle is still visible.`}
         actionLabel={pauseKind === 'rescue'
           ? rescueIx < M1.rescues.length - 1 ? 'Continue to the next climber' : 'Continue to the ratio test'
           : pauseKind === 'measure'
             ? m2Stage === 0 ? 'Continue to the longer arm' : 'Make a prediction'
             : pauseKind === 'prediction'
               ? roundIx < M2.rounds.length - 1 ? 'Continue to the next angle' : 'Continue to the final rescue'
-              : 'Reveal the concept'}
+              : transferIx < M3.rounds.length - 1 ? 'Continue to the next ratio rescue' : 'Reveal the concept'}
         onContinue={continueAfterResult}
       />
     {/if}
@@ -422,6 +463,10 @@
 
   .tip { color: var(--qx-text-dim); font-size: 12.5px; font-weight: 650; line-height: 1.4; margin: 9px 0 0; }
   .tip b { color: var(--qx-text); }
+  .transfer-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 9px; }
+  .transfer-progress span { height: 5px; border-radius: 999px; background: var(--qx-surface-3); }
+  .transfer-progress span.active { background: var(--qx-accent); }
+  .transfer-progress span.done { background: var(--qx-green); }
   .log { margin-top: 8px; border: 1px solid var(--qx-border); border-radius: 10px; overflow: hidden; }
   .lrow { display: grid; grid-template-columns: 1fr 1fr 1fr 30px; gap: 4px; padding: 5px 10px; font-size: 12px; font-weight: 700; color: var(--qx-text); font-variant-numeric: tabular-nums; }
   .lrow.head { background: var(--qx-surface-2); color: var(--qx-text-faint); font-size: 10px; text-transform: uppercase; letter-spacing: .05em; }
@@ -432,18 +477,19 @@
   .ctl span { color: var(--qx-text-dim); font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
   .ctl input { width: 100%; accent-color: var(--qx-accent); min-height: 28px; }
 
-  .panel { display: flex; flex-direction: column; gap: 10px; padding: 4px 2px; }
+  .panel { width: 100%; min-width: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; padding: 4px 2px; }
   .panel.center { align-items: center; text-align: center; }
   .eyebrow { color: var(--qx-accent-text); font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
   h2 { font-size: 20px; line-height: 1.15; margin: 2px 0 4px; font-weight: 950; }
   .panel p { color: var(--qx-text-dim); font-size: 13px; line-height: 1.5; margin: 0; }
   .panel p b { color: var(--qx-text); }
   .pre { white-space: pre-line; }
-  .formula { font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 800; color: var(--qx-text); border: 1.5px solid var(--qx-accent); border-radius: 12px; background: var(--qx-accent-soft); padding: 10px 12px; }
-  .rewardbox { width: 100%; border: 1.5px solid var(--qx-green); border-radius: 14px; background: var(--qx-green-soft); padding: 12px; text-align: left; }
+  .formula { width: 100%; min-width: 0; box-sizing: border-box; font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 800; line-height: 1.4; overflow-wrap: anywhere; color: var(--qx-text); border: 1.5px solid var(--qx-accent); border-radius: 12px; background: var(--qx-accent-soft); padding: 10px 12px; }
+  .rewardbox { width: 100%; min-width: 0; box-sizing: border-box; border: 1.5px solid var(--qx-green); border-radius: 14px; background: var(--qx-green-soft); padding: 12px; text-align: left; }
   .rewardbox span { font-size: 9px; color: var(--qx-green-text); font-weight: 900; text-transform: uppercase; }
   .rewardbox strong { display: block; font-size: 15px; }
-  .stack { width: 100%; display: grid; gap: 7px; }
+  .completion-note { color: var(--qx-green-text) !important; font-size: 11px !important; font-weight: 800 !important; }
+  .stack { width: 100%; min-width: 0; box-sizing: border-box; display: grid; gap: 7px; }
   .opts { display: grid; gap: 8px; }
   .opt { border: 1.5px solid var(--qx-border-2); border-radius: 12px; background: var(--qx-surface); color: var(--qx-text); font-family: var(--qx-font); font-size: 13px; font-weight: 750; min-height: 46px; padding: 8px 14px; cursor: pointer; text-align: left; }
   .opt:hover { border-color: var(--qx-accent); }

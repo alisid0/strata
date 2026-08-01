@@ -198,6 +198,10 @@
 
   @media (max-width: 520px) {
     .w-toast-slot { bottom: 92px; }
-    .w-toast { max-width: calc(100vw - 28px); }
+    .w-toast { max-width: calc(100vw - 28px); padding-block: 7px; border-radius: 13px; }
+    .w-toast.bonus { min-width: 174px; padding: 8px 14px 8px 9px; }
+    .w-toast.bonus .w-medallion { width: 36px; height: 36px; flex-basis: 36px; }
+    .w-toast.bonus .w-copy strong { font-size: 19px; }
+    .w-copy small { font-size: 8px; line-height: 1.05; }
   }
 </style>

@@ -249,8 +249,11 @@
           {/if}
         </div>
 
-        {#if tankLevel !== 1000 && testedValves.size === 3}
-          <button class="reset-link" on:click={resetCalibration}>Reset the tank and use your evidence</button>
+        {#if tankLevel > 1000}
+          <div class="error-note">The tank is above the target. Reset it, then use the readings you collected to plan the next run.</div>
+          <button class="reset-link reset-visible" on:click={resetCalibration}>Reset tank to 400 L</button>
+        {:else if tankLevel !== 1000 && testedValves.size === 3}
+          <button class="reset-link reset-visible" on:click={resetCalibration}>Reset the tank and use your evidence</button>
         {/if}
         {#if calibrationReady}<div class="success-note">Target hit. Each valve number predicted the one-minute change.</div>{/if}
         <button class="primary" disabled={!calibrationReady} on:click={() => phase = 'compare'}>
@@ -506,6 +509,7 @@
   .evidence-strip b { color: var(--qx-green-text); }
   .evidence-strip > small { margin: auto; color: var(--qx-text-faint); }
   .reset-link, .hint-link { border: none; background: none; color: var(--qx-text-faint); font-family: var(--qx-font); font-size: 11px; font-weight: 800; cursor: pointer; min-height: 32px; }
+  .reset-visible { width: 100%; min-height: 44px; border: 1.5px solid var(--qx-border-2); border-radius: 999px; background: var(--qx-surface); color: var(--qx-text); }
   .success-note, .error-note { border-radius: 10px; padding: 9px 11px; font-size: 11px; line-height: 1.4; }
   .success-note { color: var(--qx-green-text); background: var(--qx-green-soft); }
   .error-note { color: var(--qx-danger-text); background: var(--qx-danger-soft); }
