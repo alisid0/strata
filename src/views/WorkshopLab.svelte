@@ -608,7 +608,7 @@
   const pairedJourney = (moduleId) =>
     pairedJourneys.find((journey) => journey.moduleId === moduleId);
   const pairedLearnTitle = (item) =>
-    TRACKS[item?.track]?.modules?.find((module) => module.id === item?.moduleId)?.title || 'Learn First';
+    TRACKS[item?.track]?.modules?.find((module) => module.id === item?.moduleId)?.title || null;
   $: solveFirstCompleted = ALL_SOLVE_FIRST.filter((item) => discoveryDone(item.id)).length;
   $: subjectSolveFirstCompleted = browseSolveFirst.filter((item) => discoveryDone(item.id)).length;
   $: onRunningChange?.(running);
@@ -839,7 +839,7 @@
               >
                 <span class="solve-batch-number">{String(index + 1).padStart(2, '0')}</span>
                 <span class="solve-batch-copy">
-                  <small>Pairs with {pairedLearnTitle(item)}</small>
+                  <small>{pairedLearnTitle(item) ? `Pairs with ${pairedLearnTitle(item)}` : (item.eyebrow || 'No lesson first')}</small>
                   <strong>{item.title}</strong>
                 </span>
                 <span class="solve-batch-state">

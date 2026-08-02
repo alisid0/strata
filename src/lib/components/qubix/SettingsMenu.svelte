@@ -27,7 +27,18 @@
     onClose();
     onNavigate('auth');
   }
+
+  // Escape closes the innermost open dialog first, then the settings sheet.
+  // Only acts when the settings sheet or a child dialog is open.
+  function handleKeydown(e) {
+    if (e.key !== 'Escape' || !open) return;
+    if (accountDataOpen) { accountDataOpen = false; return; }
+    if (reportOpen) { reportOpen = false; return; }
+    onClose();
+  }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if open}
   <div class="menu-overlay" on:click={onClose} role="presentation">

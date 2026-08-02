@@ -737,7 +737,7 @@ function createProgressStore() {
       const masteredOnce = hasQuiz && !!q.masteredOnceAt;
       const masteredTwice = hasQuiz && !!q.recalledMasteredTwiceAt;
 
-      let state = 'wandered', label = 'Wandered';
+      let state = 'wandered', label = 'In progress';
       if (allRead) { state = 'checked'; label = 'Checked'; }
       if (wellRead) { state = 'well_read'; label = 'Well read'; }
       if (recalled) { state = 'recalled'; label = 'Recalled'; }
