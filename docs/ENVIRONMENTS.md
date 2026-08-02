@@ -57,6 +57,42 @@ pnpm run build:production    # production build + SEO pages
 pnpm run dev:production      # explicit production connection; use carefully
 ```
 
+## Which URL talks to which database (verified 2026-08-02)
+
+| Surface | URL | Supabase project |
+| --- | --- | --- |
+| Production app | `strata-nine-pi.vercel.app` | `wmetdmfsniqrshuaoodc` (prod) |
+| Staging app | `qubix-staging.vercel.app` | `atmmfkhjsdqqwnhqifxm` (staging) |
+| Local `pnpm run dev` | `http://localhost:8000` | `atmmfkhjsdqqwnhqifxm` (staging) |
+| Content scripts (CLI) | n/a | whatever `.env.local`'s `SUPABASE_URL` points at |
+
+Only `pnpm run deploy` changes the production app; a `git push` changes nothing
+live (see `RELEASE-MODEL.md`). Local dev shows **staging** data, not what
+production users see.
+
+## Node scripts (server-side env)
+
+The content-pipeline scripts in `scripts/` (ingest, sync, audio generation,
+progress reports) do **not** use the Vite `VITE_*` variables. They read
+server-side secrets from `.env.local` and are run with an explicit env file:
+
+```bash
+node --env-file=.env.local scripts/ingest-bbs.mjs
+```
+
+Required in `.env.local` (see `.env.local.example`):
+
+- `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` — the **service_role** key, which
+  bypasses RLS. Point these at the project you intend to write to (staging
+  `atmmfkhjsdqqwnhqifxm` or production `wmetdmfsniqrshuaoodc`), **never** the
+  retired `xzesbcrlnbesmvxmgotp` ref, and never the anon key.
+- `ELEVENLABS_API_KEY`, `GMAIL_APP_PASSWORD`, `REPORT_TO`, `DEEPSEEK_API_KEY` —
+  as individual scripts require.
+
+`.env.local` is gitignored and must never be committed. These scripts have **no
+`VITE_*` fallback**, so a stale `SUPABASE_URL` here silently points every content
+script at the wrong project — check it first if ingest/authoring misbehaves.
+
 ## Vercel setup
 
 For a dedicated staging project, add the following variables to both its
