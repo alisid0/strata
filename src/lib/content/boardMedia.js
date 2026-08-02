@@ -20,6 +20,7 @@ import { MATHS_MEDIA_80_EXPANSION } from './mathsMedia80Expansion.js';
  *   { type:'three', spec:{ kind:'lattice',  a, b, size } }
  *   { type:'three', spec:{ kind:'nucleus',  protons, neutrons, title } }
  *   { type:'three', spec:{ kind:'electric-attraction', title } }
+ *   { type:'three', spec:{ kind:'field', title, label, charges:[{x,y,z,q}] } }
  *   { type:'three', spec:{ kind:'isotopes', isotopes:[{label,protons,neutrons}] } }
  *   shape ∈ linear | bent | trigonal | pyramidal | tetrahedral
  */
@@ -404,7 +405,10 @@ export const BOARD_MEDIA = {
     3: { type: 'concept-explorer', spec: { kind: 'ratio', primary: 12, secondary: 3, primaryLabel: 'Energy transferred', secondaryLabel: 'Charge moved', resultLabel: 'Voltage', resultUnit: ' J/C', prompt: 'Return to energy per charge and test a new ratio.' } }
   },
   1330: { 0: { type: 'concept-explorer', spec: { kind: 'rate', primary: 20, secondary: 4, primaryLabel: 'Energy', primaryUnit: ' J', secondaryLabel: 'Time', secondaryUnit: ' s', resultLabel: 'Power', resultUnit: ' W', prompt: 'Transfer the same energy in less time to raise power.' } } },
-  1332: { 0: { type: 'concept-explorer', spec: { kind: 'capacitor', primary: 6, secondary: 4, prompt: 'Change voltage or capacitance and watch stored charge respond.' } } },
+  1332: {
+    0: { type: 'concept-explorer', spec: { kind: 'capacitor', primary: 6, secondary: 4, prompt: 'Change voltage or capacitance and watch stored charge respond.' } },
+    1: { type: 'three', spec: { kind: 'field', title: 'field between + and −', label: 'drag to orbit · separated charge fills space with a field' } }
+  },
   1345: { 0: { type: 'three', spec: { kind: 'thermal-lattice', title: 'stronger vibration increases average spacing' } } },
   1351: { 0: { type: 'concept-explorer', spec: { kind: 'gas', primary: 300, secondary: 9, prompt: 'Change temperature and volume to expose the gas-law pattern.' } } },
   1353: {

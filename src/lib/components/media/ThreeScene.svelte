@@ -61,7 +61,8 @@
     : spec?.kind === 'entropy-microstates' ? (spec.label || 'many arrangements are more probable')
     : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors')
     : spec?.kind === 'unit-circle' ? (spec.label || 'cos theta, sin theta')
-    : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary') : '';
+    : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary')
+    : spec?.kind === 'field' ? (spec.label || 'the field fills the space') : '';
 
   // Unit bond directions for each VSEPR geometry.
   function shapeDirs(shape) {
@@ -963,6 +964,103 @@
     return 2.6;
   }
 
+  function buildField(THREE, group) {
+    // Electric field of point charges (default: a dipole). Field lines and
+    // vectors fill 3D space, arrow length shows the inverse-square falloff, and
+    // a positive test charge rides a line from + to −.
+    const raw = (spec.charges && spec.charges.length) ? spec.charges
+      : [{ x: -1.5, q: 1 }, { x: 1.5, q: -1 }];
+    const charges = raw.map((c) => ({ pos: new THREE.Vector3(c.x || 0, c.y || 0, c.z || 0), q: c.q }));
+    const POS = 0xee9362, NEG = 0x7fb2e6, VEC = 0xc99a6a;
+
+    const fieldAt = (p) => {
+      const E = new THREE.Vector3();
+      for (const c of charges) {
+        const d = new THREE.Vector3().subVectors(p, c.pos);
+        const r = d.length();
+        if (r > 0.05) E.addScaledVector(d, c.q / (r * r * r));
+      }
+      return E;
+    };
+
+    for (const c of charges) {
+      const s = sphere(THREE, 0.34, c.q > 0 ? POS : NEG);
+      s.material.emissive = new THREE.Color(c.q > 0 ? 0x7a3418 : 0x1c3d63);
+      s.material.emissiveIntensity = 0.5;
+      s.position.copy(c.pos);
+      group.add(s);
+      const glyph = makeLabel(THREE, c.q > 0 ? '+' : '−', {
+        width: 120, height: 120, bg: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', fg: '#fff8ef', size: 96, scale: [0.55, 0.55, 1]
+      });
+      glyph.position.set(0, 0.52, 0);
+      s.add(glyph);
+    }
+
+    // Field lines seeded evenly around each + charge, integrated along E.
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xbfa07f, transparent: true, opacity: 0.5 });
+    for (const c of charges.filter((x) => x.q > 0)) {
+      const N = 16;
+      for (let i = 0; i < N; i++) {
+        const phi = Math.acos(1 - 2 * (i + 0.5) / N);
+        const th = Math.PI * (1 + Math.sqrt(5)) * i;
+        const dir = new THREE.Vector3(Math.sin(phi) * Math.cos(th), Math.sin(phi) * Math.sin(th), Math.cos(phi));
+        let p = c.pos.clone().addScaledVector(dir, 0.42);
+        const pts = [p.clone()];
+        for (let s = 0; s < 120; s++) {
+          const E = fieldAt(p); const len = E.length();
+          if (len < 1e-4) break;
+          p = p.clone().addScaledVector(E.multiplyScalar(1 / len), 0.11);
+          pts.push(p.clone());
+          if (p.length() > 4.6 || charges.some((n) => n.q < 0 && p.distanceTo(n.pos) < 0.36)) break;
+        }
+        if (pts.length > 2) group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+      }
+    }
+
+    // Field vectors on three planes; arrow length encodes |E| (inverse-square).
+    for (const zc of [-1, 0, 1]) {
+      for (let ix = -1; ix <= 1; ix++) {
+        for (let iy = -1; iy <= 1; iy++) {
+          const p = new THREE.Vector3(ix * 1.5, iy * 1.5, zc * 0.95);
+          if (charges.some((c) => p.distanceTo(c.pos) < 0.75)) continue;
+          const E = fieldAt(p); const len = E.length();
+          if (len < 0.015) continue;
+          const L = Math.min(0.6, 0.16 + len * 0.7);
+          group.add(new THREE.ArrowHelper(E.multiplyScalar(1 / len), p, L, VEC, L * 0.42, L * 0.28));
+        }
+      }
+    }
+
+    // A positive test charge riding a field line from + to −.
+    const src = charges.find((c) => c.q > 0) || charges[0];
+    const path = [];
+    let tp = src.pos.clone().add(new THREE.Vector3(0.42, 0.03, 0.02));
+    for (let s = 0; s < 260; s++) {
+      const E = fieldAt(tp); const len = E.length(); if (len < 1e-4) break;
+      tp = tp.clone().addScaledVector(E.multiplyScalar(1 / len), 0.05);
+      path.push(tp.clone());
+      if (tp.length() > 4.6 || charges.some((n) => n.q < 0 && tp.distanceTo(n.pos) < 0.34)) break;
+    }
+    const test = sphere(THREE, 0.135, 0xffd27a);
+    test.material.emissive = new THREE.Color(0x8a5a12); test.material.emissiveIntensity = 0.7;
+    if (path.length) test.position.copy(path[0]);
+    group.add(test);
+
+    const title = makeLabel(THREE, spec.title || 'the field fills the space', {
+      width: 560, height: 140, border: 'rgba(217, 160, 106, 0.7)', fg: '#f6efe4', size: 44, scale: [1.55, 0.4, 1]
+    });
+    title.position.set(0, -2.35, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      if (path.length > 1) {
+        const f = (t * 0.00013) % 1;
+        test.position.copy(path[Math.min(path.length - 1, Math.floor(f * path.length))]);
+      }
+    };
+    return 3.3;
+  }
+
   function buildIsotopes(THREE, group) {
     const isotopes = spec.isotopes || [
       { label: 'C-12', protons: 6, neutrons: 6 },
@@ -1771,6 +1869,7 @@
           : spec.kind === 'ai-pipeline' ? buildAiPipeline(THREE, group)
           : spec.kind === 'unit-circle' ? buildUnitCircle(THREE, group)
           : spec.kind === 'ray-optics' ? buildRayOptics(THREE, group)
+          : spec.kind === 'field' ? buildField(THREE, group)
           : buildMolecule(THREE, group);
 
         const presentationLocked = ['molecule-gallery', 'structure-comparison', 'carbon-architecture', 'proton-transfer', 'reaction-collisions', 'thermal-lattice', 'particle-states', 'entropy-microstates'].includes(spec.kind);
