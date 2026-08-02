@@ -183,7 +183,7 @@
     <div class="streak-chip">
       <QxIcon name="flame" size={14} />{streak}
     </div>
-    <button class="menu-btn icon-btn" on:click={() => onNavigate?.('snippetMode')} aria-label="Snippet mode" title="Snippet mode">
+    <button class="menu-btn icon-btn" on:click={() => onNavigate?.('snippetMode')} aria-label="Did you know" title="Bite-sized curiosities from across STEM">
       <QxIcon name="snippets" size={15} />
     </button>
     <button class="menu-btn" on:click={() => settingsOpen = true} aria-label="Settings">⋯</button>
