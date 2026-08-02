@@ -2198,6 +2198,9 @@
 
   .three-label {
     position: absolute; left: 10px; bottom: 9px;
+    /* leave room for the bottom-right "drag to rotate" hint so long captions
+       wrap upward instead of running underneath it */
+    max-width: calc(100% - 104px); line-height: 1.3;
     font-family: var(--qx-font); font-size: 12px; font-weight: 800; letter-spacing: 0.02em;
     color: #f4f1e9; background: rgba(0,0,0,0.35); border-radius: var(--qx-radius-pill); padding: 3px 10px;
     pointer-events: none;
