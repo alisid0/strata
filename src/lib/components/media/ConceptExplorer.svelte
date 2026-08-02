@@ -440,7 +440,10 @@
   input[type='range']::-webkit-slider-runnable-track{height:5px;border-radius:999px;background:linear-gradient(90deg,var(--qx-accent-soft),color-mix(in srgb,var(--qx-accent) 65%,var(--qx-border-2)));box-shadow:inset 0 1px 2px rgba(24,22,17,.14)}
   input[type='range']::-webkit-slider-thumb{appearance:none;width:18px;height:18px;margin-top:-6.5px;border:3px solid var(--qx-surface);border-radius:50%;background:var(--qx-accent);box-shadow:0 2px 8px rgba(24,22,17,.24);transition:transform .12s}
   input[type='range']:active::-webkit-slider-thumb{transform:scale(1.16)}input[type='range']:focus-visible{outline:3px solid var(--qx-accent-soft);outline-offset:3px;border-radius:999px}
-  .controls.two { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  /* container-responsive: two sliders side-by-side only when they actually fit,
+     else collapse to one column. Keyed to the grid's own width (auto-fit), not
+     the viewport, so a narrow content frame on a wide desktop still collapses. */
+  .controls.two { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:12px; }
   .accent-line,.curve,.tangent { fill:none; stroke:var(--qx-accent); stroke-width:4; stroke-linecap:round; filter:drop-shadow(0 2px 3px color-mix(in srgb,var(--qx-accent) 24%,transparent)); }.tangent{stroke:var(--qx-danger);stroke-width:2.5}.curve{stroke-width:3}
   marker path { fill:var(--qx-accent); }.axis,.tick,.boundary { stroke:var(--qx-border-2); stroke-width:1.5; }.guide{stroke:var(--qx-text-faint);stroke-width:1.5;stroke-dasharray:5 5}
   .point,.particle { fill:var(--qx-accent); filter:drop-shadow(0 3px 5px color-mix(in srgb,var(--qx-accent) 30%,transparent)); }.hole { fill:var(--qx-surface-2); stroke:var(--qx-accent); stroke-width:3; }.circle-outline{fill:color-mix(in srgb,var(--qx-accent-soft) 22%,transparent);stroke:var(--qx-border-2);stroke-width:2}.shape{fill:var(--qx-accent-soft);stroke:var(--qx-accent);stroke-width:3;filter:drop-shadow(0 8px 10px rgba(24,22,17,.1))}
