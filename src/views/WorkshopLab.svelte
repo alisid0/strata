@@ -1983,6 +1983,10 @@
       align-items: stretch;
       grid-template-columns: 1fr;
     }
+    /* .challenge-bar is display:flex, so it needs an explicit column direction
+       on mobile — grid-template-columns above is a no-op for it, which let
+       .mode-buttons (width:100%) crush the heading into a 1-char column. */
+    .challenge-bar { flex-direction: column; }
 
     .challenge-bar button {
       width: 100%;

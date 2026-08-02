@@ -90,14 +90,11 @@
         <span class="act-label">Practise</span>
         <span class="act-sub">Hands-on drills</span>
       </button>
-      <button
-        class="act act-sec"
-        class:muted={!dueForSubject.length}
-        on:click={goReview}
-        disabled={!dueForSubject.length}
-      >
-        <span class="act-label">Review{dueForSubject.length ? ` (${dueForSubject.length})` : ''}</span>
-        <span class="act-sub">{dueForSubject.length ? 'Due today' : 'Caught up ✓'}</span>
+      <!-- Review (spaced repetition) is not shipped yet — gated as "Coming soon".
+           goReview/dueForSubject are kept so re-enabling is a small revert. -->
+      <button class="act act-sec muted" disabled>
+        <span class="act-label">Review</span>
+        <span class="act-sub">Coming soon</span>
       </button>
     </div>
 
