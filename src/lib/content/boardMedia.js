@@ -20,6 +20,11 @@ import { MATHS_MEDIA_80_EXPANSION } from './mathsMedia80Expansion.js';
  *   { type:'three', spec:{ kind:'lattice',  a, b, size } }
  *   { type:'three', spec:{ kind:'nucleus',  protons, neutrons, title } }
  *   { type:'three', spec:{ kind:'electric-attraction', title } }
+ *   { type:'three', spec:{ kind:'field', title, label, charges:[{x,y,z,q}] } }
+ *   { type:'three', spec:{ kind:'vectors', mode:'add'|'cross'|'components', title, label } }
+ *   { type:'three', spec:{ kind:'waves', mode:'traveling'|'standing'|'interference', title, label } }
+ *   { type:'three', spec:{ kind:'solid-revolution', shape:'paraboloid'|'cone'|'sphere'|'vase', title, label } }
+ *     (no live BB is wired yet — awaiting a volumes-of-revolution / calculus board)
  *   { type:'three', spec:{ kind:'isotopes', isotopes:[{label,protons,neutrons}] } }
  *   shape ∈ linear | bent | trigonal | pyramidal | tetrahedral
  */
@@ -292,8 +297,12 @@ export const BOARD_MEDIA = {
     2: { type: 'concept-explorer', spec: { kind: 'force', primary: 10, secondary: 5, prompt: 'Use F = ma, then test a different force or mass.' } }
   },
   1159: { 0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 3, secondary: 2, prompt: 'A vector needs both size and direction.' } } },
-  1165: { 0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 4, secondary: 3, prompt: 'Build a resultant from horizontal and vertical parts.' } } },
+  1165: {
+    0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 4, secondary: 3, prompt: 'Build a resultant from horizontal and vertical parts.' } },
+    1: { type: 'three', spec: { kind: 'vectors', mode: 'add', title: 'a + b closes the parallelogram' } }
+  },
   1192: { 0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 2, secondary: -4, prompt: 'Combine sideways motion with downward motion.' } } },
+  1278: { 1: { type: 'three', spec: { kind: 'vectors', mode: 'components', title: 'v = vx + vy + vz' } } },
   1405: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.7, secondary: 0, prompt: 'Change the slope and watch the rate change.' } } },
   1420: { 0: { type: 'concept-explorer', spec: { kind: 'rate', primary: 12, secondary: 4, prompt: 'Change distance or time to change the rate.' } } },
 
@@ -313,7 +322,12 @@ export const BOARD_MEDIA = {
   1310: { 0: { type: 'concept-explorer', spec: { kind: 'matrix', primary: 25, prompt: 'Transform every corner with one rotation.' } } },
   1312: { 0: { type: 'concept-explorer', spec: { kind: 'matrix', primary: 90, prompt: 'Rotate the square through positive and negative angles.' } } },
   1380: { 0: { type: 'concept-explorer', spec: { kind: 'trig', primary: 45, prompt: 'Move between the special angles.' } } },
-  1382: { 0: { type: 'concept-explorer', spec: { kind: 'trig', primary: 0, prompt: 'Travel around the circle and watch sine and cosine repeat.' } } },
+  1382: {
+    0: { type: 'concept-explorer', spec: { kind: 'trig', primary: 0, prompt: 'Travel around the circle and watch sine and cosine repeat.' } },
+    1: { type: 'three', spec: { kind: 'waves', mode: 'traveling', title: 'the wave travels; the dot bobs in place' } },
+    2: { type: 'three', spec: { kind: 'waves', mode: 'standing', title: 'nodes stay still; antinodes swing' } },
+    3: { type: 'three', spec: { kind: 'waves', mode: 'interference', title: 'two sources interfere' } }
+  },
   1384: { 0: { type: 'concept-explorer', spec: { kind: 'trig', primary: 90, prompt: 'Sweep an angle around the circle.' } } },
   1385: { 0: { type: 'concept-explorer', spec: { kind: 'derivative', primary: 1, prompt: 'Move the point; the tangent reveals local slope.' } } },
   1386: { 0: { type: 'concept-explorer', spec: { kind: 'limit', primary: 150, prompt: 'Approach the missing point without landing on it.' } } },
@@ -404,7 +418,10 @@ export const BOARD_MEDIA = {
     3: { type: 'concept-explorer', spec: { kind: 'ratio', primary: 12, secondary: 3, primaryLabel: 'Energy transferred', secondaryLabel: 'Charge moved', resultLabel: 'Voltage', resultUnit: ' J/C', prompt: 'Return to energy per charge and test a new ratio.' } }
   },
   1330: { 0: { type: 'concept-explorer', spec: { kind: 'rate', primary: 20, secondary: 4, primaryLabel: 'Energy', primaryUnit: ' J', secondaryLabel: 'Time', secondaryUnit: ' s', resultLabel: 'Power', resultUnit: ' W', prompt: 'Transfer the same energy in less time to raise power.' } } },
-  1332: { 0: { type: 'concept-explorer', spec: { kind: 'capacitor', primary: 6, secondary: 4, prompt: 'Change voltage or capacitance and watch stored charge respond.' } } },
+  1332: {
+    0: { type: 'concept-explorer', spec: { kind: 'capacitor', primary: 6, secondary: 4, prompt: 'Change voltage or capacitance and watch stored charge respond.' } },
+    1: { type: 'three', spec: { kind: 'field', title: 'field between + and −', label: 'drag to orbit · separated charge fills space with a field' } }
+  },
   1345: { 0: { type: 'three', spec: { kind: 'thermal-lattice', title: 'stronger vibration increases average spacing' } } },
   1351: { 0: { type: 'concept-explorer', spec: { kind: 'gas', primary: 300, secondary: 9, prompt: 'Change temperature and volume to expose the gas-law pattern.' } } },
   1353: {

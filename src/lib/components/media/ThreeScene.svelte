@@ -61,7 +61,11 @@
     : spec?.kind === 'entropy-microstates' ? (spec.label || 'many arrangements are more probable')
     : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors')
     : spec?.kind === 'unit-circle' ? (spec.label || 'cos theta, sin theta')
-    : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary') : '';
+    : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary')
+    : spec?.kind === 'field' ? (spec.label || 'the field fills the space')
+    : spec?.kind === 'vectors' ? (spec.label || (spec.mode === 'cross' ? 'the cross product points perpendicular to both' : spec.mode === 'components' ? 'every vector is the sum of its x, y, z parts' : 'add tip to tail; the resultant closes the parallelogram'))
+    : spec?.kind === 'waves' ? (spec.label || (spec.mode === 'standing' ? 'a standing wave: fixed nodes, swinging antinodes' : spec.mode === 'interference' ? 'two sources overlap into an interference pattern' : 'a traveling wave carries the pattern, not the medium'))
+    : spec?.kind === 'solid-revolution' ? (spec.label || 'revolve a curve about the axis to sweep a solid') : '';
 
   // Unit bond directions for each VSEPR geometry.
   function shapeDirs(shape) {
@@ -963,6 +967,333 @@
     return 2.6;
   }
 
+  function buildField(THREE, group) {
+    // Electric field of point charges (default: a dipole). Field lines and
+    // vectors fill 3D space, arrow length shows the inverse-square falloff, and
+    // a positive test charge rides a line from + to −.
+    const raw = (spec.charges && spec.charges.length) ? spec.charges
+      : [{ x: -1.5, q: 1 }, { x: 1.5, q: -1 }];
+    const charges = raw.map((c) => ({ pos: new THREE.Vector3(c.x || 0, c.y || 0, c.z || 0), q: c.q }));
+    const POS = 0xee9362, NEG = 0x7fb2e6, VEC = 0xc99a6a;
+
+    const fieldAt = (p) => {
+      const E = new THREE.Vector3();
+      for (const c of charges) {
+        const d = new THREE.Vector3().subVectors(p, c.pos);
+        const r = d.length();
+        if (r > 0.05) E.addScaledVector(d, c.q / (r * r * r));
+      }
+      return E;
+    };
+
+    for (const c of charges) {
+      const s = sphere(THREE, 0.34, c.q > 0 ? POS : NEG);
+      s.material.emissive = new THREE.Color(c.q > 0 ? 0x7a3418 : 0x1c3d63);
+      s.material.emissiveIntensity = 0.5;
+      s.position.copy(c.pos);
+      group.add(s);
+      const glyph = makeLabel(THREE, c.q > 0 ? '+' : '−', {
+        width: 120, height: 120, bg: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', fg: '#fff8ef', size: 96, scale: [0.55, 0.55, 1]
+      });
+      glyph.position.set(0, 0.52, 0);
+      s.add(glyph);
+    }
+
+    // Field lines seeded evenly around each + charge, integrated along E.
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xbfa07f, transparent: true, opacity: 0.5 });
+    for (const c of charges.filter((x) => x.q > 0)) {
+      const N = 16;
+      for (let i = 0; i < N; i++) {
+        const phi = Math.acos(1 - 2 * (i + 0.5) / N);
+        const th = Math.PI * (1 + Math.sqrt(5)) * i;
+        const dir = new THREE.Vector3(Math.sin(phi) * Math.cos(th), Math.sin(phi) * Math.sin(th), Math.cos(phi));
+        let p = c.pos.clone().addScaledVector(dir, 0.42);
+        const pts = [p.clone()];
+        for (let s = 0; s < 120; s++) {
+          const E = fieldAt(p); const len = E.length();
+          if (len < 1e-4) break;
+          p = p.clone().addScaledVector(E.multiplyScalar(1 / len), 0.11);
+          pts.push(p.clone());
+          if (p.length() > 4.6 || charges.some((n) => n.q < 0 && p.distanceTo(n.pos) < 0.36)) break;
+        }
+        if (pts.length > 2) group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+      }
+    }
+
+    // Field vectors on three planes; arrow length encodes |E| (inverse-square).
+    for (const zc of [-1, 0, 1]) {
+      for (let ix = -1; ix <= 1; ix++) {
+        for (let iy = -1; iy <= 1; iy++) {
+          const p = new THREE.Vector3(ix * 1.5, iy * 1.5, zc * 0.95);
+          if (charges.some((c) => p.distanceTo(c.pos) < 0.75)) continue;
+          const E = fieldAt(p); const len = E.length();
+          if (len < 0.015) continue;
+          const L = Math.min(0.6, 0.16 + len * 0.7);
+          group.add(new THREE.ArrowHelper(E.multiplyScalar(1 / len), p, L, VEC, L * 0.42, L * 0.28));
+        }
+      }
+    }
+
+    // A positive test charge riding a field line from + to −.
+    const src = charges.find((c) => c.q > 0) || charges[0];
+    const path = [];
+    let tp = src.pos.clone().add(new THREE.Vector3(0.42, 0.03, 0.02));
+    for (let s = 0; s < 260; s++) {
+      const E = fieldAt(tp); const len = E.length(); if (len < 1e-4) break;
+      tp = tp.clone().addScaledVector(E.multiplyScalar(1 / len), 0.05);
+      path.push(tp.clone());
+      if (tp.length() > 4.6 || charges.some((n) => n.q < 0 && tp.distanceTo(n.pos) < 0.34)) break;
+    }
+    const test = sphere(THREE, 0.135, 0xffd27a);
+    test.material.emissive = new THREE.Color(0x8a5a12); test.material.emissiveIntensity = 0.7;
+    if (path.length) test.position.copy(path[0]);
+    group.add(test);
+
+    const title = makeLabel(THREE, spec.title || 'the field fills the space', {
+      width: 560, height: 140, border: 'rgba(217, 160, 106, 0.7)', fg: '#f6efe4', size: 44, scale: [1.55, 0.4, 1]
+    });
+    title.position.set(0, -2.35, 0);
+    group.add(title);
+
+    group.userData.animate = (t) => {
+      if (path.length > 1) {
+        const f = (t * 0.00013) % 1;
+        test.position.copy(path[Math.min(path.length - 1, Math.floor(f * path.length))]);
+      }
+    };
+    return 3.3;
+  }
+
+  function buildVectors(THREE, group) {
+    // 3D vector scene with three modes: 'add' (resultant + parallelogram),
+    // 'cross' (a×b perpendicular to both), 'components' (split into x/y/z).
+    const mode = spec.mode || 'add';
+    const AX = 0xcf6a4c, AY = 0x9ba86b, AZ = 0x6e8fd6;         // x / y / z axes
+    const A_COL = 0xee9362, B_COL = 0x59b6a2, R_COL = 0xffce7d; // a / b / result
+    const hexStr = (c) => '#' + c.toString(16).padStart(6, '0');
+
+    const grid = new THREE.GridHelper(6, 6, 0x715f4d, 0x453a2d);
+    grid.material.transparent = true; grid.material.opacity = 0.4;
+    group.add(grid);
+
+    group.add(sphere(THREE, 0.085, 0xf6efe4)); // origin
+    const axLen = 2.7;
+    [[new THREE.Vector3(1, 0, 0), AX, 'x'], [new THREE.Vector3(0, 1, 0), AY, 'y'], [new THREE.Vector3(0, 0, 1), AZ, 'z']].forEach(([dir, col, name]) => {
+      const ah = new THREE.ArrowHelper(dir, new THREE.Vector3(), axLen, col, 0.16, 0.1);
+      ah.line.material.transparent = true; ah.line.material.opacity = 0.55;
+      ah.cone.material.transparent = true; ah.cone.material.opacity = 0.7;
+      group.add(ah);
+      const lbl = makeLabel(THREE, name, { width: 96, height: 96, bg: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', fg: hexStr(col), size: 64, scale: [0.34, 0.34, 1] });
+      lbl.position.copy(dir.clone().multiplyScalar(axLen + 0.24));
+      group.add(lbl);
+    });
+
+    const vec = (to, color, from = new THREE.Vector3(), opacity = 1, head = 0.26) => {
+      const d = new THREE.Vector3().subVectors(to, from); const len = d.length();
+      if (len < 1e-4) return null;
+      const ah = new THREE.ArrowHelper(d.multiplyScalar(1 / len), from, len, color, head, head * 0.6);
+      [ah.line.material, ah.cone.material].forEach((m) => { m.transparent = true; m.opacity = opacity; });
+      group.add(ah); return ah;
+    };
+    const tag = (text, at, color) => {
+      const t = makeLabel(THREE, text, { width: 176, height: 96, bg: 'rgba(14,13,18,0.82)', border: hexStr(color), fg: '#f6efe4', size: 52, scale: [0.58, 0.31, 1] });
+      t.position.copy(at); group.add(t);
+    };
+    const paraFill = (a, b, color, opacity) => {
+      const ab = new THREE.Vector3().addVectors(a, b);
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute([
+        0, 0, 0, a.x, a.y, a.z, ab.x, ab.y, ab.z,
+        0, 0, 0, ab.x, ab.y, ab.z, b.x, b.y, b.z
+      ], 3));
+      group.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color, transparent: true, opacity, side: THREE.DoubleSide })));
+    };
+
+    let travel = null;
+    const dot = sphere(THREE, 0.11, 0xfff0d4);
+    dot.material.emissive = new THREE.Color(0x7a5a1a); dot.material.emissiveIntensity = 0.6;
+    group.add(dot);
+
+    if (mode === 'cross') {
+      const a = new THREE.Vector3(1.9, 0.35, 0.9), b = new THREE.Vector3(0.5, 1.7, -0.6);
+      const c = new THREE.Vector3().crossVectors(a, b);
+      if (c.length() > 2.6) c.setLength(2.6);
+      paraFill(a, b, R_COL, 0.16);
+      vec(a, A_COL); vec(b, B_COL); vec(c, R_COL, new THREE.Vector3(), 1, 0.3);
+      tag('a', a.clone().multiplyScalar(0.6).add(new THREE.Vector3(0.1, 0.2, 0)), A_COL);
+      tag('b', b.clone().multiplyScalar(0.6).add(new THREE.Vector3(0.1, 0.2, 0)), B_COL);
+      tag('a × b', c.clone().multiplyScalar(1.04).add(new THREE.Vector3(0, 0.2, 0)), R_COL);
+      travel = [new THREE.Vector3(), c.clone()];
+    } else if (mode === 'components') {
+      const v = new THREE.Vector3(1.8, 1.5, 1.15);
+      const px = new THREE.Vector3(v.x, 0, 0), pxy = new THREE.Vector3(v.x, v.y, 0);
+      vec(px, AX, new THREE.Vector3(), 0.95, 0.18);
+      vec(pxy, AY, px, 0.95, 0.18);
+      vec(v, AZ, pxy, 0.95, 0.18);
+      vec(v, R_COL, new THREE.Vector3(), 1, 0.28);
+      addWireBoxSized(THREE, group, [v.x / 2, v.y / 2, v.z / 2], [v.x, v.y, v.z], 0x8a7a63, 0.42);
+      tag('vx', new THREE.Vector3(v.x / 2, -0.22, 0), AX);
+      tag('vy', new THREE.Vector3(v.x + 0.18, v.y / 2, 0), AY);
+      tag('vz', new THREE.Vector3(v.x + 0.34, v.y - 0.12, v.z / 2), AZ);
+      tag('v', v.clone().multiplyScalar(1.05).add(new THREE.Vector3(0, 0.42, 0)), R_COL);
+      travel = [new THREE.Vector3(), px.clone(), pxy.clone(), v.clone()];
+    } else {
+      const a = new THREE.Vector3(2.0, 0.55, 0.4), b = new THREE.Vector3(0.5, 1.85, 1.35);
+      const r = new THREE.Vector3().addVectors(a, b);
+      paraFill(a, b, R_COL, 0.12);
+      vec(a, A_COL); vec(b, B_COL);
+      vec(r, B_COL, a.clone(), 0.4);
+      vec(r, A_COL, b.clone(), 0.4);
+      vec(r, R_COL, new THREE.Vector3(), 1, 0.3);
+      tag('a', a.clone().multiplyScalar(0.55).add(new THREE.Vector3(0.05, -0.22, 0)), A_COL);
+      tag('b', b.clone().multiplyScalar(0.55).add(new THREE.Vector3(-0.28, 0.1, 0)), B_COL);
+      tag('a + b', r.clone().multiplyScalar(0.62).add(new THREE.Vector3(0.18, 0.15, 0)), R_COL);
+      travel = [new THREE.Vector3(), a.clone(), r.clone()];
+    }
+
+    const caption = makeLabel(THREE, spec.title || (mode === 'cross' ? 'a × b is perpendicular to both' : mode === 'components' ? 'v = vx + vy + vz' : 'a + b closes the parallelogram'), {
+      width: 640, height: 120, size: 40, scale: [2.05, 0.4, 1]
+    });
+    caption.position.set(0, -2.55, 0); group.add(caption);
+
+    group.userData.animate = (t) => {
+      if (!travel || travel.length < 2) return;
+      const segs = travel.length - 1;
+      const f = ((t * 0.00016) % 1) * segs;
+      const i = Math.min(segs - 1, Math.floor(f));
+      dot.position.lerpVectors(travel[i], travel[i + 1], f - i);
+    };
+    return 4.1;
+  }
+
+  function buildWaves(THREE, group) {
+    // Waves in 3D. Modes: 'traveling' (pattern moves, medium bobs), 'standing'
+    // (fixed nodes, swinging antinodes), 'interference' (two-source surface).
+    const mode = spec.mode || 'traveling';
+    const WAVE = 0xee9362, ACCENT = 0xffce7d, NODE = 0x6e8fd6, SRC = 0x59b6a2, GUIDE = 0x8a7a63;
+
+    if (mode === 'interference') {
+      const S = 6, seg = 56;
+      const geo = new THREE.PlaneGeometry(S, S, seg, seg);
+      geo.rotateX(-Math.PI / 2);
+      const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: WAVE, roughness: 0.55, metalness: 0.08, side: THREE.DoubleSide }));
+      group.add(mesh);
+      const s1 = { x: -1.5, z: 0 }, s2 = { x: 1.5, z: 0 };
+      const src1 = sphere(THREE, 0.16, SRC), src2 = sphere(THREE, 0.16, SRC);
+      src1.position.set(s1.x, 0, s1.z); src2.position.set(s2.x, 0, s2.z); group.add(src1); group.add(src2);
+      const pos = geo.attributes.position, bx = [], bz = [];
+      for (let i = 0; i < pos.count; i++) { bx.push(pos.getX(i)); bz.push(pos.getZ(i)); }
+      const k = 5.0, w = 0.006, amp = 0.32;
+      group.userData.animate = (t) => {
+        for (let i = 0; i < pos.count; i++) {
+          const r1 = Math.hypot(bx[i] - s1.x, bz[i] - s1.z), r2 = Math.hypot(bx[i] - s2.x, bz[i] - s2.z);
+          pos.setY(i, amp * (Math.sin(k * r1 - w * t) / (1 + r1 * 0.4) + Math.sin(k * r2 - w * t) / (1 + r2 * 0.4)));
+        }
+        pos.needsUpdate = true; geo.computeVertexNormals();
+        src1.position.y = amp; src2.position.y = amp;
+      };
+      const caption = makeLabel(THREE, spec.title || 'two sources interfere', { width: 560, height: 116, size: 40, scale: [1.9, 0.4, 1] });
+      caption.position.set(0, -2.1, 0); group.add(caption);
+      return 4.7;
+    }
+
+    const N = mode === 'standing' ? 140 : 170;
+    const L = mode === 'standing' ? 4.2 : 5.2, amp = 0.9;
+    const xs = [];
+    for (let i = 0; i < N; i++) xs.push(-L / 2 + (i / (N - 1)) * L);
+    const geo = new THREE.BufferGeometry().setFromPoints(xs.map((x) => new THREE.Vector3(x, 0, 0)));
+    group.add(new THREE.Line(geo, new THREE.LineBasicMaterial({ color: WAVE })));
+    const pos = geo.attributes.position;
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-L / 2, 0, 0), new THREE.Vector3(L / 2, 0, 0)]),
+      new THREE.LineBasicMaterial({ color: GUIDE, transparent: true, opacity: 0.4 })));
+
+    if (mode === 'standing') {
+      const harmonic = spec.harmonic || 3;
+      const k = harmonic * Math.PI / L;
+      for (let n = 0; n <= harmonic; n++) {
+        const m = sphere(THREE, 0.1, NODE); m.position.set(-L / 2 + n * L / harmonic, 0, 0); group.add(m);
+      }
+      for (const sgn of [1, -1]) {
+        const env = xs.map((x) => new THREE.Vector3(x, sgn * amp * Math.abs(Math.sin(k * (x + L / 2))), 0));
+        group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(env), new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.35 })));
+      }
+      group.userData.animate = (t) => {
+        const c = Math.cos(0.004 * t);
+        for (let i = 0; i < N; i++) pos.setY(i, amp * Math.sin(k * (xs[i] + L / 2)) * c);
+        pos.needsUpdate = true;
+      };
+      const caption = makeLabel(THREE, spec.title || 'nodes stay still; antinodes swing', { width: 640, height: 116, size: 38, scale: [2.0, 0.4, 1] });
+      caption.position.set(0, -1.9, 0); group.add(caption);
+      return 3.5;
+    }
+
+    const k = 2.4, w = 0.005;
+    const particle = sphere(THREE, 0.17, ACCENT);
+    particle.material.emissive = new THREE.Color(0x7a5a1a); particle.material.emissiveIntensity = 0.5; group.add(particle);
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -amp, 0), new THREE.Vector3(0, amp, 0)]),
+      new THREE.LineBasicMaterial({ color: GUIDE, transparent: true, opacity: 0.35 })));
+    const lambda = 2 * Math.PI / k, yb = amp + 0.4;
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-lambda / 2, yb, 0), new THREE.Vector3(lambda / 2, yb, 0)]),
+      new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.6 })));
+    for (const sx of [-lambda / 2, lambda / 2]) {
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(sx, yb - 0.12, 0), new THREE.Vector3(sx, yb + 0.12, 0)]),
+        new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.6 })));
+    }
+    const lam = makeLabel(THREE, 'λ', { width: 90, height: 90, bg: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', fg: '#ffce7d', size: 62, scale: [0.4, 0.4, 1] });
+    lam.position.set(0, yb + 0.3, 0); group.add(lam);
+    group.userData.animate = (t) => {
+      for (let i = 0; i < N; i++) pos.setY(i, amp * Math.sin(k * xs[i] - w * t));
+      pos.needsUpdate = true;
+      particle.position.set(0, amp * Math.sin(-w * t), 0);
+    };
+    const caption = makeLabel(THREE, spec.title || 'the wave travels; the dot bobs in place', { width: 760, height: 116, size: 36, scale: [2.3, 0.36, 1] });
+    caption.position.set(0, -1.7, 0); group.add(caption);
+    return 3.7;
+  }
+
+  function buildSolid(THREE, group) {
+    // Solid of revolution: a profile curve revolved about the vertical axis,
+    // with a sliding disk (the disk method) and a sweeping ghost of the curve.
+    const shape = spec.shape || 'paraboloid';
+    const SURF = 0xee9362, CURVE = 0xffce7d, DISK = 0x6e8fd6, AXIS = 0x8a7a63;
+    const H = 2.4, R = 1.5, M = 64, Rs = H / 2;
+    const rOf = (y) => {
+      const u = y / H;
+      if (shape === 'cone') return R * (1 - u);
+      if (shape === 'sphere') return Math.sqrt(Math.max(0, Rs * Rs - (y - H / 2) * (y - H / 2)));
+      if (shape === 'vase') return 0.34 * R + 0.55 * R * (0.5 + 0.5 * Math.sin(u * Math.PI * 1.6 - 0.3));
+      return R * Math.sqrt(u); // paraboloid (revolve y = (r/R)^2)
+    };
+    const prof2 = [], prof3 = [];
+    for (let i = 0; i <= M; i++) {
+      const y = (i / M) * H, r = Math.max(0.0006, rOf(y));
+      prof2.push(new THREE.Vector2(r, y - H / 2));
+      prof3.push(new THREE.Vector3(r, y - H / 2, 0));
+    }
+    const lathe = new THREE.LatheGeometry(prof2, 48);
+    group.add(new THREE.Mesh(lathe, new THREE.MeshStandardMaterial({ color: SURF, roughness: 0.5, metalness: 0.1, transparent: true, opacity: 0.5, side: THREE.DoubleSide })));
+    group.add(new THREE.LineSegments(new THREE.WireframeGeometry(lathe), new THREE.LineBasicMaterial({ color: SURF, transparent: true, opacity: 0.14 })));
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -H / 2 - 0.35, 0), new THREE.Vector3(0, H / 2 + 0.35, 0)]),
+      new THREE.LineBasicMaterial({ color: AXIS, transparent: true, opacity: 0.6 })));
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(prof3), new THREE.LineBasicMaterial({ color: CURVE })));
+    const ghostPivot = new THREE.Group();
+    ghostPivot.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(prof3), new THREE.LineBasicMaterial({ color: CURVE, transparent: true, opacity: 0.5 })));
+    group.add(ghostPivot);
+    const disk = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.1, 44), new THREE.MeshStandardMaterial({ color: DISK, transparent: true, opacity: 0.55, roughness: 0.4 }));
+    group.add(disk);
+    const axl = makeLabel(THREE, 'axis', { width: 150, height: 84, bg: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', fg: '#c9b79a', size: 44, scale: [0.6, 0.32, 1] });
+    axl.position.set(0, H / 2 + 0.62, 0); group.add(axl);
+    const caption = makeLabel(THREE, spec.title || 'spin a curve to sweep a solid', { width: 620, height: 116, size: 40, scale: [2.0, 0.4, 1] });
+    caption.position.set(0, -H / 2 - 0.9, 0); group.add(caption);
+    group.userData.animate = (t) => {
+      ghostPivot.rotation.y = (t * 0.0015) % (Math.PI * 2);
+      const yy = (0.5 + 0.5 * Math.sin(t * 0.0011)) * H, rd = Math.max(0.02, rOf(yy));
+      disk.position.y = yy - H / 2;
+      disk.scale.set(rd, 1, rd);
+    };
+    return 3.7;
+  }
+
   function buildIsotopes(THREE, group) {
     const isotopes = spec.isotopes || [
       { label: 'C-12', protons: 6, neutrons: 6 },
@@ -1771,10 +2102,17 @@
           : spec.kind === 'ai-pipeline' ? buildAiPipeline(THREE, group)
           : spec.kind === 'unit-circle' ? buildUnitCircle(THREE, group)
           : spec.kind === 'ray-optics' ? buildRayOptics(THREE, group)
+          : spec.kind === 'field' ? buildField(THREE, group)
+          : spec.kind === 'vectors' ? buildVectors(THREE, group)
+          : spec.kind === 'waves' ? buildWaves(THREE, group)
+          : spec.kind === 'solid-revolution' ? buildSolid(THREE, group)
           : buildMolecule(THREE, group);
 
-        const presentationLocked = ['molecule-gallery', 'structure-comparison', 'carbon-architecture', 'proton-transfer', 'reaction-collisions', 'thermal-lattice', 'particle-states', 'entropy-microstates'].includes(spec.kind);
-        if (presentationLocked) camera.position.set(0, 0, fit * 2.5);
+        const presentationLocked = ['molecule-gallery', 'structure-comparison', 'carbon-architecture', 'proton-transfer', 'reaction-collisions', 'thermal-lattice', 'particle-states', 'entropy-microstates'].includes(spec.kind)
+          || (spec.kind === 'waves' && (spec.mode || 'traveling') !== 'interference');
+        const waveSurface = spec.kind === 'waves' && (spec.mode || 'traveling') === 'interference';
+        if (waveSurface) camera.position.set(0, fit * 1.55, fit * 1.82); // elevated 3/4 for a rippling surface
+        else if (presentationLocked) camera.position.set(0, 0, fit * 2.5);
         else camera.position.set(fit * 0.4, fit * 0.5, fit * 2.5);
         camera.lookAt(0, 0, 0);
 
