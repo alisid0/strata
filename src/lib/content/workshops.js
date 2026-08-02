@@ -1612,7 +1612,7 @@ export const PHYSICS_UNITS_WORKSHOP = [
   {
     type: 'unitcheck',
     prompt: 'Check the equation before using numbers. What unit does force have?',
-    expression: 'kg x m/s^2',
+    expression: 'kg x m/s²',
     target: 'Newton’s second law: F = ma',
     options: [
       { id: 'n', label: 'N', note: 'newton' },
@@ -1620,8 +1620,8 @@ export const PHYSICS_UNITS_WORKSHOP = [
       { id: 'w', label: 'W', note: 'watt' }
     ],
     correctOption: 'n',
-    correctFeedback: 'Locked. A newton is kg x m/s^2 wearing a shorter name.',
-    incorrectFeedback: 'Force is mass times acceleration: kg x m/s^2. That derived unit is called a newton.'
+    correctFeedback: 'Locked. A newton is kg x m/s² wearing a shorter name.',
+    incorrectFeedback: 'Force is mass times acceleration: kg x m/s². That derived unit is called a newton.'
   },
   S('A calculation is supposed to find distance, but the answer comes out in kilograms. What should happen next?',
     [O('stop','Stop and check the work',true), O('accept','Accept it if the number looks nice',false)],
@@ -1634,7 +1634,7 @@ export const PHYSICS_UNITS_WORKSHOP = [
     target: 'Work done = force applied across a distance.',
     options: [
       { id: 'j', label: 'N x m = J', note: 'joule' },
-      { id: 'pa', label: 'N/m^2 = Pa', note: 'pressure' },
+      { id: 'pa', label: 'N/m² = Pa', note: 'pressure' },
       { id: 'hz', label: '1/s = Hz', note: 'frequency' }
     ],
     correctOption: 'j',
@@ -1958,10 +1958,10 @@ export function getChemistryCoreWorkshop() {
 }
 
 export const MATHS_EXP_LOGS_WORKSHOP = [
-  S('What does 2^5 actually mean?',
+  S('What does 2⁵ actually mean?',
     [O('repeat','2 multiplied by itself 5 times',true), O('times','2 multiplied by 5',false), O('add','2 added 5 times',false)],
     'Correct. The exponent counts repeated multiplication.',
-    'Not quite. 2^5 means five 2s multiplied together.'),
+    'Not quite. 2⁵ means five 2s multiplied together.'),
   { type: 'sorting', boxes: [
     { id: 'growth', label: 'Exponential growth' },
     { id: 'linear', label: 'Linear growth' }
@@ -1985,16 +1985,16 @@ export const MATHS_EXP_LOGS_WORKSHOP = [
     correctFeedback: 'Correct. Each step multiplies the previous amount, so the rise speeds up.',
     incorrectFeedback: 'Watch the spacing between the bars. The change is multiplying, not adding.'
   },
-  S('Same base, multiplied powers: 3^2 x 3^4 becomes:',
-    [O('six','3^6',true), O('eight','3^8',false), O('two','3^2',false)],
+  S('Same base, multiplied powers: 3² x 3⁴ becomes:',
+    [O('six','3⁶',true), O('eight','3⁸',false), O('two','3²',false)],
     'Yes. Two 3s plus four more 3s gives six 3s.',
     'When the base matches, multiplication adds the exponents.'),
-  S('What does 5^-2 mean?',
-    [O('reciprocal','1 / 5^2',true), O('negative','-25',false), O('zero','0',false)],
+  S('What does 5⁻² mean?',
+    [O('reciprocal','1 / 5²',true), O('negative','-25',false), O('zero','0',false)],
     'Right. A negative exponent means reciprocal, not a negative answer.',
     'Negative exponents move the power under 1.'),
   S('Which expression means square root of x?',
-    [O('half','x^(1/2)',true), O('two','x^2',false), O('minus','x^-1',false)],
+    [O('half','x^(1/2)',true), O('two','x²',false), O('minus','x⁻¹',false)],
     'Correct. A half power is a square root.',
     'The denominator of the fractional exponent tells the root.'),
   S('A medicine halves every hour. What kind of pattern is that?',
@@ -2005,7 +2005,7 @@ export const MATHS_EXP_LOGS_WORKSHOP = [
     [O('power','What power made this number?',true), O('sum','What two numbers add to this?',false), O('shape','What shape is the graph?',false)],
     'Yes. Logs are exponents read backward.',
     'A logarithm asks for the hidden exponent.'),
-  S('If 10^4 = 10000, then log10(10000) equals:',
+  S('If 10⁴ = 10000, then log10(10000) equals:',
     [O('four','4',true), O('ten','10',false), O('thousand','1000',false)],
     'Correct. The log returns the power.',
     'The answer is the exponent needed to make 10000 from base 10.'),
@@ -2013,9 +2013,9 @@ export const MATHS_EXP_LOGS_WORKSHOP = [
     { id: 'exp', label: 'Exponent question' },
     { id: 'log', label: 'Log question' }
   ], items: [
-    { id: 'two8', label: '2^8 = ?', box: 'exp' },
+    { id: 'two8', label: '2⁸ = ?', box: 'exp' },
     { id: 'log100', label: 'log10(100) = ?', box: 'log' },
-    { id: 'e3', label: 'e^3 = ?', box: 'exp' },
+    { id: 'e3', label: 'e³ = ?', box: 'exp' },
     { id: 'lnx', label: 'ln(x) = ?', box: 'log' }
   ]},
   S('Why are logs useful when the unknown is in the exponent?',
@@ -2602,7 +2602,7 @@ export const MATHS_FUNCTIONS_WORKSHOP = [
       { id: 'e1', label: 'Outputs: 2, 4, 8, 16', box: 'expo' },
       { id: 'q1', label: 'Outputs: 0, 1, 4, 9', box: 'quad' },
       { id: 'l2', label: 'x + 7', box: 'linear' },
-      { id: 'e2', label: '3^x', box: 'expo' },
+      { id: 'e2', label: '3ˣ', box: 'expo' },
       { id: 'q2', label: 'x²', box: 'quad' }
     ] },
   S('Machine f multiplies by 4. The output tray shows 20. What was the input?',

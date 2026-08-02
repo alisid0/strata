@@ -60,7 +60,7 @@
     : spec?.kind === 'gas-wall-collisions' ? (spec.label || 'wall collisions create pressure')
     : spec?.kind === 'entropy-microstates' ? (spec.label || 'many arrangements are more probable')
     : spec?.kind === 'ai-pipeline' ? (spec.label || 'text -> bits -> vectors')
-    : spec?.kind === 'unit-circle' ? (spec.label || 'cos theta, sin theta')
+    : spec?.kind === 'unit-circle' ? (spec.label || 'cos θ, sin θ')
     : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary')
     : spec?.kind === 'field' ? (spec.label || 'the field fills the space')
     : spec?.kind === 'vectors' ? (spec.label || (spec.mode === 'cross' ? 'the cross product points perpendicular to both' : spec.mode === 'components' ? 'every vector is the sum of its x, y, z parts' : 'add tip to tail; the resultant closes the parallelogram'))
@@ -1612,7 +1612,7 @@
       group.add(bead);
     }
 
-    const title = makeLabel(THREE, spec.title || '6.022 x 10^23 tiny units', {
+    const title = makeLabel(THREE, spec.title || '6.022 x 10²³ tiny units', {
       width: 760,
       height: 140,
       border: 'rgba(238, 147, 98, 0.72)',
@@ -1977,7 +1977,13 @@
     dot.position.copy(point);
     group.add(dot);
 
-    const title = makeLabel(THREE, spec.title || '(cos theta, sin theta)', {
+    // Label the projections so cosine (x) and sine (y) never get confused.
+    const cosLbl = makeLabel(THREE, 'cos θ', { width: 210, height: 84, bg: 'rgba(14,13,18,0.72)', border: 'rgba(154,160,255,0.6)', fg: '#dfe2ff', size: 40, scale: [0.64, 0.26, 1] });
+    cosLbl.position.set(point.x / 2, point.y + 0.24, 0); group.add(cosLbl);
+    const sinLbl = makeLabel(THREE, 'sin θ', { width: 210, height: 84, bg: 'rgba(14,13,18,0.72)', border: 'rgba(142,230,199,0.6)', fg: '#c9f5e6', size: 40, scale: [0.64, 0.26, 1] });
+    sinLbl.position.set(point.x + 0.46, point.y / 2, 0); group.add(sinLbl);
+
+    const title = makeLabel(THREE, spec.title || '(cos θ, sin θ)', {
       width: 650,
       height: 140,
       border: 'rgba(238, 147, 98, 0.72)',
@@ -2108,7 +2114,7 @@
           : spec.kind === 'solid-revolution' ? buildSolid(THREE, group)
           : buildMolecule(THREE, group);
 
-        const presentationLocked = ['molecule-gallery', 'structure-comparison', 'carbon-architecture', 'proton-transfer', 'reaction-collisions', 'thermal-lattice', 'particle-states', 'entropy-microstates'].includes(spec.kind)
+        const presentationLocked = ['molecule-gallery', 'structure-comparison', 'carbon-architecture', 'proton-transfer', 'reaction-collisions', 'thermal-lattice', 'particle-states', 'entropy-microstates', 'unit-circle'].includes(spec.kind)
           || (spec.kind === 'waves' && (spec.mode || 'traveling') !== 'interference');
         const waveSurface = spec.kind === 'waves' && (spec.mode || 'traveling') === 'interference';
         if (waveSurface) camera.position.set(0, fit * 1.55, fit * 1.82); // elevated 3/4 for a rippling surface

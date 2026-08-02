@@ -125,19 +125,19 @@ const DIFFERENTIATION_WORKSHOP = [
     [O('local', 'The slope at one point', true), O('average', 'Only the average height of the whole graph', false), O('area', 'The area under the graph', false)],
     'Correct. Differentiation finds the local slope, not just a broad average.',
     'Not quite. The derivative is about the slope at a point.'),
-  S('For y = x^2, the slope at x = 3 is 6. Which rule predicts that?',
-    [O('power', 'The derivative is 2x', true), O('square', 'The derivative is always x^2', false), O('zero', 'The derivative is always zero', false)],
-    'Yes. d(x^2)/dx = 2x, and 2 times 3 is 6.',
-    'Use the power rule. x^2 becomes 2x.'),
+  S('For y = x², the slope at x = 3 is 6. Which rule predicts that?',
+    [O('power', 'The derivative is 2x', true), O('square', 'The derivative is always x²', false), O('zero', 'The derivative is always zero', false)],
+    'Yes. d(x²)/dx = 2x, and 2 times 3 is 6.',
+    'Use the power rule. x² becomes 2x.'),
   {
     type: 'matrixlab',
     mode: 'fill',
-    prompt: 'Power rule console: d(x^4)/dx = ?',
-    matrix: [['input', 'x^2', 'x^3', 'x^4'], ['derivative', '2x', '3x^2', null]],
+    prompt: 'Power rule console: d(x⁴)/dx = ?',
+    matrix: [['input', 'x²', 'x³', 'x⁴'], ['derivative', '2x', '3x²', null]],
     blankRow: 2,
     blankCol: 4,
-    options: ['4x^3', 'x^3', '4x^4', '3x^4'],
-    correctValue: '4x^3',
+    options: ['4x³', 'x³', '4x⁴', '3x⁴'],
+    correctValue: '4x³',
     correctFeedback: 'Correct. Bring the 4 down, then reduce the power to 3.',
     incorrectFeedback: 'Power rule: n comes down, then the exponent drops by one.'
   },
@@ -153,21 +153,21 @@ const DIFFERENTIATION_WORKSHOP = [
     [O('uv', 'u prime v plus u v prime', true), O('short', 'u prime v prime only', false), O('minus', 'u prime v minus u v prime', false)],
     'Right. The derivative of uv is u prime v plus u v prime.',
     'The product rule is not just the product of the derivatives.'),
-  S('A function is built in layers: y = (3x^2 + 5)^7. Which rule handles the layers?',
+  S('A function is built in layers: y = (3x² + 5)⁷. Which rule handles the layers?',
     [O('chain', 'Chain rule', true), O('constant', 'Constant rule', false), O('identity', 'Identity matrix rule', false)],
     'Correct. The chain rule handles outside and inside changes together.',
     'Layered functions need the chain rule.'),
   {
     type: 'matrixlab',
     mode: 'fill',
-    prompt: 'Chain rule checkpoint: derivative of (3x^2 + 5)^7 includes which inside derivative?',
-    matrix: [['inside', '3x^2 + 5'], ['inside derivative', null]],
+    prompt: 'Chain rule checkpoint: derivative of (3x² + 5)⁷ includes which inside derivative?',
+    matrix: [['inside', '3x² + 5'], ['inside derivative', null]],
     blankRow: 2,
     blankCol: 2,
-    options: ['6x', '7x^6', '3x', '0'],
+    options: ['6x', '7x⁶', '3x', '0'],
     correctValue: '6x',
-    correctFeedback: 'Correct. Differentiate the inside separately: 3x^2 + 5 becomes 6x.',
-    incorrectFeedback: 'The inside is 3x^2 + 5. Its derivative is 6x.'
+    correctFeedback: 'Correct. Differentiate the inside separately: 3x² + 5 becomes 6x.',
+    incorrectFeedback: 'The inside is 3x² + 5. Its derivative is 6x.'
   },
   {
     type: 'unitcheck',
@@ -176,7 +176,7 @@ const DIFFERENTIATION_WORKSHOP = [
     target: 'Velocity is rate of change of position.',
     options: [
       { id: 'ms', label: 'm/s', note: 'meters per second' },
-      { id: 'm2', label: 'm^2', note: 'area' },
+      { id: 'm2', label: 'm²', note: 'area' },
       { id: 's', label: 's', note: 'time only' }
     ],
     correctOption: 'ms',
@@ -189,12 +189,12 @@ const DIFFERENTIATION_WORKSHOP = [
     expression: 'd(velocity) / d(time)',
     target: 'Acceleration is rate of change of velocity.',
     options: [
-      { id: 'ms2', label: 'm/s^2', note: 'meters per second squared' },
+      { id: 'ms2', label: 'm/s²', note: 'meters per second squared' },
       { id: 'ms', label: 'm/s', note: 'velocity' },
       { id: 'm', label: 'm', note: 'position' }
     ],
     correctOption: 'ms2',
-    correctFeedback: 'Correct. Dividing velocity by another second gives m/s^2.',
+    correctFeedback: 'Correct. Dividing velocity by another second gives m/s².',
     incorrectFeedback: 'Velocity already has one second in the denominator. Differentiating over time adds another.'
   },
   S('At the top of a smooth hill on a graph, the derivative is usually:',
@@ -282,11 +282,11 @@ const QUANT_CHEM_WORKSHOP = [
   S('A mole is best understood as:',
     [O('count', 'A counting unit for particles', true), O('mass', 'A special kind of chemical mass only', false), O('shape', 'The shape of a molecule', false)],
     'Correct. A mole counts particles, just as a dozen counts twelve things.',
-    'A mole is a count: 6.022 x 10^23 particles.'),
+    'A mole is a count: 6.022 x 10²³ particles.'),
   S('One mole contains approximately:',
-    [O('avogadro', '6.022 x 10^23 particles', true), O('twelve', '12 particles exactly', false), O('million', '1 million particles', false)],
+    [O('avogadro', '6.022 x 10²³ particles', true), O('twelve', '12 particles exactly', false), O('million', '1 million particles', false)],
     'Yes. That huge count is Avogadro constant.',
-    'The mole is enormous because atoms are tiny: about 6.022 x 10^23 particles.'),
+    'The mole is enormous because atoms are tiny: about 6.022 x 10²³ particles.'),
   { type: 'sorting', boxes: [
     { id: 'count', label: 'Counting idea' },
     { id: 'mass', label: 'Mass idea' }
@@ -299,7 +299,7 @@ const QUANT_CHEM_WORKSHOP = [
   {
     type: 'unitcheck',
     prompt: 'Mole bridge. If n = m / M, what is n for 80 g of NaOH with M = 40 g/mol?',
-    expression: '80 g / 40 g mol^-1',
+    expression: '80 g / 40 g mol⁻¹',
     target: 'Mass converted into amount of substance.',
     options: [
       { id: '2', label: '2 mol', note: 'two moles' },

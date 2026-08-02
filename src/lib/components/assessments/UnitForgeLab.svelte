@@ -40,12 +40,15 @@
     }
   }
 
+  const SUP_DIGITS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  const sup = (n) => String(n).split('').map((c) => (c >= '0' && c <= '9' ? SUP_DIGITS[+c] : c)).join('');
+
   function formatDims(d) {
     const top = [];
     const bottom = [];
     for (const [unit, power] of [['kg', d.kg], ['m', d.m], ['s', d.s]]) {
-      if (power > 0) top.push(power === 1 ? unit : `${unit}^${power}`);
-      if (power < 0) bottom.push(power === -1 ? unit : `${unit}^${Math.abs(power)}`);
+      if (power > 0) top.push(power === 1 ? unit : `${unit}${sup(power)}`);
+      if (power < 0) bottom.push(power === -1 ? unit : `${unit}${sup(Math.abs(power))}`);
     }
     if (!top.length && !bottom.length) return '1';
     return `${top.length ? top.join('*') : '1'}${bottom.length ? '/' + bottom.join('*') : ''}`;
@@ -91,18 +94,18 @@
 
   function checkForge() {
     if (dims.kg === 1 && dims.m === 1 && dims.s === -2) {
-      markDone('forge', 'Locked. Force is kg*m/s^2, shortened to newton.');
+      markDone('forge', 'Locked. Force is kg*m/s², shortened to newton.');
     } else {
-      feedback = 'Force is mass times acceleration: kg times m/s^2.';
+      feedback = 'Force is mass times acceleration: kg times m/s².';
     }
   }
 
   function checkJudge(answer) {
     judge = answer;
     if (answer === 'same') {
-      markDone('judge', 'Correct. N*m expands to kg*m^2/s^2, the same dimensions as energy.');
+      markDone('judge', 'Correct. N*m expands to kg*m²/s², the same dimensions as energy.');
     } else {
-      feedback = 'Expand N first: N is kg*m/s^2. Multiplying by m gives kg*m^2/s^2.';
+      feedback = 'Expand N first: N is kg*m/s². Multiplying by m gives kg*m²/s².';
     }
   }
 
@@ -164,7 +167,7 @@
       <div class="equation">
         <span>N*m</span>
         <b>= ?</b>
-        <span>kg*m^2/s^2</span>
+        <span>kg*m²/s²</span>
       </div>
       <div class="choices">
         <button class:right={judge === 'same'} on:click={() => checkJudge('same')}>same dimensions</button>
