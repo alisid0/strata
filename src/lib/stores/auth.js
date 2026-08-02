@@ -68,6 +68,7 @@ export async function logOut() {
   if (error) throw error;
   user.set(null);
   session.set(null);
+  sessionStorage.removeItem('qubix_guest');
 }
 
 /**

@@ -85,9 +85,19 @@
       return;
     }
 
-    currentView = get(isAuthenticated)
-      ? profileData.onboardingCompleted ? 'home' : 'onboarding'
-      : 'auth';
+    // Guest mode: persisted in sessionStorage so page refreshes don't
+    // kick unauthenticated users back to the auth screen.
+    const isGuest = sessionStorage.getItem('qubix_guest') === '1';
+
+    if (get(isAuthenticated)) {
+      // A real session exists — clear any stale guest flag.
+      sessionStorage.removeItem('qubix_guest');
+      currentView = profileData.onboardingCompleted ? 'home' : 'onboarding';
+    } else if (isGuest) {
+      currentView = 'home';
+    } else {
+      currentView = 'auth';
+    }
 
     }
 
@@ -100,6 +110,7 @@
   });
 
   function skipAuth() {
+    sessionStorage.setItem('qubix_guest', '1');
     currentView = 'home';
   }
 
@@ -115,6 +126,8 @@
   }
 
   async function handleAuthed(isNewUser) {
+    // Clear guest flag — a real session now exists.
+    sessionStorage.removeItem('qubix_guest');
     const profileData = await profile.init();
     if (new URLSearchParams(location.search).has('auth')) {
       history.replaceState({}, '', location.pathname);
