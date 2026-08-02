@@ -21,6 +21,7 @@ import { MATHS_MEDIA_80_EXPANSION } from './mathsMedia80Expansion.js';
  *   { type:'three', spec:{ kind:'nucleus',  protons, neutrons, title } }
  *   { type:'three', spec:{ kind:'electric-attraction', title } }
  *   { type:'three', spec:{ kind:'field', title, label, charges:[{x,y,z,q}] } }
+ *   { type:'three', spec:{ kind:'vectors', mode:'add'|'cross'|'components', title, label } }
  *   { type:'three', spec:{ kind:'isotopes', isotopes:[{label,protons,neutrons}] } }
  *   shape ∈ linear | bent | trigonal | pyramidal | tetrahedral
  */
@@ -293,8 +294,12 @@ export const BOARD_MEDIA = {
     2: { type: 'concept-explorer', spec: { kind: 'force', primary: 10, secondary: 5, prompt: 'Use F = ma, then test a different force or mass.' } }
   },
   1159: { 0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 3, secondary: 2, prompt: 'A vector needs both size and direction.' } } },
-  1165: { 0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 4, secondary: 3, prompt: 'Build a resultant from horizontal and vertical parts.' } } },
+  1165: {
+    0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 4, secondary: 3, prompt: 'Build a resultant from horizontal and vertical parts.' } },
+    1: { type: 'three', spec: { kind: 'vectors', mode: 'add', title: 'a + b closes the parallelogram' } }
+  },
   1192: { 0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 2, secondary: -4, prompt: 'Combine sideways motion with downward motion.' } } },
+  1278: { 1: { type: 'three', spec: { kind: 'vectors', mode: 'components', title: 'v = vx + vy + vz' } } },
   1405: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.7, secondary: 0, prompt: 'Change the slope and watch the rate change.' } } },
   1420: { 0: { type: 'concept-explorer', spec: { kind: 'rate', primary: 12, secondary: 4, prompt: 'Change distance or time to change the rate.' } } },
 
