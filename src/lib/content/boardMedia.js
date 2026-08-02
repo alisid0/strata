@@ -22,6 +22,7 @@ import { MATHS_MEDIA_80_EXPANSION } from './mathsMedia80Expansion.js';
  *   { type:'three', spec:{ kind:'electric-attraction', title } }
  *   { type:'three', spec:{ kind:'field', title, label, charges:[{x,y,z,q}] } }
  *   { type:'three', spec:{ kind:'vectors', mode:'add'|'cross'|'components', title, label } }
+ *   { type:'three', spec:{ kind:'waves', mode:'traveling'|'standing'|'interference', title, label } }
  *   { type:'three', spec:{ kind:'isotopes', isotopes:[{label,protons,neutrons}] } }
  *   shape ∈ linear | bent | trigonal | pyramidal | tetrahedral
  */
@@ -319,7 +320,12 @@ export const BOARD_MEDIA = {
   1310: { 0: { type: 'concept-explorer', spec: { kind: 'matrix', primary: 25, prompt: 'Transform every corner with one rotation.' } } },
   1312: { 0: { type: 'concept-explorer', spec: { kind: 'matrix', primary: 90, prompt: 'Rotate the square through positive and negative angles.' } } },
   1380: { 0: { type: 'concept-explorer', spec: { kind: 'trig', primary: 45, prompt: 'Move between the special angles.' } } },
-  1382: { 0: { type: 'concept-explorer', spec: { kind: 'trig', primary: 0, prompt: 'Travel around the circle and watch sine and cosine repeat.' } } },
+  1382: {
+    0: { type: 'concept-explorer', spec: { kind: 'trig', primary: 0, prompt: 'Travel around the circle and watch sine and cosine repeat.' } },
+    1: { type: 'three', spec: { kind: 'waves', mode: 'traveling', title: 'the wave travels; the dot bobs in place' } },
+    2: { type: 'three', spec: { kind: 'waves', mode: 'standing', title: 'nodes stay still; antinodes swing' } },
+    3: { type: 'three', spec: { kind: 'waves', mode: 'interference', title: 'two sources interfere' } }
+  },
   1384: { 0: { type: 'concept-explorer', spec: { kind: 'trig', primary: 90, prompt: 'Sweep an angle around the circle.' } } },
   1385: { 0: { type: 'concept-explorer', spec: { kind: 'derivative', primary: 1, prompt: 'Move the point; the tangent reveals local slope.' } } },
   1386: { 0: { type: 'concept-explorer', spec: { kind: 'limit', primary: 150, prompt: 'Approach the missing point without landing on it.' } } },

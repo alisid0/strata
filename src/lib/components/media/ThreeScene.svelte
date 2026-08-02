@@ -63,7 +63,8 @@
     : spec?.kind === 'unit-circle' ? (spec.label || 'cos theta, sin theta')
     : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary')
     : spec?.kind === 'field' ? (spec.label || 'the field fills the space')
-    : spec?.kind === 'vectors' ? (spec.label || (spec.mode === 'cross' ? 'the cross product points perpendicular to both' : spec.mode === 'components' ? 'every vector is the sum of its x, y, z parts' : 'add tip to tail; the resultant closes the parallelogram')) : '';
+    : spec?.kind === 'vectors' ? (spec.label || (spec.mode === 'cross' ? 'the cross product points perpendicular to both' : spec.mode === 'components' ? 'every vector is the sum of its x, y, z parts' : 'add tip to tail; the resultant closes the parallelogram'))
+    : spec?.kind === 'waves' ? (spec.label || (spec.mode === 'standing' ? 'a standing wave: fixed nodes, swinging antinodes' : spec.mode === 'interference' ? 'two sources overlap into an interference pattern' : 'a traveling wave carries the pattern, not the medium')) : '';
 
   // Unit bond directions for each VSEPR geometry.
   function shapeDirs(shape) {
@@ -1164,6 +1165,91 @@
     return 4.1;
   }
 
+  function buildWaves(THREE, group) {
+    // Waves in 3D. Modes: 'traveling' (pattern moves, medium bobs), 'standing'
+    // (fixed nodes, swinging antinodes), 'interference' (two-source surface).
+    const mode = spec.mode || 'traveling';
+    const WAVE = 0xee9362, ACCENT = 0xffce7d, NODE = 0x6e8fd6, SRC = 0x59b6a2, GUIDE = 0x8a7a63;
+
+    if (mode === 'interference') {
+      const S = 6, seg = 56;
+      const geo = new THREE.PlaneGeometry(S, S, seg, seg);
+      geo.rotateX(-Math.PI / 2);
+      const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: WAVE, roughness: 0.55, metalness: 0.08, side: THREE.DoubleSide }));
+      group.add(mesh);
+      const s1 = { x: -1.5, z: 0 }, s2 = { x: 1.5, z: 0 };
+      const src1 = sphere(THREE, 0.16, SRC), src2 = sphere(THREE, 0.16, SRC);
+      src1.position.set(s1.x, 0, s1.z); src2.position.set(s2.x, 0, s2.z); group.add(src1); group.add(src2);
+      const pos = geo.attributes.position, bx = [], bz = [];
+      for (let i = 0; i < pos.count; i++) { bx.push(pos.getX(i)); bz.push(pos.getZ(i)); }
+      const k = 5.0, w = 0.006, amp = 0.32;
+      group.userData.animate = (t) => {
+        for (let i = 0; i < pos.count; i++) {
+          const r1 = Math.hypot(bx[i] - s1.x, bz[i] - s1.z), r2 = Math.hypot(bx[i] - s2.x, bz[i] - s2.z);
+          pos.setY(i, amp * (Math.sin(k * r1 - w * t) / (1 + r1 * 0.4) + Math.sin(k * r2 - w * t) / (1 + r2 * 0.4)));
+        }
+        pos.needsUpdate = true; geo.computeVertexNormals();
+        src1.position.y = amp; src2.position.y = amp;
+      };
+      const caption = makeLabel(THREE, spec.title || 'two sources interfere', { width: 560, height: 116, size: 40, scale: [1.9, 0.4, 1] });
+      caption.position.set(0, -2.1, 0); group.add(caption);
+      return 4.7;
+    }
+
+    const N = mode === 'standing' ? 140 : 170;
+    const L = mode === 'standing' ? 4.2 : 5.2, amp = 0.9;
+    const xs = [];
+    for (let i = 0; i < N; i++) xs.push(-L / 2 + (i / (N - 1)) * L);
+    const geo = new THREE.BufferGeometry().setFromPoints(xs.map((x) => new THREE.Vector3(x, 0, 0)));
+    group.add(new THREE.Line(geo, new THREE.LineBasicMaterial({ color: WAVE })));
+    const pos = geo.attributes.position;
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-L / 2, 0, 0), new THREE.Vector3(L / 2, 0, 0)]),
+      new THREE.LineBasicMaterial({ color: GUIDE, transparent: true, opacity: 0.4 })));
+
+    if (mode === 'standing') {
+      const harmonic = spec.harmonic || 3;
+      const k = harmonic * Math.PI / L;
+      for (let n = 0; n <= harmonic; n++) {
+        const m = sphere(THREE, 0.1, NODE); m.position.set(-L / 2 + n * L / harmonic, 0, 0); group.add(m);
+      }
+      for (const sgn of [1, -1]) {
+        const env = xs.map((x) => new THREE.Vector3(x, sgn * amp * Math.abs(Math.sin(k * (x + L / 2))), 0));
+        group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(env), new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.35 })));
+      }
+      group.userData.animate = (t) => {
+        const c = Math.cos(0.004 * t);
+        for (let i = 0; i < N; i++) pos.setY(i, amp * Math.sin(k * (xs[i] + L / 2)) * c);
+        pos.needsUpdate = true;
+      };
+      const caption = makeLabel(THREE, spec.title || 'nodes stay still; antinodes swing', { width: 640, height: 116, size: 38, scale: [2.0, 0.4, 1] });
+      caption.position.set(0, -1.9, 0); group.add(caption);
+      return 3.5;
+    }
+
+    const k = 2.4, w = 0.005;
+    const particle = sphere(THREE, 0.17, ACCENT);
+    particle.material.emissive = new THREE.Color(0x7a5a1a); particle.material.emissiveIntensity = 0.5; group.add(particle);
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -amp, 0), new THREE.Vector3(0, amp, 0)]),
+      new THREE.LineBasicMaterial({ color: GUIDE, transparent: true, opacity: 0.35 })));
+    const lambda = 2 * Math.PI / k, yb = amp + 0.4;
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-lambda / 2, yb, 0), new THREE.Vector3(lambda / 2, yb, 0)]),
+      new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.6 })));
+    for (const sx of [-lambda / 2, lambda / 2]) {
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(sx, yb - 0.12, 0), new THREE.Vector3(sx, yb + 0.12, 0)]),
+        new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.6 })));
+    }
+    const lam = makeLabel(THREE, 'λ', { width: 90, height: 90, bg: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', fg: '#ffce7d', size: 62, scale: [0.4, 0.4, 1] });
+    lam.position.set(0, yb + 0.3, 0); group.add(lam);
+    group.userData.animate = (t) => {
+      for (let i = 0; i < N; i++) pos.setY(i, amp * Math.sin(k * xs[i] - w * t));
+      pos.needsUpdate = true;
+      particle.position.set(0, amp * Math.sin(-w * t), 0);
+    };
+    const caption = makeLabel(THREE, spec.title || 'the wave travels; the dot bobs in place', { width: 760, height: 116, size: 36, scale: [2.3, 0.36, 1] });
+    caption.position.set(0, -1.7, 0); group.add(caption);
+    return 3.7;
+  }
+
   function buildIsotopes(THREE, group) {
     const isotopes = spec.isotopes || [
       { label: 'C-12', protons: 6, neutrons: 6 },
@@ -1974,10 +2060,14 @@
           : spec.kind === 'ray-optics' ? buildRayOptics(THREE, group)
           : spec.kind === 'field' ? buildField(THREE, group)
           : spec.kind === 'vectors' ? buildVectors(THREE, group)
+          : spec.kind === 'waves' ? buildWaves(THREE, group)
           : buildMolecule(THREE, group);
 
-        const presentationLocked = ['molecule-gallery', 'structure-comparison', 'carbon-architecture', 'proton-transfer', 'reaction-collisions', 'thermal-lattice', 'particle-states', 'entropy-microstates'].includes(spec.kind);
-        if (presentationLocked) camera.position.set(0, 0, fit * 2.5);
+        const presentationLocked = ['molecule-gallery', 'structure-comparison', 'carbon-architecture', 'proton-transfer', 'reaction-collisions', 'thermal-lattice', 'particle-states', 'entropy-microstates'].includes(spec.kind)
+          || (spec.kind === 'waves' && (spec.mode || 'traveling') !== 'interference');
+        const waveSurface = spec.kind === 'waves' && (spec.mode || 'traveling') === 'interference';
+        if (waveSurface) camera.position.set(0, fit * 1.55, fit * 1.82); // elevated 3/4 for a rippling surface
+        else if (presentationLocked) camera.position.set(0, 0, fit * 2.5);
         else camera.position.set(fit * 0.4, fit * 0.5, fit * 2.5);
         camera.lookAt(0, 0, 0);
 
