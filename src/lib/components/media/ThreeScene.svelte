@@ -64,7 +64,8 @@
     : spec?.kind === 'ray-optics' ? (spec.label || 'light bends at a boundary')
     : spec?.kind === 'field' ? (spec.label || 'the field fills the space')
     : spec?.kind === 'vectors' ? (spec.label || (spec.mode === 'cross' ? 'the cross product points perpendicular to both' : spec.mode === 'components' ? 'every vector is the sum of its x, y, z parts' : 'add tip to tail; the resultant closes the parallelogram'))
-    : spec?.kind === 'waves' ? (spec.label || (spec.mode === 'standing' ? 'a standing wave: fixed nodes, swinging antinodes' : spec.mode === 'interference' ? 'two sources overlap into an interference pattern' : 'a traveling wave carries the pattern, not the medium')) : '';
+    : spec?.kind === 'waves' ? (spec.label || (spec.mode === 'standing' ? 'a standing wave: fixed nodes, swinging antinodes' : spec.mode === 'interference' ? 'two sources overlap into an interference pattern' : 'a traveling wave carries the pattern, not the medium'))
+    : spec?.kind === 'solid-revolution' ? (spec.label || 'revolve a curve about the axis to sweep a solid') : '';
 
   // Unit bond directions for each VSEPR geometry.
   function shapeDirs(shape) {
@@ -1250,6 +1251,49 @@
     return 3.7;
   }
 
+  function buildSolid(THREE, group) {
+    // Solid of revolution: a profile curve revolved about the vertical axis,
+    // with a sliding disk (the disk method) and a sweeping ghost of the curve.
+    const shape = spec.shape || 'paraboloid';
+    const SURF = 0xee9362, CURVE = 0xffce7d, DISK = 0x6e8fd6, AXIS = 0x8a7a63;
+    const H = 2.4, R = 1.5, M = 64, Rs = H / 2;
+    const rOf = (y) => {
+      const u = y / H;
+      if (shape === 'cone') return R * (1 - u);
+      if (shape === 'sphere') return Math.sqrt(Math.max(0, Rs * Rs - (y - H / 2) * (y - H / 2)));
+      if (shape === 'vase') return 0.34 * R + 0.55 * R * (0.5 + 0.5 * Math.sin(u * Math.PI * 1.6 - 0.3));
+      return R * Math.sqrt(u); // paraboloid (revolve y = (r/R)^2)
+    };
+    const prof2 = [], prof3 = [];
+    for (let i = 0; i <= M; i++) {
+      const y = (i / M) * H, r = Math.max(0.0006, rOf(y));
+      prof2.push(new THREE.Vector2(r, y - H / 2));
+      prof3.push(new THREE.Vector3(r, y - H / 2, 0));
+    }
+    const lathe = new THREE.LatheGeometry(prof2, 48);
+    group.add(new THREE.Mesh(lathe, new THREE.MeshStandardMaterial({ color: SURF, roughness: 0.5, metalness: 0.1, transparent: true, opacity: 0.5, side: THREE.DoubleSide })));
+    group.add(new THREE.LineSegments(new THREE.WireframeGeometry(lathe), new THREE.LineBasicMaterial({ color: SURF, transparent: true, opacity: 0.14 })));
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -H / 2 - 0.35, 0), new THREE.Vector3(0, H / 2 + 0.35, 0)]),
+      new THREE.LineBasicMaterial({ color: AXIS, transparent: true, opacity: 0.6 })));
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(prof3), new THREE.LineBasicMaterial({ color: CURVE })));
+    const ghostPivot = new THREE.Group();
+    ghostPivot.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(prof3), new THREE.LineBasicMaterial({ color: CURVE, transparent: true, opacity: 0.5 })));
+    group.add(ghostPivot);
+    const disk = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.1, 44), new THREE.MeshStandardMaterial({ color: DISK, transparent: true, opacity: 0.55, roughness: 0.4 }));
+    group.add(disk);
+    const axl = makeLabel(THREE, 'axis', { width: 150, height: 84, bg: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', fg: '#c9b79a', size: 44, scale: [0.6, 0.32, 1] });
+    axl.position.set(0, H / 2 + 0.62, 0); group.add(axl);
+    const caption = makeLabel(THREE, spec.title || 'spin a curve to sweep a solid', { width: 620, height: 116, size: 40, scale: [2.0, 0.4, 1] });
+    caption.position.set(0, -H / 2 - 0.9, 0); group.add(caption);
+    group.userData.animate = (t) => {
+      ghostPivot.rotation.y = (t * 0.0015) % (Math.PI * 2);
+      const yy = (0.5 + 0.5 * Math.sin(t * 0.0011)) * H, rd = Math.max(0.02, rOf(yy));
+      disk.position.y = yy - H / 2;
+      disk.scale.set(rd, 1, rd);
+    };
+    return 3.7;
+  }
+
   function buildIsotopes(THREE, group) {
     const isotopes = spec.isotopes || [
       { label: 'C-12', protons: 6, neutrons: 6 },
@@ -2061,6 +2105,7 @@
           : spec.kind === 'field' ? buildField(THREE, group)
           : spec.kind === 'vectors' ? buildVectors(THREE, group)
           : spec.kind === 'waves' ? buildWaves(THREE, group)
+          : spec.kind === 'solid-revolution' ? buildSolid(THREE, group)
           : buildMolecule(THREE, group);
 
         const presentationLocked = ['molecule-gallery', 'structure-comparison', 'carbon-architecture', 'proton-transfer', 'reaction-collisions', 'thermal-lattice', 'particle-states', 'entropy-microstates'].includes(spec.kind)

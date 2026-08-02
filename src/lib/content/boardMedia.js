@@ -23,6 +23,8 @@ import { MATHS_MEDIA_80_EXPANSION } from './mathsMedia80Expansion.js';
  *   { type:'three', spec:{ kind:'field', title, label, charges:[{x,y,z,q}] } }
  *   { type:'three', spec:{ kind:'vectors', mode:'add'|'cross'|'components', title, label } }
  *   { type:'three', spec:{ kind:'waves', mode:'traveling'|'standing'|'interference', title, label } }
+ *   { type:'three', spec:{ kind:'solid-revolution', shape:'paraboloid'|'cone'|'sphere'|'vase', title, label } }
+ *     (no live BB is wired yet — awaiting a volumes-of-revolution / calculus board)
  *   { type:'three', spec:{ kind:'isotopes', isotopes:[{label,protons,neutrons}] } }
  *   shape ∈ linear | bent | trigonal | pyramidal | tetrahedral
  */
