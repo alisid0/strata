@@ -94,6 +94,7 @@ export const PATH_QUESTIONS = {
       q: 'The sign in front of a number tells you which ___ from zero you\'re standing.',
       answer: 'direction',
       accept: ['direction', 'way', 'side'],
+      distractors: ['distance', 'angle', 'value'],
       explain: 'Positive means right of zero, negative means left — the sign is directional, not about size.'
     })),
 
@@ -167,6 +168,7 @@ export const PATH_QUESTIONS = {
       q: 'To plot the point (3, 4), you first move ___ units along the x-axis, then 4 units up.',
       answer: '3',
       accept: ['3', 'three'],
+      distractors: ['4', '7', '1'],
       explain: 'The first number in an ordered pair is always the horizontal move along x, done first.'
     })),
 
@@ -231,6 +233,7 @@ export const PATH_QUESTIONS = {
       q: 'In the equation y = mx + c, the letter ___ controls the lean (steepness) of the line.',
       answer: 'm',
       accept: ['m', 'M'],
+      distractors: ['c', 'x', 'y'],
       explain: 'm is the gradient (slope) — it controls how steep the line is. c controls where it crosses the y-axis.'
     })),
   ],
@@ -792,6 +795,7 @@ export const PATH_QUESTIONS = {
       q: 'The SI base unit for mass is the ___.',
       answer: 'kilogram',
       accept: ['kilogram', 'Kilogram', 'kg'],
+      distractors: ['newton', 'gram', 'metre'],
       explain: 'The kilogram (kg) is the SI base unit for mass, one of the seven fundamental units.'
     })),
 
@@ -1318,6 +1322,7 @@ export const PATH_QUESTIONS = {
       q: "Newton's first law says an object in motion stays in motion unless acted on by an external ___.",
       answer: 'force',
       accept: ['force', 'Force'],
+      distractors: ['motion', 'energy', 'mass'],
       explain: "This resistance to a change in velocity is inertia — Newton's first law defines it precisely."
     })),
     typeanswer(() => {
@@ -1645,6 +1650,7 @@ export const PATH_QUESTIONS = {
       q: 'The atomic number Z is the number of ___ in the nucleus.',
       answer: 'protons',
       accept: ['protons', 'Protons'],
+      distractors: ['neutrons', 'electrons', 'nucleons'],
       explain: 'Z, the atomic number, counts protons — it uniquely identifies the element and fixes its position on the periodic table.'
     })),
     truefalse(() => ({
@@ -1715,6 +1721,7 @@ export const PATH_QUESTIONS = {
       q: 'In covalent bonding, atoms achieve stability by ___ electron pairs rather than transferring them.',
       answer: 'sharing',
       accept: ['sharing', 'Sharing'],
+      distractors: ['transferring', 'donating', 'removing'],
       explain: 'Covalent bonding is electron sharing: both nuclei are attracted to the same shared pair, gluing the atoms together.'
     })),
     mcq(() => ({
@@ -1784,6 +1791,7 @@ export const PATH_QUESTIONS = {
       q: 'According to VSEPR theory, molecular shape is determined by electron pairs arranging themselves to minimise ___.',
       answer: 'repulsion',
       accept: ['repulsion', 'Repulsion'],
+      distractors: ['attraction', 'energy', 'distance'],
       explain: 'Electron pairs (bonding and lone) repel each other and spread out as far apart as possible — this single rule predicts linear, tetrahedral, bent, and pyramidal shapes.'
     })),
     mcq(() => ({
@@ -4171,6 +4179,7 @@ export const PATH_QUESTIONS = {
       q: 'Heat always flows spontaneously from a ___ object to a colder one.',
       answer: 'hotter',
       accept: ['hotter', 'hot', 'warmer', 'warm'],
+      distractors: ['colder', 'heavier', 'larger'],
       explain: 'The second law of thermodynamics: heat never flows by itself from cold to hot.'
     }), 'super-easy'),
     mcq(() => ({
@@ -4216,6 +4225,7 @@ export const PATH_QUESTIONS = {
       q: 'The energy needed to melt or boil a substance without changing its temperature is called ___ heat.',
       answer: 'latent',
       accept: ['latent', 'latent heat'],
+      distractors: ['specific', 'radiant', 'kinetic'],
       explain: 'Latent heat goes into breaking intermolecular bonds, so the temperature stays put during the phase change (Q = mL).'
     }), 'easy'),
     truefalse(() => ({
@@ -4272,6 +4282,7 @@ export const PATH_QUESTIONS = {
       q: 'An object\'s resistance to a change in its rate of spin is called the moment of ___.',
       answer: 'inertia',
       accept: ['inertia'],
+      distractors: ['momentum', 'torque', 'friction'],
       explain: 'Moment of inertia I = Σmr² plays the role mass plays in linear motion; for rotation, τ = Iα.'
     }), 'medium'),
     typeanswer(() => {
@@ -5821,6 +5832,21 @@ const PATH_ALIAS = {
   CHEM_BONDING: 'C3',  // Chemical bonding
   CHEM_MOLE: 'C4'      // Reactions & the mole ← Reactions & molecular architecture pool
 };
+
+// All fill-in-the-blank answers defined for a path, used to build plausible
+// same-topic tap-to-answer distractors in the quiz (mobile: tap, don't type).
+export function getFillBankAnswers(pathId) {
+  const pool = PATH_QUESTIONS[pathId] || PATH_QUESTIONS[PATH_ALIAS[pathId]];
+  if (!pool) return [];
+  const out = [];
+  for (const def of pool) {
+    if (def.type !== 'fillblank') continue;
+    let inst;
+    try { inst = def.generate(); } catch { continue; }
+    if (inst && inst.answer != null) out.push(String(inst.answer).trim());
+  }
+  return out;
+}
 
 export function getPathQuestions(pathId, count = 10) {
   const pool = PATH_QUESTIONS[pathId] || PATH_QUESTIONS[PATH_ALIAS[pathId]];
