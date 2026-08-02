@@ -1,5 +1,5 @@
 <script>
-  import { getPathQuestions, DIFFICULTY_LABELS } from '../lib/content/questions.js';
+  import { getPathQuestions, getFillBankAnswers, DIFFICULTY_LABELS } from '../lib/content/questions.js';
   import { formatMathText } from '../lib/content/mathFormat.js';
   import { PATHS } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
@@ -13,6 +13,7 @@
   $: if (pathId) {
     const qs = getPathQuestions(pathId, 10);
     questions = qs;
+    fillChoiceCache = {};
     current = 0;
     answers = qs.reduce((o, _, i) => (o[i] = null, o), {});
     attempts = qs.reduce((o, _, i) => (o[i] = 0, o), {});
@@ -24,6 +25,9 @@
     questions = [];
   }
 
+  // Same-topic pool of fill-in-the-blank answers, for tap-to-answer distractors.
+  $: fillBank = pathId ? getFillBankAnswers(pathId) : [];
+
   let current = 0;
   let answers = {};
   let attempts = {};
@@ -32,6 +36,81 @@
   let finished = false;
   let showFeedback = {};
   let questions = [];
+  let fillChoiceCache = {};
+
+  // On mobile, typing exact words is slow and error-prone. Turn a fill-in-the-blank
+  // into tap-to-answer when we can source plausible distractors from sibling
+  // fillblank answers in the same quiz (same topic, so they read as real options).
+  const isNumericAns = (s) => /^-?\d+(\.\d+)?$/.test(String(s).trim());
+  function seededShuffle(arr, seed) {
+    const a = arr.slice();
+    let s = ((seed + 1) * 2654435761) % 2147483647 || 1;
+    const rnd = () => { s = (s * 48271) % 2147483647; return s / 2147483647; };
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function getFillChoices(idx) {
+    if (idx in fillChoiceCache) return fillChoiceCache[idx];
+    const q = questions[idx];
+    const correct = String(q?.answer ?? '').trim();
+    const accept = new Set((q?.accept || [correct]).map((a) => String(a).toLowerCase()));
+    const numeric = isNumericAns(correct);
+    const seen = new Set([correct.toLowerCase()]);
+    const distractors = [];
+    // Prefer authored distractors; top up from same-topic answers only if needed.
+    for (const cand0 of Array.isArray(q?.distractors) ? q.distractors : []) {
+      const cand = String(cand0).trim();
+      const lc = cand.toLowerCase();
+      if (!cand || accept.has(lc) || seen.has(lc)) continue;
+      seen.add(lc);
+      distractors.push(cand);
+    }
+    if (distractors.length < 3) {
+      for (const cand0 of fillBank) {
+        const cand = String(cand0).trim();
+        const lc = cand.toLowerCase();
+        if (!cand || accept.has(lc) || seen.has(lc) || isNumericAns(cand) !== numeric) continue;
+        seen.add(lc);
+        distractors.push(cand);
+      }
+    }
+    let choices = null;
+    if (correct && distractors.length >= 2) {
+      const picked = seededShuffle(distractors, idx + correct.length).slice(0, 3);
+      choices = seededShuffle([correct, ...picked], idx + 7);
+    }
+    fillChoiceCache[idx] = choices;
+    return choices;
+  }
+  $: fillChoices = questions[current]?.type === 'fillblank' ? getFillChoices(current) : null;
+
+  function handleFillChoice(questionIdx, choice) {
+    const q = questions[questionIdx];
+    if (status[questionIdx] !== 'pending') return;
+
+    const accept = (q.accept || [q.answer]).map((a) => String(a).toLowerCase());
+    const isCorrect = accept.includes(String(choice).trim().toLowerCase());
+
+    attempts[questionIdx] = (attempts[questionIdx] || 0) + 1;
+    answers[questionIdx] = choice;
+
+    if (isCorrect) {
+      status[questionIdx] = 'correct';
+      score++;
+      progress.grantCorrectAnswer();
+      showFeedback[questionIdx] = { type: 'good', text: `Correct. ${q.explain || ''}` };
+    } else if (attempts[questionIdx] >= 2) {
+      status[questionIdx] = 'failed';
+      showFeedback[questionIdx] = { type: 'bad', text: `Answer: ${q.answer}. ${q.explain || ''}` };
+    } else {
+      showFeedback[questionIdx] = { type: 'bad', text: 'Not quite, try once more.' };
+    }
+    status = { ...status };
+    showFeedback = { ...showFeedback };
+  }
 
   function handleMCQ(questionIdx, optionIdx) {
     const q = questions[questionIdx];
@@ -232,22 +311,36 @@
       <!-- Type answer (numeric) -->
       {:else if questions[current]?.type === 'typeanswer'}
         <div class="numeric-wrap">
-          <input id="num-input-{current}" type="number" step="any" class="num-input" placeholder="Your answer"
+          <input id="num-input-{current}" type="number" step="any" inputmode="decimal" enterkeyhint="done"
+            class="num-input" placeholder="Your answer"
             disabled={status[current] !== 'pending'} on:keydown={(e) => e.key === 'Enter' && handleNumeric(current)} />
           <QxButton fullWidth={false} variant="secondary" on:click={() => handleNumeric(current)} disabled={status[current] !== 'pending'}>
             Check
           </QxButton>
         </div>
 
-      <!-- Fill in the blank -->
+      <!-- Fill in the blank: tap-to-answer when we have distractors, else type it -->
       {:else if questions[current]?.type === 'fillblank'}
-        <div class="fill-wrap">
-          <input id="fill-input-{current}" type="text" class="num-input" placeholder="Type your answer"
-            disabled={status[current] !== 'pending'} on:keydown={(e) => e.key === 'Enter' && handleFillBlank(current)} />
-          <QxButton fullWidth={false} variant="secondary" on:click={() => handleFillBlank(current)} disabled={status[current] !== 'pending'}>
-            Check
-          </QxButton>
-        </div>
+        {#if fillChoices}
+          <div class="options">
+            {#each fillChoices as choice}
+              <button
+                class="opt-btn {answers[current] === choice ? (status[current] === 'correct' ? 'correct' : status[current] === 'failed' ? 'incorrect' : 'selected') : ''}"
+                disabled={status[current] !== 'pending'}
+                on:click={() => handleFillChoice(current, choice)}
+              >{@html formatMathText(choice)}</button>
+            {/each}
+          </div>
+        {:else}
+          <div class="fill-wrap">
+            <input id="fill-input-{current}" type="text" class="num-input" placeholder="Type your answer"
+              autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" inputmode="text" enterkeyhint="done"
+              disabled={status[current] !== 'pending'} on:keydown={(e) => e.key === 'Enter' && handleFillBlank(current)} />
+            <QxButton fullWidth={false} variant="secondary" on:click={() => handleFillBlank(current)} disabled={status[current] !== 'pending'}>
+              Check
+            </QxButton>
+          </div>
+        {/if}
 
       <!-- Match the following -->
       {:else if questions[current]?.type === 'match'}
