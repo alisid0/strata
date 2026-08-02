@@ -114,7 +114,7 @@
     </div>
 
     {#if roadmap.length}
-      <div class="section-label">Up next</div>
+      <div class="section-label">Coming soon</div>
       <div class="roadmap">
         {#each roadmap as name}<span class="road-chip">{name}</span>{/each}
       </div>
