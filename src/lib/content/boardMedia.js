@@ -497,7 +497,35 @@ export const BOARD_MEDIA = {
   1394: { 0: { type: 'three', spec: {
     kind: 'ray-optics',
     label: 'refraction at a boundary'
-  } } }
+  } } },
+
+  // ── Interactive-coverage batch (2026-08-02) ──
+  // Wire already-verified concept explorers to uncovered boards whose concept
+  // clearly matches a built kind. Kinds validated in the concept-explorer
+  // visual-QA sweep; keys checked against live catalogue titles (1163-1431 range
+  // alignment confirmed). Raises interactive coverage from 41% toward ~46%.
+  1163: { 0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 3, secondary: 2, prompt: 'Set the horizontal and vertical parts to build the arrow.' } } },
+  1221: { 0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Send an input through the rule and read the output.' } } },
+  1223: { 0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Change the input and watch the output move.' } } },
+  1224: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.7, secondary: 0, prompt: 'Change the gradient and the intercept of the line.' } } },
+  1230: { 0: { type: 'concept-explorer', spec: { kind: 'logic', gate: 'AND', prompt: 'Toggle the two inputs and read the gate output.' } } },
+  1275: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.5, secondary: 0, prompt: 'Steepen the gradient and watch the rate change.' } } },
+  1276: { 0: { type: 'concept-explorer', spec: { kind: 'logic', gate: 'OR', prompt: 'Flip the inputs to see how a gate decides its output.' } } },
+  1305: { 0: { type: 'concept-explorer', spec: { kind: 'matrix-index', prompt: 'Pick a row and a column to read the entry address.' } } },
+  1307: { 0: { type: 'concept-explorer', spec: { kind: 'matrix-index', prompt: 'Rows then columns: locate any entry by its address.' } } },
+  1309: { 0: { type: 'concept-explorer', spec: { kind: 'matrix-index', prompt: 'Each cell holds one value; the grid holds the data.' } } },
+  1313: { 0: { type: 'concept-explorer', spec: { kind: 'log', primary: 3, prompt: 'Raise the power and watch repeated multiplication.' } } },
+  1314: { 0: { type: 'concept-explorer', spec: { kind: 'log', primary: 3, prompt: 'Compare powers of the same base.' } } },
+  1315: { 0: { type: 'concept-explorer', spec: { kind: 'log', primary: 3, prompt: 'Change the power and read the exponent it asks for.' } } },
+  1326: { 0: { type: 'concept-explorer', spec: { kind: 'circuit', primary: 6, secondary: 2, prompt: 'Raise the resistance and watch the current fall.' } } },
+  1344: { 0: { type: 'concept-explorer', spec: { kind: 'thermal', primary: 300, prompt: 'Lower the temperature toward the cold limit.' } } },
+  1346: { 0: { type: 'concept-explorer', spec: { kind: 'thermal', primary: 300, prompt: 'Warm the particles and watch their motion change.' } } },
+  1387: { 0: { type: 'concept-explorer', spec: { kind: 'derivative', primary: 2, prompt: 'Move the point and read the slope of x squared.' } } },
+  1407: { 0: { type: 'concept-explorer', spec: { kind: 'energy', primary: 20, secondary: 4, prompt: 'Split the energy into useful and lost.' } } },
+  1421: { 0: { type: 'concept-explorer', spec: { kind: 'energy', primary: 20, secondary: 8, prompt: 'Follow the energy: useful plus lost stays constant.' } } },
+  1423: { 0: { type: 'concept-explorer', spec: { kind: 'limit', primary: 2, prompt: 'Slide x toward the target and watch the output approach.' } } },
+  1427: { 0: { type: 'concept-explorer', spec: { kind: 'limit', primary: 2, prompt: 'Approach the awkward point from either side.' } } },
+  1431: { 0: { type: 'concept-explorer', spec: { kind: 'derivative', primary: 1, prompt: 'The slope at each point describes the motion.' } } }
 };
 
 // Keep the large, audited Mathematics expansion separate from the hand-tuned
