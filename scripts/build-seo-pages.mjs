@@ -288,7 +288,9 @@ async function main() {
 
   // 3. Generate pages
   const sitemapEntries = [];
-  sitemapEntries.push({ url: DOMAIN, lastmod: new Date().toISOString().split('T')[0] });
+  // Trailing slash to match the homepage canonical (<link rel="canonical"
+  // href="…/">), so Google does not treat "/" and "" as two separate URLs.
+  sitemapEntries.push({ url: `${DOMAIN}/`, lastmod: new Date().toISOString().split('T')[0] });
 
   let generated = 0;
   for (const record of records) {
