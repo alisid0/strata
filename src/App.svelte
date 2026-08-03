@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import { fly, fade } from 'svelte/transition';
-  import { initAuth, isAuthenticated } from './lib/stores/auth.js';
+  import { initAuth, isAuthenticated, signInWithGoogle } from './lib/stores/auth.js';
   import { profile } from './lib/stores/profile.js';
   import { progress } from './lib/stores/progress.js';
   import { engagement } from './lib/stores/engagement.js';
@@ -23,6 +23,7 @@
   import Author from './views/Author.svelte';
   import BottomNav from './lib/components/qubix/BottomNav.svelte';
   import CommandPalette from './lib/components/qubix/CommandPalette.svelte';
+  import SignupPrompt from './lib/components/SignupPrompt.svelte';
   import WToast from './lib/components/qubix/WToast.svelte';
   import { appEnvironment } from './lib/environment.js';
 
@@ -106,10 +107,12 @@
       // A real session exists — clear any stale guest flag.
       sessionStorage.removeItem('qubix_guest');
       currentView = profileData.onboardingCompleted ? 'home' : 'onboarding';
-    } else if (isGuest) {
-      currentView = 'home';
     } else {
-      currentView = 'auth';
+      // Guest-first: land everyone in the app and let them explore. A sign-up
+      // prompt appears after they have engaged (see the reactive block below).
+      // The auth screen is still reachable from the menu and the prompt.
+      sessionStorage.setItem('qubix_guest', '1');
+      currentView = 'home';
     }
 
     }
@@ -125,6 +128,39 @@
   function skipAuth() {
     sessionStorage.setItem('qubix_guest', '1');
     currentView = 'home';
+  }
+
+  // ── Guest sign-up prompt: appears once a guest has explored a little ──
+  let showSignupPrompt = false;
+  let signupPromptDismissed =
+    typeof sessionStorage !== 'undefined' && sessionStorage.getItem('qubix_signup_dismissed') === '1';
+  const PROMPT_AT_BOARDS = 2;
+  // Only interrupt at a natural pause (browse/dashboard views), never mid-lesson.
+  const PROMPT_VIEWS = ['home', 'path', 'subject', 'topicDetail', 'wscore'];
+
+  $: if (
+    !$isAuthenticated &&
+    !signupPromptDismissed &&
+    !showSignupPrompt &&
+    Object.keys($progress?.boards || {}).length >= PROMPT_AT_BOARDS &&
+    PROMPT_VIEWS.includes(currentView)
+  ) {
+    showSignupPrompt = true;
+  }
+
+  function signupWithEmail() {
+    showSignupPrompt = false;
+    authInitialMode = 'welcome';
+    currentView = 'auth';
+  }
+  async function signupWithGoogle() {
+    showSignupPrompt = false;
+    try { await signInWithGoogle(); } catch { currentView = 'auth'; }
+  }
+  function dismissSignupPrompt() {
+    showSignupPrompt = false;
+    signupPromptDismissed = true;
+    try { sessionStorage.setItem('qubix_signup_dismissed', '1'); } catch {}
   }
 
   function handleGateway(gateway) {
@@ -284,6 +320,10 @@
 
   <CommandPalette open={searchOpen} onClose={() => searchOpen = false} onNavigate={navigate} />
   <WToast />
+
+  {#if showSignupPrompt}
+    <SignupPrompt onEmail={signupWithEmail} onGoogle={signupWithGoogle} onDismiss={dismissSignupPrompt} />
+  {/if}
 </div>
 
 <svelte:window on:keydown={(e) => {
