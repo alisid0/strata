@@ -1218,7 +1218,7 @@
     /* ── Open-book spread: figure/interactive on the LEFT page, text on the
        RIGHT page. Text-only floors centre the text on the spread. ───────── */
     .reading-slab {
-      width: min(1080px, 100%);
+      width: min(1000px, 100%);
       background: radial-gradient(130% 120% at 50% 0%, #fdfaf4, #f4ecdd);
       border: 1px solid color-mix(in srgb, var(--qx-border) 86%, #b8a888);
       border-radius: 7px;
@@ -1258,10 +1258,32 @@
     }
     .floor-anim.has-media .floor-media {
       grid-column: 1; grid-row: 1 / span 2;
-      align-self: center; justify-self: center;
-      width: 100%; max-width: 100%; margin: 0;
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; min-height: 0; height: 100%; max-height: 100%;
+      margin: 0; overflow: hidden;
     }
-    .floor-anim.has-media .floor-media.interactive { height: min(58vh, 460px); }
+    /* The figure is a contained, centred textbook figure. The media components
+       force their own min-height and a square SVG that grows with width, so cap
+       the box AND relax those minimums so the figure always fits the page. */
+    .floor-anim.has-media .floor-media > :global(*) {
+      width: 100%; max-width: 440px; max-height: 100%; margin: 0;
+    }
+    .floor-anim.has-media .floor-media.interactive > :global(*) {
+      height: min(56vh, 448px); max-height: 100%;
+    }
+    .floor-anim.has-media .floor-media :global(.line-explorer),
+    .floor-anim.has-media .floor-media :global(.explorer),
+    .floor-anim.has-media .floor-media :global(.ggb-container),
+    .floor-anim.has-media .floor-media :global(.three-wrap),
+    .floor-anim.has-media .floor-media :global(.media-img),
+    .floor-anim.has-media .floor-media :global(canvas) {
+      min-height: 0; max-height: 100%;
+    }
+    /* soften the model's UI-card chrome so it reads as printed on the page */
+    .floor-anim.has-media .floor-media :global(.line-explorer),
+    .floor-anim.has-media .floor-media :global(.explorer) {
+      box-shadow: 0 8px 22px rgba(24, 22, 17, 0.06);
+    }
     .floor-anim.has-media .page-text {
       display: flex; flex-direction: column; justify-content: center;
       grid-column: 2; grid-row: 1; min-width: 0;
