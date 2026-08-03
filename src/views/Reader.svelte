@@ -1051,7 +1051,7 @@
       flex-direction: column;
       position: fixed;
       top: 0;
-      left: 220px;
+      left: 0;
       bottom: 0;
       z-index: 5;
       width: 260px;
@@ -1132,7 +1132,7 @@
     /* Reading area shifts right for both sidebars */
     #topbar {
       max-width: none;
-      left: 480px;
+      left: 260px;
       right: 0;
       padding: 18px 40px;
       gap: 16px;
@@ -1164,7 +1164,7 @@
     }
     #rail {
       max-width: none;
-      left: 480px;
+      left: 260px;
       right: 0;
     }
     .slab {
@@ -1173,9 +1173,13 @@
     .card {
       padding: clamp(64px, 8vh, 100px) clamp(20px, 5vw, 80px) clamp(24px, 4vh, 40px);
     }
-    .side-nav.prev { left: calc(480px + 24px); }
+    .side-nav.prev { left: calc(260px + 24px); }
     .side-nav.next { right: 24px; }
     .reading-body { padding: 20px 24px; }
     .floor-text { font-size: 18px; line-height: 1.78; }
+    /* Keep interactive models / diagrams a sensible size instead of stretching
+       to the full slab width (which made square models ~680px tall and forced
+       heavy in-card scrolling). */
+    .floor-media { max-width: 480px; margin-inline: auto; }
   }
 </style>
