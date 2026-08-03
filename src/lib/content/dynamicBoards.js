@@ -80,7 +80,27 @@ async function refreshDynamicBoards(numbers) {
     dynamicBoards.set(next);
     persistCache(next);
   } catch (_) {
-    // Offline and unreachable backends are expected; bundled/cache content wins.
+    // Offline and unreachable backends are expected. Most curriculum is in the
+    // regular bundle; older reviewed production lessons live in a separate lazy
+    // snapshot so they remain available without increasing first-load cost.
+    try {
+      const { PRODUCTION_LEGACY_BOARDS } = await import('./productionLegacyBoards.js');
+      const next = { ...get(dynamicBoards) };
+      let changed = false;
+      for (const number of numbers) {
+        if (!next[number] && PRODUCTION_LEGACY_BOARDS[number]) {
+          next[number] = PRODUCTION_LEGACY_BOARDS[number];
+          changed = true;
+        }
+      }
+      if (changed) {
+        dynamicBoards.set(next);
+        persistCache(next);
+      }
+    } catch (_) {
+      // The lazy snapshot may itself be unavailable on a first-ever offline
+      // visit. Existing bundle and local cache content still remain usable.
+    }
   } finally {
     clearTimeout(timer);
   }
