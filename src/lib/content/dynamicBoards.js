@@ -84,12 +84,19 @@ async function refreshDynamicBoards(numbers) {
     // regular bundle; older reviewed production lessons live in a separate lazy
     // snapshot so they remain available without increasing first-load cost.
     try {
-      const { PRODUCTION_LEGACY_BOARDS } = await import('./productionLegacyBoards.js');
+      const [production, publishable] = await Promise.all([
+        import('./productionLegacyBoards.js'),
+        import('./publishableLegacyBoards.js')
+      ]);
+      const fallbackBoards = {
+        ...publishable.PUBLISHABLE_LEGACY_BOARDS,
+        ...production.PRODUCTION_LEGACY_BOARDS
+      };
       const next = { ...get(dynamicBoards) };
       let changed = false;
       for (const number of numbers) {
-        if (!next[number] && PRODUCTION_LEGACY_BOARDS[number]) {
-          next[number] = PRODUCTION_LEGACY_BOARDS[number];
+        if (!next[number] && fallbackBoards[number]) {
+          next[number] = fallbackBoards[number];
           changed = true;
         }
       }

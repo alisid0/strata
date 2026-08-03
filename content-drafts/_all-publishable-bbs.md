@@ -427,6 +427,10 @@ Generated: 2026-07-08
 
 **Floor 0:** The planet that never was: Vulcan. Flush with the triumph of Neptune, Urbain Le Verrier turned the same method on Mercury. Mercury's orbit also drifted from Newton's prediction — its closest point to the Sun crept around a little faster than the equations allowed. Le Verrier proposed the obvious fix: another unseen planet, this one orbiting between Mercury and the Sun. He named it Vulcan. For half a century astronomers hunted for it, and a few even reported seeing it cross the Sun's face, but Vulcan was never there. The puzzle held until 1915, when Einstein's general relativity gave the real answer: Mercury orbits so close to the Sun that it travels through space the Sun's mass has noticeably curved, and that curvature shifts its orbit by exactly the missing amount. There was no extra planet to find — this time it was Newton's law itself that had to give way.
 
+**Floor 1:** A model can be extraordinarily successful without being universal. Newton's laws describe falling objects, machines, planets and spacecraft with excellent accuracy whenever speeds are far below the speed of light and gravity is not extreme. Mercury's small mismatch did not make centuries of Newtonian predictions worthless; it marked the edge of the conditions in which the model is accurate.
+
+**Floor 2:** Einstein's theory contains Newton's result as a close approximation in ordinary conditions, but explains gravity differently: mass and energy curve spacetime, and objects follow the straightest paths available through that curved geometry. Scientific progress often works this way. A newer theory preserves what the older one got right, explains the anomaly it could not, and states more clearly where each model applies.
+
 ---
 
 ## BB 1030 — Mass, weight & units
@@ -501,6 +505,10 @@ Generated: 2026-07-08
 
 **Floor 0:** Vindicated: the rocket man the Times mocked. In 1920, the American physicist Robert Goddard published the idea that a rocket might one day reach the Moon. The New York Times mocked him for it: a rocket needs air to push against, the editorial scoffed, so in the vacuum of space it would have nothing to work on — Goddard seemed to "lack the knowledge ladled out daily in high schools." But he was right and the paper was wrong, for the exact reason this board lays out: a rocket doesn't push against the air, it pushes against its own exhaust, so it works just fine in a vacuum — arguably better, with no air to slow it. In 1969, as Apollo 11 coasted toward the Moon, the Times ran a three-line correction: "it is now definitely established that a rocket can function in a vacuum as well as in an atmosphere. The Times regrets the error." Forty-nine years late.
 
+**Floor 1:** Inside a rocket engine, hot gas is accelerated backwards through the nozzle. The rocket exerts a backward force on that gas, and the gas exerts an equal forward force on the rocket. These forces act on different objects, so they do not cancel. The forward force on the rocket is thrust: a direct example of Newton's third law.
+
+**Floor 2:** A surrounding atmosphere is unnecessary because the rocket carries both propellant and oxidiser. In a vacuum there is no drag, and the exhaust can expand more freely, so a suitably designed engine can be more effective than it is at sea level. The key question is not “what does the rocket push against?” but “what momentum does it give to its exhaust?”
+
 ---
 
 ## BB 1035 — The simplest thing you can draw
@@ -540,6 +548,10 @@ Generated: 2026-07-08
 **Subject:** physics | **Topic:**  | **Concept:** 
 
 **Floor 0:** Descartes and the fly on the ceiling. René Descartes was a sickly child, and his Jesuit school let him lie in bed until late each morning — a habit he kept all his life, insisting he thought best lying down. The story goes that one morning, watching a fly crawl across his bedroom ceiling, he realised he could pin its position exactly with two numbers: its distance from each of two walls. From that idle thought grew the coordinate grid that now bears his name. (The fly tale is almost certainly a later embellishment, with no record of it from his own time, but it captures the idea perfectly.) What's certain is that in 1637 he published La Géométrie, fusing algebra and geometry into a single subject and changing mathematics forever. There's a sting in the tale: in 1649 Queen Christina of Sweden hired him as her tutor and demanded lessons at five in the morning, in an unheated palace, through a Scandinavian winter. The man who lived by his late mornings lasted only months — pneumonia took him in 1650.
+
+**Floor 1:** The coordinate grid turns position into data. Choose an origin and two perpendicular axes, then every point in a plane can be named by an ordered pair (x, y). Geometry can now be expressed with numbers, while algebraic equations can be seen as shapes. A line such as y = 2x + 1 is both an equation and a visible path across the grid.
+
+**Floor 2:** That bridge is essential to physics. Position becomes coordinates; a change in position becomes displacement; displacement over time gives velocity; and changing velocity gives acceleration. By putting motion on a grid, the ideas in Newton's laws become measurable relationships that can be graphed, calculated and tested.
 
 ---
 
