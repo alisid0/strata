@@ -21,12 +21,12 @@ policy forbids. A representative body:
 ```json
 {
   "csp-report": {
-    "document-uri": "https://strata-nine-pi.vercel.app/reader/physics/forces",
+    "document-uri": "https://qubix.university/reader/physics/forces",
     "referrer": "",
     "violated-directive": "script-src",
     "blocked-uri": "https://evil.example/x.js",
     "line-number": 42,
-    "source-file": "https://strata-nine-pi.vercel.app/assets/index-abc.js"
+    "source-file": "https://qubix.university/assets/index-abc.js"
   }
 }
 ```

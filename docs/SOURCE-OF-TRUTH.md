@@ -77,8 +77,7 @@ rerun the audit for any new decision.
 - A Git push updates the current staging deployment, but it does **not** deploy
   production.
 - Production is a separate manual Vercel deployment. The current public URL is
-  `https://strata-nine-pi.vercel.app` until the documented domain migration is
-  completed.
+  `https://qubix.university`.
 - Supabase BB edits are independent of Git and can change live floor text
   without a code commit or Vercel deployment.
 

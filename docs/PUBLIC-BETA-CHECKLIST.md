@@ -31,7 +31,7 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 | ✅ | Production SMTP configured, delivery confirmed | Ali 2026-07-22 |
 | ✅ | Google OAuth configured, sign-in tested end to end | Ali 2026-07-22 |
 | ✅ | Obsolete credentials revoked | Ali 2026-07-22 |
-| ✅ | Site URL + redirect allowlist set (currently `strata-nine-pi.vercel.app`) | production auth config |
+| ✅ | Site URL + redirect allowlist set (currently `qubix.university`) | production auth config |
 | ⬜ | Re-point Site URL when the custom domain moves to production | blocked on §6 |
 | ⬜ | Decide Google↔password account-linking policy for same email | open question, `AUTH-CONFIG-RUNBOOK.md` |
 
@@ -76,7 +76,7 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 
 | Status | Item | Evidence |
 |---|---|---|
-| ✅ | Production deployed and live | `strata-nine-pi.vercel.app`, RSP-006 |
+| ✅ | Production deployed and live | `qubix.university`, RSP-006 |
 | ⬜ | Dedicated production Vercel project finalised | pending |
 | ⬜ | `qubix.arcavetech.co.uk` moved from staging → production | pending; keep Search Console TXT record |
 | ⬜ | Production error monitoring + documented rollback | pending |
@@ -116,7 +116,7 @@ Most items above are parallel. The chain that actually gates a closed beta:
 
 Production domain move (§6) and the OAuth account-linking decision (§2) should
 be settled before *wide* launch but do not block a closed beta on the current
-`strata-nine-pi.vercel.app` origin.
+`qubix.university` origin.
 
 ## Open risks carried into beta
 

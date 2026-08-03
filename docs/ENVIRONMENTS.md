@@ -18,7 +18,7 @@ Supabase project.
 
 Current public URLs:
 
-- Production: `https://strata-nine-pi.vercel.app`
+- Production: `https://qubix.university`
 - Staging: `https://qubix-staging.vercel.app`
 
 Current Supabase projects:
@@ -61,7 +61,7 @@ pnpm run dev:production      # explicit production connection; use carefully
 
 | Surface | URL | Supabase project |
 | --- | --- | --- |
-| Production app | `strata-nine-pi.vercel.app` | `wmetdmfsniqrshuaoodc` (prod) |
+| Production app | `qubix.university` | `wmetdmfsniqrshuaoodc` (prod) |
 | Staging app | `qubix-staging.vercel.app` | `atmmfkhjsdqqwnhqifxm` (staging) |
 | Local `pnpm run dev` | `http://localhost:8000` | `atmmfkhjsdqqwnhqifxm` (staging) |
 | Content scripts (CLI) | n/a | whatever `.env.local`'s `SUPABASE_URL` points at |
@@ -149,7 +149,7 @@ The production `cards` table contains 1,145 reviewed public rows. Only public
 catalogue content was migrated from the retired project; users, identities,
 progress, sessions, reports, and screenshots were deliberately not copied.
 Production Authentication has Site URL and redirect allowlisting set to
-`https://strata-nine-pi.vercel.app`. Production SMTP is configured and email
+`https://qubix.university`. Production SMTP is configured and email
 delivery is confirmed; Google OAuth is configured and sign-in tested end to end.
 Obsolete credentials from the setup were revoked. (Verified 2026-07-22.)
 

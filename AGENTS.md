@@ -28,8 +28,7 @@ Then read:
 ## Current environment state
 
 - Public code branch: `main`.
-- Public production URL: `https://strata-nine-pi.vercel.app` until the planned
-  domain migration is complete.
+- Public production URL: `https://qubix.university`.
 - Production Supabase: `Qubix Production`, ref `wmetdmfsniqrshuaoodc`, London.
   This is the only production database authority. The legacy project ref
   `xzesbcrlnbesmvxmgotp` is retired and must not be restored in runtime config.

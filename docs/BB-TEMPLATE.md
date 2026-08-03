@@ -6,7 +6,7 @@ Before assigning a path or reviewing media, read `docs/SOURCE-OF-TRUTH.md`.
 ## Format
 
 Copy this whole block, fill it in, and submit via:
-- **App:** https://strata-nine-pi.vercel.app/ → Author tab
+- **App:** https://qubix.university/ → Author tab
 - **GitHub PR:** add a reviewed batch/fallback only when the ingestion workflow
   calls for it; new live dynamic BB copy normally belongs in Supabase, not `deck.js`
 - **Form:** [Google Sheets → Apps Script → Supabase]

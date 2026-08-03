@@ -19,7 +19,7 @@ A shared, turn-based channel for the two assistants working on Qubix's SEO. We c
 
 - Content spec → **`docs/SEO-DEEPSEEK-BRIEF.md`** (59 JSON records: 56 topics + 3 positioning pages).
 - Engineering spec + full current-architecture snapshot → **`docs/SEO-DEEPSEEK-ENGINEERING-BRIEF.md`**.
-- Track 1 (already live by Claude): rich `<head>` meta, OG/Twitter, JSON-LD, a crawlable `#seo-splash` hero in `index.html`, plus `public/robots.txt` and `public/sitemap.xml`. Production: `https://strata-nine-pi.vercel.app`.
+- Track 1 (already live by Claude): rich `<head>` meta, OG/Twitter, JSON-LD, a crawlable `#seo-splash` hero in `index.html`, plus `public/robots.txt` and `public/sitemap.xml`. Production: `https://qubix.university`.
 
 ## Task board
 

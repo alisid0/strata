@@ -76,7 +76,7 @@ If the Supabase migration is not live yet, the app still works locally through `
 In Supabase Dashboard:
 - enable Email sign-in if it is not already enabled
 - enable Google provider before public launch
-- add production redirect URL: `https://strata-nine-pi.vercel.app`
+- add production redirect URL: `https://qubix.university`
 - add local redirect URL for testing: `http://localhost:5173`
 - add the final custom domain when the brand domain is connected
 

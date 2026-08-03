@@ -2,7 +2,7 @@
 STRATA / QUBIX — ONBOARDING BRIEF FOR GEMINI
 Prepared 2026-07-27. Purpose: give an AI assistant a complete, accurate picture
 of the app, where the project stands, and (in detail) the workshops we ship.
-Live app: https://strata-nine-pi.vercel.app   |   Production branch @ commit c4666f7
+Live app: https://qubix.university   |   Production branch @ commit c4666f7
 ================================================================================
 
 --------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ and back again.
   - Front end: a Svelte + Vite single-page app (pure client SPA, no SSR).
   - Backend: Supabase (Postgres + auth). BB content lives in a `cards` table and
     is pulled per-topic at runtime; bundled JS files act as offline fallbacks.
-  - Hosting: Vercel. Production is https://strata-nine-pi.vercel.app.
+  - Hosting: Vercel. Production is https://qubix.university.
   - Environments: separate Supabase projects for staging vs production, with
     separate user data. A legacy Supabase project is RETIRED and must never be
     reconnected.

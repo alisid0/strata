@@ -1,13 +1,13 @@
 # Qubix — TODO (finalization phase)
 
-**Status:** launch build is live & password-gated (strata-nine-pi.vercel.app).
+**Status:** launch build is live & password-gated (qubix.university).
 **Colours locked** (5-colour warm/crafted, Light + Dark). **Typography locked**
 (book-like reading + ⋯ settings menu with a Text-size A−/A+ control).
 Content = 78 boards / 9 topics. Media so far: 9 illustrations, 6 narrated, 5 3D.
 
 **Workflow:** `npm run dev` → http://localhost:8000 (no gate locally), iterate in
 the browser (hot reload), then commit + `npx vercel --prod` + alias to
-strata-nine-pi.vercel.app.
+qubix.university.
 
 ---
 

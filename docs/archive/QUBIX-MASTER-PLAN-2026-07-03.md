@@ -255,7 +255,7 @@ guest/localStorage fallback; mastery machine implemented; Qubix design system
 everywhere except Quiz.svelte; dynamic BB pipeline live (cards 85+ via
 Supabase); Author flow exists (localStorage only, not yet wired to a review
 table); leaderboard/stats medals are placeholder; review build password-gated
-at strata-nine-pi.vercel.app via `middleware.js` (fails open without
+at qubix.university via `middleware.js` (fails open without
 BASIC_AUTH_PASSWORD env var).
 
 **BB count at final res (text+audio+illustration+question set): 0.**

@@ -73,7 +73,7 @@
   <div class="sub">The operator-grade reference for running Qubix in normal times and in an incident — deployment, data model, backups, and emergency playbooks.</div>
   <div class="meta">
     Internal codename <b>Strata</b> · public brand <b>Qubix</b> · operated by <b>Arcave Technologies</b><br>
-    Production reference <span class="mono">2f3238f</span> · deployed 2026-07-22 · <span class="mono">strata-nine-pi.vercel.app</span><br>
+    Production reference <span class="mono">2f3238f</span> · deployed 2026-07-22 · <span class="mono">qubix.university</span><br>
     Document version 2.0 · generated 2026-07-22<br><br>
     <span class="lbl v-ver">VERIFIED</span> confirmed from code/system &nbsp;
     <span class="lbl v-unv">UNVERIFIED</span> needs admin access &nbsp;
@@ -514,7 +514,7 @@ unset SUPABASE_SERVICE_ROLE_KEY</pre>
 
 <div class="playbook">
 <h4>10 · Domain / DNS / certificate outage</h4>
-<div class="pbrow"><b>15 min:</b> Confirm whether it is DNS resolution, the cert, or the registrar. The current live origin is <code>strata-nine-pi.vercel.app</code> (Vercel-managed cert); a custom-domain move adds registrar/cert steps.</div>
+<div class="pbrow"><b>15 min:</b> Confirm whether it is DNS resolution, the cert, or the registrar. The current live origin is <code>qubix.university</code> (Vercel-managed cert); a custom-domain move adds registrar/cert steps.</div>
 <div class="pbrow"><b>Containment:</b> If a recent DNS change broke it, revert the record. <b>Do not delete the Search Console TXT record.</b></div>
 <div class="pbrow"><b>Recovery <span class="lbl v-app">APPROVAL</span>:</b> Fix at the registrar; allow for TTL; re-issue/verify HTTPS; update auth Site URL + OAuth redirects if the origin changed.</div>
 <div class="pbrow"><b>Verify:</b> HTTPS valid; site loads; auth redirects work.</div>
@@ -603,7 +603,7 @@ unset SUPABASE_SERVICE_ROLE_KEY</pre>
 <h2 style="margin-top:0;">I · One-page emergency reference</h2>
 <p class="small">Print this page on its own. Contains no secrets.</p>
 <table>
-  <tr><th>Production</th><td><span class="mono">strata-nine-pi.vercel.app</span> · Supabase <span class="mono">wmetdmfsniqrshuaoodc</span> (London) · commit <span class="mono">2f3238f</span></td></tr>
+  <tr><th>Production</th><td><span class="mono">qubix.university</span> · Supabase <span class="mono">wmetdmfsniqrshuaoodc</span> (London) · commit <span class="mono">2f3238f</span></td></tr>
   <tr><th>Staging</th><td><span class="mono">qubix-staging.vercel.app</span> · Supabase <span class="mono">atmmfkhjsdqqwnhqifxm</span></td></tr>
   <tr><th>Retired — do not use</th><td>Supabase <span class="mono">xzesbcrlnbesmvxmgotp</span></td></tr>
 </table>

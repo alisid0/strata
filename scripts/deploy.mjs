@@ -7,12 +7,17 @@
 // hand. That gap keeps stranding changes as "committed but not live". This
 // chains all three steps so a deploy is a single command.
 //
-// THIS REPO OWNS PRODUCTION. `strata-nine-pi.vercel.app` is served from here.
+// THIS REPO OWNS PRODUCTION. `qubix.university` is served from here.
 // The legacy untracked `Strata` folder is a different Vercel project and is
 // blocked from taking this alias — see ../scripts/deploy.mjs there.
 import { execSync } from 'node:child_process';
 
-const ALIAS = 'strata-nine-pi.vercel.app';
+// Stable Vercel-owned alias that always resolves, plus the public custom
+// domain(s). The custom domains are best-effort: until they are added to the
+// project AND DNS-verified in Vercel, aliasing them fails, and that must not
+// abort the deploy or stop the stable alias from updating.
+const STABLE_ALIAS = 'strata-nine-pi.vercel.app';
+const CUSTOM_ALIASES = ['qubix.university', 'www.qubix.university'];
 
 // Build production EXPLICITLY. `npm run build` with no argument infers the mode
 // from the local environment, so on a machine configured for staging it would
@@ -30,7 +35,17 @@ if (!url) {
 }
 console.log('  deployed: ' + url);
 
-console.log(`▸ aliasing ${url} → ${ALIAS}…`);
-execSync(`npx vercel alias set ${url} ${ALIAS}`, { stdio: 'inherit' });
+console.log(`▸ aliasing ${url} → ${STABLE_ALIAS}…`);
+execSync(`npx vercel alias set ${url} ${STABLE_ALIAS}`, { stdio: 'inherit' });
 
-console.log(`\n✅ live: https://${ALIAS}`);
+for (const alias of CUSTOM_ALIASES) {
+  try {
+    execSync(`npx vercel alias set ${url} ${alias}`, { stdio: 'inherit' });
+    console.log(`  ✓ aliased ${alias}`);
+  } catch {
+    console.warn(`  ⚠ ${alias} not aliased yet — add + DNS-verify the domain in Vercel first (continuing)`);
+  }
+}
+
+console.log(`\n✅ live: https://${STABLE_ALIAS}`);
+console.log(`   → https://qubix.university once its DNS is verified in Vercel`);

@@ -23,7 +23,7 @@ Already available:
 Outstanding technical marketing issues:
 
 - canonical, Open Graph, structured-data, robots, and sitemap URLs still point
-  at `https://strata-nine-pi.vercel.app`;
+  at `https://qubix.university`;
 - `qubix.arcavetech.co.uk` is still attached to staging and must move to the
   production Vercel project before becoming the canonical public address;
 - the current Open Graph image is an ordinary lesson image rather than a

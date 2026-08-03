@@ -103,7 +103,7 @@ Before public launch:
 1. Configure production SMTP/transactional email in Supabase.
 2. Configure and verify Google OAuth for production and staging.
 3. Production Site URL and redirect allowlisting are set to
-   `https://strata-nine-pi.vercel.app`; re-check staging separately whenever its
+   `https://qubix.university`; re-check staging separately whenever its
    URL changes.
 4. Test sign-up, email confirmation, login, logout, password recovery, expired
    links, and Google OAuth end to end on web and Android.

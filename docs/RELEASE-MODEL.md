@@ -125,7 +125,7 @@ difference is entirely environment variables plus a few build-time guards.
 
 | | Production | Staging |
 |---|---|---|
-| URL | `strata-nine-pi.vercel.app` (current; custom domain planned) | `qubix-staging.vercel.app` |
+| URL | `qubix.university` | `qubix-staging.vercel.app` |
 | Vite mode | `production` | `staging` |
 | Supabase project | `Qubix Production` (`wmetdmfsniqrshuaoodc`) | `Qubix Staging` (`atmmfkhjsdqqwnhqifxm`) |
 | Users & progress | Real | Isolated test accounts only |

@@ -98,7 +98,7 @@ pnpm run deploy
 This still needs fixing and is **more urgent than the port**:
 
 `Strata/scripts/deploy.mjs` and `strata-github-live/scripts/deploy.mjs` both end
-with `vercel alias set <url> strata-nine-pi.vercel.app`, but they belong to two
+with `vercel alias set <url> qubix.university`, but they belong to two
 different Vercel projects (`strata` vs `strata-github-live`). Whoever runs
 deploy last silently owns production.
 

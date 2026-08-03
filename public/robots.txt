@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://stem.qubix.com/sitemap.xml
+Sitemap: https://qubix.university/sitemap.xml

@@ -2,7 +2,7 @@
 
 > **CURRENT.** Production is live and up to date as of this brief.
 > `main` = `origin/main` = `4f1fb6d`, deployed to
-> `https://strata-nine-pi.vercel.app`. A git push does **not** deploy;
+> `https://qubix.university`. A git push does **not** deploy;
 > production ships manually via `npm run deploy` (done this session).
 
 Handoff for the next working session. Everything below is already on
@@ -28,7 +28,7 @@ Workshop → Read was UX review item #3; the review also had #1 and #2 (both abo
 ## Release / environment state
 
 - `main` = `origin/main` = **`4f1fb6d`** (in sync, clean tree).
-- Production `strata-nine-pi.vercel.app` serves `4f1fb6d`.
+- Production `qubix.university` serves `4f1fb6d`.
 - **No Supabase migrations applied** this session. Production Supabase
   `wmetdmfsniqrshuaoodc` and staging `atmmfkhjsdqqwnhqifxm` unchanged.
 - Security headers (CSP **report-only**, HSTS, X-Frame-Options, etc.) are

@@ -116,7 +116,7 @@ and will refuse, but the rule stands.
 
 ## Step 4 · Verify live (2 min)
 
-Open `https://strata-nine-pi.vercel.app`, devtools → Network, check the Supabase
+Open `https://qubix.university`, devtools → Network, check the Supabase
 host:
 
 - `wmetdmfsniqrshuaoodc` = production ✅

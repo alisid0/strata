@@ -29,7 +29,7 @@ This is additive. **The interactive app must keep working unchanged.**
 
 **Design:** `src/lib/styles/qubix-tokens.css` — `--qx-*` vars, font Mulish, accent `#454ADE`, light bg `#FBFAF9`/`#EEEEEE`, text `#121118`. Concept pages are standalone HTML, so inline a small stylesheet that matches this look (don't import the app's CSS).
 
-**Build / deploy:** `vite build` → `dist/`. Everything in `public/` is copied to the dist root (already there: `robots.txt`, `sitemap.xml` [homepage only], `manifest.webmanifest`, `sw.js`, `images/`, empty `icons/`). Deploy: `npx vercel --prod`; production alias `https://strata-nine-pi.vercel.app` (use this as the canonical domain; it's configurable in one constant).
+**Build / deploy:** `vite build` → `dist/`. Everything in `public/` is copied to the dist root (already there: `robots.txt`, `sitemap.xml` [homepage only], `manifest.webmanifest`, `sw.js`, `images/`, empty `icons/`). Deploy: `npx vercel --prod`; production alias `https://qubix.university` (use this as the canonical domain; it's configurable in one constant).
 
 **Critical Vercel fact:** `vercel.json` has **no catch-all rewrite** — only `sw.js` cache headers. So a real file at `dist/physics/gravitation-and-orbits/index.html` is served directly at `/physics/gravitation-and-orbits` with **no routing change needed**. Unknown paths 404 (fine).
 

@@ -18,7 +18,7 @@ database migrations, expose secrets, or merge branches.
 
 ## Shared current state
 
-- Production app: `https://strata-nine-pi.vercel.app`
+- Production app: `https://qubix.university`
 - Staging app: `https://qubix-staging.vercel.app`
 - GitHub repository: `alisid0/strata`
 - Production Supabase: `Qubix Production` (`wmetdmfsniqrshuaoodc`), London.
@@ -40,7 +40,7 @@ database migrations, expose secrets, or merge branches.
 ### Status update — 2026-07-29
 
 - The production regression recorded in local commit `beeb166` is closed.
-  `https://strata-nine-pi.vercel.app` serves the tracked repository: the Terms
+  `https://qubix.university` serves the tracked repository: the Terms
   page has `admin@arcavetech.co.uk`, the CSP report-only, frame-deny and HSTS
   headers are present, and hashed assets use immutable caching.
 - Phase 1.1 and the current 14 paired Solve First journeys are on GitHub
@@ -580,7 +580,7 @@ created in London at ref `wmetdmfsniqrshuaoodc`. The reviewed schema, corrected
 0005 baseline, explicit API grants in 0007, and `delete-account` Edge Function
 are applied. Only the 1,145 public catalogue rows were migrated; private/user
 data was deliberately excluded. Production auth Site URL and redirect
-allowlisting point to `https://strata-nine-pi.vercel.app`.
+allowlisting point to `https://qubix.university`.
 
 The app config now targets the new project. The only two runtime GIFs that still
 depended on legacy Storage were preserved under `public/media/board-gifs/` and

@@ -4,7 +4,7 @@ Qubix is a Svelte/Vite microlearning app organised as Building Blocks (BBs).
 Learners move horizontally between BBs and vertically through floors inside a
 BB. The internal repository codename is Strata; user-facing copy says Qubix.
 
-Production: `https://strata-nine-pi.vercel.app`
+Production: `https://qubix.university`
 Staging: `https://qubix-staging.vercel.app`
 
 ## Read first

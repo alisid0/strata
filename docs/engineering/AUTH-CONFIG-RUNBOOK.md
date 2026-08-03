@@ -92,7 +92,7 @@ production site URL rather than `localhost` or the staging domain.
 Authentication → URL Configuration:
 
 - **Site URL:** the canonical production origin. Currently
-  `https://strata-nine-pi.vercel.app`; change this when
+  `https://qubix.university`; change this when
   `qubix.arcavetech.co.uk` moves to the production Vercel project, or recovery
   links will point at the wrong host.
 - **Redirect allowlist:** production origin, plus `http://localhost:8000` for

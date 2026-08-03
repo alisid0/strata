@@ -97,7 +97,7 @@ Keep blank lines between floors. End every entry with a `---`.
 5. **Deploy + re-alias the stable URL:**
    ```
    npx vercel --prod --yes
-   npx vercel alias set <the-new-deploy-url> strata-nine-pi.vercel.app
+   npx vercel alias set <the-new-deploy-url> qubix.university
    ```
 6. **Verify:** confirm the new boards fetch with the right `tags.reviewStatus`/`subject`
    (query Supabase or `fetchBoardsByNumbers`), and that the gate still returns 401 without
