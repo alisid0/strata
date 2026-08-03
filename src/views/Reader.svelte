@@ -12,7 +12,7 @@
   import { progress } from '../lib/stores/progress.js';
   import { getVideoForCard, getDiagramForCard } from '../lib/content/media.js';
   import { getFloorMedia } from '../lib/content/boardMedia.js';
-  import { getWorkshopsForPath } from './WorkshopLab.svelte';
+  import { getWorkshopsForPath } from '../lib/content/workshopCatalog.js';
   import VideoPlayer from '../lib/components/VideoPlayer.svelte';
   import ChalkDiagram from '../lib/components/ChalkDiagram.svelte';
   import ThreeScene from '../lib/components/media/ThreeScene.svelte';

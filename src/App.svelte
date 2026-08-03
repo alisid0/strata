@@ -13,7 +13,6 @@
   import Onboarding from './views/Onboarding.svelte';
   import Home from './views/Home.svelte';
   import Path from './views/Path.svelte';
-  import WorkshopLab from './views/WorkshopLab.svelte';
   import DailyWorkout from './views/DailyWorkout.svelte';
   import PathView from './views/PathView.svelte';
   import SubjectView from './views/SubjectView.svelte';
@@ -38,6 +37,18 @@
   let authInitialMode = 'welcome';
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
   let searchOpen = false;
+  let workshopComponentPromise;
+
+  function loadWorkshopComponent() {
+    workshopComponentPromise ||= import('./views/WorkshopLab.svelte').then((module) => module.default);
+    return workshopComponentPromise;
+  }
+
+  function retryWorkshopComponent() {
+    workshopComponentPromise = undefined;
+    currentView = 'home';
+    requestAnimationFrame(() => navigate('workshop', workshopTarget));
+  }
 
   const TAB_VIEWS = ['home', 'path', 'workshop', 'wscore'];
   const TAB_ORDER = ['home', 'path', 'workshop', 'wscore'];
@@ -198,11 +209,24 @@
         {:else if currentView === 'path'}
           <Path onNavigate={navigate} />
         {:else if currentView === 'workshop'}
-          <WorkshopLab
-            onNavigate={navigate}
-            openTarget={workshopTarget}
-            onRunningChange={(running) => workshopRunning = running}
-          />
+          {#await loadWorkshopComponent()}
+            <div class="lazy-view-loading" role="status" aria-live="polite">
+              <span></span><span></span><span></span>
+              <span class="sr-only">Loading workshop</span>
+            </div>
+          {:then WorkshopLab}
+            <svelte:component
+              this={WorkshopLab}
+              onNavigate={navigate}
+              openTarget={workshopTarget}
+              onRunningChange={(running) => workshopRunning = running}
+            />
+          {:catch}
+            <div class="lazy-view-error" role="alert">
+              <strong>Workshop could not load.</strong>
+              <button type="button" on:click={retryWorkshopComponent}>Try again</button>
+            </div>
+          {/await}
         {:else if currentView === 'wscore'}
           <WScore onNavigate={navigate} />
         {/if}
@@ -280,6 +304,48 @@
     background:
       radial-gradient(ellipse at 50% -18%, var(--qx-bg-radial), transparent 56%),
       var(--qx-bg);
+  }
+
+  .lazy-view-loading,
+  .lazy-view-error {
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lazy-view-loading { gap: 7px; }
+  .lazy-view-loading > span:not(.sr-only) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--qx-accent);
+    animation: lazy-pulse 1.2s ease-in-out infinite;
+  }
+  .lazy-view-loading > span:nth-child(2) { animation-delay: 120ms; }
+  .lazy-view-loading > span:nth-child(3) { animation-delay: 240ms; }
+
+  .lazy-view-error {
+    flex-direction: column;
+    gap: 14px;
+    color: var(--qx-text);
+    text-align: center;
+  }
+  .lazy-view-error button {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--qx-border);
+    border-radius: 12px;
+    background: var(--qx-surface);
+    color: inherit;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  @keyframes lazy-pulse {
+    0%, 70%, 100% { opacity: .3; transform: translateY(0); }
+    35% { opacity: 1; transform: translateY(-4px); }
   }
   .environment-badge {
     position: fixed; top: max(6px, env(safe-area-inset-top)); left: 50%; z-index: 10000;

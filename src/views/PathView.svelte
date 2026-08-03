@@ -5,7 +5,7 @@
   import { getBoard, fetchBoardsByNumbers } from '../lib/content/dynamicBoards.js';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxButton from '../lib/components/qubix/QxButton.svelte';
-  import { getWorkshopsForPath } from './WorkshopLab.svelte';
+  import { getWorkshopsForPath } from '../lib/content/workshopCatalog.js';
 
   export let pathId = '';
   export let onNavigate; // (view, args?) => void

@@ -12,7 +12,7 @@
 // Items are pulled from the module test banks via getTestForModule, which
 // reshuffles per call — so every workout differs. They run in the normal
 // (non-assess) Workshop, so feedback teaches as it goes.
-import { getWorkshopsForPath } from '../../views/WorkshopLab.svelte';
+import { getWorkshopsForPath } from './workshopCatalog.js';
 import { getTestForModule } from './tests.js';
 import { PATHS, pathsForCard } from './paths.js';
 
