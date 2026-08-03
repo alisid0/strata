@@ -207,8 +207,14 @@ body::after {
     border-radius: 0;
     box-shadow: none;
     overflow: hidden;
-    padding-left: 220px;
     box-sizing: border-box;
+  }
+
+  /* Only reserve the sidebar gutter when the sidebar is actually present.
+     Full-screen views (auth, reader, onboarding) have no .bottom-nav, so they
+     stay centred/full-width instead of being pushed 220px to the right. */
+  #app:has(.bottom-nav) {
+    padding-left: 220px;
   }
 
   /* Fixed sidebar navigation replacing bottom bar */

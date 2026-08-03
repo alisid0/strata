@@ -1,7 +1,7 @@
 <script>
   import { theme } from '../../stores/theme.js';
   import { textSize } from '../../stores/textSize.js';
-  import { displayName, logOut } from '../../stores/auth.js';
+  import { displayName, logOut, isAuthenticated } from '../../stores/auth.js';
   import IssueReportDialog from './IssueReportDialog.svelte';
   import AccountDataDialog from './AccountDataDialog.svelte';
 
@@ -24,6 +24,11 @@
   function handleDeleted() {
     accountDataOpen = false;
     try { localStorage.clear(); } catch (_) {}
+    onClose();
+    onNavigate('auth');
+  }
+
+  function handleSignIn() {
     onClose();
     onNavigate('auth');
   }
@@ -67,15 +72,24 @@
       </div>
 
       <div class="group">Account</div>
-      <div class="row">
-        <span class="row-label">Signed in as</span>
-        <span class="row-val">{$displayName}</span>
-      </div>
+      {#if $isAuthenticated}
+        <div class="row">
+          <span class="row-label">Signed in as</span>
+          <span class="row-val">{$displayName}</span>
+        </div>
+      {:else}
+        <button class="row link signin" on:click={handleSignIn}>
+          Sign in or create account<span class="chev">›</span>
+        </button>
+        <div class="row-note">Save your progress across devices.</div>
+      {/if}
       <a class="row link" href="/terms.html" target="_blank" rel="noopener">Terms and Conditions<span class="chev">›</span></a>
       <a class="row link" href="/privacy.html" target="_blank" rel="noopener">Privacy Policy<span class="chev">›</span></a>
       <button class="row link" on:click={() => reportOpen = true}>Report a problem<span class="chev">›</span></button>
-      <button class="row link" on:click={() => accountDataOpen = true}>Your data<span class="chev">›</span></button>
-      <button class="row link danger" on:click={handleLogout}>Log out</button>
+      {#if $isAuthenticated}
+        <button class="row link" on:click={() => accountDataOpen = true}>Your data<span class="chev">›</span></button>
+        <button class="row link danger" on:click={handleLogout}>Log out</button>
+      {/if}
 
       <div class="version">Qubix</div>
     </div>
@@ -136,6 +150,8 @@
   }
   .link .chev { float: right; color: var(--qx-text-faint); font-size: 18px; }
   .link.danger { color: var(--qx-danger-text); }
+  .link.signin { color: var(--qx-accent-text); font-weight: 800; }
+  .row-note { font-size: 12px; color: var(--qx-text-faint); padding: 2px 4px 6px; }
 
   .version { text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: var(--qx-text-faintest); margin-top: 18px; }
 </style>
