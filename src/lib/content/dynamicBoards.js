@@ -50,6 +50,42 @@ function normalize(row) {
   };
 }
 
+function bundledBoard(number) {
+  return LINE_BOARDS[number]
+    || FUNCTION_BOARDS[number]
+    || MATRIX_BOARDS[number]
+    || PUBLISHABLE_TOPIC_BOARDS[number]
+    || TOPIC_EXPANSION_BOARDS[number]
+    || MATH_DRAFT_BOARDS[number]
+    || PHYSICS_DRAFT_BOARDS[number]
+    || CHEMISTRY_DRAFT_BOARDS[number]
+    || COMPUTING_DRAFT_BOARDS[number]
+    || null;
+}
+
+async function refreshDynamicBoards(numbers) {
+  if (numbers.length === 0) return;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4000);
+  try {
+    const { data, error } = await supabase
+      .from('cards')
+      .select('*')
+      .in('sort_order', numbers)
+      .abortSignal(controller.signal);
+    if (error) throw error;
+
+    const next = { ...get(dynamicBoards) };
+    for (const row of data || []) next[row.sort_order] = normalize(row);
+    dynamicBoards.set(next);
+    persistCache(next);
+  } catch (_) {
+    // Offline and unreachable backends are expected; bundled/cache content wins.
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /**
  * Fetch any of the given card numbers that aren't already in the static
  * DECK or the dynamic cache, merge them in, and return the full set
@@ -63,29 +99,12 @@ export async function fetchBoardsByNumbers(numbers) {
   const dynamicNums = numbers.filter(n => n > DECK.length);
 
   if (dynamicNums.length > 0) {
-    try {
-      // Fast timeout: if Supabase is unreachable (DNS down, network offline),
-      // fail in 4 seconds instead of waiting for the browser's default timeout
-      // so the bundled fallback boards appear quickly.
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 4000);
-      const { data, error } = await supabase
-        .from('cards')
-        .select('*')
-        .in('sort_order', dynamicNums)
-        .abortSignal(controller.signal);
-      clearTimeout(timer);
-      if (error) throw error;
-
-      const next = { ...get(dynamicBoards) };
-      for (const row of data || []) {
-        next[row.sort_order] = normalize(row);
-      }
-      dynamicBoards.set(next);
-      persistCache(next);
-    } catch (_) {
-      // offline / fetch failed — fall back to whatever's already cached below
-    }
+    const cached = get(dynamicBoards);
+    const mustWaitForNetwork = dynamicNums.some((number) => !cached[number] && !bundledBoard(number));
+    const refresh = refreshDynamicBoards(dynamicNums);
+    // Complete bundled topics render immediately. Supabase refreshes the cache
+    // for the next visit; only backend-only boards retain the guarded wait.
+    if (mustWaitForNetwork) await refresh;
   }
 
   const result = {};
@@ -93,15 +112,7 @@ export async function fetchBoardsByNumbers(numbers) {
   for (const n of numbers) {
     if (n <= DECK.length) result[n] = DECK[n - 1];
     else if (merged[n]) result[n] = merged[n];
-    else if (LINE_BOARDS[n]) result[n] = LINE_BOARDS[n];
-    else if (FUNCTION_BOARDS[n]) result[n] = FUNCTION_BOARDS[n];
-    else if (MATRIX_BOARDS[n]) result[n] = MATRIX_BOARDS[n];
-    else if (PUBLISHABLE_TOPIC_BOARDS[n]) result[n] = PUBLISHABLE_TOPIC_BOARDS[n];
-    else if (TOPIC_EXPANSION_BOARDS[n]) result[n] = TOPIC_EXPANSION_BOARDS[n];
-    else if (MATH_DRAFT_BOARDS[n]) result[n] = MATH_DRAFT_BOARDS[n];
-    else if (PHYSICS_DRAFT_BOARDS[n]) result[n] = PHYSICS_DRAFT_BOARDS[n];
-    else if (CHEMISTRY_DRAFT_BOARDS[n]) result[n] = CHEMISTRY_DRAFT_BOARDS[n];
-    else if (COMPUTING_DRAFT_BOARDS[n]) result[n] = COMPUTING_DRAFT_BOARDS[n];
+    else if (bundledBoard(n)) result[n] = bundledBoard(n);
   }
   return result;
 }
@@ -132,7 +143,7 @@ export async function fetchSnippets() {
 /** Resolve a single board by number: static DECK first, then the dynamic cache. */
 export function getBoard(number) {
   if (number <= DECK.length) return DECK[number - 1];
-  return get(dynamicBoards)[number] || LINE_BOARDS[number] || FUNCTION_BOARDS[number] || MATRIX_BOARDS[number] || PUBLISHABLE_TOPIC_BOARDS[number] || TOPIC_EXPANSION_BOARDS[number] || MATH_DRAFT_BOARDS[number] || PHYSICS_DRAFT_BOARDS[number] || CHEMISTRY_DRAFT_BOARDS[number] || COMPUTING_DRAFT_BOARDS[number] || null;
+  return get(dynamicBoards)[number] || bundledBoard(number);
 }
 
 /** Numbers currently resolvable without a fetch (static + already-cached dynamic). */
