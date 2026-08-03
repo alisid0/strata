@@ -6,6 +6,8 @@ import { MATRIX_BOARDS } from './matrixBoards.js';
 import { LINE_BOARDS } from './lineBoards.js';
 import { MATH_DRAFT_BOARDS } from './mathDraftBoards.js';
 import { PHYSICS_DRAFT_BOARDS } from './physicsDraftBoards.js';
+import { CHEMISTRY_DRAFT_BOARDS } from './chemistryDraftBoards.js';
+import { COMPUTING_DRAFT_BOARDS } from './computingDraftBoards.js';
 import { PUBLISHABLE_TOPIC_BOARDS } from './publishableTopicBoards.js';
 import { TOPIC_EXPANSION_BOARDS } from './topicExpansionBoards.js';
 
@@ -98,6 +100,8 @@ export async function fetchBoardsByNumbers(numbers) {
     else if (TOPIC_EXPANSION_BOARDS[n]) result[n] = TOPIC_EXPANSION_BOARDS[n];
     else if (MATH_DRAFT_BOARDS[n]) result[n] = MATH_DRAFT_BOARDS[n];
     else if (PHYSICS_DRAFT_BOARDS[n]) result[n] = PHYSICS_DRAFT_BOARDS[n];
+    else if (CHEMISTRY_DRAFT_BOARDS[n]) result[n] = CHEMISTRY_DRAFT_BOARDS[n];
+    else if (COMPUTING_DRAFT_BOARDS[n]) result[n] = COMPUTING_DRAFT_BOARDS[n];
   }
   return result;
 }
@@ -128,7 +132,7 @@ export async function fetchSnippets() {
 /** Resolve a single board by number: static DECK first, then the dynamic cache. */
 export function getBoard(number) {
   if (number <= DECK.length) return DECK[number - 1];
-  return get(dynamicBoards)[number] || LINE_BOARDS[number] || FUNCTION_BOARDS[number] || MATRIX_BOARDS[number] || PUBLISHABLE_TOPIC_BOARDS[number] || TOPIC_EXPANSION_BOARDS[number] || MATH_DRAFT_BOARDS[number] || PHYSICS_DRAFT_BOARDS[number] || null;
+  return get(dynamicBoards)[number] || LINE_BOARDS[number] || FUNCTION_BOARDS[number] || MATRIX_BOARDS[number] || PUBLISHABLE_TOPIC_BOARDS[number] || TOPIC_EXPANSION_BOARDS[number] || MATH_DRAFT_BOARDS[number] || PHYSICS_DRAFT_BOARDS[number] || CHEMISTRY_DRAFT_BOARDS[number] || COMPUTING_DRAFT_BOARDS[number] || null;
 }
 
 /** Numbers currently resolvable without a fetch (static + already-cached dynamic). */
@@ -142,6 +146,8 @@ export function loadedNumbers() {
   const topicExpansionNums = Object.keys(TOPIC_EXPANSION_BOARDS).map(Number);
   const mathDraftNums = Object.keys(MATH_DRAFT_BOARDS).map(Number);
   const physicsDraftNums = Object.keys(PHYSICS_DRAFT_BOARDS).map(Number);
+  const chemistryDraftNums = Object.keys(CHEMISTRY_DRAFT_BOARDS).map(Number);
+  const computingDraftNums = Object.keys(COMPUTING_DRAFT_BOARDS).map(Number);
   const staticNums = Array.from({ length: DECK.length }, (_, i) => i + 1);
-  return [...staticNums, ...dynamicNums, ...lineNums, ...functionNums, ...matrixNums, ...publishableNums, ...topicExpansionNums, ...mathDraftNums, ...physicsDraftNums].sort((a, b) => a - b);
+  return [...staticNums, ...dynamicNums, ...lineNums, ...functionNums, ...matrixNums, ...publishableNums, ...topicExpansionNums, ...mathDraftNums, ...physicsDraftNums, ...chemistryDraftNums, ...computingDraftNums].sort((a, b) => a - b);
 }
