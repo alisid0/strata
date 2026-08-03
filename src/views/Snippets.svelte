@@ -264,7 +264,9 @@
   @media (min-width: 900px) {
     .snippets-view { padding: 32px 48px; max-width: 800px; margin: 0 auto; }
     h1 { font-size: 30px; }
-    .snippet-card { padding: 28px; }
-    .body-text { font-size: 16px; line-height: 1.75; }
+    .snippet-card { border-radius: 24px; }
+    .card-body { padding: 24px 26px; font-size: 17px; line-height: 1.75; }
+    .card-category { padding: 18px 26px 0; }
+    .card-actions { padding: 0 22px 22px; }
   }
 </style>

@@ -1283,13 +1283,6 @@
     background: transparent;
   }
 
-  .category-mark img {
-    width: 25px;
-    height: 25px;
-    display: block;
-    object-fit: contain;
-  }
-
   .category-button > span:last-child {
     min-width: 0;
     display: flex;
@@ -1352,7 +1345,6 @@
     width: 40px; height: 40px; border-radius: 12px; background: transparent;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .ws-tile-icon img { width: 29px; height: 29px; object-fit: contain; display: block; }
   .ws-tile-copy { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
   .ws-tile-name {
     font-size: 13px; font-weight: 900; color: var(--qx-text);
@@ -1581,13 +1573,6 @@
     line-height: 1.45;
     color: var(--qx-text-dim);
     margin: 4px 0 0;
-  }
-
-  .lab-header img {
-    width: 46px;
-    height: 46px;
-    object-fit: contain;
-    flex-shrink: 0;
   }
 
   .ws-block {
@@ -2195,12 +2180,6 @@
   /* ── Desktop ── */
   @media (min-width: 900px) {
     .workshop-lab { padding: 32px 40px; max-width: 1100px; margin: 0 auto; }
-    .hero { padding: 28px 32px; }
-    .hero h1 { font-size: 34px; }
-    .hero-copy p { font-size: 15px; max-width: 60ch; }
-    .mode-toggle { max-width: 600px; }
-    .cabinet { max-width: 800px; }
-    .cabinet-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .workshop-lab.is-running { padding: 20px 40px; max-width: 1200px; }
   }
 </style>

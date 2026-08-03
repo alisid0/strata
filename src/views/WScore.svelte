@@ -309,10 +309,11 @@
 
   /* ── Desktop ── */
   @media (min-width: 900px) {
-    .wscore-view { padding: 40px 48px 32px; max-width: 1000px; margin: 0 auto; }
+    .stats-view { padding: 40px 48px 32px; max-width: 1000px; margin: 0 auto; }
     h1 { font-size: 34px; }
-    .stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-    .leaderboard { max-width: 600px; }
+    .top-cards { gap: 16px; }
+    .league-card { max-width: 700px; }
+    .metrics-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
     .metric-value { font-size: 20px; }
   }
 </style>
