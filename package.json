@@ -13,6 +13,7 @@
     "test:solve-first": "node tests/solve-first/check-registry.mjs && vite build -c tests/solve-first/harness.vite.config.js && node tests/solve-first/play-networks.mjs",
     "test:arcade": "vite build -c tests/arcade/vite.config.js && node tests/arcade/run.mjs",
     "test:expansion": "node tests/expansion-program.mjs",
+    "test:launch": "npm run build && node tests/launch-smoke.mjs",
     "content:export-staging-sql": "node scripts/export-staging-content-sql.mjs",
     "audit:live-catalogue": "node scripts/export-live-path-catalogue.mjs",
     "audit:live-media": "node scripts/export-live-path-catalogue.mjs && node scripts/build-gif-eligibility-audit.mjs",

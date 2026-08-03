@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import { PATHS, SUBJECT_LABELS } from '../../content/paths.js';
-  import { getBoard } from '../../content/dynamicBoards.js';
+  import { fetchBoardsByNumbers, getBoard } from '../../content/dynamicBoards.js';
 
   export let open = false;
   export let onClose = () => {};
@@ -12,6 +12,8 @@
   let results = [];
   let selectedIdx = 0;
   let inputEl;
+  let indexVersion = 0;
+  let hydratePromise;
 
   // Build flat index of every board from the live path manifest.
   const boardIndex = [];
@@ -35,6 +37,15 @@
     return true;
   });
 
+  function hydrateIndex() {
+    hydratePromise ||= fetchBoardsByNumbers(uniqueIndex.map((board) => board.cardNumber))
+      .then(() => { indexVersion += 1; })
+      .catch(() => {});
+    return hydratePromise;
+  }
+
+  $: if (open) hydrateIndex();
+
   function fuzzyMatch(needle, haystack) {
     needle = needle.toLowerCase();
     haystack = haystack.toLowerCase();
@@ -46,6 +57,7 @@
   }
 
   $: if (query.trim()) {
+    indexVersion;
     const q = query.trim();
     results = uniqueIndex
       .filter(b => {
