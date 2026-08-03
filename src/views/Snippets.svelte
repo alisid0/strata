@@ -106,11 +106,11 @@
 <div class="qx-shell snippets-view">
   <div class="snippets-header">
     <div>
-      <h1>Snippets</h1>
-      <p class="header-sub">Browse, no score — just vibes</p>
+      <h1>Quick reads</h1>
+      <p class="header-sub">Bite-sized curiosities from across STEM</p>
     </div>
     {#if onClose}
-      <button class="mode-close" on:click={onClose} aria-label="Exit snippet mode">✕</button>
+      <button class="mode-close" on:click={onClose} aria-label="Exit quick reads">✕</button>
     {/if}
   </div>
 

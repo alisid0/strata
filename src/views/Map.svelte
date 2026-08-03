@@ -17,7 +17,7 @@
     well_read:  { mark: '#6BC93F', fill: '#201B12', border: '2.5px solid #6BC93F',  glow: false, badge: '',   label: '✓ Well read',   labelColor: '#6BC93F' },
     recalled:   { mark: '#6BC93F', fill: '#201B12', border: '2.5px solid #6BC93F',  glow: false, badge: '',   label: '↻ Recalled',    labelColor: '#6BC93F' },
     checked:    { mark: '#D28A5E', fill: '#241E14', border: '2.5px solid #D28A5E',  glow: false, badge: '',   label: '● Checked',      labelColor: '#D28A5E' },
-    wandered:   { mark: '#8C8573', fill: '#201B12', border: '2px dashed #8C8573',   glow: false, badge: '',   label: '· Wandered',     labelColor: '#8C8573' },
+    wandered:   { mark: '#8C8573', fill: '#201B12', border: '2px dashed #8C8573',   glow: false, badge: '',   label: '· In progress',  labelColor: '#8C8573' },
     unwandered: { mark: '#6F6656', fill: '#1B160E', border: '2px dotted #4A4436',   glow: false, badge: '',   label: 'Start here',     labelColor: '#6F6656' }
   };
 
