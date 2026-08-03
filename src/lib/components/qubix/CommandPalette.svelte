@@ -76,6 +76,10 @@
     onClose();
   }
 
+  function closeFromBackdrop(event) {
+    if (event.target === event.currentTarget) close();
+  }
+
   function handleKeydown(e) {
     if (e.key === 'Escape') { close(); return; }
     if (e.key === 'ArrowDown') {
@@ -100,8 +104,8 @@
 </script>
 
 {#if open}
-  <div class="overlay" on:click={close} role="presentation" transition:fade={{ duration: 120 }}>
-    <div class="palette" on:click|stopPropagation role="dialog" aria-modal="true" aria-label="Search boards" transition:fly={{ y: -12, duration: 180 }}>
+  <div class="overlay" on:click={closeFromBackdrop} role="presentation" transition:fade={{ duration: 120 }}>
+    <div class="palette" role="dialog" aria-modal="true" aria-label="Search boards" transition:fly={{ y: -12, duration: 180 }}>
       <div class="search-row">
         <span class="search-icon">⌘</span>
         <input

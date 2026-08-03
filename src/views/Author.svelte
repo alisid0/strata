@@ -77,8 +77,8 @@
 
       <div class="row">
         <div class="field">
-          <label class="lbl">Subject</label>
-          <select bind:value={subject} class="chalk-select">
+          <label class="lbl" for="author-subject">Subject</label>
+          <select id="author-subject" bind:value={subject} class="chalk-select">
             <option value="physics">Physics</option>
             <option value="maths">Mathematics</option>
             <option value="chemistry">Chemistry</option>
@@ -93,13 +93,14 @@
       <ChalkInput bind:value={buildsOn} label="buildsOn (comma-separated kicker names)" placeholder="Mechanics 3.5, Vectors 3.0" />
 
       <div class="floors-section">
-        <label class="lbl">Floors (depth layers)</label>
+        <div class="lbl" id="author-floors-label">Floors (depth layers)</div>
         {#each floors as floor, i}
           <div class="floor-row">
             <span class="floor-num">F{i}</span>
             <textarea
               bind:value={floors[i]}
               class="floor-input"
+              aria-label={`Floor ${i}`}
               placeholder={`Floor ${i}`}
               rows="3"
             ></textarea>
@@ -110,8 +111,9 @@
       </div>
 
       <div class="field">
-        <label class="lbl">Image prompt (optional)</label>
+        <label class="lbl" for="author-image-prompt">Image prompt (optional)</label>
         <textarea
+          id="author-image-prompt"
           bind:value={imagePrompt}
           class="image-input"
           placeholder="Describe the chalkboard illustration: scene, labels, colours..."
@@ -120,7 +122,7 @@
       </div>
 
       <div class="preview">
-        <label class="lbl">Preview (JSON)</label>
+        <div class="lbl">Preview (JSON)</div>
         <pre class="preview-block">{JSON.stringify(toJson(), null, 2)}</pre>
       </div>
 

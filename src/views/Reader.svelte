@@ -387,6 +387,16 @@
   // ── Lightbox: open/close + pinch-zoom & pan ──
   function openLightbox(media) { lightboxMedia = media; lbScale = 1; lbX = 0; lbY = 0; }
   function closeLightbox() { lightboxMedia = null; lbScale = 1; lbX = 0; lbY = 0; }
+  function closeSnippetFromBackdrop(event) {
+    if (event.target === event.currentTarget) activeSnippets = null;
+  }
+  function closeLightboxFromBackdrop(event) {
+    if (event.target === event.currentTarget) closeLightbox();
+  }
+  function toggleLightboxZoom() {
+    if (lbScale > 1) { lbScale = 1; lbX = 0; lbY = 0; }
+    else { lbScale = 2.5; }
+  }
 
   const lbDist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
 
@@ -426,7 +436,7 @@
     if (lbMoved) { lbMoved = false; return; }   // ignore taps that were really drags
     if (lbTapTimer) {                            // double tap → toggle zoom
       clearTimeout(lbTapTimer); lbTapTimer = null;
-      if (lbScale > 1) { lbScale = 1; lbX = 0; lbY = 0; } else { lbScale = 2.5; }
+      toggleLightboxZoom();
     } else {
       lbTapTimer = setTimeout(() => {            // single tap (unzoomed) → close
         lbTapTimer = null;
@@ -486,8 +496,11 @@
     {/each}
   </nav>
 
+  <!-- svelte-ignore a11y-no-static-element-interactions a11y-no-noninteractive-element-interactions (drag surface has equivalent navigation buttons and keyboard controls) -->
   <div
     id="rail"
+    role="region"
+    aria-label="Lesson cards"
     class:dragging={isDragging}
     class:mouse-dragging={mouseDown}
     style="transform:translateX({-idx * 100}%) translateX({dragOffset}px)"
@@ -654,8 +667,8 @@
   </div>
 
   {#if activeSnippets}
-    <div class="snippet-overlay" on:click={() => activeSnippets = null} role="presentation">
-      <div class="snippet-modal" on:click|stopPropagation role="dialog" aria-modal="true">
+    <div class="snippet-overlay" on:click={closeSnippetFromBackdrop} role="presentation">
+      <div class="snippet-modal" role="dialog" aria-modal="true" aria-label="Related snippets">
         <button class="snippet-close" on:click={() => activeSnippets = null} aria-label="Close">✕</button>
         {#if activeSnippets.length > 1}<div class="snippet-overlay-count">{activeSnippets.length} related snippets</div>{/if}
         {#each activeSnippets as s, si}
@@ -684,12 +697,16 @@
   {/if}
 
   {#if lightboxMedia}
-    <div class="lightbox" on:click={closeLightbox} on:wheel|nonpassive={lbWheel} role="presentation">
+    <div class="lightbox" on:click={closeLightboxFromBackdrop} on:wheel|nonpassive={lbWheel} role="presentation">
       <button class="lightbox-close" on:click|stopPropagation={closeLightbox} aria-label="Close">✕</button>
       <div
         class="lightbox-stage"
+        role="button"
+        tabindex="0"
+        aria-label={lbScale > 1 ? 'Reset image zoom' : 'Zoom image'}
         style="transform: translate({lbX}px,{lbY}px) scale({lbScale});{lbMode ? '' : ' transition: transform 0.18s ease;'}"
         on:click|stopPropagation={lbImgTap}
+        on:keydown={(event) => (event.key === 'Enter' || event.key === ' ') && toggleLightboxZoom()}
         on:touchstart={lbTouchStart}
         on:touchmove={lbTouchMove}
         on:touchend={lbTouchEnd}

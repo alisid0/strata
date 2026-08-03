@@ -28,6 +28,10 @@
     onNavigate('auth');
   }
 
+  function closeFromBackdrop(event) {
+    if (event.target === event.currentTarget) onClose();
+  }
+
   // Escape closes the innermost open dialog first, then the settings sheet.
   // Only acts when the settings sheet or a child dialog is open.
   function handleKeydown(e) {
@@ -41,8 +45,8 @@
 <svelte:window on:keydown={handleKeydown} />
 
 {#if open}
-  <div class="menu-overlay" on:click={onClose} role="presentation">
-    <div class="sheet" on:click|stopPropagation role="dialog" aria-modal="true">
+  <div class="menu-overlay" on:click={closeFromBackdrop} role="presentation">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Settings">
       <div class="handle"></div>
       <div class="sheet-title">Settings</div>
 

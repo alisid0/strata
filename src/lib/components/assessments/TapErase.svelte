@@ -62,10 +62,14 @@
 
     <!-- Anchor dots -->
     {#if !leftGone}
-      <circle cx="60" cy="60" r="8" fill="var(--qx-surface)" stroke="var(--qx-accent)" stroke-width="2.5" class="anchor" on:click={tapLeft}/>
+      <circle cx="60" cy="60" r="8" fill="var(--qx-surface)" stroke="var(--qx-accent)" stroke-width="2.5" class="anchor"
+        role="button" tabindex="0" aria-label="Erase the left endpoint" on:click={tapLeft}
+        on:keydown={(event) => (event.key === 'Enter' || event.key === ' ') && tapLeft()}/>
     {/if}
     {#if !rightGone}
-      <circle cx="240" cy="60" r="8" fill="var(--qx-surface)" stroke="var(--qx-accent)" stroke-width="2.5" class="anchor" on:click={tapRight}/>
+      <circle cx="240" cy="60" r="8" fill="var(--qx-surface)" stroke="var(--qx-accent)" stroke-width="2.5" class="anchor"
+        role="button" tabindex="0" aria-label="Erase the right endpoint" on:click={tapRight}
+        on:keydown={(event) => (event.key === 'Enter' || event.key === ' ') && tapRight()}/>
     {/if}
   </svg>
 
