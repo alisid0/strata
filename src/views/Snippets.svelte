@@ -259,4 +259,12 @@
   .empty { text-align: center; color: var(--qx-text-dim); padding: 40px 0; }
   .empty-icon { font-size: 40px; margin-bottom: 10px; }
   .empty p { font-size: 14px; }
+
+  /* ── Desktop ── */
+  @media (min-width: 900px) {
+    .snippets-view { padding: 32px 48px; max-width: 800px; margin: 0 auto; }
+    h1 { font-size: 30px; }
+    .snippet-card { padding: 28px; }
+    .body-text { font-size: 16px; line-height: 1.75; }
+  }
 </style>

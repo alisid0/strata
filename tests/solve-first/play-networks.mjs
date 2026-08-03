@@ -109,69 +109,47 @@ assert(window.__done.some((item) => item.id === 'differentiation-forecourt-flow'
 // Memory-allocation discovery.
 window.__mount('memory');
 await tick();
-assert(text().includes('RAM Page: Warehouse Worker'), 'memory warehouse mounts');
+assert(text().includes('You are the memory allocator.'), 'memory allocator mounts');
 
-const floorCells = () => all('.floor-wrap .floor button.cell');
-const goDock = async () => clickElement(all('button.dock')[0]);
-const goCell = async (index) => clickElement(floorCells()[index]);
-const collect = goDock;
-const placeAt = goCell;
-const movePackage = async (from, to) => { await goCell(from); await goCell(to); };
+const clickFirstFit = async () => clickElement(all('button.seg.hole.fits')[0]);
+const clickAllocation = async (label) => clickElement(
+  all('button.seg.block').find((item) => (item.getAttribute('aria-label') || '').startsWith(`${label} block`))
+);
 
-await click('Start the first shift');
-for (const start of [0, 3, 6, 9, 12, 15]) {
-  await collect();
-  await placeAt(start);
-}
-assert(text().includes('Every package now owns floor space'), 'six packages allocate into learner-chosen addresses');
+await click('Start allocating');
+for (let i = 0; i < 3; i += 1) await clickFirstFit();
+assert(text().includes('Three blocks, three start addresses.'), 'three allocations receive contiguous addresses');
 
-await click('Release finished work');
-for (const start of [3, 9, 15]) {
-  await goCell(start);
-}
-assert(text().includes('Clearing made those cells reusable'), 'release signals deallocate only finished packages');
+await click('Free some memory');
+await clickAllocation('MAP');
+await clickAllocation('NET');
+await clickFirstFit();
+assert(text().includes('Freed space went straight back to the pool.'), 'free returns exited memory for reuse');
 
-await click('Begin the next shift');
-await collect();
-await placeAt(2);
-assert(text().includes('Eight free cells. No five-cell opening'), 'failed request exposes external fragmentation');
+await click('Raise the pressure');
+await clickElement(all('button.seg.hole')[0]);
+assert(text().includes('Twelve bytes free, but no hole holds six.'), 'failed request exposes external fragmentation');
 
-await click('Investigate another fault');
-await goCell(3);
-assert(text().includes('release signal is gone'), 'locked allocation exposes a leak');
-await click('PROCESS KILL');
-assert(text().includes('useful MAP work vanished too'), 'process termination reclaims the leak and live process memory');
+await click('Choose the hole smarter');
+await clickFirstFit();
+await clickFirstFit();
+assert(text().includes('The hole you picked decided the outcome.'), 'best-fit preserves the larger hole for the next request');
 
-await click('Recover the scattered floor');
-for (const [from, to] of [[3, 2], [6, 4], [9, 6], [12, 8]]) await movePackage(from, to);
-await collect();
-await placeAt(12);
-assert(text().includes('large job fits after 4 live moves'), 'manual compaction creates a wide block and records its cost');
+await click('Recover fragmented space');
+for (const label of ['NAV', 'MAP', 'AUDIO', 'NET', 'SCAN']) await clickAllocation(label);
+await clickFirstFit();
+assert(text().includes('One large hole recovered after 4 block copies.'), 'compaction creates one large hole and records its copy cost');
 
-await click('Install the warehouse upgrade');
-await collect();
-await click('PALLET SLICER');
-for (const [piece, target] of [2, 5, 8, 11].map((target, piece) => [piece, target])) {
-  if (piece > 0) await collect();
-  await placeAt(target);
-}
-assert(text().includes('One package now lives in four separate places'), 'paging scatters one package across tracked frames');
+await click('Try a different design');
+await click('SPLIT INTO PAGES');
+await clickFirstFit();
+await clickFirstFit();
+assert(text().includes('The request ran without one contiguous block.'), 'paging scatters a request across tracked frames');
 
-await click('Run the final shift');
-await collect();
-await placeAt(14);
-await collect();
-await click('PALLET SLICER');
-for (const [piece, target] of [2, 5, 8, 11].map((target, piece) => [piece, target])) {
-  if (piece > 0) await collect();
-  await placeAt(target);
-}
-assert(text().includes('Both workloads are live'), 'unguided transfer preserves contiguous camera data and pages map data');
-
-await click('Reveal the computer system');
-assert(text().includes('managing a computer’s working memory'), 'reveal begins from the frozen learner state');
-for (const label of ['Translate the warehouse', 'Replay the failed request', 'Name the moving cost', 'Reveal the slicer']) await click(label);
-assert(text().includes('Paging removed the need for one physical block'), 'progressive reveal maps the slicer and clipboard to paging');
+await click('Map the whole system');
+assert(text().includes('You just ran a memory allocator.'), 'reveal begins from the learner-created allocator state');
+for (const label of ['Replay the blocked request', 'Compare the policies', 'Count the compaction cost', 'See the paging trade']) await click(label);
+assert(text().includes('Paging removed the need for contiguous space'), 'progressive reveal connects allocation evidence to paging');
 await click('Complete discovery');
 assert(window.__done.some((item) => item.id === 'hardware-memory-clear-the-rack'), 'memory-allocation reward records once');
 

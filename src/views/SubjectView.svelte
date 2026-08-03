@@ -193,4 +193,17 @@
   }
 
   .empty { color: var(--qx-text-dim); font-weight: 700; padding: 40px 0; text-align: center; }
+
+  /* ── Desktop ── */
+  @media (min-width: 900px) {
+    .subject-view { padding: 40px 48px 32px; max-width: 1100px; margin: 0 auto; }
+    .hero { padding: 28px 32px; }
+    .hero-info h1 { font-size: 34px; }
+    .hero-info p { font-size: 15px; }
+    .act-primary { min-height: 78px; padding: 20px 24px; }
+    .act-label { font-size: 17px; }
+    .topic-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .topic-tile { min-height: 64px; }
+    .topic-name { font-size: 14px; }
+  }
 </style>

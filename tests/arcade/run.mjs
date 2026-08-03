@@ -60,10 +60,12 @@ console.log('— Skyhook —');
 errors.length = 0;
 window.eval(`__mount('trig')`); await tick(20);
 await click(btn('take the controls'));
-for (const th of [30, 60, 45]) {                       // M1 rescues
+const rescueAngles = [30, 60, 45, 15, 75];
+for (let i = 0; i < rescueAngles.length; i += 1) {      // M1 rescues
+  const th = rescueAngles[i];
   await setRange(0, th);
   await click(btn('dispatch the hook'));
-  await click(btn(th === 45 ? 'continue to the ratio test' : 'continue to the next climber'));
+  await click(btn(i === rescueAngles.length - 1 ? 'continue to the ratio test' : 'continue to the next climber'));
 }
 check('skyhook: mission 2 briefing reached', bodyText().includes('The Ratio'), bodyText().slice(0, 120));
 await click(btn('take the controls'));                  // enter mission 2
@@ -79,11 +81,25 @@ await click(btn('continue to the longer arm'));
 await click(btn('extend to'));
 await click(btn('make a prediction'));
 await click(btn('320'));                                // round 2 correct
+await click(btn('continue to the next angle'));
+await click(btn('extend to'));
+await click(btn('continue to the longer arm'));
+await click(btn('extend to'));
+await click(btn('make a prediction'));
+await click(btn('255'));                                // round 3 correct
+await click(btn('continue to the next angle'));
+await click(btn('extend to'));
+await click(btn('continue to the longer arm'));
+await click(btn('extend to'));
+await click(btn('make a prediction'));
+await click(btn('272'));                                // round 4 correct
 await click(btn('continue to the final rescue'));
 await click(btn('take the controls'));                  // mission 3 brief
-await setRange(0, 37);
-await click(btn('take the shot'));
-await click(btn('reveal the concept'));
+for (const th of [37, 30, 53]) {
+  await setRange(0, th);
+  await click(btn('take the shot'));
+  await click(btn(th === 53 ? 'reveal the concept' : 'continue to the next ratio rescue'));
+}
 check('skyhook: reveal names sine/cosine', bodyText().includes('SINE') && bodyText().includes('COSINE'));
 check('skyhook: reward recorded once, transferFirstTry', doneCount() === 1 && lastDone().transferFirstTry === true, JSON.stringify(lastDone()));
 check('skyhook: no errors', errors.length === 0, errors.slice(0, 2).join(' | '));

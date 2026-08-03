@@ -467,4 +467,13 @@
       box-shadow: none;
     }
   }
+
+  /* ── Desktop ── */
+  @media (min-width: 900px) {
+    .auth-view { padding: 60px 80px; }
+    .screen { max-width: 460px; padding: 40px 36px; }
+    .brand { font-size: 28px; }
+    .tagline strong { font-size: 22px; }
+    .field { min-height: 50px; font-size: 16px; }
+  }
 </style>

@@ -2191,4 +2191,16 @@
     .cabinet-joystick { width: 24px; height: 24px; }
 
   }
+
+  /* ── Desktop ── */
+  @media (min-width: 900px) {
+    .workshop-lab { padding: 32px 40px; max-width: 1100px; margin: 0 auto; }
+    .hero { padding: 28px 32px; }
+    .hero h1 { font-size: 34px; }
+    .hero-copy p { font-size: 15px; max-width: 60ch; }
+    .mode-toggle { max-width: 600px; }
+    .cabinet { max-width: 800px; }
+    .cabinet-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .workshop-lab.is-running { padding: 20px 40px; max-width: 1200px; }
+  }
 </style>

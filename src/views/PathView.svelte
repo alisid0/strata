@@ -31,7 +31,9 @@
     error = false;
     try {
       const resolved = await fetchBoardsByNumbers(numbers);
-      cards = numbers.map(n => ({ number: n, board: resolved[n] })).filter(c => c.board);
+      // Keep all boards, even if Supabase is offline and bundles don't cover them.
+      // The Reader will show what it can via getBoard() and the board outline.
+      cards = numbers.map(n => ({ number: n, board: resolved[n] || getBoard(n) || null }));
     } catch (e) {
       error = true;
     } finally {
@@ -114,8 +116,8 @@
               {/if}
             </span>
             <div class="row-info">
-              <div class="row-title">{c.board.title || 'Untitled'}</div>
-              <div class="row-kicker">{c.board.kicker || ''}</div>
+              <div class="row-title">{c.board?.title || `Board ${c.number}`}</div>
+              <div class="row-kicker">{c.board?.kicker || ''}</div>
             </div>
             {#if c.number === nextBoardNumber}
               <span class="row-tag">Next</span>
@@ -237,4 +239,15 @@
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .practise-chev { font-size: 18px; color: var(--qx-accent-text); }
+
+  /* ── Desktop ── */
+  @media (min-width: 900px) {
+    .topic-detail-view { padding: 32px 48px 32px; max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 28px; }
+    .board-row { padding: 12px 16px; }
+    .row-title { font-size: 15px; }
+    .footer { flex-direction: row; gap: 12px; }
+    .cta-primary { flex: 1; }
+    .cta-secondary { flex: 0 0 auto; min-width: 200px; }
+  }
 </style>

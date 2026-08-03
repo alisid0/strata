@@ -306,4 +306,13 @@
   .medal-chip { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 800; color: var(--qx-yellow-text); background: var(--qx-yellow-soft); border-radius: 13px; padding: 7px 10px; }
   .medal-chip > span { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; background: var(--qx-yellow); color: #fff; font-size: 9px; font-weight: 950; }
   .medal-empty { font-size: 13px; color: var(--qx-text-faint); margin-bottom: 20px; }
+
+  /* ── Desktop ── */
+  @media (min-width: 900px) {
+    .wscore-view { padding: 40px 48px 32px; max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 34px; }
+    .stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .leaderboard { max-width: 600px; }
+    .metric-value { font-size: 20px; }
+  }
 </style>

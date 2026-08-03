@@ -446,6 +446,11 @@
 <div class="qx-shell reader">
   <div id="topbar">
     <button id="back" on:click={() => onBack?.()} aria-label="Back to topic"><QxIcon name="chevronLeft" size={18} /></button>
+    <div class="topbar-breadcrumbs">
+      <span class="crumb">{humanize(getBoard(numbers[idx])?.tags?.subject || '')}</span>
+      <span class="crumb-sep">›</span>
+      <span class="crumb crumb-path">{getBoard(numbers[idx])?.tags?.topic || ''}</span>
+    </div>
     <div id="brand">QUBIX</div>
     <div id="progress-wrap"><div id="progress" style="width:{(idx + 1) / totalCards * 100}%"></div></div>
     <div id="counter">{String(idx + 1).padStart(2, '0')} / {totalCards}</div>
@@ -456,19 +461,30 @@
 
   {#if showSwipeHint}
     <div class="swipe-hint-toast" in:fly={{ y: 48, duration: 400, easing: cubicOut }}>
-      <div class="swipe-hint-row">
-        <QxIcon name="chevronDown" size={14} />
-        <span>Swipe down to dig deeper</span>
-        <QxIcon name="chevronDown" size={14} />
-      </div>
-      <div class="swipe-hint-row">
-        <QxIcon name="chevronUp" size={14} />
-        <span>Swipe up to surface</span>
-        <QxIcon name="chevronUp" size={14} />
-      </div>
-      <button class="swipe-hint-dismiss" on:click={dismissSwipeHint}>Got it</button>
+      <QxIcon name="chevronDown" size={14} />
+      <span>Swipe vertically for more</span>
+      <button class="swipe-hint-dismiss" on:click={dismissSwipeHint} aria-label="Dismiss reading tip">×</button>
     </div>
   {/if}
+
+  <!-- Desktop: persistent board outline sidebar -->
+  <nav class="board-outline" aria-label="Topic boards">
+    <div class="outline-header">
+      <span class="outline-count">{totalCards} boards</span>
+    </div>
+    {#each numbers as cardNumber, i (cardNumber)}
+      {@const board = getBoard(cardNumber)}
+      <button
+        class="outline-row"
+        class:current={i === idx}
+        class:read={i < idx}
+        on:click={() => move(i)}
+      >
+        <span class="outline-num">{i + 1}</span>
+        <span class="outline-title">{board?.title || `Board ${cardNumber}`}</span>
+      </button>
+    {/each}
+  </nav>
 
   <div
     id="rail"
@@ -500,13 +516,14 @@
                 </span>
                 <span class="tier-badge">{col.tags?.ground || ''}</span>
               </div>
-              <button
-                class="audio-btn"
-                class:playing={playingKey === `${n}-0`}
-                disabled={!audioUrl}
-                title={audioUrl ? (playingKey === `${n}-0` ? 'Pause audio' : 'Play audio') : 'Audio coming soon'}
-                on:click|stopPropagation={() => toggleAudio(i, 0)}
-              ><QxIcon name="volume" size={16} /></button>
+              {#if audioUrl}
+                <button
+                  class="audio-btn"
+                  class:playing={playingKey === `${n}-0`}
+                  title={playingKey === `${n}-0` ? 'Pause audio' : 'Play audio'}
+                  on:click|stopPropagation={() => toggleAudio(i, 0)}
+                ><QxIcon name="volume" size={16} /></button>
+              {/if}
               <div class="swipe-bottom" role="button" tabindex="0" on:click={() => goDeeper(i)} on:keydown={(e) => e.key === 'Enter' && goDeeper(i)}>
                 {#if col.kicker}<div class="swipe-kicker">{col.kicker}</div>{/if}
                 <div class="swipe-title">{col.title}</div>
@@ -528,13 +545,14 @@
                   {#if snippetByBoard[n].length > 1}<span class="snippet-count">{snippetByBoard[n].length}</span>{/if}
                 </button>
               {/if}
-              <button
-                class="audio-btn small"
-                class:playing={playingKey === `${n}-${d}`}
-                disabled={!audioUrl}
-                title={audioUrl ? (playingKey === `${n}-${d}` ? 'Pause audio' : 'Play audio') : 'Audio coming soon'}
-                on:click={() => toggleAudio(i, d)}
-              ><QxIcon name="volume" size={14} /></button>
+              {#if audioUrl}
+                <button
+                  class="audio-btn small"
+                  class:playing={playingKey === `${n}-${d}`}
+                  title={playingKey === `${n}-${d}` ? 'Pause audio' : 'Play audio'}
+                  on:click={() => toggleAudio(i, d)}
+                ><QxIcon name="volume" size={14} /></button>
+              {/if}
             </div>
 
             <div class="reading-body">
@@ -558,8 +576,6 @@
                           on:click|stopPropagation={() => toggleAudio(i, d)}
                           title={playingKey === `${n}-${d}` ? 'Pause audio' : 'Play audio'}
                         ><QxIcon name="volume" size={14} /></button>
-                      {:else}
-                        <button class="audio-btn" disabled title="Audio coming soon"><QxIcon name="volume" size={14} /></button>
                       {/if}
                     </div>
                     <div class="floor-text">{@html sanitizeBoardHtml(formatMath(floorBodyHTML(i, d)))}</div>
@@ -718,6 +734,10 @@
   #progress { position: absolute; top: 0; left: 0; height: 2px; background: var(--qx-accent); border-radius: 2px; width: 0; transition: width 0.5s ease; }
   #counter { font-size: 12px; font-weight: 700; color: var(--qx-text-faint); min-width: 50px; text-align: right; }
 
+  /* Breadcrumbs — hidden on mobile */
+  .topbar-breadcrumbs { display: none; }
+  .crumb-sep { display: none; }
+
   .side-nav {
     position: fixed; top: 50%; transform: translateY(-50%); z-index: 8;
     width: 38px; height: 38px; border-radius: 50%;
@@ -807,6 +827,9 @@
   .audio-btn:not(:disabled) { cursor: pointer; opacity: 1; }
   .audio-btn.playing { background: var(--qx-accent); border-color: var(--qx-accent); color: #fff; }
   .audio-btn.small.playing { background: var(--qx-accent); border-color: var(--qx-accent); color: #fff; }
+
+  /* Board outline — hidden on mobile, sidebar on desktop */
+  .board-outline { display: none; }
 
   .swipe-bottom {
     position: relative; z-index: 2; margin-top: auto;
@@ -975,22 +998,19 @@
 
   /* First-time vertical swipe hint */
   .swipe-hint-toast {
-    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 25;
-    background: var(--qx-surface); border: 1.5px solid var(--qx-accent);
-    border-radius: var(--qx-radius-lg); box-shadow: var(--qx-shadow-card);
-    padding: 16px 22px; text-align: center;
-    display: flex; flex-direction: column; gap: 8px; align-items: center;
-    max-width: 280px;
+    position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); z-index: 25;
+    background: color-mix(in srgb, var(--qx-surface) 92%, transparent); border: 1px solid var(--qx-border-2);
+    border-radius: var(--qx-radius-pill); box-shadow: var(--qx-shadow-card); backdrop-filter: blur(12px);
+    padding: 8px 9px 8px 12px;
+    display: flex; gap: 7px; align-items: center;
+    max-width: calc(100vw - 32px); white-space: nowrap;
+    font-size: 11px; font-weight: 750; color: var(--qx-text-2);
   }
-  .swipe-hint-row {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 13px; font-weight: 700; color: var(--qx-text);
-  }
-  .swipe-hint-row :global(svg) { color: var(--qx-accent); flex-shrink: 0; }
+  .swipe-hint-toast :global(svg) { color: var(--qx-accent); flex-shrink: 0; }
   .swipe-hint-dismiss {
-    margin-top: 6px; padding: 8px 20px;
-    border-radius: var(--qx-radius-pill); border: none;
-    background: var(--qx-accent); color: #fff; font-weight: 800; font-size: 13px;
+    width: 24px; height: 24px; padding: 0;
+    border-radius: 50%; border: none;
+    background: var(--qx-surface-3); color: var(--qx-text); font-weight: 800; font-size: 15px;
     cursor: pointer; font-family: var(--qx-font);
   }
 
@@ -1003,5 +1023,142 @@
     position: relative; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto;
     background: var(--qx-surface); border: 1.5px solid var(--qx-accent); border-radius: var(--qx-radius-lg);
     box-shadow: var(--qx-shadow-card); padding: 24px 20px;
+  }
+
+  /* ── Desktop: split-pane layout with board outline sidebar ── */
+  @media (min-width: 900px) {
+    .swipe-hint-toast { display: none; }
+    /* Board outline — fixed left sidebar, sits next to BottomNav sidebar */
+    .board-outline {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 220px;
+      bottom: 0;
+      z-index: 5;
+      width: 260px;
+      background: var(--qx-surface-2);
+      border-right: 1px solid var(--qx-border);
+      overflow-y: auto;
+      padding: 80px 0 20px;
+    }
+    .outline-header {
+      padding: 10px 16px 8px;
+      flex-shrink: 0;
+    }
+    .outline-count {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--qx-text-faint);
+    }
+    .outline-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      text-align: left;
+      padding: 9px 16px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-family: var(--qx-font);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--qx-text-dim);
+      transition: background 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .outline-row:hover {
+      background: var(--qx-surface-2);
+      color: var(--qx-text);
+    }
+    .outline-row.current {
+      background: var(--qx-accent-soft);
+      color: var(--qx-accent-text);
+      font-weight: 800;
+      border-left-color: var(--qx-accent);
+    }
+    .outline-row.read {
+      color: var(--qx-text-faintest);
+    }
+    .outline-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+      background: var(--qx-surface-2);
+    }
+    .outline-row.current .outline-num {
+      background: var(--qx-accent);
+      color: #fff;
+    }
+    .outline-row.read .outline-num {
+      background: var(--qx-green-soft);
+      color: var(--qx-green-text);
+    }
+    .outline-title {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Reading area shifts right for both sidebars */
+    #topbar {
+      max-width: none;
+      left: 480px;
+      right: 0;
+      padding: 18px 40px;
+      gap: 16px;
+    }
+    #brand { display: none; }
+    .topbar-breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .crumb {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--qx-text-dim);
+      white-space: nowrap;
+    }
+    .crumb-sep {
+      font-size: 13px;
+      color: var(--qx-text-faintest);
+      flex-shrink: 0;
+    }
+    .crumb-path {
+      color: var(--qx-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #rail {
+      max-width: none;
+      left: 480px;
+      right: 0;
+    }
+    .slab {
+      width: min(680px, 100%);
+    }
+    .card {
+      padding: clamp(64px, 8vh, 100px) clamp(20px, 5vw, 80px) clamp(24px, 4vh, 40px);
+    }
+    .side-nav.prev { left: calc(480px + 24px); }
+    .side-nav.next { right: 24px; }
+    .reading-body { padding: 20px 24px; }
+    .floor-text { font-size: 18px; line-height: 1.78; }
   }
 </style>

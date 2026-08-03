@@ -84,6 +84,52 @@
     transform: translateX(-50%) scaleX(1);
   }
 
+  /* ── Desktop: vertical sidebar ── */
+  @media (min-width: 900px) {
+    .bottom-nav {
+      width: 220px;
+      height: 100%;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(4, auto);
+      align-self: stretch;
+      gap: 2px;
+      margin: 0;
+      border-radius: 0;
+      border: none;
+      border-right: 1px solid var(--qx-border);
+      background: var(--qx-surface);
+      backdrop-filter: none;
+      padding: 20px 10px;
+      box-shadow: 1px 0 20px rgba(0,0,0,0.06);
+      align-content: start;
+      flex-shrink: 0;
+    }
+    .tab {
+      min-height: 48px;
+      flex-direction: row;
+      align-items: center;
+      gap: 11px;
+      justify-content: flex-start;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 12px;
+      text-align: left;
+      color: var(--qx-text-dim);
+    }
+    .tab:hover {
+      background: var(--qx-surface-2);
+      color: var(--qx-text);
+    }
+    .tab.active {
+      background: var(--qx-accent-soft);
+      color: var(--qx-accent-text);
+    }
+    .tab::after {
+      display: none;
+    }
+  }
+
   @media (max-width: 430px) {
     .bottom-nav {
       width: 100%;

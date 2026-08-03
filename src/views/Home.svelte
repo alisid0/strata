@@ -161,10 +161,12 @@
     ...GATEWAY_META[gid]
   }));
 
-  // A subject door always opens that subject's hub — same destination every
-  // time. Progress changes what the hub recommends, never where the door leads.
+  // Home doors are quick starts; the Path tab remains the place for browsing.
+  // This keeps the two entry points useful for different jobs.
   function openDoor(door) {
-    onNavigate?.('subject', door.gid);
+    const firstPath = PATH_GROUPS[door.gid]?.firstTopic;
+    const numbers = PATHS[firstPath]?.cards || [];
+    if (numbers.length) onNavigate?.('reader', { numbers, start: numbers[0] });
   }
 </script>
 
@@ -277,6 +279,7 @@
         <span class="door-icon"><SubjectMark subject={door.gid} size={52} /></span>
         <span class="door-name">{door.name}</span>
         <span class="door-sub">{door.tagline}</span>
+        <span class="door-cta">Start learning ›</span>
       </button>
     {/each}
   </div>
@@ -528,29 +531,79 @@
   .door-icon { display: block; margin-bottom: 4px; }
   .door-name { font-size: 15px; font-weight: 900; color: var(--qx-text); line-height: 1.18; letter-spacing: -.015em; }
   .door-sub { font-size: 11px; font-weight: 650; color: var(--qx-text-faint); line-height: 1.3; }
+  .door-cta { margin-top: auto; padding-top: 8px; font-size: 11px; font-weight: 850; color: var(--qx-accent); }
 
   @media (min-width: 720px) {
     .doors-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .door { min-height: 174px; }
   }
 
+  /* ── Desktop: wider layout, side-by-side sections ── */
+  @media (min-width: 900px) {
+    .home-view {
+      padding: 40px 48px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .header {
+      margin-bottom: 44px;
+    }
+    .hi { font-size: 26px; }
+    .focus-card {
+      max-width: 720px;
+    }
+    .focus-main {
+      min-height: 130px;
+      padding: 28px 32px;
+    }
+    .focus-title { font-size: 24px; }
+    .focus-meta { font-size: 13px; }
+    .focus-cta { padding: 12px 24px; font-size: 14px; }
+    .learning-loop {
+      max-width: 720px;
+    }
+    .loop-head strong { font-size: 19px; }
+    .loop-stats span { font-size: 12px; }
+    .loop-stats b { font-size: 15px; }
+    .doors-label { font-size: 12px; }
+    .doors-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      max-width: 900px;
+    }
+    .door {
+      min-height: 200px;
+      padding: 24px;
+    }
+    .door-name { font-size: 17px; }
+    .door-sub { font-size: 13px; }
+  }
+
   @media (max-width: 410px) {
+    .home-view { padding-top: 16px; }
     .header {
       grid-template-columns: auto minmax(0, 1fr) auto auto;
-      grid-template-areas:
-        "avatar greeting snippets menu"
-        "w w streak streak";
-      row-gap: 9px;
+      grid-template-areas: "avatar greeting snippets menu";
+      gap: 8px;
+      margin-bottom: 18px;
     }
     .avatar { grid-area: avatar; }
     .greeting { grid-area: greeting; }
-    .w-chip { grid-area: w; justify-self: stretch; text-align: center; }
-    .streak-chip { grid-area: streak; justify-content: center; }
+    .w-chip { position: absolute; top: 70px; right: 54px; min-height: 28px; padding: 2px 5px; font-size: 11px; }
+    .streak-chip { position: absolute; top: 70px; right: 16px; min-height: 28px; padding: 2px 5px; font-size: 11px; }
     .menu-btn.icon-btn { grid-area: snippets; }
     .menu-btn:not(.icon-btn) { grid-area: menu; }
-    .loop-head { flex-direction: column; gap: 12px; }
-    .loop-head button { width: 100%; min-height: 42px; }
+    .focus-main { min-height: 100px; padding: 16px; border-radius: 22px; }
+    .focus-bolt { width: 38px; height: 38px; }
+    .focus-cta { padding: 9px 12px; }
+    .learning-loop { padding: 13px 14px; margin-bottom: 24px; border-radius: 16px; }
+    .loop-head { align-items: center; gap: 10px; }
+    .loop-head small { display: none; }
+    .loop-head button { min-height: 32px; padding-inline: 10px; }
+    .loop-progress { margin: 10px 0 8px; height: 4px; }
     .loop-stats { gap: 5px; }
+    .door { min-height: 138px; padding: 14px; }
+    .door-icon :global(img) { width: 44px; height: 44px; }
   }
 
   @media (max-width: 340px) {

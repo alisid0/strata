@@ -23,6 +23,7 @@
   import Quiz from './views/Quiz.svelte';
   import Author from './views/Author.svelte';
   import BottomNav from './lib/components/qubix/BottomNav.svelte';
+  import CommandPalette from './lib/components/qubix/CommandPalette.svelte';
   import WToast from './lib/components/qubix/WToast.svelte';
   import { appEnvironment } from './lib/environment.js';
 
@@ -36,6 +37,7 @@
   let readerStart = 1;
   let authInitialMode = 'welcome';
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
+  let searchOpen = false;
 
   const TAB_VIEWS = ['home', 'path', 'workshop', 'wscore'];
   const TAB_ORDER = ['home', 'path', 'workshop', 'wscore'];
@@ -256,14 +258,22 @@
     </div>
   {/if}
 
+  <CommandPalette open={searchOpen} onClose={() => searchOpen = false} onNavigate={navigate} />
   <WToast />
 </div>
+
+<svelte:window on:keydown={(e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchOpen = !searchOpen;
+  }
+}} />
 
 <style>
   .app-shell {
     height: 100%;
     width: 100%;
-    max-width: 960px;
+    max-width: 1440px;
     margin-inline: auto;
     position: relative;
     overflow: hidden;
@@ -298,4 +308,28 @@
   .tabbed-view { display: flex; flex-direction: column; }
   .tab-content { flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; }
   .tabbed-view.workshop-running .tab-content { overscroll-behavior-y: none; }
+
+  /* ── Desktop: sidebar layout ── */
+  @media (min-width: 900px) {
+    .app-shell {
+      display: flex;
+      flex-direction: row;
+    }
+    .tabbed-view {
+      flex-direction: row;
+      flex: 1;
+      min-width: 0;
+    }
+    .tabbed-view > :global(.bottom-nav) {
+      order: -1;
+    }
+    .tab-content {
+      flex: 1;
+      padding: 0;
+    }
+    .view-layer {
+      left: 0;
+      /* Leave room for the sidebar */
+    }
+  }
 </style>
