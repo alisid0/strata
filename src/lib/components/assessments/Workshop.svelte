@@ -683,4 +683,14 @@
     .arcade .workshop-streak { display: none; }
     .arcade .scenario-prompt { font-size: 12px; }
   }
+
+  /* Desktop: give the exercise a comfortable, centred column instead of a
+     phone-width strip marooned in a wide, empty card. */
+  @media (min-width: 900px) {
+    .workshop-body { display: flex; flex-direction: column; justify-content: center; }
+    .scenario { max-width: 560px; gap: 18px; }
+    .scenario-prompt { font-size: 17px; line-height: 1.5; }
+    .scenario-opt { font-size: 15px; padding: 14px 16px; }
+    .scenario-feedback { font-size: 14px; }
+  }
 </style>

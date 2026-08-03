@@ -400,6 +400,11 @@
 
 <style>
   .quiz-view { height: 100%; overflow-y: auto; padding: 16px 18px 100px; box-sizing: border-box; }
+  /* Desktop: keep the check in a readable centred column instead of stretching
+     full width. */
+  @media (min-width: 900px) {
+    .quiz-view { max-width: 680px; margin: 0 auto; padding: 32px 24px 120px; }
+  }
 
   .quiz-header { margin-bottom: 18px; }
   .head-top { display: flex; align-items: center; gap: 10px; }
