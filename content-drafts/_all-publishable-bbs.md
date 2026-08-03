@@ -175,6 +175,10 @@ Generated: 2026-07-08
 
 **Floor 0:** Buckingham's π theorem: why a toy model flies like the real plane. In 1914 the physicist Edgar Buckingham turned dimensional analysis into a theorem. It says that any physical relationship between n quantities, built from k independent dimensions, can be rewritten using just n − k dimensionless groups — combinations with all the units cancelled out. Buckingham labelled these groups π₁, π₂, and so on (a different π from 3.14159), which is where the name comes from. The power is that it tells you, before any experiment, exactly how many independent knobs a problem really has. It's why scale models work: an aircraft in a wind tunnel or a ship hull in a test tank behaves like the full-size object only if its dimensionless groups match — the Reynolds number for viscous flow, the Mach number for compressibility, the Froude number for waves. Match the π groups and a metre-long model faithfully mimics a 300-metre ship. The theorem is the reason a handful of named dimensionless numbers run the whole of fluid engineering.
 
+**Floor 1:** The recipe is systematic. List every quantity that might matter, write down its dimensions, and combine the quantities until the dimensions cancel. If a pendulum problem contains its period T, length L, gravitational acceleration g and mass m, there are four quantities but only two independent dimensions, length and time. The theorem therefore predicts two dimensionless groups. One can be T√(g/L); the other shows that mass cannot affect the ideal period.
+
+**Floor 2:** Similarity requires matching the relevant dimensionless groups, not merely copying a shape at a smaller size. A wind-tunnel model and a real aircraft can have equal Reynolds and Mach numbers only if engineers choose the flow speed, fluid and pressure carefully. When those groups match, the ratio of competing effects matches too, allowing measurements on the model to predict forces on the full-scale machine.
+
 ---
 
 ## BB 1012 — Recap: Units & dimensions
@@ -182,6 +186,10 @@ Generated: 2026-07-08
 **Subject:** physics | **Topic:**  | **Concept:** 
 
 **Floor 0:** - A measurement is a number × a unit; a unit is an agreed reference amount. A number with no unit means nothing. - Measuring length = counting how many unit lengths fit. Area = length × breadth → square units; volume → cubic units. - Derived quantities are products or ratios of others — area (m²), speed (m/s), density (kg/m³); the unit is built the same way. - Base quantities are a small mutually independent set. SI uses seven: length (m), mass (kg), time (s), current (A), temperature (K), amount (mol), luminous intensity (cd). - Since 2019 the SI units are fixed by exact physical constants (the metre via the speed of light), not objects. Prefixes (kilo, milli, …) carry the scale. - Dimension vs unit: a dimension is the kind of quantity (length, mass, time), independent of the unit; one dimension has many units. Dimension = type, unit = amount. - Dimensional formula: [quantity] = Mᵃ Lᵇ Tᶜ Iᵈ Kᵉ molᶠ cdᵍ (force = MLT⁻²). All exponents zero ⇒ dimensionless. - Homogeneity: every term in a valid equation has identical dimensions. Fails ⇒ wrong; passes ⇒ maybe. Arguments of sin/log/exp must be dimensionless. - Dimensional analysis derives the form by matching dimensions → T ∝ √(L/g); it fixes the powers, not the number out front. - Finishing it: one measurement (or the theory) supplies that number → a complete formula, T = 2π√(L/g). The Buckingham π theorem says how many constants a problem needs (n − k).
+
+**Floor 1:** Use units as an error detector. Convert every term to base dimensions before trusting an equation: force is MLT⁻², energy is ML²T⁻² and power is ML²T⁻³. Quantities added or equated must have identical dimensions. A mismatch proves the expression is wrong, although a match alone cannot prove it is right.
+
+**Floor 2:** Use dimensions as a model-building tool. Decide which quantities control the result, assign an unknown power to each, and solve for the powers that make both sides homogeneous. This reveals the form of a relationship and the dimensionless groups that govern scaling. Experiment or deeper theory must still supply any pure numerical constant, such as the 2π in a pendulum's period.
 
 ---
 
@@ -239,6 +247,10 @@ Generated: 2026-07-08
 
 **Floor 0:** More hands, less harvest: the law of diminishing returns. Economists named this pattern long before physicists worried about it. In the eighteenth century, studying farmland, they observed that a farmer who doubles the labourers on a fixed field never doubles the harvest. The first extra hand takes on the most useful work; each one after adds a little less, until the ground is so crowded that another body barely helps. They called it the law of diminishing returns, and it holds wherever effort is poured into a fixed resource. A small bakery with a single oven shows the same thing: one baker is productive, a second nearly doubles output, but with the oven always full a fifth or sixth adds almost nothing, and a tenth only gets in the way. The fixed ingredient (the field, the oven) sets a ceiling that no amount of labour can lift. It is the same ceiling that caps how far averaging can sharpen a measurement: past a point, more of the same effort yields steadily less.
 
+**Floor 1:** Repeated measurements reduce random uncertainty because positive and negative fluctuations partly cancel. For independent measurements, the uncertainty in the mean often falls roughly as 1/√N. Doubling precision therefore takes four times as many readings, and gaining one extra decimal place may require about one hundred times as many. Each improvement costs more data than the last.
+
+**Floor 2:** Averaging cannot remove a systematic error. A miscalibrated balance, a slow clock or a biased sampling method can produce an extremely precise average that is still wrong. Once random noise falls below that fixed bias, collecting more of the same data adds almost no value. Progress then requires a better instrument, calibration or experimental design—not merely a larger N.
+
 ---
 
 ## BB 1017 — Frames of reference: motion is always measured against something
@@ -288,6 +300,10 @@ Generated: 2026-07-08
 **Subject:** physics | **Topic:**  | **Concept:** 
 
 **Floor 0:** Are we living in a video game? The simulation hypothesis. Some physicists and philosophers take seriously the idea that our universe is a computer simulation, much like an elaborate video game — and a few features of reality fit that picture unnervingly well. A game doesn't render a room until the player looks at it; in quantum physics, a particle has no definite position until it's measured, as if reality only computes the detail you actually check. Games have a smallest pixel; space and time may bottom out too, at the Planck length (about 10⁻³⁵ m), below which "distance" stops meaning anything. Games run at a fixed frame rate; our universe enforces a hard speed limit, the speed of light, on how fast any information can travel. In 2003 the philosopher Nick Bostrom argued that if advanced civilisations ever run many detailed simulations of their ancestors, simulated minds would vastly outnumber real ones — so, statistically, we might be the simulated ones. The idea is unfalsifiable and firmly on the speculative frontier, not the established core. But it's a striking thought: the rules physics uncovers might one day turn out to be physical law, or somebody's code.
+
+**Floor 1:** The comparisons are analogies, not evidence. Quantum measurement does not mean reality waits for a conscious observer to “render” it, the Planck length has not been established as a smallest pixel, and the speed of light follows from spacetime symmetry rather than a demonstrated processor limit. A resemblance to computing language can make an idea intuitive without making it scientifically supported.
+
+**Floor 2:** A scientific hypothesis must risk being wrong: it should make a distinctive prediction that observation could contradict. If a perfect simulation reproduces every possible observation, no experiment inside it can distinguish simulation from non-simulation. That makes the proposal philosophically interesting but currently unfalsifiable. Physics can study claimed glitches or deviations, but without a testable difference the simulation hypothesis remains outside established physical theory.
 
 ---
 
@@ -881,6 +897,10 @@ Generated: 2026-07-08
 
 **Floor 0:** - Chemistry studies matter and its changes at the scale of atoms; the microscopic structure controls the visible world. - Element: a substance made of only one kind of atom (about 118 in total). The periodic table is the full inventory, ordered by atomic number. - Atom: the smallest piece of an element that is still that element. It is almost entirely empty space, with a tiny, dense nucleus at the centre. - Subatomic particles: protons (positive) and neutrons (neutral) sit in the nucleus; electrons (negative) occupy a cloud around it. - Atomic number Z = number of protons = the element's identity (and = number of electrons in a neutral atom). - Mass number A = protons + neutrons; number of neutrons = A − Z. Notation: ᴬ_Z X, e.g. ²³₁₁Na. - Isotopes: atoms of the same element (same Z) with different neutron counts (different A). Chemically identical; the periodic table's atomic masses are weighted averages across an element's isotopes. - Electron shells: electrons sit in layers (2, 8, …); the outermost (valence) shell sets an atom's chemistry. Octet rule: atoms behave as if they want a full outer shell, usually 8. - Ions: an atom that has lost electrons (a positive cation) or gained them (a negative anion) to reach a full shell. Opposite charges attract: the basis of ionic bonding. - Noble gases: Group 18, outer shells already full, so chemically inert; the stable state every other atom is chasing.
 
+**Floor 1:** Read nuclide notation as a compact particle inventory. The lower number Z gives the proton count and therefore the element. The upper number A gives protons plus neutrons, so neutrons = A − Z. A neutral atom has Z electrons; an ion adjusts only the electron count. Isotopes share Z but differ in A, which preserves their chemistry while changing their mass and nuclear stability.
+
+**Floor 2:** Connect structure to behaviour. The nucleus contains almost all the mass, while electrons occupy the atom's volume in quantised energy levels. Chemical reactions rearrange valence electrons without changing the nuclei. Atoms tend toward lower-energy electron arrangements by losing, gaining or sharing electrons, which links atomic structure directly to ions, periodic trends and bonding.
+
 ---
 
 ## BB 1061 — Why atoms bond: the drive to fill the shell
@@ -946,6 +966,10 @@ Generated: 2026-07-08
 **Subject:** chemistry | **Topic:**  | **Concept:** 
 
 **Floor 0:** - Why atoms bond: to reach a lower-energy, more stable state, almost always a full outer shell. Forming bonds releases energy (bond energy); breaking them costs it back. - Ionic: a metal transfers electrons to a non-metal; the + and − ions attract in a giant lattice. High-melting, brittle, conduct only when molten or dissolved. Formula = simplest ion ratio (NaCl, CaCl₂). - Covalent: two non-metals share electron pairs (single/double/triple), forming discrete molecules (H₂O, CO₂). Carbon's four bonds build the molecules of life; electron-pair repulsion sets molecular shape. - Metallic: positive ions in a sea of delocalised electrons, giving conductivity, malleability, and lustre; alloys like steel tune the strength. - Common thread: all three are electrostatic, nuclei and electrons arranging to lower energy and fill shells, differing only in what the electrons do (transferred, shared, or pooled).
+
+**Floor 1:** Predict bonding from the particles involved. Metals with non-metals commonly form ions and ionic lattices; non-metals commonly share electrons in covalent bonds; metals share delocalised electrons across a metallic structure. The bond label is a model of electron distribution, not a separate force: every case ultimately depends on electrostatic attraction between positive nuclei or ions and negative electrons.
+
+**Floor 2:** Link structure to properties rather than memorising a list. Strong attractions throughout a giant lattice produce high melting temperatures. Mobile charged particles allow electrical conduction: delocalised electrons in metals, or mobile ions when an ionic substance is molten or dissolved. Small covalent molecules often melt easily because the forces between molecules are weaker than the covalent bonds inside them; giant covalent networks are different because strong bonds extend throughout the structure.
 
 ---
 
