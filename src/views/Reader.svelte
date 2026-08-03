@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
+  import { cubicOut, cubicIn } from 'svelte/easing';
   import { getBoard, fetchSnippets } from '../lib/content/dynamicBoards.js';
   import { formatMath } from '../lib/content/mathFormat.js';
   // F-01: board HTML comes from Supabase and is rendered raw. Sanitise LAST,
@@ -109,6 +109,43 @@
 
   let floorDir = 1; // 1 = digging deeper (slide up from below), -1 = surfacing (slide down from above)
   const reduceMotion = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── Desktop reading surface: a spiral-notebook page ──────────────────────
+  // On desktop the floor change becomes a page-fold — the leaving floor hinges
+  // up into the binding, the returning floor unfolds back down — instead of the
+  // mobile vertical cross-slide. Mobile (<900px) falls through to fly() below,
+  // so the touch experience is byte-for-byte unchanged.
+  const nbCoils = Array.from({ length: 19 }, (_, i) => i);
+  const isDesk = () => typeof window !== 'undefined' && window.innerWidth >= 900;
+  const FOLD = -92; // degrees the page hinges toward the binding
+
+  function floorOut(node) {
+    if (reduceMotion) return { duration: 0 };
+    if (isDesk()) {
+      if (floorDir === 1) {
+        // digging deeper: the current floor folds up into the binding, on top
+        return { duration: 500, easing: cubicIn,
+          css: (t) => `z-index:6;transform-origin:top center;transform:rotateX(${(1 - t) * FOLD}deg);opacity:${Math.min(1, t * 1.6)};` };
+      }
+      // surfacing: the outgoing floor waits beneath and fades as the page returns
+      return { duration: 360, easing: cubicOut, css: (t) => `z-index:1;opacity:${t};` };
+    }
+    return fly(node, { y: -floorDir * 38, duration: 320, easing: cubicOut });
+  }
+
+  function floorIn(node) {
+    if (reduceMotion) return { duration: 0 };
+    if (isDesk()) {
+      if (floorDir === -1) {
+        // surfacing: the previous floor unfolds back down from the binding, on top
+        return { duration: 500, easing: cubicOut,
+          css: (t) => `z-index:6;transform-origin:top center;transform:rotateX(${(1 - t) * FOLD}deg);opacity:${Math.min(1, t * 1.6)};` };
+      }
+      // digging deeper: the new floor is revealed beneath the folding page
+      return { duration: 300, easing: cubicOut, css: (t) => `z-index:1;opacity:1;transform:scale(${0.992 + 0.008 * t});` };
+    }
+    return fly(node, { y: floorDir * 38, duration: 320, easing: cubicOut });
+  }
 
   function goDeeper(i) {
     const floors = availableFloors(i);
@@ -517,7 +554,7 @@
       {@const col = getBoard(n)}
       <div class="card" class:vdragging={isVDragging && i === idx} style="transform:translateY({i === idx ? dragOffsetY : 0}px)">
         {#if col}
-        <div class="slab">
+        <div class="slab" class:reading-slab={!isSwipeCard(i, depthOf[i])}>
           {#if isSwipeCard(i, depthOf[i])}
             {@const audioUrl = floorAudio(i, 0)}
             <div class="swipe-card" style="background-image:url('{floor0Img(i)}')">
@@ -546,6 +583,26 @@
             {@const d = depthOf[i]}
             {@const media = floorMedia(i, d)}
             {@const audioUrl = floorAudio(i, d)}
+            <!-- Desktop-only spiral-notebook chrome (hidden < 900px) -->
+            <div class="nb-chrome" aria-hidden="true">
+              <div class="nb-binding">
+                <svg viewBox="0 0 680 34" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="qxcoil" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0" stop-color="#8f8a93" /><stop offset="0.5" stop-color="#eceaef" /><stop offset="1" stop-color="#9a95a0" />
+                    </linearGradient>
+                  </defs>
+                  {#each nbCoils as c}
+                    <g transform="translate({(c + 0.5) * (680 / nbCoils.length)},0)">
+                      <path d="M -7 31 C -10 2, 10 2, 7 31" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="5" transform="translate(1,1.5)" />
+                      <path d="M -7 31 C -10 2, 10 2, 7 31" fill="none" stroke="url(#qxcoil)" stroke-width="4.5" stroke-linecap="round" />
+                      <path d="M -7 31 C -10 2, 10 2, 7 31" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.1" stroke-linecap="round" transform="translate(-1.1,0)" />
+                    </g>
+                  {/each}
+                </svg>
+              </div>
+              <div class="nb-holes">{#each nbCoils as _}<span class="nb-hole"></span>{/each}</div>
+            </div>
             <div class="card-header">
               <span class="header-mark"><SubjectMark subject={col.tags?.subject} accent="var(--qx-accent)" size={18} /></span>
               <div class="header-text">
@@ -577,9 +634,7 @@
 
               <div class="reading-content">
                 {#key d}
-                  <div class="floor-anim"
-                       in:fly={{ y: reduceMotion ? 0 : floorDir * 38, duration: reduceMotion ? 0 : 320, easing: cubicOut }}
-                       out:fly={{ y: reduceMotion ? 0 : -floorDir * 38, duration: reduceMotion ? 0 : 320, easing: cubicOut }}>
+                  <div class="floor-anim" in:floorIn out:floorOut>
                     <div class="floor-meta">
                       <span class="floor-count">Floor {floorNumber(i, d)} of {floorTotal(i)}</span>
                       {#if floorAudio(i, d)}
@@ -847,6 +902,9 @@
 
   /* Board outline — hidden on mobile, sidebar on desktop */
   .board-outline { display: none; }
+
+  /* Spiral-notebook chrome — desktop only (see @media 900px). */
+  .nb-chrome { display: none; }
 
   .swipe-bottom {
     position: relative; z-index: 2; margin-top: auto;
@@ -1181,5 +1239,46 @@
        to the full slab width (which made square models ~680px tall and forced
        heavy in-card scrolling). */
     .floor-media { max-width: 480px; margin-inline: auto; }
+
+    /* ── Spiral-notebook page (reading floors only) ─────────────────────── */
+    .reading-slab {
+      overflow: visible; /* let the coil binding sit just above the top edge */
+      padding-top: 26px; /* clear the binding + punched holes */
+      background:
+        repeating-linear-gradient(transparent 0, transparent 33px,
+          color-mix(in srgb, var(--qx-accent) 8%, transparent) 34px, transparent 35px),
+        linear-gradient(180deg, #fdfaf4, var(--qx-surface));
+      border-color: color-mix(in srgb, var(--qx-border) 84%, transparent);
+      border-left: 2px solid color-mix(in srgb, var(--qx-red, #c0492f) 30%, transparent);
+      border-radius: 3px 3px 12px 12px;
+      box-shadow: 0 24px 50px rgba(24, 22, 17, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+    .reading-slab .card-header {
+      background: transparent;
+      border-bottom-color: color-mix(in srgb, var(--qx-red, #c0492f) 12%, var(--qx-border));
+    }
+    /* peeled bottom-right corner — the "flip me" affordance */
+    .reading-slab::after {
+      content: ''; position: absolute; right: 0; bottom: 0; width: 40px; height: 40px;
+      z-index: 3; pointer-events: none; border-bottom-right-radius: 12px;
+      background: linear-gradient(135deg, transparent 50%,
+        color-mix(in srgb, var(--qx-surface-2) 72%, #d6c8b2) 50%);
+    }
+
+    .nb-chrome { display: block; }
+    .nb-binding { position: absolute; top: -13px; left: 0; right: 0; height: 34px; z-index: 4; pointer-events: none; }
+    .nb-binding svg { display: block; width: 100%; height: 34px; }
+    .nb-holes {
+      position: absolute; top: 8px; left: 0; right: 0; height: 14px; z-index: 3;
+      display: flex; justify-content: space-around; padding: 0 20px; pointer-events: none;
+    }
+    .nb-hole {
+      width: 10px; height: 12px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 34%, #c3b9a6, #8d8474 68%, #6f665a);
+      box-shadow: inset 0 1.4px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 3D context for the page-fold floor transition (floorIn / floorOut). */
+    .reading-content { perspective: 1600px; }
   }
 </style>
