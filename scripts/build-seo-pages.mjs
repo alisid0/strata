@@ -12,7 +12,7 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // ── Config ──────────────────────────────────────────────────────────────────
-const DOMAIN = 'https://strata-nine-pi.vercel.app';
+const DOMAIN = 'https://stem.qubix.com';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const DIST = join(ROOT, 'dist');
