@@ -5,7 +5,7 @@
  * questions, no completion state — students read and watch the numbers.
  */
 
-/** Shared steps 1–5: Newton II and friction (both lessons). */
+/** Shared steps: Newton II, mass, and friction (both lessons). */
 export const CORE_OBSERVATIONS = [
   {
     num: 1,
@@ -13,27 +13,37 @@ export const CORE_OBSERVATIONS = [
     body: 'Newton\'s second law: the net horizontal force on the car determines its acceleration. '
       + 'The relationship is F<sub>net</sub> = m·a, so a = F<sub>net</sub> / m. '
       + 'Compare the net force and acceleration readouts in the telemetry panel. '
-      + 'The verification line below shows both sides of the equation using the current simulation values.',
+      + 'The verification line shows both sides of the equation using the current simulation values.',
     refs: ['observe-fnet', 'observe-accel', 'observe-verify']
   },
   {
     num: 2,
-    title: 'Driving force at the tyre',
-    body: 'The engine delivers a driving force at the contact patch. This force appears in the traction gauge as demand. '
-      + 'It is not independent of friction: the road can only push back up to the grip limit.',
-    refs: ['observe-demand', 'observe-grip']
+    title: 'Mass m',
+    body: 'Mass appears in a = F<sub>net</sub> / m, in the weight m·g, and in rolling resistance. '
+      + 'Select different vehicles from the preset list (Mustang, compact car, loaded van). '
+      + 'Hold the same throttle on dry tarmac and compare acceleration: a lighter car reaches a higher a '
+      + 'for the same net force. The 3D model does not change; only the physics values do.',
+    refs: ['observe-preset', 'observe-mass', 'observe-accel', 'observe-verify']
   },
   {
     num: 3,
-    title: 'Normal force and the friction limit',
-    body: 'The limiting (static) friction force is proportional to the normal force at the tyre: '
-      + 'F<sub>max</sub> = μ<sub>s</sub>·N. '
-      + 'Watch the rear axle load N and the grip ceiling μ<sub>s</sub>·N in the traction panel. '
-      + 'Under acceleration, load transfers to the rear axle and raises the grip limit.',
-    refs: ['observe-n', 'observe-grip']
+    title: 'Driving force at the tyre',
+    body: 'The engine (or a push) delivers force at the contact patch. This appears in the traction gauge as demand. '
+      + 'Select <em>Human push</em> to use the same mass as the Mustang but a much smaller maximum force (~500 N). '
+      + 'The equation a = F<sub>net</sub> / m still applies; only the force supplied changes, not the law.',
+    refs: ['observe-demand', 'observe-grip', 'observe-preset']
   },
   {
     num: 4,
+    title: 'Normal force and the friction limit',
+    body: 'The limiting (static) friction force is proportional to the normal force at the tyre: '
+      + 'F<sub>max</sub> = μ<sub>s</sub>·N. '
+      + 'Watch the rear axle load N and the grip ceiling μ<sub>s</sub>·N. '
+      + 'A lighter car has a lower N and therefore a lower grip limit, even on the same surface.',
+    refs: ['observe-n', 'observe-grip']
+  },
+  {
+    num: 5,
     title: 'When demand exceeds the grip limit',
     body: 'If the demanded driving force exceeds μ<sub>s</sub>·N, the tyre slides. '
       + 'Kinetic friction μ<sub>k</sub>·N then applies, with μ<sub>k</sub> &lt; μ<sub>s</sub>. '
@@ -41,7 +51,7 @@ export const CORE_OBSERVATIONS = [
     refs: ['observe-grip', 'observe-slip']
   },
   {
-    num: 5,
+    num: 6,
     title: 'Surface and the coefficient μ',
     body: 'The road surface sets μ<sub>s</sub> and μ<sub>k</sub>. '
       + 'The same throttle input produces different acceleration on dry tarmac, wet tarmac, gravel, or ice. '
@@ -50,14 +60,16 @@ export const CORE_OBSERVATIONS = [
   }
 ];
 
-/** Step 6 — shown when the braking lesson is selected. */
+/** Shown when the braking lesson is selected. */
 export const BRAKING_OBSERVATION = {
-  num: 6,
+  num: 7,
   title: 'Braking and stopping distance',
   body: 'Braking applies a force opposite to the direction of motion. '
-    + 'Deceleration again follows F<sub>net</sub> / m, with F<sub>net</sub> negative while slowing. '
-    + 'The ideal stopping distance from speed v is d = v² / (2μg), assuming all tyres remain at the friction limit. '
-    + 'Compare the live speed, brake force, and stopping-distance estimate while braking.',
+    + 'Deceleration follows F<sub>net</sub> / m while slowing. '
+    + 'The ideal stopping distance from speed v is d = v² / (2μg) when all tyres are at the friction limit — '
+    + 'this ideal distance does not depend on mass. '
+    + 'Compare live speed, brake force, and the stopping-distance estimate while braking. '
+    + 'Try different vehicle presets: deceleration from grip changes with load, but d = v²/(2μg) uses μ and v only.',
   refs: ['observe-brake', 'observe-stop-dist', 'observe-verify']
 };
 
@@ -102,9 +114,10 @@ export class ObservationBooklet {
   }
 
   highlightRefs(ids) {
-    document.querySelectorAll('[data-observe]').forEach((el) => {
-      el.classList.toggle('observe-highlight', ids.includes(el.id));
-    });
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('observe-highlight');
+    }
     document.querySelectorAll('.callout').forEach((el) => {
       el.classList.toggle('callout-active', ids.includes(el.dataset.ref));
     });

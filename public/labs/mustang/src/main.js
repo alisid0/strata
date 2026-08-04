@@ -10,7 +10,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-import { Vehicle, SURFACES, DEFAULT_SPEC, stoppingDistance } from './physics.js';
+import { Vehicle, SURFACES, stoppingDistance } from './physics.js';
+import { specForPreset, DEFAULT_PRESET_KEY } from './vehicles.js';
 import { buildCar, GEOMETRY } from './car.js';
 import { ForceOverlay } from './arrows.js';
 import { Hud } from './hud.js';
@@ -117,7 +118,8 @@ scene.add(built.car);
 const overlay = new ForceOverlay(scene);
 
 // --------------------------------------------------------------- simulation
-const vehicle = new Vehicle(DEFAULT_SPEC, 'dry');
+const vehicle = new Vehicle(specForPreset(DEFAULT_PRESET_KEY), 'dry');
+let currentPresetKey = DEFAULT_PRESET_KEY;
 let slowMo = false;
 let throttleLimit = 1;
 const stats = {
@@ -136,6 +138,13 @@ function resetRun() {
   built.car.rotation.z = 0;
 }
 
+function applyPreset(key) {
+  currentPresetKey = key;
+  Object.assign(vehicle.spec, specForPreset(key));
+  hud.setPreset(key);
+  resetRun();
+}
+
 function applySurface(k) {
   vehicle.setSurface(k);
   roadMat.color.setHex(SURFACES[k].colour);
@@ -145,10 +154,12 @@ function applySurface(k) {
 // ---------------------------------------------------------------------- ui
 const hud = new Hud(document.getElementById('hud'), {
   onSurface: (k) => { applySurface(k); resetRun(); },
+  onPreset: (k) => applyPreset(k),
   onReset: resetRun,
   onToggleForces: (on) => overlay.setEnabled(on),
   onToggleSlowMo: (on) => { slowMo = on; }
 });
+hud.setPreset(currentPresetKey);
 
 // Observation booklet (museum-style numbered trail)
 const booklet = new ObservationBooklet(document.getElementById('observations'));

@@ -10,9 +10,14 @@ are complete. Lessons 3+ (engine drive force, gearing, suspension, drag,
 energy) reuse the same structure.
 
 A numbered **What to observe** booklet (sidebar + callouts ①–④ on the view)
-guides self-study through Newton's second law and friction. It is museum-style:
-read in order, watch the live numbers, no quiz or completion state. Edit the
-copy in `src/observations.js`.
+guides self-study through Newton's second law, mass, and friction. It is
+museum-style: read in order, watch the live numbers, no quiz or completion state.
+Edit the copy in `src/observations.js`.
+
+**Vehicle presets** (`src/vehicles.js`): Mustang (1450 kg), compact car (900 kg),
+loaded van (2200 kg), and human push (500 N max). The 3D model is unchanged;
+switching preset updates mass and force limits so students can compare
+F<sub>net</sub>/m across vehicles on the same surface.
 
 ## Running it
 

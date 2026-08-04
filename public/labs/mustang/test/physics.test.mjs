@@ -12,6 +12,7 @@ import {
   stoppingDistance, stoppingTime, brakingDeceleration,
   frontAxleLoad, rearAxleLoad
 } from '../src/physics.js';
+import { specForPreset } from '../src/vehicles.js';
 
 let passed = 0, failed = 0;
 
@@ -212,6 +213,23 @@ console.log('\nBraking — energy conservation');
   const ratio = v.heatJoules / keStart;
   check('heat generated matches kinetic energy lost',
     ratio > 0.90 && ratio < 1.05, `ratio ${ratio.toFixed(3)}`);
+}
+
+console.log('\nVehicle presets — mass and Newton II');
+{
+  check('compact mass is 900 kg', specForPreset('compact').mass === 900);
+  check('van mass is 2200 kg', specForPreset('van').mass === 2200);
+
+  const push = new Vehicle(specForPreset('push'), 'dry');
+  check('push preset caps drive force at 500 N', push.spec.maxDriveForce === 500);
+  run(push, 0.2, { throttle: 1 });
+  close(push.demand, 500, 1, 'push demand at full throttle');
+
+  for (const key of ['mustang', 'compact', 'van', 'push']) {
+    const v = new Vehicle(specForPreset(key), 'dry');
+    run(v, 0.3, { throttle: 0.15 });
+    close(v.ax, v.forces.net / v.spec.mass, 0.1, `F=ma holds for ${key}`);
+  }
 }
 
 console.log(`\n${passed} passed, ${failed} failed\n`);

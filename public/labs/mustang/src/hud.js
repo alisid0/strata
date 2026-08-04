@@ -5,19 +5,19 @@
  * Where a number comes from an equation, the equation is printed next to it.
  */
 
-import { SURFACES, stoppingDistance, DEFAULT_SPEC } from './physics.js';
+import { SURFACES, stoppingDistance } from './physics.js';
+import { VEHICLE_PRESETS } from './vehicles.js';
 
 const fmt = (n, d = 0) => n.toLocaleString(undefined, {
   minimumFractionDigits: d, maximumFractionDigits: d
 });
 
-const MASS = DEFAULT_SPEC.mass;
-
 export class Hud {
-  constructor(root, { onSurface, onReset, onToggleForces, onToggleSlowMo }) {
+  constructor(root, { onSurface, onPreset, onReset, onToggleForces, onToggleSlowMo }) {
     this.root = root;
     this.controls = { throttle: 0, brake: 0 };
     this.keys = new Set();
+    this.presetKey = 'mustang';
 
     root.innerHTML = `
       <div class="panel" id="observe-verify">
@@ -26,10 +26,22 @@ export class Hud {
         <p class="verify-line" id="verify-friction"></p>
       </div>
 
+      <div class="panel" id="observe-preset">
+        <h3>Vehicle</h3>
+        <label class="sel">
+          <span>Preset</span>
+          <select id="vehicle-preset">
+            ${Object.entries(VEHICLE_PRESETS).map(([k, p]) =>
+              `<option value="${k}">${p.label}</option>`).join('')}
+          </select>
+        </label>
+        <p class="hint" id="preset-blurb">${VEHICLE_PRESETS.mustang.blurb}</p>
+      </div>
+
       <div class="panel">
         <h3>Driver</h3>
         <label class="slider">
-          <span>Throttle <b class="v" id="throttle-v">0%</b></span>
+          <span><span id="force-label">Throttle</span> <b class="v" id="throttle-v">0%</b></span>
           <input type="range" id="throttle" min="0" max="100" value="0">
         </label>
         <label class="slider">
@@ -81,13 +93,15 @@ export class Hud {
       <div class="panel">
         <h3>Telemetry</h3>
         <table class="tele">
+          <tr id="observe-mass"><td>Mass <span class="eq">m</span></td><td><b id="mass">0</b> kg</td></tr>
+          <tr><td>Max drive <span class="eq">F</span></td><td><b id="max-drive">0</b> N</td></tr>
           <tr id="observe-speed"><td>Speed</td><td><b id="speed">0</b> km/h</td></tr>
-          <tr id="observe-accel" data-observe><td>② Acceleration <span class="eq">a=F/m</span></td><td><b id="accel">0.00</b> m/s²</td></tr>
+          <tr id="observe-accel"><td>② Acceleration <span class="eq">a=F/m</span></td><td><b id="accel">0.00</b> m/s²</td></tr>
           <tr><td>0–100 km/h</td><td><b id="zero100">—</b></td></tr>
-          <tr id="observe-fnet" data-observe><td>① Net force <span class="eq">F<sub>net</sub></span></td><td><b id="fnet">0</b> N</td></tr>
+          <tr id="observe-fnet"><td>① Net force <span class="eq">F<sub>net</sub></span></td><td><b id="fnet">0</b> N</td></tr>
           <tr><td>Drag <span class="eq">½ρC<sub>d</sub>Av²</span></td><td><b id="fdrag">0</b> N</td></tr>
           <tr><td>Rolling <span class="eq">C<sub>rr</sub>mg</span></td><td><b id="frr">0</b> N</td></tr>
-          <tr id="observe-n" data-observe><td>③ Rear load N</td><td><b id="n-rear">0</b> N</td></tr>
+          <tr id="observe-n"><td>③ Rear load N</td><td><b id="n-rear">0</b> N</td></tr>
           <tr><td>Load front / rear</td><td><b id="loads">0 / 0</b> N</td></tr>
           <tr><td>Kinetic energy <span class="eq">½mv²</span></td><td><b id="ke">0</b> kJ</td></tr>
           <tr><td>Heat in brakes</td><td><b id="heat">0</b> kJ</td></tr>
@@ -95,8 +109,9 @@ export class Hud {
       </div>`;
 
     this.el = {};
-    for (const id of ['throttle', 'brake', 'throttle-v', 'brake-v', 'surface', 'forces',
-      'slowmo', 'reset', 'observe-demand', 'observe-grip-limit', 'grip-fill', 'grip-line', 'observe-slip',
+    for (const id of ['vehicle-preset', 'preset-blurb', 'force-label', 'throttle', 'brake',
+      'throttle-v', 'brake-v', 'surface', 'forces', 'slowmo', 'reset', 'observe-demand',
+      'observe-grip-limit', 'grip-fill', 'grip-line', 'observe-slip', 'mass', 'max-drive',
       'speed', 'accel', 'zero100', 'fnet', 'fdrag', 'frr', 'loads', 'n-rear', 'ke', 'heat',
       'brake-front', 'brake-rear', 'brake-status', 'observe-stop-dist',
       'verify-newton', 'verify-friction']) {
@@ -106,6 +121,7 @@ export class Hud {
     this.el.throttle.addEventListener('input', () => this.syncSliders());
     this.el.brake.addEventListener('input', () => this.syncSliders());
     this.el.surface.addEventListener('change', e => onSurface(e.target.value));
+    this.el['vehicle-preset'].addEventListener('change', e => onPreset(e.target.value));
     this.el.reset.addEventListener('click', onReset);
     this.el.forces.addEventListener('change', e => onToggleForces(e.target.checked));
     this.el.slowmo.addEventListener('change', e => onToggleSlowMo(e.target.checked));
@@ -122,7 +138,6 @@ export class Hud {
     this.el['brake-v'].textContent = this.el.brake.value + '%';
   }
 
-  /** Keyboard overrides the sliders while held. */
   readControls() {
     const t = this.keys.has('w') ? 1 : this.el.throttle.value / 100;
     const b = this.keys.has('s') ? 1 : this.el.brake.value / 100;
@@ -131,16 +146,29 @@ export class Hud {
 
   setSurface(key) { this.el.surface.value = key; }
 
+  setPreset(key) {
+    const preset = VEHICLE_PRESETS[key];
+    if (!preset) return;
+    this.presetKey = key;
+    this.el['vehicle-preset'].value = key;
+    this.el['preset-blurb'].textContent = preset.blurb;
+    this.el['force-label'].textContent = preset.forceLabel;
+  }
+
   update(v, stats) {
     const e = this.el;
+    const mass = v.spec.mass;
     const pct = v.gripLimit > 0 ? Math.min(160, (v.demand / v.gripLimit) * 100) : 0;
+
+    e.mass.textContent = fmt(mass);
+    e['max-drive'].textContent = fmt(v.spec.maxDriveForce);
 
     e['observe-demand'].textContent = fmt(v.demand) + ' N';
     e['observe-grip-limit'].textContent = fmt(v.gripLimit) + ' N';
     e['grip-fill'].style.width = Math.min(100, pct) + '%';
     e['grip-fill'].classList.toggle('over', v.slipping);
 
-    e['observe-slip'].textContent = v.slipping
+    e['observe-slip'].innerHTML = v.slipping
       ? `Sliding — kinetic friction μ<sub>k</sub>·N = ${fmt(v.slideLimit)} N`
       : 'Gripping — static friction, F ≤ μ<sub>s</sub>·N';
     e['observe-slip'].classList.toggle('bad', v.slipping);
@@ -156,9 +184,9 @@ export class Hud {
     e.ke.textContent = fmt(v.kineticEnergy / 1000, 1);
     e.heat.textContent = fmt(v.heatJoules / 1000, 1);
 
-    const predictedA = v.forces.net / MASS;
+    const predictedA = v.forces.net / mass;
     e['verify-newton'].innerHTML =
-      `F<sub>net</sub> / m = ${fmt(predictedA, 2)} m/s² · measured a = ${fmt(v.ax, 2)} m/s²`;
+      `F<sub>net</sub> / m = ${fmt(predictedA, 2)} m/s² · measured a = ${fmt(v.ax, 2)} m/s² · m = ${fmt(mass)} kg`;
 
     if (v.demand > 1) {
       e['verify-friction'].innerHTML =
@@ -167,7 +195,7 @@ export class Hud {
     } else if (v.forces.brake > 1) {
       const sd = v.v > 0.5 ? stoppingDistance(v.v, v.surface.mu_s) : 0;
       e['verify-friction'].innerHTML = sd > 0
-        ? `d = v²/(2μg) = ${fmt(sd, 1)} m at v = ${fmt(v.v, 1)} m/s`
+        ? `d = v²/(2μg) = ${fmt(sd, 1)} m at v = ${fmt(v.v, 1)} m/s (ideal; independent of m)`
         : 'Apply brake to compare deceleration with F<sub>net</sub> / m';
       e['verify-friction'].hidden = false;
     } else {
