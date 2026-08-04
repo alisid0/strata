@@ -1,0 +1,174 @@
+/**
+ * hud.js — telemetry panel and driver controls.
+ *
+ * Every number shown here is a real quantity from physics.js, not a decoration.
+ * Where a number comes from an equation, the equation is printed next to it.
+ */
+
+import { SURFACES, stoppingDistance } from './physics.js';
+
+const fmt = (n, d = 0) => n.toLocaleString(undefined, {
+  minimumFractionDigits: d, maximumFractionDigits: d
+});
+
+export class Hud {
+  constructor(root, { onSurface, onReset, onToggleForces, onToggleSlowMo }) {
+    this.root = root;
+    this.controls = { throttle: 0, brake: 0 };
+    this.keys = new Set();
+
+    root.innerHTML = `
+      <div class="panel">
+        <h3>Driver</h3>
+        <label class="slider">
+          <span>Throttle <b class="v" id="throttle-v">0%</b></span>
+          <input type="range" id="throttle" min="0" max="100" value="0">
+        </label>
+        <label class="slider">
+          <span>Brake <b class="v" id="brake-v">0%</b></span>
+          <input type="range" id="brake" min="0" max="100" value="0">
+        </label>
+        <p class="hint">or hold <kbd>W</kbd> / <kbd>S</kbd></p>
+        <div class="row">
+          <label class="sel"><span>Road surface</span>
+            <select id="surface">
+              ${Object.entries(SURFACES).map(([k, s]) =>
+                `<option value="${k}">${s.label} (μ=${s.mu_s})</option>`).join('')}
+            </select>
+          </label>
+        </div>
+        <div class="row toggles">
+          <label><input type="checkbox" id="forces" checked> Show forces</label>
+          <label><input type="checkbox" id="slowmo"> Slow motion</label>
+          <button id="reset">Reset</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Traction <span class="sub">is the tyre about to let go?</span></h3>
+        <div class="gauge">
+          <div class="bar"><div class="fill" id="grip-fill"></div>
+            <div class="limit-line" id="grip-line"></div></div>
+          <div class="bar-labels">
+            <span>Demand <b id="demand">0 N</b></span>
+            <span>Limit μN <b id="grip">0 N</b></span>
+          </div>
+        </div>
+        <div class="status" id="slip-status">Gripping</div>
+      </div>
+
+      <div class="panel">
+        <h3>Brakes <span class="sub">per-axle lockup model</span></h3>
+        <div class="bar-labels" style="margin-top:4px">
+          <span>Front <b id="brake-front">—</b></span>
+          <span>Rear <b id="brake-rear">—</b></span>
+        </div>
+        <div class="status" id="brake-status">Brakes released</div>
+        <div class="bar-labels" style="margin-top:6px">
+          <span>Stopping dist <span class="eq">d=v²/(2μg)</span></span>
+          <span><b id="stop-dist">—</b> m</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Telemetry</h3>
+        <table class="tele">
+          <tr><td>Speed</td><td><b id="speed">0</b> km/h</td></tr>
+          <tr><td>Acceleration <span class="eq">a=F/m</span></td><td><b id="accel">0.00</b> m/s²</td></tr>
+          <tr><td>0–100 km/h</td><td><b id="zero100">—</b></td></tr>
+          <tr><td>Net force</td><td><b id="fnet">0</b> N</td></tr>
+          <tr><td>Drag <span class="eq">½ρC<sub>d</sub>Av²</span></td><td><b id="fdrag">0</b> N</td></tr>
+          <tr><td>Rolling <span class="eq">C<sub>rr</sub>mg</span></td><td><b id="frr">0</b> N</td></tr>
+          <tr><td>Load front / rear</td><td><b id="loads">0 / 0</b> N</td></tr>
+          <tr><td>Kinetic energy <span class="eq">½mv²</span></td><td><b id="ke">0</b> kJ</td></tr>
+          <tr><td>Heat in brakes</td><td><b id="heat">0</b> kJ</td></tr>
+        </table>
+      </div>`;
+
+    this.el = {};
+    for (const id of ['throttle', 'brake', 'throttle-v', 'brake-v', 'surface', 'forces',
+      'slowmo', 'reset', 'demand', 'grip', 'grip-fill', 'grip-line', 'slip-status',
+      'speed', 'accel', 'zero100', 'fnet', 'fdrag', 'frr', 'loads', 'ke', 'heat',
+      'brake-front', 'brake-rear', 'brake-status', 'stop-dist']) {
+      this.el[id] = root.querySelector('#' + id);
+    }
+
+    this.el.throttle.addEventListener('input', () => this.syncSliders());
+    this.el.brake.addEventListener('input', () => this.syncSliders());
+    this.el.surface.addEventListener('change', e => onSurface(e.target.value));
+    this.el.reset.addEventListener('click', onReset);
+    this.el.forces.addEventListener('change', e => onToggleForces(e.target.checked));
+    this.el.slowmo.addEventListener('change', e => onToggleSlowMo(e.target.checked));
+
+    addEventListener('keydown', e => {
+      if (['w', 's', 'W', 'S'].includes(e.key)) { this.keys.add(e.key.toLowerCase()); e.preventDefault(); }
+    });
+    addEventListener('keyup', e => this.keys.delete(e.key.toLowerCase()));
+    addEventListener('blur', () => this.keys.clear());
+  }
+
+  syncSliders() {
+    this.el['throttle-v'].textContent = this.el.throttle.value + '%';
+    this.el['brake-v'].textContent = this.el.brake.value + '%';
+  }
+
+  /** Keyboard overrides the sliders while held. */
+  readControls() {
+    const t = this.keys.has('w') ? 1 : this.el.throttle.value / 100;
+    const b = this.keys.has('s') ? 1 : this.el.brake.value / 100;
+    return { throttle: t, brake: b };
+  }
+
+  setSurface(key) { this.el.surface.value = key; }
+
+  update(v, stats) {
+    const e = this.el;
+    const pct = v.gripLimit > 0 ? Math.min(160, (v.demand / v.gripLimit) * 100) : 0;
+
+    e.demand.textContent = fmt(v.demand) + ' N';
+    e.grip.textContent = fmt(v.gripLimit) + ' N';
+    e['grip-fill'].style.width = Math.min(100, pct) + '%';
+    e['grip-fill'].classList.toggle('over', v.slipping);
+
+    e['slip-status'].textContent = v.slipping
+      ? `WHEELSPIN — sliding friction, μ has dropped to ${v.surface.mu_k}. `
+        + `Demand must fall below ${fmt(v.slideLimit)} N to hook up again.`
+      : 'Gripping — static friction, no sliding at the contact patch';
+    e['slip-status'].classList.toggle('bad', v.slipping);
+
+    e.speed.textContent = fmt(v.speedKph, 1);
+    e.accel.textContent = fmt(v.ax, 2);
+    e.zero100.textContent = stats.reached100 ? fmt(stats.reached100, 2) + ' s' : '—';
+    e.fnet.textContent = fmt(v.forces.net);
+    e.fdrag.textContent = fmt(v.forces.drag);
+    e.frr.textContent = fmt(v.forces.rolling);
+    e.loads.textContent = `${fmt(v.frontLoad)} / ${fmt(v.rearLoad)}`;
+    e.ke.textContent = fmt(v.kineticEnergy / 1000, 1);
+    e.heat.textContent = fmt(v.heatJoules / 1000, 1);
+
+    // Brake status
+    const bf = v.frontLocked ? 'LOCKED' : 'gripping';
+    const br = v.rearLocked ? 'LOCKED' : 'gripping';
+    e['brake-front'].textContent = bf;
+    e['brake-rear'].textContent = br;
+    e['brake-front'].style.color = v.frontLocked ? 'var(--bad)' : 'var(--accent)';
+    e['brake-rear'].style.color = v.rearLocked ? 'var(--bad)' : 'var(--accent)';
+
+    if (v.frontLocked || v.rearLocked) {
+      const which = [];
+      if (v.frontLocked) which.push('FRONT');
+      if (v.rearLocked) which.push('REAR');
+      e['brake-status'].textContent = `${which.join(' + ')} LOCKED — sliding friction, μ dropped to ${v.surface.mu_k}`;
+      e['brake-status'].classList.add('bad');
+    } else if (v.forces.brake > 10) {
+      e['brake-status'].textContent = 'Braking — both axles gripping';
+      e['brake-status'].classList.remove('bad');
+    } else {
+      e['brake-status'].textContent = 'Brakes released';
+      e['brake-status'].classList.remove('bad');
+    }
+
+    const sd = v.v > 0.5 ? stoppingDistance(v.v, v.surface.mu_s) : 0;
+    e['stop-dist'].textContent = sd > 0 ? fmt(sd, 1) : '—';
+  }
+}
