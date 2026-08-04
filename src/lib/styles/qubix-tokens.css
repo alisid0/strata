@@ -36,48 +36,57 @@
   --qx-lh-body: 1.72;
 }
 
-/* ── Light — Canvas background, Ink text ── */
+/* ── Light — Warm book feel: cream canvas, forest-green accent ── */
 :root[data-qx-theme="light"] {
-  --qx-bg: #F2EFE8;
-  --qx-bg-radial: #FAF8F3;
-  --qx-surface: #FCFBF8;
-  --qx-surface-2: #ECE8DF;
-  --qx-surface-3: #E5DED2;
-  --qx-surface-elevated: #241F16;
-  --qx-border: #DDD6C8;
-  --qx-border-2: #CCC2B0;
+  --qx-bg: #FEF9F3;
+  --qx-bg-radial: #FFFBF7;
+  --qx-surface: #FFFDF9;
+  --qx-surface-2: #F7F0E8;
+  --qx-surface-3: #EFE6D8;
+  --qx-surface-elevated: #3D2E1F;
+  --qx-border: #E8DCC8;
+  --qx-border-2: #D9C9AE;
 
-  --qx-text: #241F16;
-  --qx-text-2: #57503F;
-  --qx-text-dim: #726A58;
-  --qx-text-faint: #9E947E;
-  --qx-text-faintest: #B4AB97;
+  --qx-text: #3D2E1F;
+  --qx-text-2: #6B5C48;
+  --qx-text-dim: #7A6A54;       /* was #8C7B64 — WCAG AA (4.99) */
+  --qx-text-faint: #8C7B64;     /* was #B0A08A — AA at >=14px (3.91) */
+  --qx-text-faintest: #A2957E;  /* was #CBC0AC — decorative only (2.81) */
 
-  /* Clay (accent + yellow) */
-  --qx-accent: #A85A34;
-  --qx-accent-soft: #F2E4DA;
-  --qx-accent-soft-2: #F7EDE6;
-  --qx-accent-text: #8C4C2E;
-  --qx-yellow: #A85A34;
-  --qx-yellow-soft: #F2E4DA;
-  --qx-yellow-text: #8C4C2E;
+  /* Clay = terracotta accent (primary brand) */
+  --qx-accent: #D28A5E;
+  --qx-accent-soft: #F7E6D8;
+  --qx-accent-soft-2: #FCF3EC;
+  --qx-accent-text: #8A4A22;
+  --qx-accent-strong: #A85F32;  /* darker Clay that carries white text (4.87) */
+  --qx-on-accent: #FFFFFF;
+  --qx-yellow: #D28A5E;
+  --qx-yellow-soft: #F7E6D8;
+  --qx-yellow-text: #8A4A22;
 
-  /* Olive (green + pink) */
-  --qx-green: #3E9E2A;
-  --qx-green-soft: #E7EFDC;
-  --qx-green-text: #3C6427;
-  --qx-pink: #3E9E2A;
-  --qx-pink-soft: #E7EFDC;
-  --qx-pink-soft-2: #EFF4E8;
-  --qx-pink-text: #3C6427;
+  /* Book surfaces — desktop Reader spread (paper on a desk) */
+  --qx-page: #F7F0E2;
+  --qx-page-2: #FCF7EC;
+  --qx-page-edge: #E9DFCB;
+  --qx-page-fold: rgba(90,66,38,.14);
+  --qx-spine: #E2D5BE;
+
+  /* Olive = fresh green (positive / success) */
+  --qx-green: #3D9B3D;
+  --qx-green-soft: #E6F5E6;
+  --qx-green-text: #2E6E2E;
+  --qx-pink: #3D9B3D;
+  --qx-pink-soft: #E6F5E6;
+  --qx-pink-soft-2: #EEF8EE;
+  --qx-pink-text: #2E6E2E;
 
   /* Red (danger) */
-  --qx-danger: #CF3423;
-  --qx-danger-soft: #F7DCD6;
-  --qx-danger-text: #A02D1D;
+  --qx-danger: #D94335;
+  --qx-danger-soft: #FCEAE8;
+  --qx-danger-text: #B33024;
 
-  --qx-shadow-card: 0 1px 1px rgba(36,31,22,.04), 0 8px 24px -18px rgba(36,31,22,.24);
-  --qx-shadow-soft: 0 24px 70px -38px rgba(36,31,22,.36);
+  --qx-shadow-card: 0 1px 2px rgba(61,46,31,.05), 0 6px 18px -10px rgba(61,46,31,.12);
+  --qx-shadow-soft: 0 12px 50px -24px rgba(61,46,31,.18);
 }
 
 /* ── Dark — Ink background, Canvas-warm text; accents lightened ── */
@@ -102,9 +111,18 @@
   --qx-accent-soft: rgba(210,138,94,0.16);
   --qx-accent-soft-2: rgba(210,138,94,0.11);
   --qx-accent-text: #DDA079;
+  --qx-accent-strong: #E09B6F;
+  --qx-on-accent: #1B1409;
   --qx-yellow: #D28A5E;
   --qx-yellow-soft: rgba(210,138,94,0.15);
   --qx-yellow-text: #DDA079;
+
+  /* Book surfaces — desktop Reader spread — dark paper */
+  --qx-page: #221E18;
+  --qx-page-2: #272219;
+  --qx-page-edge: #2B261E;
+  --qx-page-fold: rgba(0,0,0,.45);
+  --qx-spine: #1A1712;
 
   /* Olive (green + pink) */
   --qx-green: #6BC93F;

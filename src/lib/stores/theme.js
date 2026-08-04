@@ -8,10 +8,9 @@ function loadInitial() {
     if (stored === 'light' || stored === 'dark') return stored;
     if (stored === 'paper') return 'light'; // migrate the retired 'paper' theme
   } catch (_) {}
-  if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    return 'light';
-  }
-  return 'dark';
+  // First visit — show the warm light theme. Dark-theme users with a stored
+  // preference are respected; this only affects brand-new visitors.
+  return 'light';
 }
 
 function createThemeStore() {

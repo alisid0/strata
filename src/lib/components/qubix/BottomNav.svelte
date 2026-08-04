@@ -34,14 +34,14 @@
     align-self: center;
     gap: 4px;
     margin: 0 8px max(8px, env(safe-area-inset-bottom, 0px));
-    border: 1px solid var(--qx-border);
-    border-radius: 20px;
-    background: color-mix(in srgb, var(--qx-surface) 91%, transparent);
+    border: 1.5px solid var(--qx-border);
+    border-radius: 22px;
+    background: var(--qx-surface);
     backdrop-filter: blur(22px) saturate(1.15);
-    padding: 5px;
+    padding: 6px;
     flex-shrink: 0;
     position: relative;
-    box-shadow: 0 16px 40px -26px var(--qx-text);
+    box-shadow: 0 1px 3px rgba(61,46,31,.06), 0 8px 24px -14px rgba(61,46,31,.10);
   }
   .tab {
     min-width: 0;
