@@ -5,11 +5,13 @@
  * Where a number comes from an equation, the equation is printed next to it.
  */
 
-import { SURFACES, stoppingDistance } from './physics.js';
+import { SURFACES, stoppingDistance, DEFAULT_SPEC } from './physics.js';
 
 const fmt = (n, d = 0) => n.toLocaleString(undefined, {
   minimumFractionDigits: d, maximumFractionDigits: d
 });
+
+const MASS = DEFAULT_SPEC.mass;
 
 export class Hud {
   constructor(root, { onSurface, onReset, onToggleForces, onToggleSlowMo }) {
@@ -18,6 +20,12 @@ export class Hud {
     this.keys = new Set();
 
     root.innerHTML = `
+      <div class="panel" id="observe-verify">
+        <h3>Verification</h3>
+        <p class="verify-line" id="verify-newton"></p>
+        <p class="verify-line" id="verify-friction"></p>
+      </div>
+
       <div class="panel">
         <h3>Driver</h3>
         <label class="slider">
@@ -30,7 +38,7 @@ export class Hud {
         </label>
         <p class="hint">or hold <kbd>W</kbd> / <kbd>S</kbd></p>
         <div class="row">
-          <label class="sel"><span>Road surface</span>
+          <label class="sel" id="observe-surface"><span>Road surface</span>
             <select id="surface">
               ${Object.entries(SURFACES).map(([k, s]) =>
                 `<option value="${k}">${s.label} (μ=${s.mu_s})</option>`).join('')}
@@ -44,20 +52,20 @@ export class Hud {
         </div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="observe-grip">
         <h3>Traction <span class="sub">is the tyre about to let go?</span></h3>
         <div class="gauge">
           <div class="bar"><div class="fill" id="grip-fill"></div>
             <div class="limit-line" id="grip-line"></div></div>
           <div class="bar-labels">
-            <span>Demand <b id="demand">0 N</b></span>
-            <span>Limit μN <b id="grip">0 N</b></span>
+            <span>Demand <b id="observe-demand">0 N</b></span>
+            <span>Limit μ<sub>s</sub>N <b id="observe-grip-limit">0 N</b></span>
           </div>
         </div>
-        <div class="status" id="slip-status">Gripping</div>
+        <div class="status" id="observe-slip">Gripping</div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="observe-brake">
         <h3>Brakes <span class="sub">per-axle lockup model</span></h3>
         <div class="bar-labels" style="margin-top:4px">
           <span>Front <b id="brake-front">—</b></span>
@@ -66,19 +74,20 @@ export class Hud {
         <div class="status" id="brake-status">Brakes released</div>
         <div class="bar-labels" style="margin-top:6px">
           <span>Stopping dist <span class="eq">d=v²/(2μg)</span></span>
-          <span><b id="stop-dist">—</b> m</span>
+          <span><b id="observe-stop-dist">—</b> m</span>
         </div>
       </div>
 
       <div class="panel">
         <h3>Telemetry</h3>
         <table class="tele">
-          <tr><td>Speed</td><td><b id="speed">0</b> km/h</td></tr>
-          <tr><td>Acceleration <span class="eq">a=F/m</span></td><td><b id="accel">0.00</b> m/s²</td></tr>
+          <tr id="observe-speed"><td>Speed</td><td><b id="speed">0</b> km/h</td></tr>
+          <tr id="observe-accel" data-observe><td>② Acceleration <span class="eq">a=F/m</span></td><td><b id="accel">0.00</b> m/s²</td></tr>
           <tr><td>0–100 km/h</td><td><b id="zero100">—</b></td></tr>
-          <tr><td>Net force</td><td><b id="fnet">0</b> N</td></tr>
+          <tr id="observe-fnet" data-observe><td>① Net force <span class="eq">F<sub>net</sub></span></td><td><b id="fnet">0</b> N</td></tr>
           <tr><td>Drag <span class="eq">½ρC<sub>d</sub>Av²</span></td><td><b id="fdrag">0</b> N</td></tr>
           <tr><td>Rolling <span class="eq">C<sub>rr</sub>mg</span></td><td><b id="frr">0</b> N</td></tr>
+          <tr id="observe-n" data-observe><td>③ Rear load N</td><td><b id="n-rear">0</b> N</td></tr>
           <tr><td>Load front / rear</td><td><b id="loads">0 / 0</b> N</td></tr>
           <tr><td>Kinetic energy <span class="eq">½mv²</span></td><td><b id="ke">0</b> kJ</td></tr>
           <tr><td>Heat in brakes</td><td><b id="heat">0</b> kJ</td></tr>
@@ -87,9 +96,10 @@ export class Hud {
 
     this.el = {};
     for (const id of ['throttle', 'brake', 'throttle-v', 'brake-v', 'surface', 'forces',
-      'slowmo', 'reset', 'demand', 'grip', 'grip-fill', 'grip-line', 'slip-status',
-      'speed', 'accel', 'zero100', 'fnet', 'fdrag', 'frr', 'loads', 'ke', 'heat',
-      'brake-front', 'brake-rear', 'brake-status', 'stop-dist']) {
+      'slowmo', 'reset', 'observe-demand', 'observe-grip-limit', 'grip-fill', 'grip-line', 'observe-slip',
+      'speed', 'accel', 'zero100', 'fnet', 'fdrag', 'frr', 'loads', 'n-rear', 'ke', 'heat',
+      'brake-front', 'brake-rear', 'brake-status', 'observe-stop-dist',
+      'verify-newton', 'verify-friction']) {
       this.el[id] = root.querySelector('#' + id);
     }
 
@@ -125,16 +135,15 @@ export class Hud {
     const e = this.el;
     const pct = v.gripLimit > 0 ? Math.min(160, (v.demand / v.gripLimit) * 100) : 0;
 
-    e.demand.textContent = fmt(v.demand) + ' N';
-    e.grip.textContent = fmt(v.gripLimit) + ' N';
+    e['observe-demand'].textContent = fmt(v.demand) + ' N';
+    e['observe-grip-limit'].textContent = fmt(v.gripLimit) + ' N';
     e['grip-fill'].style.width = Math.min(100, pct) + '%';
     e['grip-fill'].classList.toggle('over', v.slipping);
 
-    e['slip-status'].textContent = v.slipping
-      ? `WHEELSPIN — sliding friction, μ has dropped to ${v.surface.mu_k}. `
-        + `Demand must fall below ${fmt(v.slideLimit)} N to hook up again.`
-      : 'Gripping — static friction, no sliding at the contact patch';
-    e['slip-status'].classList.toggle('bad', v.slipping);
+    e['observe-slip'].textContent = v.slipping
+      ? `Sliding — kinetic friction μ<sub>k</sub>·N = ${fmt(v.slideLimit)} N`
+      : 'Gripping — static friction, F ≤ μ<sub>s</sub>·N';
+    e['observe-slip'].classList.toggle('bad', v.slipping);
 
     e.speed.textContent = fmt(v.speedKph, 1);
     e.accel.textContent = fmt(v.ax, 2);
@@ -142,11 +151,29 @@ export class Hud {
     e.fnet.textContent = fmt(v.forces.net);
     e.fdrag.textContent = fmt(v.forces.drag);
     e.frr.textContent = fmt(v.forces.rolling);
+    e['n-rear'].textContent = fmt(v.rearLoad);
     e.loads.textContent = `${fmt(v.frontLoad)} / ${fmt(v.rearLoad)}`;
     e.ke.textContent = fmt(v.kineticEnergy / 1000, 1);
     e.heat.textContent = fmt(v.heatJoules / 1000, 1);
 
-    // Brake status
+    const predictedA = v.forces.net / MASS;
+    e['verify-newton'].innerHTML =
+      `F<sub>net</sub> / m = ${fmt(predictedA, 2)} m/s² · measured a = ${fmt(v.ax, 2)} m/s²`;
+
+    if (v.demand > 1) {
+      e['verify-friction'].innerHTML =
+        `μ<sub>s</sub>·N = ${fmt(v.gripLimit)} N · demand = ${fmt(v.demand)} N`;
+      e['verify-friction'].hidden = false;
+    } else if (v.forces.brake > 1) {
+      const sd = v.v > 0.5 ? stoppingDistance(v.v, v.surface.mu_s) : 0;
+      e['verify-friction'].innerHTML = sd > 0
+        ? `d = v²/(2μg) = ${fmt(sd, 1)} m at v = ${fmt(v.v, 1)} m/s`
+        : 'Apply brake to compare deceleration with F<sub>net</sub> / m';
+      e['verify-friction'].hidden = false;
+    } else {
+      e['verify-friction'].hidden = true;
+    }
+
     const bf = v.frontLocked ? 'LOCKED' : 'gripping';
     const br = v.rearLocked ? 'LOCKED' : 'gripping';
     e['brake-front'].textContent = bf;
@@ -156,9 +183,9 @@ export class Hud {
 
     if (v.frontLocked || v.rearLocked) {
       const which = [];
-      if (v.frontLocked) which.push('FRONT');
-      if (v.rearLocked) which.push('REAR');
-      e['brake-status'].textContent = `${which.join(' + ')} LOCKED — sliding friction, μ dropped to ${v.surface.mu_k}`;
+      if (v.frontLocked) which.push('front');
+      if (v.rearLocked) which.push('rear');
+      e['brake-status'].innerHTML = `${which.join(' and ')} axle locked — μ<sub>k</sub> = ${v.surface.mu_k}`;
       e['brake-status'].classList.add('bad');
     } else if (v.forces.brake > 10) {
       e['brake-status'].textContent = 'Braking — both axles gripping';
@@ -169,6 +196,6 @@ export class Hud {
     }
 
     const sd = v.v > 0.5 ? stoppingDistance(v.v, v.surface.mu_s) : 0;
-    e['stop-dist'].textContent = sd > 0 ? fmt(sd, 1) : '—';
+    e['observe-stop-dist'].textContent = sd > 0 ? fmt(sd, 1) : '—';
   }
 }

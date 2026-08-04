@@ -9,6 +9,11 @@ next to it.
 are complete. Lessons 3+ (engine drive force, gearing, suspension, drag,
 energy) reuse the same structure.
 
+A numbered **What to observe** booklet (sidebar + callouts ①–④ on the view)
+guides self-study through Newton's second law and friction. It is museum-style:
+read in order, watch the live numbers, no quiz or completion state. Edit the
+copy in `src/observations.js`.
+
 ## Running it
 
 There is no build step, but ES modules will not load over `file://`. Serve the

@@ -15,6 +15,7 @@ import { buildCar, GEOMETRY } from './car.js';
 import { ForceOverlay } from './arrows.js';
 import { Hud } from './hud.js';
 import { LessonController, frictionLesson, brakeLesson } from './lesson.js';
+import { ObservationBooklet } from './observations.js';
 
 // ------------------------------------------------------------------ scene
 const canvasHost = document.getElementById('viewport');
@@ -149,6 +150,9 @@ const hud = new Hud(document.getElementById('hud'), {
   onToggleSlowMo: (on) => { slowMo = on; }
 });
 
+// Observation booklet (museum-style numbered trail)
+const booklet = new ObservationBooklet(document.getElementById('observations'));
+
 // Lesson switcher
 const lessons = { friction: frictionLesson, brakes: brakeLesson };
 let currentLessonKey = 'friction';
@@ -167,6 +171,7 @@ picker.innerHTML = `
 picker.value = currentLessonKey;
 picker.addEventListener('change', () => {
   currentLessonKey = picker.value;
+  booklet.setLesson(currentLessonKey);
   lesson = new LessonController(lessons[currentLessonKey], lessonRoot, (setup) => {
     if (setup.surface) applySurface(setup.surface);
     if (setup.throttleLimit != null) throttleLimit = setup.throttleLimit;
