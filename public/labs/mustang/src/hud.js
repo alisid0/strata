@@ -13,33 +13,20 @@ const fmt = (n, d = 0) => n.toLocaleString(undefined, {
 });
 
 export class Hud {
-  constructor(root, { onSurface, onPreset, onReset, onToggleForces, onToggleSlowMo }) {
+  /**
+   * @param {HTMLElement} root instruments panel (scrolls with the sidebar)
+   * @param {HTMLElement} controlsRoot driver bar, always visible
+   */
+  constructor(root, controlsRoot, { onSurface, onPreset, onReset, onToggleForces, onToggleSlowMo }) {
     this.root = root;
+    this.controlsRoot = controlsRoot;
     this.controls = { throttle: 0, brake: 0 };
     this.keys = new Set();
     this.presetKey = 'mustang';
 
-    root.innerHTML = `
-      <div class="panel" id="observe-verify">
-        <h3>Verification</h3>
-        <p class="verify-line" id="verify-newton"></p>
-        <p class="verify-line" id="verify-friction"></p>
-      </div>
-
-      <div class="panel" id="observe-preset">
-        <h3>Vehicle</h3>
-        <label class="sel">
-          <span>Preset</span>
-          <select id="vehicle-preset">
-            ${Object.entries(VEHICLE_PRESETS).map(([k, p]) =>
-              `<option value="${k}">${p.label}</option>`).join('')}
-          </select>
-        </label>
-        <p class="hint" id="preset-blurb">${VEHICLE_PRESETS.mustang.blurb}</p>
-      </div>
-
-      <div class="panel">
-        <h3>Driver</h3>
+    // The driver bar stays pinned so the car is drivable from any tab.
+    controlsRoot.innerHTML = `
+      <div class="driver-grid">
         <label class="slider">
           <span><span id="force-label">Throttle</span> <b class="v" id="throttle-v">0%</b></span>
           <input type="range" id="throttle" min="0" max="100" value="0">
@@ -48,20 +35,38 @@ export class Hud {
           <span>Brake <b class="v" id="brake-v">0%</b></span>
           <input type="range" id="brake" min="0" max="100" value="0">
         </label>
-        <p class="hint">or hold <kbd>W</kbd> / <kbd>S</kbd></p>
-        <div class="row">
-          <label class="sel" id="observe-surface"><span>Road surface</span>
-            <select id="surface">
-              ${Object.entries(SURFACES).map(([k, s]) =>
-                `<option value="${k}">${s.label} (μ=${s.mu_s})</option>`).join('')}
-            </select>
-          </label>
-        </div>
-        <div class="row toggles">
-          <label><input type="checkbox" id="forces" checked> Show forces</label>
-          <label><input type="checkbox" id="slowmo"> Slow motion</label>
-          <button id="reset">Reset</button>
-        </div>
+      </div>
+      <div class="driver-row">
+        <label class="sel" id="observe-surface">
+          <select id="surface">
+            ${Object.entries(SURFACES).map(([k, s]) =>
+              `<option value="${k}">${s.label} (μ=${s.mu_s})</option>`).join('')}
+          </select>
+        </label>
+        <label class="sel" id="observe-preset">
+          <select id="vehicle-preset">
+            ${Object.entries(VEHICLE_PRESETS).map(([k, p]) =>
+              `<option value="${k}">${p.label}</option>`).join('')}
+          </select>
+        </label>
+        <button id="reset">Reset</button>
+      </div>
+      <div class="driver-row hint-row">
+        <span class="hint">hold <kbd>W</kbd> / <kbd>S</kbd></span>
+        <label><input type="checkbox" id="forces" checked> Forces</label>
+        <label><input type="checkbox" id="slowmo"> Slow-mo</label>
+      </div>`;
+
+    root.innerHTML = `
+      <div class="panel" id="observe-verify">
+        <h3>Verification</h3>
+        <p class="verify-line" id="verify-newton"></p>
+        <p class="verify-line" id="verify-friction"></p>
+      </div>
+
+      <div class="panel">
+        <h3>Vehicle</h3>
+        <p class="hint" id="preset-blurb">${VEHICLE_PRESETS.mustang.blurb}</p>
       </div>
 
       <div class="panel" id="observe-grip">
@@ -109,13 +114,14 @@ export class Hud {
       </div>`;
 
     this.el = {};
+    const find = (id) => controlsRoot.querySelector('#' + id) || root.querySelector('#' + id);
     for (const id of ['vehicle-preset', 'preset-blurb', 'force-label', 'throttle', 'brake',
       'throttle-v', 'brake-v', 'surface', 'forces', 'slowmo', 'reset', 'observe-demand',
       'observe-grip-limit', 'grip-fill', 'grip-line', 'observe-slip', 'mass', 'max-drive',
       'speed', 'accel', 'zero100', 'fnet', 'fdrag', 'frr', 'loads', 'n-rear', 'ke', 'heat',
       'brake-front', 'brake-rear', 'brake-status', 'observe-stop-dist',
       'verify-newton', 'verify-friction']) {
-      this.el[id] = root.querySelector('#' + id);
+      this.el[id] = find(id);
     }
 
     this.el.throttle.addEventListener('input', () => this.syncSliders());

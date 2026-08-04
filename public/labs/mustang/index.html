@@ -32,17 +32,68 @@
   }
   #legend {
     position: absolute; bottom: 14px; left: 16px;
-    background: rgba(0,0,0,.55); padding: 9px 13px; border-radius: 8px;
-    font-size: 12px; backdrop-filter: blur(4px); line-height: 1.9;
+    background: rgba(0,0,0,.55); border-radius: 8px;
+    font-size: 12px; backdrop-filter: blur(4px);
+    padding: 0; overflow: hidden;
   }
+  #legend summary {
+    list-style: none; cursor: pointer; padding: 8px 13px;
+    color: #cfd6e2; font-size: 12px; user-select: none;
+  }
+  #legend summary::-webkit-details-marker { display: none; }
+  #legend summary::after { content: ' ▾'; opacity: .6; }
+  #legend[open] summary::after { content: ' ▴'; }
+  #legend .legend-body { padding: 0 13px 10px; line-height: 1.9; }
   #legend i { display: inline-block; width: 11px; height: 11px; border-radius: 2px;
     margin-right: 7px; vertical-align: -1px; }
 
+  #surface-banner {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    padding: 10px 22px; border-radius: 10px; pointer-events: none;
+    background: rgba(0,0,0,.55); backdrop-filter: blur(6px);
+    color: #eef2f8; font-size: 15px; letter-spacing: .16em; text-transform: uppercase;
+    opacity: 0; transition: opacity .35s ease; z-index: 3;
+  }
+  #surface-banner.visible { opacity: 1; }
+
   aside { display: flex; flex-direction: column; border-left: 1px solid var(--line);
     background: var(--panel); overflow: hidden; }
-  #lesson { padding: 18px 18px 10px; overflow-y: auto; flex: 1 1 55%;
-    border-bottom: 1px solid var(--line); }
-  #hud { padding: 14px 18px 20px; overflow-y: auto; flex: 1 1 45%; }
+
+  /* One scrolling pane per tab, so nothing important sits below a long scroll. */
+  #panes { flex: 1 1 auto; overflow-y: auto; min-height: 0; }
+  .pane { display: none; }
+  .pane.active { display: block; }
+  #lesson { padding: 18px 18px 20px; }
+  #hud { padding: 14px 18px 20px; }
+
+  #tabs { display: flex; border-bottom: 1px solid var(--line); background: var(--panel); }
+  #tabs button {
+    flex: 1; padding: 10px 6px; background: none; border: none; cursor: pointer;
+    color: var(--muted); font: inherit; font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .07em;
+    border-bottom: 2px solid transparent;
+  }
+  #tabs button:hover { color: var(--text); }
+  #tabs button.active { color: var(--text); border-bottom-color: var(--eq); }
+
+  /* Driver bar — pinned, so the car is drivable from any tab. */
+  #driver {
+    flex: 0 0 auto; border-top: 1px solid var(--line); background: #141820;
+    padding: 10px 16px 12px;
+  }
+  .driver-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .driver-grid .slider { margin: 0; }
+  .driver-row { display: flex; gap: 8px; align-items: center; margin-top: 9px; }
+  .driver-row .sel { flex: 1; }
+  .driver-row .sel select { margin-top: 0; padding: 6px; font-size: 12px; }
+  .driver-row button {
+    padding: 6px 12px; border-radius: 6px; background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); cursor: pointer; font: inherit; font-size: 12px;
+  }
+  .driver-row button:hover { border-color: var(--accent); }
+  .hint-row { font-size: 12px; color: var(--muted); gap: 14px; }
+  .hint-row label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+  .hint-row .hint { margin: 0; }
 
   h2 { font-size: 17px; margin: 4px 0 10px; }
   h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .09em;
@@ -125,11 +176,7 @@
   .verify-line { margin: 0 0 6px; font-size: 13px; color: #d3d9e4; line-height: 1.5; }
   .verify-line:last-child { margin-bottom: 0; }
 
-  #observations {
-    padding: 14px 18px; overflow-y: auto; flex: 0 0 auto;
-    max-height: 38vh; border-bottom: 1px solid var(--line);
-    background: #141820;
-  }
+  #observations { padding: 16px 18px 20px; }
   #observations h3 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase;
     letter-spacing: .09em; color: var(--muted); font-weight: 600; }
   .booklet-intro { font-size: 12.5px; color: var(--muted); margin: 0 0 12px; line-height: 1.45; }
@@ -191,31 +238,46 @@
 </head>
 <body>
   <main id="viewport">
-    <div id="title">1969 Mustang Boss 302 — drag to orbit, scroll to zoom</div>
+    <div id="title">1969 Mustang Boss 302 — measured test lane, markers every 10 m</div>
     <div id="callouts" aria-hidden="true">
       <div class="callout" data-ref="observe-fnet"><span class="num">①</span> F<sub>net</sub></div>
       <div class="callout" data-ref="observe-accel"><span class="num">②</span> a</div>
       <div class="callout" data-ref="observe-n"><span class="num">③</span> N</div>
       <div class="callout" data-ref="observe-grip"><span class="num">④</span> μ<sub>s</sub>·N</div>
     </div>
-    <div id="legend">
-      <i style="background:#35d07f"></i>Driving force (road → car)<br>
-      <i style="background:#9fe870"></i>Reaction (tyre → road)<br>
-      <i style="background:#ff5c5c"></i>Air resistance<br>
-      <i style="background:#ffa93d"></i>Rolling resistance<br>
-      <i style="background:#ff2fb3"></i>Braking<br>
-      <i style="background:#6aa9ff"></i>Weight (mg)<br>
-      <i style="background:#c77dff"></i>Normal reaction
-    </div>
+    <div id="surface-banner" aria-hidden="true"></div>
+    <details id="legend">
+      <summary>Force key</summary>
+      <div class="legend-body">
+        <i style="background:#35d07f"></i>Driving force (road → car)<br>
+        <i style="background:#9fe870"></i>Reaction (tyre → road)<br>
+        <i style="background:#ff5c5c"></i>Air resistance<br>
+        <i style="background:#ffa93d"></i>Rolling resistance<br>
+        <i style="background:#ff2fb3"></i>Braking<br>
+        <i style="background:#6aa9ff"></i>Weight (mg)<br>
+        <i style="background:#c77dff"></i>Normal reaction
+      </div>
+    </details>
   </main>
 
   <aside>
     <div id="lesson-bar" style="display:flex; gap:6px; padding:8px 18px; border-bottom:1px solid var(--line); align-items:center;">
       <select id="lesson-pick" style="flex:1; padding:6px; border-radius:6px; background:var(--panel-2); color:var(--text); border:1px solid var(--line); font:inherit; font-size:13px;"></select>
     </div>
-    <section id="observations"></section>
-    <section id="lesson"></section>
-    <section id="hud"></section>
+
+    <nav id="tabs">
+      <button data-pane="observations" class="active">Observe</button>
+      <button data-pane="lesson">Lesson</button>
+      <button data-pane="hud">Instruments</button>
+    </nav>
+
+    <div id="panes">
+      <section id="observations" class="pane active"></section>
+      <section id="lesson" class="pane"></section>
+      <section id="hud" class="pane"></section>
+    </div>
+
+    <div id="driver"></div>
   </aside>
 
   <script type="module" src="./src/main.js"></script>

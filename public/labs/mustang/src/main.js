@@ -17,16 +17,18 @@ import { ForceOverlay } from './arrows.js';
 import { Hud } from './hud.js';
 import { LessonController, frictionLesson, brakeLesson } from './lesson.js';
 import { ObservationBooklet } from './observations.js';
+import { TrackEnvironment, TyrePuffs, TRACK } from './environment.js';
 
 // ------------------------------------------------------------------ scene
 const canvasHost = document.getElementById('viewport');
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x11131a);
-scene.fog = new THREE.Fog(0x11131a, 24, 70);
+scene.fog = new THREE.Fog(0x1b2230, 40, 130);
 
-const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 300);
-camera.position.set(6.6, 2.4, 6.8);
+// Slightly side-on and low: the angle that reads the force arrows and the
+// car's pitch under braking at the same time.
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 400);
+camera.position.set(7.4, 2.2, 7.6);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -37,6 +39,7 @@ canvasHost.appendChild(renderer.domElement);
 
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.65;
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -62,40 +65,18 @@ const rimLight = new THREE.DirectionalLight(0xbcd4ff, 0.7);
 rimLight.position.set(-7, 4, -6);
 scene.add(rimLight);
 
-// ------------------------------------------------------------------- road
-// A repeating texture of transverse bands. Scrolling it is what sells motion,
-// and the band spacing (2 m) doubles as a distance ruler.
-function makeRoadTexture() {
-  // The plane is rotated flat, so texture U runs along world X — the direction
-  // of travel. Bands must therefore vary along the canvas WIDTH.
-  const c = document.createElement('canvas');
-  c.width = 128; c.height = 8;
-  const ctx = c.getContext('2d');
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, 128, 8);
-  ctx.fillStyle = '#c8c8c8';
-  ctx.fillRect(0, 0, 10, 8);
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(100, 1);      // 200 m plane / 100 tiles = one band every 2 m
-  return tex;
-}
+// ------------------------------------------------------- track environment
+// Sky, verge, measured lane, distance numerals and cones. Cosmetic only: the
+// physics never reads from here.
+const track = new TrackEnvironment(scene);
+const puffs = new TyrePuffs(scene);
 
-const roadTex = makeRoadTexture();
-const roadMat = new THREE.MeshStandardMaterial({
-  color: SURFACES.dry.colour, roughness: 0.92, metalness: 0.0, map: roadTex
-});
-const road = new THREE.Mesh(new THREE.PlaneGeometry(200, 26), roadMat);
-road.rotation.x = -Math.PI / 2;
-road.receiveShadow = true;
-scene.add(road);
-
-// Stopping-distance marker — a dashed line on the road showing predicted stop.
-const markerGeo = new THREE.PlaneGeometry(0.15, 3);
-const markerMat = new THREE.MeshBasicMaterial({ color: 0xff5c5c, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
+// Stopping-distance marker — a line on the road showing the predicted stop.
+const markerGeo = new THREE.PlaneGeometry(0.22, TRACK.laneWidth);
+const markerMat = new THREE.MeshBasicMaterial({ color: 0xff5c5c, side: THREE.DoubleSide, transparent: true, opacity: 0.75 });
 const stopMarker = new THREE.Mesh(markerGeo, markerMat);
 stopMarker.rotation.x = -Math.PI / 2;
-stopMarker.position.y = 0.02;
+stopMarker.position.y = 0.03;
 stopMarker.visible = false;
 scene.add(stopMarker);
 
@@ -147,12 +128,25 @@ function applyPreset(key) {
 
 function applySurface(k) {
   vehicle.setSurface(k);
-  roadMat.color.setHex(SURFACES[k].colour);
+  track.applySurface(k);
   hud.setSurface(k);
+  showSurfaceBanner(SURFACES[k].label);
+}
+
+// A short caption when the surface changes, the way an exhibit labels its
+// current configuration.
+const surfaceBanner = document.getElementById('surface-banner');
+let surfaceBannerTimer = null;
+function showSurfaceBanner(label) {
+  if (!surfaceBanner) return;
+  surfaceBanner.textContent = label;
+  surfaceBanner.classList.add('visible');
+  clearTimeout(surfaceBannerTimer);
+  surfaceBannerTimer = setTimeout(() => surfaceBanner.classList.remove('visible'), 1800);
 }
 
 // ---------------------------------------------------------------------- ui
-const hud = new Hud(document.getElementById('hud'), {
+const hud = new Hud(document.getElementById('hud'), document.getElementById('driver'), {
   onSurface: (k) => { applySurface(k); resetRun(); },
   onPreset: (k) => applyPreset(k),
   onReset: resetRun,
@@ -160,6 +154,17 @@ const hud = new Hud(document.getElementById('hud'), {
   onToggleSlowMo: (on) => { slowMo = on; }
 });
 hud.setPreset(currentPresetKey);
+
+// Sidebar tabs: Observe / Lesson / Instruments.
+const tabButtons = [...document.querySelectorAll('#tabs button')];
+tabButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    tabButtons.forEach(b => b.classList.toggle('active', b === button));
+    document.querySelectorAll('.pane').forEach((pane) => {
+      pane.classList.toggle('active', pane.id === button.dataset.pane);
+    });
+  });
+});
 
 // Observation booklet (museum-style numbered trail)
 const booklet = new ObservationBooklet(document.getElementById('observations'));
@@ -239,8 +244,8 @@ function animate() {
 
   lesson.reportProgress(stats);
 
-  // scroll the road backwards under the car; one tile = 2 m
-  roadTex.offset.x += (vehicle.v * dt) / 2;
+  // scroll the lane, distance numerals and cones backwards under the car
+  track.update(vehicle.distance);
 
   // wheels: driven wheels turn faster than the road when they are spinning
   wheelAngle -= vehicle.wheelOmega * dt;
@@ -258,16 +263,19 @@ function animate() {
   built.brakeLights.forEach(l => l.material.emissive.setHex(braking ? 0xff2200 : 0x5a0800));
 
   // Lockup visuals — skid marks under locked axles.
-  const axleX = { front: 1.4, rear: GEOMETRY.frontRadius > 0 ? -1.4 : -1.4 };
+  const axleX = { front: 1.4, rear: -1.4 };
   frontSkid.material.opacity = vehicle.frontLocked ? 0.6 : 0;
   frontSkid.position.x = axleX.front;
   rearSkid.material.opacity = vehicle.rearLocked ? 0.6 : 0;
   rearSkid.position.x = axleX.rear;
 
-  // Stopping-distance marker — a vertical line on the road ahead.
+  // Tyre smoke on wheelspin, spray on a locked axle: the slide should be
+  // visible in the world, not only in the readout.
+  puffs.update(dt, vehicle, axleX);
+
+  // Stopping-distance marker — where the car would stop from here.
   if (vehicle.v > 2 && c.brake > 0.02) {
-    const sd = stoppingDistance(vehicle.v, vehicle.surface.mu_s);
-    stopMarker.position.x = sd;
+    stopMarker.position.x = stoppingDistance(vehicle.v, vehicle.surface.mu_s);
     stopMarker.visible = true;
   } else {
     stopMarker.visible = false;
