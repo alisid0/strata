@@ -140,11 +140,18 @@ export class TyrePuffs {
     const item = this.items[this.cursor];
     this.cursor = (this.cursor + 1) % this.items.length;
     item.life = 0;
-    item.maxLife = 0.5 + Math.random() * 0.45;
-    item.vx = -1.6 - Math.random() * 1.8;
-    item.vy = 0.5 + Math.random() * 0.7;
-    item.sprite.position.set(x + (Math.random() - 0.5) * 0.4, 0.12, (Math.random() - 0.5) * 1.7);
-    item.sprite.scale.setScalar(0.35);
+    item.maxLife = 0.7 + Math.random() * 0.5;
+    item.vx = -2.2 - Math.random() * 2.0;
+    item.vy = 0.7 + Math.random() * 0.9;
+    // Behind the contact patch and outboard of the body, so the plume is not
+    // hidden by the car itself.
+    const side = Math.random() < 0.5 ? 1 : -1;
+    item.sprite.position.set(
+      x - 0.5 - Math.random() * 0.5,
+      0.16,
+      side * (0.75 + Math.random() * 0.5)
+    );
+    item.sprite.scale.setScalar(0.55);
     item.sprite.material.color.setHex(colour);
     item.sprite.visible = true;
   }
@@ -154,12 +161,12 @@ export class TyrePuffs {
     const locked = vehicle.frontLocked || vehicle.rearLocked;
 
     if (spinning || locked) {
-      // Wet and icy surfaces throw spray rather than smoke.
-      const wet = vehicle.surfaceKey === 'wet' || vehicle.surfaceKey === 'ice';
-      const colour = wet ? 0xc8d8e4 : 0xdcdcdc;
+      // Pale surfaces need a darker plume to stay legible against the road.
+      const pale = vehicle.surfaceKey === 'ice';
+      const colour = pale ? 0x8fa3b5 : 0xe8e8e8;
       this.emitAccumulator += dt;
-      while (this.emitAccumulator > 0.035) {
-        this.emitAccumulator -= 0.035;
+      while (this.emitAccumulator > 0.025) {
+        this.emitAccumulator -= 0.025;
         if (spinning) this.spawn(axleX.rear, colour);
         if (vehicle.frontLocked) this.spawn(axleX.front, colour);
         if (vehicle.rearLocked) this.spawn(axleX.rear, colour);
@@ -175,8 +182,9 @@ export class TyrePuffs {
       if (t >= 1) { item.sprite.visible = false; item.sprite.material.opacity = 0; continue; }
       item.sprite.position.x += item.vx * dt;
       item.sprite.position.y += item.vy * dt;
-      item.sprite.scale.setScalar(0.35 + t * 1.15);
-      item.sprite.material.opacity = 0.5 * (1 - t);
+      item.sprite.scale.setScalar(0.55 + t * 1.6);
+      // Fade in quickly, then out, so a puff never pops into existence.
+      item.sprite.material.opacity = 0.85 * Math.min(1, t * 6) * (1 - t);
     }
   }
 }

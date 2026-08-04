@@ -77,11 +77,14 @@ export class ObservationBooklet {
   constructor(root) {
     this.root = root;
     this.lessonKey = 'friction';
+    this.pinned = null;
     this.render();
   }
 
   setLesson(key) {
     this.lessonKey = key;
+    this.pinned = null;
+    this.clearHighlight();
     this.render();
   }
 
@@ -95,7 +98,7 @@ export class ObservationBooklet {
     const items = this.items();
     this.root.innerHTML = `
       <h3>What to observe</h3>
-      <p class="booklet-intro">Read in order. Each step names a quantity to watch in the panels below and on the view.</p>
+      <p class="booklet-intro">Read in order. Each step names a quantity to watch. Hover or tap a step to highlight where to look.</p>
       <ol class="booklet-list">
         ${items.map((item) => `
           <li class="booklet-item" data-refs="${item.refs.join(' ')}">
@@ -108,8 +111,20 @@ export class ObservationBooklet {
       </ol>`;
 
     this.root.querySelectorAll('.booklet-item').forEach((el) => {
-      el.addEventListener('mouseenter', () => this.highlightRefs(el.dataset.refs.split(' ')));
-      el.addEventListener('mouseleave', () => this.clearHighlight());
+      const refs = () => el.dataset.refs.split(' ');
+      el.addEventListener('mouseenter', () => { if (!this.pinned) this.highlightRefs(refs()); });
+      el.addEventListener('mouseleave', () => { if (!this.pinned) this.clearHighlight(); });
+      // Clicking pins the highlight, which is the only way this works on a
+      // touch screen and lets a reader keep a step marked while they drive.
+      el.addEventListener('click', () => {
+        const alreadyPinned = this.pinned === el;
+        this.clearHighlight();
+        this.root.querySelectorAll('.booklet-item').forEach(o => o.classList.remove('pinned'));
+        if (alreadyPinned) { this.pinned = null; return; }
+        this.pinned = el;
+        el.classList.add('pinned');
+        this.highlightRefs(refs());
+      });
     });
   }
 
