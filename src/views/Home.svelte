@@ -319,12 +319,12 @@
   .home-kicker {
     margin-bottom: 2px;
     color: var(--qx-accent-text);
-    font-size: 8.5px;
+    font-size: 9px;
     font-weight: 900;
     letter-spacing: .11em;
     text-transform: uppercase;
   }
-  .hi { font-size: clamp(17px, 3vw, 21px); font-weight: 900; color: var(--qx-text); line-height: 1.15; letter-spacing: -.025em; }
+  .hi { font-size: clamp(18px, 3vw, 22px); font-weight: 900; color: var(--qx-text); line-height: 1.15; letter-spacing: -.025em; }
   .level { font-size: 12px; font-weight: 600; color: var(--qx-text-dim); margin-top: 2px; }
   .level-badge { color: var(--qx-text-faint); }
   .streak-chip {
@@ -337,18 +337,18 @@
     font-size: 13px; font-weight: 900; white-space: nowrap;
   }
 
-  /* One "Continue now" card — accent-filled so it reads as THE action */
+  /* One "Continue now" card — warm green accent, book-like feel */
   .focus-card { margin-bottom: clamp(16px, 3vw, 22px); }
   .focus-main {
     width: 100%; min-height: 118px; display: flex; align-items: center; gap: 15px; text-align: left;
     padding: clamp(18px, 4vw, 25px); border-radius: 26px;
-    border: 1px solid color-mix(in srgb, var(--qx-text) 80%, transparent);
+    border: 1.5px solid var(--qx-accent-soft);
     background:
-      radial-gradient(circle at 90% 5%, color-mix(in srgb, var(--qx-accent) 28%, transparent), transparent 32%),
-      var(--qx-surface-elevated);
+      radial-gradient(circle at 90% 5%, var(--qx-accent-soft), transparent 44%),
+      var(--qx-surface);
     cursor: pointer;
     font-family: var(--qx-font); box-sizing: border-box;
-    box-shadow: 0 24px 54px -34px rgba(0,0,0,.75);
+    box-shadow: 0 1px 2px rgba(61,46,31,.06), 0 10px 30px -18px rgba(61,46,31,.14);
   }
 
   .learning-loop {
@@ -426,16 +426,17 @@
   }
   .focus-bolt {
     width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
-    background: var(--qx-accent); color: #fff;
+    background: var(--qx-accent-soft); color: var(--qx-accent-text);
     display: flex; align-items: center; justify-content: center;
   }
   .focus-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
   .focus-label { font-size: 9px; font-weight: 900; letter-spacing: 0.11em; color: var(--qx-accent); }
-  .focus-title { font-size: clamp(17px, 3vw, 21px); font-weight: 900; color: #F7F2E8; line-height: 1.2; letter-spacing: -.02em; }
-  .focus-meta { font-size: 12px; font-weight: 650; color: #B9AF9D; }
+  .focus-title { font-size: clamp(17px, 3vw, 21px); font-weight: 900; color: var(--qx-text); line-height: 1.2; letter-spacing: -.02em; }
+  .focus-meta { font-size: 12px; font-weight: 650; color: var(--qx-text-dim); }
   .focus-cta {
-    flex-shrink: 0; padding: 10px 17px; border-radius: 12px;
+    flex-shrink: 0; padding: 10px 17px; border-radius: 14px;
     background: var(--qx-accent); color: #fff; font-size: 12px; font-weight: 900;
+    box-shadow: 0 2px 8px rgba(74,140,92,.25);
   }
   .focus-alt {
     display: block; width: 100%; text-align: center; margin-top: 8px; padding: 6px;
@@ -447,7 +448,8 @@
   /* Recall self-check overlay */
   .recall-overlay {
     position: fixed; inset: 0; z-index: 200;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(61,46,31,0.35);
+    backdrop-filter: blur(4px);
     display: flex; align-items: center; justify-content: center; padding: 22px;
   }
   .recall-sheet {
@@ -517,17 +519,18 @@
   }
   .menu-btn.icon-btn { padding: 0; }
 
-  /* The four doors */
-  .doors-label { font-size: 10px; font-weight: 900; color: var(--qx-text-faint); letter-spacing: 0.1em; margin-bottom: 12px; text-transform: uppercase; }
-  .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 18px; }
+  /* The four doors — warm topic cards */
+  .doors-label { font-size: 11px; font-weight: 900; color: var(--qx-text-faint); letter-spacing: 0.09em; margin-bottom: 14px; text-transform: uppercase; }
+  .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 18px; }
   .door {
     min-height: 154px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px;
-    padding: 18px; border-radius: 20px; border: 1px solid var(--qx-border);
+    padding: 20px; border-radius: 22px; border: 1.5px solid var(--qx-border);
     background: var(--qx-surface); cursor: pointer; font-family: var(--qx-font);
-    box-shadow: var(--qx-shadow-card);
+    box-shadow: 0 1px 2px rgba(61,46,31,.04), 0 4px 12px -6px rgba(61,46,31,.08);
     text-align: left;
+    transition: transform var(--qx-duration-fast) var(--qx-ease-out), border-color var(--qx-duration-fast) var(--qx-ease-out), box-shadow var(--qx-duration-fast) var(--qx-ease-out);
   }
-  .door:hover { border-color: var(--qx-accent); transform: translateY(-2px); }
+  .door:hover { border-color: var(--qx-accent); transform: translateY(-3px); box-shadow: 0 4px 16px -6px rgba(74,140,92,.18); }
   .door-icon { display: block; margin-bottom: 4px; }
   .door-name { font-size: 15px; font-weight: 900; color: var(--qx-text); line-height: 1.18; letter-spacing: -.015em; }
   .door-sub { font-size: 11px; font-weight: 650; color: var(--qx-text-faint); line-height: 1.3; }
