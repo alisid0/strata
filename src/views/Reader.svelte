@@ -299,6 +299,12 @@
   let vScroller = null;     // the active floor's scrollable text, if any
   let vEngaged = false;     // the vertical swipe actually reached an overscroll edge
 
+  function readingScroller(target) {
+    const page = target?.closest?.('.page-text');
+    if (page && page.scrollHeight > page.clientHeight + 1) return page;
+    return target?.closest?.('.floor-anim') || null;
+  }
+
   function handleTouchStart(e) {
     touching = true;
     tx = e.touches[0].clientX;
@@ -306,7 +312,7 @@
     tdx = 0; tdy = 0; axis = null;
     dragOffset = 0; isDragging = false;
     dragOffsetY = 0; isVDragging = false; vEngaged = false;
-    vScroller = e.target.closest?.('.card')?.querySelector('.floor-anim') || null;
+    vScroller = readingScroller(e.target);
   }
   function handleTouchMove(e) {
     if (!touching) return;
@@ -369,7 +375,7 @@
     mdx = 0; mdy = 0; axis = null;
     dragOffset = 0; isDragging = false;
     dragOffsetY = 0; isVDragging = false; vEngaged = false;
-    mVScroller = e.target.closest?.('.card')?.querySelector('.floor-anim') || null;
+    mVScroller = readingScroller(e.target);
   }
 
   function handleMouseMove(e) {
@@ -417,7 +423,7 @@
   function handleWheel(e) {
     if (lightboxMedia) return; // lightbox handles its own wheel
     // If the text is mid-scroll, let it scroll — only navigate at the boundary
-    const scroller = e.target.closest('.floor-anim');
+    const scroller = readingScroller(e.target);
     if (scroller) {
       const atTop    = scroller.scrollTop <= 0;
       const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1;
@@ -634,7 +640,7 @@
 
               <div class="reading-content">
                 {#key d}
-                  <div class="floor-anim" class:has-media={!!media} in:floorIn out:floorOut>
+                  <div class="floor-anim" class:has-media={!!media} class:text-spread={!media} in:floorIn out:floorOut>
                     <div class="page-text">
                       <div class="page-head">
                         <span class="ph-title">{col.title}</span>
@@ -1328,9 +1334,10 @@
     /* Two-page grid: [ figure/plate | text ], anchored to an optical top so
        short floors still reach the foot of the sheet. */
     .floor-anim {
+      --spread-gap: clamp(44px, 6vw, 92px);
       box-sizing: border-box; display: grid;
       grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto;
-      column-gap: clamp(44px, 6vw, 92px);
+      column-gap: var(--spread-gap);
       align-items: stretch;
       padding: clamp(40px, 9%, 68px) clamp(28px, 4%, 52px) 28px;
       overflow: hidden;
@@ -1385,7 +1392,34 @@
     .plate-caption { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--qx-page-edge); font-style: italic; font-size: 13.5px; color: var(--qx-text-dim); }
 
     /* Text page. */
-    .page-text { display: flex; flex-direction: column; min-width: 0; grid-column: 2; }
+    .page-text {
+      display: flex; flex-direction: column; min-width: 0; min-height: 0; grid-column: 2;
+      overflow-y: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable;
+      padding-right: 8px;
+    }
+    .page-text::-webkit-scrollbar { width: 7px; }
+    .page-text::-webkit-scrollbar-track { background: transparent; }
+    .page-text::-webkit-scrollbar-thumb { background: var(--qx-page-edge); border-radius: 999px; }
+
+    /* Text-only floors are reading spreads, not decorative title plates. Copy
+       uses both pages and the paper scrolls, safely supporting 4x+ the old
+       fixed right-page allowance without shrinking the type. */
+    .floor-anim.text-spread .floor-plate { display: none; }
+    .floor-anim.text-spread .page-text { grid-column: 1 / -1; grid-row: 1 / span 2; }
+    .floor-anim.text-spread .page-head,
+    .floor-anim.text-spread .page-rule,
+    .floor-anim.text-spread .page-h1 {
+      width: calc((100% - var(--spread-gap)) / 2);
+      box-sizing: border-box;
+    }
+    .floor-anim.text-spread .floor-text {
+      max-width: none;
+      column-count: 2;
+      column-gap: var(--spread-gap);
+    }
+    .floor-anim.text-spread .floor-text :global(p),
+    .floor-anim.text-spread .floor-text :global(.formula),
+    .floor-anim.text-spread .floor-text :global(.gloss) { break-inside: avoid-column; }
     .floor-meta { display: none; }
     .page-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--qx-text-dim); font-weight: 700; }
     .ph-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
