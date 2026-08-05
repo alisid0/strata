@@ -29,6 +29,7 @@
     getComputerWorkshopModules,
     getLineCoreWorkshop,
     getMathsFunctionsWorkshop,
+    getMathsFunctionsBasicsWorkshop,
     getMathsUnitCircleWorkshop,
     getPhysCircuitWorkshop,
     getPhysMotionWorkshop,
@@ -112,10 +113,18 @@
           getWorkshop: getLineCoreWorkshop
         },
         {
+          id: 'functions-basics',
+          label: 'Basics',
+          title: 'Functions basics',
+          sub: 'Baby steps: rules, one-output, f(x), domain, graphs, shapes, inverses, chains.',
+          pathId: 'MATH_FUNCTIONS',
+          getWorkshop: getMathsFunctionsBasicsWorkshop
+        },
+        {
           id: 'functions',
           label: 'Functions',
           title: 'Function machine',
-          sub: 'Test input-output rules, notation, domains, graphs, inverses, and composites.',
+          sub: 'Feed inputs, repair broken rules, graph outputs, reverse machines, and chain functions.',
           pathId: 'MATH_FUNCTIONS',
           getWorkshop: getMathsFunctionsWorkshop
         },

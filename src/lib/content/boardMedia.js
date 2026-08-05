@@ -309,13 +309,29 @@ export const BOARD_MEDIA = {
   // Functions, graphs, transformations and calculus
   1219: {
     0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Send different inputs through the same rule.' } },
+    2: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Build a tiny input–output table with one fixed rule.' } },
     3: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Test whether each input still receives exactly one output.' } }
+  },
+  1220: {
+    0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Find the input that produces two different outputs.' } },
+    2: { type: 'concept-explorer', spec: { kind: 'function', primary: 3, prompt: 'Same input twice must land on the same output.' } }
+  },
+  1222: {
+    0: { type: 'concept-explorer', spec: { kind: 'function', fn: 'quadratic', primary: 2, prompt: 'Decide which inputs the square machine should accept.' } },
+    3: { type: 'concept-explorer', spec: { kind: 'function', fn: 'quadratic', primary: 2, prompt: 'List the outputs that actually come out — that is the range.' } }
   },
   1225: {
     0: { type: 'concept-explorer', spec: { kind: 'function', fn: 'exponential', primary: 1, prompt: 'Move x one step and watch repeated multiplication.' } },
     3: { type: 'concept-explorer', spec: { kind: 'function', fn: 'exponential', primary: 1, prompt: 'Trace how repeated multiplication shapes the graph.' } }
   },
-  1226: { 0: { type: 'concept-explorer', spec: { kind: 'function', fn: 'quadratic', primary: 2, prompt: 'Compare positive and negative inputs after squaring.' } } },
+  1226: {
+    0: { type: 'concept-explorer', spec: { kind: 'function', fn: 'quadratic', primary: 2, prompt: 'Compare positive and negative inputs after squaring.' } },
+    3: { type: 'concept-explorer', spec: { kind: 'function', fn: 'quadratic', primary: 2, prompt: 'Notice the graph flatten near the bottom and steepen on the sides.' } }
+  },
+  1228: {
+    0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Run one rule, then feed its output into a second rule.' } },
+    2: { type: 'concept-explorer', spec: { kind: 'function', primary: 1, prompt: 'Inside machine first: compute g(x), then f of that result.' } }
+  },
   1267: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.5, secondary: 0, prompt: 'Adjust the gradient to change steepness.' } } },
   1270: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0, secondary: 1, prompt: 'Find the horizontal case; notice the vertical case is different.' } } },
   1272: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.6, secondary: 1, prompt: 'Change m and c independently.' } } },
@@ -505,9 +521,18 @@ export const BOARD_MEDIA = {
   // visual-QA sweep; keys checked against live catalogue titles (1163-1431 range
   // alignment confirmed). Raises interactive coverage from 41% toward ~46%.
   1163: { 0: { type: 'concept-explorer', spec: { kind: 'vector', primary: 3, secondary: 2, prompt: 'Set the horizontal and vertical parts to build the arrow.' } } },
-  1221: { 0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Send an input through the rule and read the output.' } } },
-  1223: { 0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Change the input and watch the output move.' } } },
-  1224: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.7, secondary: 0, prompt: 'Change the gradient and the intercept of the line.' } } },
+  1221: {
+    0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Send an input through the rule and read the output.' } },
+    2: { type: 'concept-explorer', spec: { kind: 'function', primary: 5, prompt: 'Read f(5) as a button press: feed 5, then apply the rule.' } }
+  },
+  1223: {
+    0: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Change the input and watch the output move.' } },
+    2: { type: 'concept-explorer', spec: { kind: 'function', primary: 2, prompt: 'Imagine a vertical line: it should hit the graph once.' } }
+  },
+  1224: {
+    0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.7, secondary: 0, prompt: 'Change the gradient and the intercept of the line.' } },
+    2: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.5, secondary: 1, prompt: 'Keep the slope steady — that is the linear signature.' } }
+  },
   1230: { 0: { type: 'concept-explorer', spec: { kind: 'logic', gate: 'AND', prompt: 'Toggle the two inputs and read the gate output.' } } },
   1275: { 0: { type: 'concept-explorer', spec: { kind: 'linear', primary: 0.5, secondary: 0, prompt: 'Steepen the gradient and watch the rate change.' } } },
   1276: { 0: { type: 'concept-explorer', spec: { kind: 'logic', gate: 'OR', prompt: 'Flip the inputs to see how a gate decides its output.' } } },

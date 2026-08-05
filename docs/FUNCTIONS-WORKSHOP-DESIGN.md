@@ -72,6 +72,12 @@ Suggested module subtitle:
 
 **Feed inputs, repair broken rules, read graphs, and chain machines together.**
 
+Baby-step companion module (shipped):
+
+**Functions basics** (`functions-basics`) — short MC/sorting practice that mirrors
+BBs 1219–1228 before the learner enters the signature Function Machine lab.
+Recommended order: read BBs → Functions basics → Function Machine → Transformation lab.
+
 ## Workshop Structure
 
 The workshop should be one rich lab followed by shorter reinforcement steps.

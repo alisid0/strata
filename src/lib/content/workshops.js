@@ -2028,6 +2028,7 @@ export function getMathsExpLogsWorkshop() {
   return cloneInteractions(MATHS_EXP_LOGS_WORKSHOP);
 }
 
+/** Baby-step Functions practice — mirrors BBs 1219–1228 in order. */
 export const MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP = [
   S('A function is best thought of as:',
     [O('rule','A reliable input-output rule',true), O('random','A random answer generator',false), O('shape','Only a curved graph',false)],
@@ -2042,14 +2043,30 @@ export const MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP = [
     { id: 'split2', label: '2 goes to 5 and 9', box: 'broken' },
     { id: 'coin', label: 'n goes to heads or tails', box: 'broken' }
   ]},
+  S('Button A1 drops cola today and chips tomorrow. Same button, two results. Is this a function?',
+    [O('no','No — one input gave two outputs',true), O('yes','Yes — machines can change their mind',false)],
+    'Correct. Same input must always produce the same output.',
+    'A function is predictable. One input cannot split into two different outputs.'),
   S('If f(x) = 2x + 1, what is f(4)?',
     [O('9','9',true), O('8','8',false), O('7','7',false)],
-    'Yes. Put 4 into the rule: 2 x 4 + 1 = 9.',
+    'Yes. Put 4 into the rule: 2 × 4 + 1 = 9.',
     'Close, but remember the +1 after doubling the input.'),
+  S('What does the notation g(0) ask you to do when g(x) = x + 3?',
+    [O('feed','Feed 0 into the rule; the output is 3',true), O('times','Multiply g by 0',false), O('three','Always answer 0',false)],
+    'Right. The number in the brackets is the input.',
+    'g(0) means put 0 into g. Applying x + 3 gives 3.'),
   S('A domain tells you:',
     [O('inputs','Which inputs are allowed',true), O('outputs','Only the final outputs',false), O('slope','Only whether the graph is steep',false)],
     'Exactly. The domain is the safe input set for the function.',
     'Not quite. Domain is about allowed inputs. Range is about possible outputs.'),
+  S('A square machine only accepts whole numbers 0, 1, 2. The outputs are 0, 1, 4. What is the range for those inputs?',
+    [O('out','0, 1, 4',true), O('in','0, 1, 2',false), O('all','All whole numbers',false)],
+    'Yes. Range is what actually comes out for the allowed inputs.',
+    'Domain was 0, 1, 2. Squaring them gives the range 0, 1, 4.'),
+  S('A graph fails the vertical line test when:',
+    [O('two','One x-value has two y-values',true), O('steep','The graph is very steep',false), O('negative','The graph goes below zero',false)],
+    'Correct. One input cannot produce two outputs.',
+    'Not quite. The test is about whether one input has more than one output.'),
   { type: 'sorting', boxes: [
     { id: 'linear', label: 'Linear' },
     { id: 'exponential', label: 'Exponential' },
@@ -2057,20 +2074,31 @@ export const MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP = [
   ], items: [
     { id: 'add', label: 'Adds the same amount each step', box: 'linear' },
     { id: 'multiply', label: 'Multiplies by the same factor each step', box: 'exponential' },
-    { id: 'u', label: 'Makes a U-shaped curve', box: 'quadratic' }
+    { id: 'u', label: 'Makes a U-shaped curve', box: 'quadratic' },
+    { id: 'seqL', label: 'Outputs: 3, 5, 7, 9', box: 'linear' },
+    { id: 'seqE', label: 'Outputs: 1, 2, 4, 8', box: 'exponential' },
+    { id: 'seqQ', label: 'Outputs: 0, 1, 4, 9', box: 'quadratic' }
   ]},
-  S('A graph fails the vertical line test when:',
-    [O('two','One x-value has two y-values',true), O('steep','The graph is very steep',false), O('negative','The graph goes below zero',false)],
-    'Correct. One input cannot produce two outputs.',
-    'Not quite. The test is about whether one input has more than one output.'),
+  S('For f(x) = 3x, the slope stays the same everywhere. What kind of function is this?',
+    [O('lin','Linear',true), O('exp','Exponential',false), O('quad','Quadratic',false)],
+    'Correct. Constant rate of change means linear.',
+    'A steady add (or steady multiply-by-x with fixed coefficient as mx) draws a straight line.'),
   S('If g(x) = x + 5, the inverse machine does what?',
     [O('minus','Subtracts 5',true), O('plus','Adds 5 again',false), O('square','Squares the output',false)],
     'Right. The inverse undoes the rule.',
     'Not quite. To reverse adding 5, subtract 5.'),
+  S('Why does f(x) = x² on all real numbers fail to have a single inverse?',
+    [O('two','Two inputs (2 and −2) share the output 4',true), O('steep','The graph is too steep',false), O('zero','It hits zero',false)],
+    'Correct. One output must point back to exactly one input for a clean inverse.',
+    'Both 2 and −2 square to 4, so you cannot uniquely walk backward from 4.'),
   S('If f(x) = 2x and g(x) = x + 3, what is f(g(4))?',
     [O('14','14',true), O('11','11',false), O('10','10',false)],
     'Yes. First g(4) = 7, then f(7) = 14.',
-    'Composition runs one function, then feeds that output into the next.')
+    'Composition runs the inside function first, then feeds that output into the next.'),
+  S('With the same f and g, what is g(f(4))?',
+    [O('11','11',true), O('14','14',false), O('8','8',false)],
+    'Yes. f(4) = 8, then g(8) = 11. Order matters.',
+    'Run f first this time: 2 × 4 = 8, then add 3 to get 11.')
 ];
 
 export const PHYSICS_ELECTRICITY_WORKSHOP = [
@@ -2615,11 +2643,12 @@ export const MATHS_FUNCTIONS_WORKSHOP = [
     'Run g first: 3 + 1 = 4. Then feed 4 to f: 2 × 4 = 8.')
 ];
 
+export function getMathsFunctionsBasicsWorkshop() {
+  return cloneInteractions([...MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP]);
+}
+
 export function getMathsFunctionsWorkshop() {
-  return cloneInteractions([
-    ...MATHS_FUNCTIONS_WORKSHOP,
-    ...MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP
-  ]);
+  return cloneInteractions([...MATHS_FUNCTIONS_WORKSHOP]);
 }
 
 // ── Maths: Unit Circle (Trigonometry signature lab) ──
