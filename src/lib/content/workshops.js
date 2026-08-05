@@ -2028,6 +2028,7 @@ export function getMathsExpLogsWorkshop() {
   return cloneInteractions(MATHS_EXP_LOGS_WORKSHOP);
 }
 
+/** Baby-step Functions practice — mirrors BBs 1219–1228 in order. */
 export const MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP = [
   S('A function is best thought of as:',
     [O('rule','A reliable input-output rule',true), O('random','A random answer generator',false), O('shape','Only a curved graph',false)],
@@ -2042,14 +2043,30 @@ export const MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP = [
     { id: 'split2', label: '2 goes to 5 and 9', box: 'broken' },
     { id: 'coin', label: 'n goes to heads or tails', box: 'broken' }
   ]},
+  S('Button A1 drops cola today and chips tomorrow. Same button, two results. Is this a function?',
+    [O('no','No — one input gave two outputs',true), O('yes','Yes — machines can change their mind',false)],
+    'Correct. Same input must always produce the same output.',
+    'A function is predictable. One input cannot split into two different outputs.'),
   S('If f(x) = 2x + 1, what is f(4)?',
     [O('9','9',true), O('8','8',false), O('7','7',false)],
-    'Yes. Put 4 into the rule: 2 x 4 + 1 = 9.',
+    'Yes. Put 4 into the rule: 2 × 4 + 1 = 9.',
     'Close, but remember the +1 after doubling the input.'),
+  S('What does the notation g(0) ask you to do when g(x) = x + 3?',
+    [O('feed','Feed 0 into the rule; the output is 3',true), O('times','Multiply g by 0',false), O('three','Always answer 0',false)],
+    'Right. The number in the brackets is the input.',
+    'g(0) means put 0 into g. Applying x + 3 gives 3.'),
   S('A domain tells you:',
     [O('inputs','Which inputs are allowed',true), O('outputs','Only the final outputs',false), O('slope','Only whether the graph is steep',false)],
     'Exactly. The domain is the safe input set for the function.',
     'Not quite. Domain is about allowed inputs. Range is about possible outputs.'),
+  S('A square machine only accepts whole numbers 0, 1, 2. The outputs are 0, 1, 4. What is the range for those inputs?',
+    [O('out','0, 1, 4',true), O('in','0, 1, 2',false), O('all','All whole numbers',false)],
+    'Yes. Range is what actually comes out for the allowed inputs.',
+    'Domain was 0, 1, 2. Squaring them gives the range 0, 1, 4.'),
+  S('A graph fails the vertical line test when:',
+    [O('two','One x-value has two y-values',true), O('steep','The graph is very steep',false), O('negative','The graph goes below zero',false)],
+    'Correct. One input cannot produce two outputs.',
+    'Not quite. The test is about whether one input has more than one output.'),
   { type: 'sorting', boxes: [
     { id: 'linear', label: 'Linear' },
     { id: 'exponential', label: 'Exponential' },
@@ -2057,20 +2074,31 @@ export const MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP = [
   ], items: [
     { id: 'add', label: 'Adds the same amount each step', box: 'linear' },
     { id: 'multiply', label: 'Multiplies by the same factor each step', box: 'exponential' },
-    { id: 'u', label: 'Makes a U-shaped curve', box: 'quadratic' }
+    { id: 'u', label: 'Makes a U-shaped curve', box: 'quadratic' },
+    { id: 'seqL', label: 'Outputs: 3, 5, 7, 9', box: 'linear' },
+    { id: 'seqE', label: 'Outputs: 1, 2, 4, 8', box: 'exponential' },
+    { id: 'seqQ', label: 'Outputs: 0, 1, 4, 9', box: 'quadratic' }
   ]},
-  S('A graph fails the vertical line test when:',
-    [O('two','One x-value has two y-values',true), O('steep','The graph is very steep',false), O('negative','The graph goes below zero',false)],
-    'Correct. One input cannot produce two outputs.',
-    'Not quite. The test is about whether one input has more than one output.'),
+  S('For f(x) = 3x, the slope stays the same everywhere. What kind of function is this?',
+    [O('lin','Linear',true), O('exp','Exponential',false), O('quad','Quadratic',false)],
+    'Correct. Constant rate of change means linear.',
+    'A steady add (or steady multiply-by-x with fixed coefficient as mx) draws a straight line.'),
   S('If g(x) = x + 5, the inverse machine does what?',
     [O('minus','Subtracts 5',true), O('plus','Adds 5 again',false), O('square','Squares the output',false)],
     'Right. The inverse undoes the rule.',
     'Not quite. To reverse adding 5, subtract 5.'),
+  S('Why does f(x) = x² on all real numbers fail to have a single inverse?',
+    [O('two','Two inputs (2 and −2) share the output 4',true), O('steep','The graph is too steep',false), O('zero','It hits zero',false)],
+    'Correct. One output must point back to exactly one input for a clean inverse.',
+    'Both 2 and −2 square to 4, so you cannot uniquely walk backward from 4.'),
   S('If f(x) = 2x and g(x) = x + 3, what is f(g(4))?',
     [O('14','14',true), O('11','11',false), O('10','10',false)],
     'Yes. First g(4) = 7, then f(7) = 14.',
-    'Composition runs one function, then feeds that output into the next.')
+    'Composition runs the inside function first, then feeds that output into the next.'),
+  S('With the same f and g, what is g(f(4))?',
+    [O('11','11',true), O('14','14',false), O('8','8',false)],
+    'Yes. f(4) = 8, then g(8) = 11. Order matters.',
+    'Run f first this time: 2 × 4 = 8, then add 3 to get 11.')
 ];
 
 export const PHYSICS_ELECTRICITY_WORKSHOP = [
@@ -2615,11 +2643,102 @@ export const MATHS_FUNCTIONS_WORKSHOP = [
     'Run g first: 3 + 1 = 4. Then feed 4 to f: 2 × 4 = 8.')
 ];
 
+export function getMathsFunctionsBasicsWorkshop() {
+  return cloneInteractions([...MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP]);
+}
+
+/** Everyday + maths: sort what is a function vs what is not. */
+export const MATHS_FUNCTIONS_OR_NOT_WORKSHOP = [
+  S('A function means: from each allowed input there is…',
+    [O('one', 'Exactly one output', true), O('many', 'As many outputs as you like', false), O('zero', 'Sometimes no output is fine', false)],
+    'Yes. One input, one arrow, one output. That is the non-negotiable.',
+    'Every allowed input must get exactly one output — not zero, not two.'),
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'birthday', label: 'Person → birthday', box: 'function' },
+    { id: 'capital', label: 'Country → capital city', box: 'function' },
+    { id: 'friend', label: 'Person → friend', box: 'not' },
+    { id: 'synonym', label: 'Word → synonym', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'isbn', label: 'Book → ISBN', box: 'function' },
+    { id: 'plate', label: 'Number plate → car', box: 'function' },
+    { id: 'course', label: 'Student → course enrolled', box: 'not' },
+    { id: 'restaurant', label: 'City → restaurant', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'letters', label: 'Word → number of letters', box: 'function' },
+    { id: 'seat', label: 'Ticket seat code → one seat', box: 'function' },
+    { id: 'actor', label: 'Movie → actor in it', box: 'not' },
+    { id: 'search', label: 'Search query → webpage result', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'passport', label: 'Passport number → holder', box: 'function' },
+    { id: 'barcode', label: 'Barcode → product', box: 'function' },
+    { id: 'surname', label: 'Surname → person with that name', box: 'not' },
+    { id: 'coin', label: 'Coin flip setup → heads or tails', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'double', label: 'x → 2x', box: 'function' },
+    { id: 'square', label: 'x → x²', box: 'function' },
+    { id: 'abs', label: 'x → |x|', box: 'function' },
+    { id: 'pmroot', label: 'x → ±√x (both signs)', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'proot', label: 'x → √x (positive root only, x ≥ 0)', box: 'function' },
+    { id: 'plus3', label: 'x → x + 3', box: 'function' },
+    { id: 'circle', label: 'x → y on the circle x² + y² = 1', box: 'not' },
+    { id: 'factor', label: 'Integer → a factor of that integer', box: 'not' }
+  ]},
+  S('Box A has 4 and 9. Someone maps 4 → +2 and 4 → −2 because “square root.” Is that a function?',
+    [O('no', 'No — one input forked to two outputs', true), O('yes', 'Yes — both roots are allowed', false)],
+    'Correct. One arrow per input. ±√ splits 4 into two answers, so it is not a function.',
+    'A function cannot send 4 to both +2 and −2. Choose one output, or it is only a relation.'),
+  S('How do mathematicians make square root into a function?',
+    [O('principal', 'Keep only the principal (non-negative) root', true), O('both', 'Always return both + and −', false), O('none', 'Refuse to define √ at all', false)],
+    'Yes. √4 = 2 only. The negative solution still exists for x² = 4, but √ does not return it.',
+    'The principal square root picks the non-negative answer so each input gets one output.'),
+  S('Many inputs may share one output (2 → 4 and −2 → 4 for squaring). Is that still a function?',
+    [O('yes', 'Yes — many-to-one is allowed', true), O('no', 'No — outputs must all be unique', false)],
+    'Correct. The ban is one-to-many, not many-to-one.',
+    'Different inputs may land on the same output. What fails is one input landing on several outputs.'),
+  S('A grater maps each whole vegetable to one grated portion. Person → friend maps one person to many friends. Which is a function?',
+    [O('grater', 'Only the grater', true), O('both', 'Both', false), O('friend', 'Only person → friend', false)],
+    'Right. The grater gives one result per vegetable. “Friend” forks.',
+    'One vegetable → one grated result is a function. One person → many friends is not.'),
+  S('Is “2 + 2 = 4” a function?',
+    [O('no', 'No — it is an equation, a true/false statement', true), O('yes', 'Yes — it maps 2 to 4', false)],
+    'Correct. An equation claims equality. A function is an input→output mapping.',
+    '2 + 2 = 4 does not take an arbitrary input from a domain box. It is just a statement.'),
+  S('Which statement captures a function in one line?',
+    [O('arrow', 'Each allowed input has exactly one arrow to exactly one output', true), O('rules', 'Any rulebook of how a game works', false), O('formula', 'Only things written as algebraic formulas', false)],
+    'Yes. Mapping with exactly one arrow per input.',
+    'Football rulebooks are not functions. Formulas are optional — Dirichlet’s idea: any reliable assignment counts.')
+];
+
+export function getMathsFunctionsOrNotWorkshop() {
+  return cloneInteractions([...MATHS_FUNCTIONS_OR_NOT_WORKSHOP]);
+}
+
 export function getMathsFunctionsWorkshop() {
-  return cloneInteractions([
-    ...MATHS_FUNCTIONS_WORKSHOP,
-    ...MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP
-  ]);
+  return cloneInteractions([...MATHS_FUNCTIONS_WORKSHOP]);
 }
 
 // ── Maths: Unit Circle (Trigonometry signature lab) ──

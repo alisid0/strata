@@ -1,3 +1,12 @@
+/**
+ * Functions path fallback boards (MATH_FUNCTIONS · BBs 1219–1228).
+ *
+ * Baby-step arc toward calculus: rule → one output → notation → domain/range →
+ * graph test → linear / exponential / quadratic → inverse → composition.
+ *
+ * Live copy may differ in Supabase; this module is the bundled offline fallback.
+ * Floor media resolves via boardMedia.js (concept-explorer / math-visual).
+ */
 export const FUNCTION_BOARDS = {
   1219: {
     act: 'I',
@@ -5,11 +14,26 @@ export const FUNCTION_BOARDS = {
     title: 'The mechanical rule',
     tags: { subject: 'maths', topic: 'functions', concept: 'function-as-rule', ground: 'g0' },
     layers: [
-      { text: '<p>At its core, mathematics is not just about isolated numbers. It is about relationships between things.</p>' },
-      { text: '<p>A vending machine is a useful first picture. A specific code is pressed on the keypad, and a specific item drops to the bottom.</p>' },
-      { text: '<p>There is an input, the button code, and an output, the item that comes out.</p>' },
-      { text: '<p>The internal mechanism linking that input to that output is a strict rule.</p>' },
-      { text: '<p>In mathematics, a rule that reliably maps an input to an output is called a function.</p>' }
+      {
+        text:
+          '<p>Press A1 on a vending machine. A cola drops. Press A1 again. The same cola drops.</p>'
+      },
+      {
+        text:
+          '<p>Something goes in (the button code). Something comes out (the drink). Between them sits a fixed rule the machine follows every time.</p>'
+      },
+      {
+        text:
+          '<p>Try a tiny table of your own. Input 1 → output 2. Input 2 → output 4. Input 3 → output 6. The hidden rule is “double it.”</p>'
+      },
+      {
+        text:
+          '<p>In mathematics, a rule that takes an allowed input and returns one output is called a <strong>function</strong>.</p>'
+      },
+      {
+        text:
+          '<p>You will meet functions again and again in calculus. First we learn to run the machine. Later we ask how fast the output changes, and what value it approaches.</p>'
+      }
     ]
   },
   1220: {
@@ -18,11 +42,26 @@ export const FUNCTION_BOARDS = {
     title: 'The broken machine',
     tags: { subject: 'maths', topic: 'functions', concept: 'one-input-one-output', ground: 'g0' },
     layers: [
-      { text: '<p>A function follows one non-negotiable rule: the same input can only produce one output.</p>' },
-      { text: '<p>If button A1 drops a cola today, then A1 must drop a cola every time the same machine is used under the same rule.</p>' },
-      { text: '<p>If A1 sometimes drops cola and sometimes drops chips, the relationship is unpredictable. In mathematics, it is not a function.</p>' },
-      { text: '<p>Different inputs are allowed to share the same output. A1 and A2 could both lead to cola.</p>' },
-      { text: '<p>The forbidden move is one input splitting into two different outputs. Predictability is the heart of a function.</p>' }
+      {
+        text:
+          '<p>Suppose A1 drops cola on Monday and chips on Tuesday. Same button, two results. You would stop trusting the machine.</p>'
+      },
+      {
+        text:
+          '<p>A function has one non-negotiable rule: the same input always produces the same output.</p>'
+      },
+      {
+        text:
+          '<p>Check this table. Input 2 → 5. Input 3 → 6. Input 2 → 9. The second visit to 2 broke the rule. That relation is not a function.</p>'
+      },
+      {
+        text:
+          '<p>Different inputs may share one output. A1 and A2 can both give cola. Many-to-one is fine. One-to-many is not.</p>'
+      },
+      {
+        text:
+          '<p>When we later draw graphs and talk about limits, this same demand stays: at each x we look at, the rule must point to one y.</p>'
+      }
     ]
   },
   1221: {
@@ -31,11 +70,26 @@ export const FUNCTION_BOARDS = {
     title: 'The mathematical shorthand',
     tags: { subject: 'maths', topic: 'functions', concept: 'function-notation', ground: 'g0' },
     layers: [
-      { text: '<p>Mathematicians do not draw vending machines every time they describe a relationship. They use compact notation.</p>' },
-      { text: '<p>The incoming input is usually called x.</p>' },
-      { text: '<p>The rule machine is usually called f, short for function.</p>' },
-      { text: '<p>The whole process is written as f(x), read as "f of x".</p>' },
-      { text: '<p>If the rule is double the input, the function is f(x) = 2x. Put in 5, and f(5) = 10.</p>' }
+      {
+        text:
+          '<p>Drawing a vending machine every time would be slow. Mathematicians use a short label for the same idea.</p>'
+      },
+      {
+        text:
+          '<p>Call the input <em>x</em>. Call the rule <em>f</em> (for function). Write the whole process as <em>f(x)</em>, read “f of x.”</p>'
+      },
+      {
+        text:
+          '<p>If the rule is “double the input,” write <em>f(x) = 2x</em>. Then <em>f(5)</em> means: put 5 into the rule. Output: 10.</p>'
+      },
+      {
+        text:
+          '<p>Work one more: if <em>g(x) = x + 3</em>, then <em>g(4) = 7</em> and <em>g(0) = 3</em>. The letter inside the brackets is always the input.</p>'
+      },
+      {
+        text:
+          '<p>Later, slopes and limits will reuse this notation. For now, treat <em>f(3)</em> as a button press: feed 3, read what comes out.</p>'
+      }
     ]
   },
   1222: {
@@ -44,11 +98,26 @@ export const FUNCTION_BOARDS = {
     title: 'The boundaries',
     tags: { subject: 'maths', topic: 'functions', concept: 'domain-and-range', ground: 'g0' },
     layers: [
-      { text: '<p>A physical machine has limits. A vending machine accepts coins or notes, but not a wooden block.</p>' },
-      { text: '<p>The complete set of inputs a function can safely accept is called the domain.</p>' },
-      { text: '<p>The machine also has a limited set of things it can produce. It may dispense water, soda, or chips, but not a car.</p>' },
-      { text: '<p>The complete set of possible outputs is called the range.</p>' },
-      { text: '<p>Domain and range fence in the relationship. They tell us what can go in and what can come out.</p>' }
+      {
+        text:
+          '<p>A wooden block will not buy a drink. The machine only accepts certain inputs. Functions are the same.</p>'
+      },
+      {
+        text:
+          '<p>The set of inputs a function can safely accept is the <strong>domain</strong>. Think: what am I allowed to put in?</p>'
+      },
+      {
+        text:
+          '<p>The set of outputs it can actually produce is the <strong>range</strong>. Think: what can come out?</p>'
+      },
+      {
+        text:
+          '<p>Example: a machine squares whole numbers from 0 to 4. Domain: 0, 1, 2, 3, 4. Outputs: 0, 1, 4, 9, 16. That list of outputs is the range for those inputs.</p>'
+      },
+      {
+        text:
+          '<p>In calculus you often ask what happens as x moves toward the edge of a domain, or toward a hole in it. Domain is the fence. Limits look at the fence line.</p>'
+      }
     ]
   },
   1223: {
@@ -57,11 +126,26 @@ export const FUNCTION_BOARDS = {
     title: 'The visual test',
     tags: { subject: 'maths', topic: 'functions', concept: 'vertical-line-test', ground: 'g0' },
     layers: [
-      { text: '<p>Functions connect naturally to coordinate geometry.</p>' },
-      { text: '<p>An input is an x-value, moving left to right. An output is a y-value, moving up and down.</p>' },
-      { text: '<p>That means a function can be drawn as a line or curve on a grid.</p>' },
-      { text: '<p>The one-output rule creates a visual test: a vertical line should touch the graph in only one place at a time.</p>' },
-      { text: '<p>If a vertical line touches the graph twice, one x-input has two y-outputs. The curve fails the vertical line test.</p>' }
+      {
+        text:
+          '<p>Put each pair (input, output) on a grid. Input runs left–right as x. Output runs up–down as y. The dots and curve are a picture of the rule.</p>'
+      },
+      {
+        text:
+          '<p>Because one input may have only one output, a vertical line should meet the graph in at most one point.</p>'
+      },
+      {
+        text:
+          '<p>If a vertical line hits twice, one x-value has two y-values. The graph fails the vertical line test. It is not a function.</p>'
+      },
+      {
+        text:
+          '<p>A circle fails. A sideways parabola fails. A straight line with finite slope passes. So does a U-shaped parabola opening up or down.</p>'
+      },
+      {
+        text:
+          '<p>Reading a graph this way prepares you for limits and derivatives: you will stare at one x-position and ask what y is doing nearby.</p>'
+      }
     ]
   },
   1224: {
@@ -70,11 +154,26 @@ export const FUNCTION_BOARDS = {
     title: 'The straight path',
     tags: { subject: 'maths', topic: 'functions', concept: 'linear-functions', ground: 'g0' },
     layers: [
-      { text: '<p>Not every function behaves the same way. The simplest kind applies a steady rule to every input.</p>' },
-      { text: '<p>If the rule is add 2, the output grows at a constant rate. 1 becomes 3, 2 becomes 4, and 3 becomes 5.</p>' },
-      { text: '<p>When that steady growth is plotted on a grid, it forms a straight line.</p>' },
-      { text: '<p>This is a linear function. Its slope stays constant.</p>' },
-      { text: '<p>A car travelling at a locked speed works the same way: every hour adds the same amount of distance.</p>' }
+      {
+        text:
+          '<p>Some rules add the same amount every step. Start at 1. Add 2 again and again: 1, 3, 5, 7. Steady growth.</p>'
+      },
+      {
+        text:
+          '<p>On a grid those points sit on a straight line. A function with constant rate of change is a <strong>linear function</strong>.</p>'
+      },
+      {
+        text:
+          '<p>A common form is <em>f(x) = mx + c</em>. The number <em>m</em> is the slope (how steep). The number <em>c</em> is where the line crosses the vertical axis.</p>'
+      },
+      {
+        text:
+          '<p>A car locked at 60 km/h is linear in time: each hour adds the same distance. The graph of distance against time is a straight ramp.</p>'
+      },
+      {
+        text:
+          '<p>Derivatives will later measure slope for curves that are not straight. Linear functions are the warm-up: their slope never changes.</p>'
+      }
     ]
   },
   1225: {
@@ -83,11 +182,26 @@ export const FUNCTION_BOARDS = {
     title: 'The explosion',
     tags: { subject: 'maths', topic: 'functions', concept: 'exponential-functions', ground: 'g0' },
     layers: [
-      { text: '<p>Some processes do not grow by adding the same amount each time. They grow by multiplying.</p>' },
-      { text: '<p>One bacterial cell becomes two. Two become four. Four become eight. The change gets larger as the amount grows.</p>' },
-      { text: '<p>This is an exponential function. The input appears in the exponent, as in 2^x.</p>' },
-      { text: '<p>On a graph, exponential growth can start slowly and then rise extremely fast.</p>' },
-      { text: '<p>Compound interest, viral spread, and chain reactions all use this kind of mathematical engine.</p>' }
+      {
+        text:
+          '<p>One cell splits into two. Two into four. Four into eight. The jump itself gets larger each time.</p>'
+      },
+      {
+        text:
+          '<p>That is repeated multiplication, not repeated addition. A rule like <em>f(x) = 2<sup>x</sup></em> is an <strong>exponential function</strong>: the input sits in the exponent.</p>'
+      },
+      {
+        text:
+          '<p>Table check: x = 0, 1, 2, 3 → outputs 1, 2, 4, 8. Each step multiplies by 2. The differences are 1, then 2, then 4 — growing.</p>'
+      },
+      {
+        text:
+          '<p>On a graph the curve can look gentle at first, then rise very fast. Compound interest and viral spread use this engine.</p>'
+      },
+      {
+        text:
+          '<p>Compared with a straight line, the steepness keeps changing. That changing steepness is exactly what derivatives track later.</p>'
+      }
     ]
   },
   1226: {
@@ -96,11 +210,26 @@ export const FUNCTION_BOARDS = {
     title: 'The falling object',
     tags: { subject: 'maths', topic: 'functions', concept: 'quadratic-functions', ground: 'g0' },
     layers: [
-      { text: '<p>Another important function shape appears whenever squared inputs enter the rule.</p>' },
-      { text: '<p>When a ball is thrown upward, it slows, reaches a highest point, and then falls back down.</p>' },
-      { text: '<p>The mathematics of that arc contains x^2 or t^2. That makes it a quadratic function.</p>' },
-      { text: '<p>On a grid, a quadratic function forms a U-shaped curve called a parabola.</p>' },
-      { text: '<p>Projectile paths, fountains, and many optimisation problems all lead back to this same curve.</p>' }
+      {
+        text:
+          '<p>Throw a ball upward. It slows, hangs for a moment at the top, then falls. Height against time is not a straight line.</p>'
+      },
+      {
+        text:
+          '<p>Rules that square the input, such as <em>f(x) = x<sup>2</sup></em>, are <strong>quadratic</strong>. Their graphs are U-shaped curves called parabolas.</p>'
+      },
+      {
+        text:
+          '<p>Table: x = −2, −1, 0, 1, 2 → outputs 4, 1, 0, 1, 4. Left and right match. The bottom sits at the origin for this simple case.</p>'
+      },
+      {
+        text:
+          '<p>Near the bottom the graph is almost flat. Higher on either side it steepens. Slope is not one number for the whole curve.</p>'
+      },
+      {
+        text:
+          '<p>That local steepness — different at each point — is the doorway into differentiation. A parabola is a friendly first curve to study.</p>'
+      }
     ]
   },
   1227: {
@@ -109,11 +238,26 @@ export const FUNCTION_BOARDS = {
     title: 'Running it backward',
     tags: { subject: 'maths', topic: 'functions', concept: 'inverse-functions', ground: 'g0' },
     layers: [
-      { text: '<p>If a function machine turns an input into an output, a natural question appears: can the machine run backward?</p>' },
-      { text: '<p>If the output is known, can the original input be recovered?</p>' },
-      { text: '<p>When a function can be reversed in this way, the reverse rule is called an inverse function.</p>' },
-      { text: '<p>This only works cleanly when each output points back to one unique input.</p>' },
-      { text: '<p>If two different buttons both produce cola, seeing cola is not enough to know which button was pressed.</p>' }
+      {
+        text:
+          '<p>The machine turned 3 into 7 by adding 4. Can you walk backward from 7 to 3? Yes: subtract 4.</p>'
+      },
+      {
+        text:
+          '<p>A reverse rule that recovers the original input is an <strong>inverse function</strong>. It undoes the original machine.</p>'
+      },
+      {
+        text:
+          '<p>This only works cleanly when each output comes from exactly one input. If two buttons both drop cola, seeing cola does not tell you which button was pressed.</p>'
+      },
+      {
+        text:
+          '<p>Example: <em>f(x) = 2x</em> has inverse “divide by 2.” <em>f(x) = x<sup>2</sup></em> on all real numbers does not have a single inverse, because 4 comes from both 2 and −2.</p>'
+      },
+      {
+        text:
+          '<p>Undoing will matter again when integrals reverse derivatives. For now, practise walking one simple rule forward and back.</p>'
+      }
     ]
   },
   1228: {
@@ -122,11 +266,26 @@ export const FUNCTION_BOARDS = {
     title: 'Chaining them together',
     tags: { subject: 'maths', topic: 'functions', concept: 'composite-functions', ground: 'g0' },
     layers: [
-      { text: '<p>Real systems are often built from chains of rules, not one rule in isolation.</p>' },
-      { text: '<p>A car engine burns fuel, heat expands gas, and that expansion moves a piston.</p>' },
-      { text: '<p>Functions can be chained the same way. The output of one function becomes the input of another.</p>' },
-      { text: '<p>This is called a composite function. It is written as f(g(x)), where g runs first and f runs after it.</p>' },
-      { text: '<p>Software models, simulations, graphics, and machine learning all rely on simple rules chained together many times.</p>' }
+      {
+        text:
+          '<p>Real systems rarely use one rule alone. Fuel burns, heat expands gas, the piston moves. Output of one stage feeds the next.</p>'
+      },
+      {
+        text:
+          '<p>Functions chain the same way. The output of <em>g</em> becomes the input of <em>f</em>. Write <em>f(g(x))</em>. The inside machine runs first.</p>'
+      },
+      {
+        text:
+          '<p>Let <em>g(x) = x + 1</em> and <em>f(x) = 2x</em>. Then <em>f(g(3))</em>: first g turns 3 into 4, then f doubles 4 into 8.</p>'
+      },
+      {
+        text:
+          '<p>Order matters. <em>g(f(3))</em> would double first (6) then add 1 (7). Different chain, different result.</p>'
+      },
+      {
+        text:
+          '<p>You now have the toolkit for the next topics: limits ask what a function approaches; derivatives ask how fast it changes; integrals add change back up. Functions are the language those questions speak.</p>'
+      }
     ]
   }
 };
