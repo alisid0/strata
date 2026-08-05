@@ -2647,6 +2647,96 @@ export function getMathsFunctionsBasicsWorkshop() {
   return cloneInteractions([...MATHS_FUNCTIONS_FOUNDATIONS_WORKSHOP]);
 }
 
+/** Everyday + maths: sort what is a function vs what is not. */
+export const MATHS_FUNCTIONS_OR_NOT_WORKSHOP = [
+  S('A function means: from each allowed input there is…',
+    [O('one', 'Exactly one output', true), O('many', 'As many outputs as you like', false), O('zero', 'Sometimes no output is fine', false)],
+    'Yes. One input, one arrow, one output. That is the non-negotiable.',
+    'Every allowed input must get exactly one output — not zero, not two.'),
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'birthday', label: 'Person → birthday', box: 'function' },
+    { id: 'capital', label: 'Country → capital city', box: 'function' },
+    { id: 'friend', label: 'Person → friend', box: 'not' },
+    { id: 'synonym', label: 'Word → synonym', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'isbn', label: 'Book → ISBN', box: 'function' },
+    { id: 'plate', label: 'Number plate → car', box: 'function' },
+    { id: 'course', label: 'Student → course enrolled', box: 'not' },
+    { id: 'restaurant', label: 'City → restaurant', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'letters', label: 'Word → number of letters', box: 'function' },
+    { id: 'seat', label: 'Ticket seat code → one seat', box: 'function' },
+    { id: 'actor', label: 'Movie → actor in it', box: 'not' },
+    { id: 'search', label: 'Search query → webpage result', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'passport', label: 'Passport number → holder', box: 'function' },
+    { id: 'barcode', label: 'Barcode → product', box: 'function' },
+    { id: 'surname', label: 'Surname → person with that name', box: 'not' },
+    { id: 'coin', label: 'Coin flip setup → heads or tails', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'double', label: 'x → 2x', box: 'function' },
+    { id: 'square', label: 'x → x²', box: 'function' },
+    { id: 'abs', label: 'x → |x|', box: 'function' },
+    { id: 'pmroot', label: 'x → ±√x (both signs)', box: 'not' }
+  ]},
+  { type: 'sorting', boxes: [
+    { id: 'function', label: 'Function' },
+    { id: 'not', label: 'Not a function' }
+  ], items: [
+    { id: 'proot', label: 'x → √x (positive root only, x ≥ 0)', box: 'function' },
+    { id: 'plus3', label: 'x → x + 3', box: 'function' },
+    { id: 'circle', label: 'x → y on the circle x² + y² = 1', box: 'not' },
+    { id: 'factor', label: 'Integer → a factor of that integer', box: 'not' }
+  ]},
+  S('Box A has 4 and 9. Someone maps 4 → +2 and 4 → −2 because “square root.” Is that a function?',
+    [O('no', 'No — one input forked to two outputs', true), O('yes', 'Yes — both roots are allowed', false)],
+    'Correct. One arrow per input. ±√ splits 4 into two answers, so it is not a function.',
+    'A function cannot send 4 to both +2 and −2. Choose one output, or it is only a relation.'),
+  S('How do mathematicians make square root into a function?',
+    [O('principal', 'Keep only the principal (non-negative) root', true), O('both', 'Always return both + and −', false), O('none', 'Refuse to define √ at all', false)],
+    'Yes. √4 = 2 only. The negative solution still exists for x² = 4, but √ does not return it.',
+    'The principal square root picks the non-negative answer so each input gets one output.'),
+  S('Many inputs may share one output (2 → 4 and −2 → 4 for squaring). Is that still a function?',
+    [O('yes', 'Yes — many-to-one is allowed', true), O('no', 'No — outputs must all be unique', false)],
+    'Correct. The ban is one-to-many, not many-to-one.',
+    'Different inputs may land on the same output. What fails is one input landing on several outputs.'),
+  S('A grater maps each whole vegetable to one grated portion. Person → friend maps one person to many friends. Which is a function?',
+    [O('grater', 'Only the grater', true), O('both', 'Both', false), O('friend', 'Only person → friend', false)],
+    'Right. The grater gives one result per vegetable. “Friend” forks.',
+    'One vegetable → one grated result is a function. One person → many friends is not.'),
+  S('Is “2 + 2 = 4” a function?',
+    [O('no', 'No — it is an equation, a true/false statement', true), O('yes', 'Yes — it maps 2 to 4', false)],
+    'Correct. An equation claims equality. A function is an input→output mapping.',
+    '2 + 2 = 4 does not take an arbitrary input from a domain box. It is just a statement.'),
+  S('Which statement captures a function in one line?',
+    [O('arrow', 'Each allowed input has exactly one arrow to exactly one output', true), O('rules', 'Any rulebook of how a game works', false), O('formula', 'Only things written as algebraic formulas', false)],
+    'Yes. Mapping with exactly one arrow per input.',
+    'Football rulebooks are not functions. Formulas are optional — Dirichlet’s idea: any reliable assignment counts.')
+];
+
+export function getMathsFunctionsOrNotWorkshop() {
+  return cloneInteractions([...MATHS_FUNCTIONS_OR_NOT_WORKSHOP]);
+}
+
 export function getMathsFunctionsWorkshop() {
   return cloneInteractions([...MATHS_FUNCTIONS_WORKSHOP]);
 }

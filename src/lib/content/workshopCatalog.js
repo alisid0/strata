@@ -9,6 +9,7 @@ const CORE = {
   mathematics: [
     module('line-core', 'Plot, build, and measure', 'Drag real points and lines on a live coordinate plane.', 'LINE_001'),
     module('functions-basics', 'Functions basics', 'Baby steps: rules, one-output, f(x), domain, graphs, shapes, inverses, chains.', 'MATH_FUNCTIONS'),
+    module('functions-or-not', 'Function or not?', 'Sort everyday and maths examples: one arrow per input, or a fork?', 'MATH_FUNCTIONS'),
     module('functions', 'Function machine', 'Feed inputs, repair broken rules, graph outputs, reverse machines, and chain functions.', 'MATH_FUNCTIONS'),
     module('transformation-lab', 'Transformation lab', 'Drag a curve onto its target: translate, stretch, and flip any function.', 'MATH_FUNCTIONS'),
     module('exp-logs', 'Exponents and logarithms', 'Read powers, growth, decay, logs, and inverse relationships.', 'MATH_EXP_LOGS'),

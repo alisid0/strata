@@ -30,6 +30,7 @@
     getLineCoreWorkshop,
     getMathsFunctionsWorkshop,
     getMathsFunctionsBasicsWorkshop,
+    getMathsFunctionsOrNotWorkshop,
     getMathsUnitCircleWorkshop,
     getPhysCircuitWorkshop,
     getPhysMotionWorkshop,
@@ -119,6 +120,14 @@
           sub: 'Baby steps: rules, one-output, f(x), domain, graphs, shapes, inverses, chains.',
           pathId: 'MATH_FUNCTIONS',
           getWorkshop: getMathsFunctionsBasicsWorkshop
+        },
+        {
+          id: 'functions-or-not',
+          label: 'Or not?',
+          title: 'Function or not?',
+          sub: 'Sort everyday and maths examples: one arrow per input, or a fork?',
+          pathId: 'MATH_FUNCTIONS',
+          getWorkshop: getMathsFunctionsOrNotWorkshop
         },
         {
           id: 'functions',

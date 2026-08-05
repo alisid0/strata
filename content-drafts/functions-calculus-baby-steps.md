@@ -36,8 +36,9 @@ without teaching those topics yet.
 ## Workshops (do after reading, in order)
 
 1. **Functions basics** (`functions-basics`) — MC + sorting for every BB idea
-2. **Function machine** (`functions`) — signature lab (feed, repair, domain, graph, reverse, chain) + reinforcement
-3. **Transformation lab** (`transformation-lab`) — optional stretch: translate / stretch / reflect
+2. **Function or not?** (`functions-or-not`) — everyday + maths: one arrow vs a fork
+3. **Function machine** (`functions`) — signature lab (feed, repair, domain, graph, reverse, chain) + reinforcement
+4. **Transformation lab** (`transformation-lab`) — optional stretch: translate / stretch / reflect
 
 ## Media rule
 
