@@ -112,7 +112,13 @@
 
   function restoreFromLocation() {
     const fromHash = parseHash(location.hash, PATHS);
-    if (fromHash) return applyRoute(fromHash);
+    if (fromHash) {
+      if (fromHash.view === 'author' && !appEnvironment.testToolsEnabled) {
+        navigate('home', undefined, { sync: true, replace: true });
+        return true;
+      }
+      return applyRoute(fromHash);
+    }
 
     const params = new URLSearchParams(location.search);
     const pathParam = params.get('path');
