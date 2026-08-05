@@ -42,7 +42,7 @@
   }
 
   function openReader(startNumber) {
-    onNavigate?.('reader', { numbers: manifest.cards, start: startNumber });
+    onNavigate?.('reader', { numbers: manifest.cards, start: startNumber, pathId });
   }
 
   const STATE_COLOR = {

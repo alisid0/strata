@@ -9,6 +9,7 @@
   import { retryIssueReportQueue } from './lib/stores/issueReports.js';
   import { theme } from './lib/stores/theme.js';
   import { PATHS, PATH_GROUPS } from './lib/content/paths.js';
+  import { parseHash, viewToHash } from './lib/appRoute.js';
   import Auth from './views/Auth.svelte';
   import Onboarding from './views/Onboarding.svelte';
   import Home from './views/Home.svelte';
@@ -39,6 +40,7 @@
   let slideDirection = 1; // 1 = forward (right→left), -1 = backward (left→right)
   let searchOpen = false;
   let workshopComponentPromise;
+  let applyingRoute = false; // true while restoring from hash / boot (avoid history churn)
 
   function loadWorkshopComponent() {
     workshopComponentPromise ||= import('./views/WorkshopLab.svelte').then((module) => module.default);
@@ -47,7 +49,7 @@
 
   function retryWorkshopComponent() {
     workshopComponentPromise = undefined;
-    currentView = 'home';
+    navigate('home');
     requestAnimationFrame(() => navigate('workshop', workshopTarget));
   }
 
@@ -70,6 +72,61 @@
     ? { duration: 0 }
     : { x: -dir * 34, duration: 220, easing: easeInOutQuad };
 
+  function syncHash(replace = false) {
+    if (typeof history === 'undefined') return;
+    const next = viewToHash({
+      view: currentView,
+      pathId: currentPathId,
+      subjectId: currentSubjectId,
+      workshopTarget,
+      readerStart
+    });
+    if (!next) return;
+    const url = `${location.pathname}${location.search}${next}`;
+    if (`${location.pathname}${location.search}${location.hash}` === url) return;
+    if (replace) history.replaceState({}, '', url);
+    else history.pushState({}, '', url);
+  }
+
+  function applyRoute(route, { replaceHash = true } = {}) {
+    if (!route?.view) return false;
+    applyingRoute = true;
+    try {
+      navigate(route.view, routeArg(route), { sync: false });
+      if (replaceHash) syncHash(true);
+    } finally {
+      applyingRoute = false;
+    }
+    return true;
+  }
+
+  function routeArg(route) {
+    if (route.view === 'topicDetail' || route.view === 'quiz') return route.pathId;
+    if (route.view === 'subject') return route.subjectId;
+    if (route.view === 'workshop') return route.workshopTarget;
+    if (route.view === 'reader') {
+      return { numbers: route.numbers, start: route.start, pathId: route.pathId || '' };
+    }
+    return undefined;
+  }
+
+  function restoreFromLocation() {
+    const fromHash = parseHash(location.hash, PATHS);
+    if (fromHash) return applyRoute(fromHash);
+
+    const params = new URLSearchParams(location.search);
+    const pathParam = params.get('path');
+    if (pathParam && PATHS[pathParam]) {
+      const ok = applyRoute({ view: 'topicDetail', pathId: pathParam });
+      // Move legacy ?path= into the hash and drop the query param.
+      params.delete('path');
+      const qs = params.toString();
+      history.replaceState({}, '', `${location.pathname}${qs ? `?${qs}` : ''}${location.hash || ''}`);
+      return ok;
+    }
+    return false;
+  }
+
   onMount(() => {
     let mounted = true;
     let stopEngagement = () => {};
@@ -90,44 +147,52 @@
       return;
     }
     if (params.get('auth') === 'confirmed' || params.get('auth') === 'oauth') {
-      history.replaceState({}, '', location.pathname);
-    }
-    const pathParam = params.get('path');
-    if (pathParam && PATHS[pathParam]) {
-      currentView = 'topicDetail';
-      currentPathId = pathParam;
-      return;
+      history.replaceState({}, '', `${location.pathname}${location.hash || ''}`);
     }
 
     // Guest mode: persisted in sessionStorage so page refreshes don't
     // kick unauthenticated users back to the auth screen.
-    const isGuest = sessionStorage.getItem('qubix_guest') === '1';
-
     if (get(isAuthenticated)) {
       // A real session exists — clear any stale guest flag.
       sessionStorage.removeItem('qubix_guest');
-      currentView = profileData.onboardingCompleted ? 'home' : 'onboarding';
+      if (!profileData.onboardingCompleted) {
+        currentView = 'onboarding';
+        return;
+      }
     } else {
       // Guest-first: land everyone in the app and let them explore. A sign-up
       // prompt appears after they have engaged (see the reactive block below).
       // The auth screen is still reachable from the menu and the prompt.
       sessionStorage.setItem('qubix_guest', '1');
-      currentView = 'home';
     }
 
+    if (!restoreFromLocation()) {
+      navigate('home', undefined, { sync: true, replace: true });
+    }
+
+    }
+
+    function onHashChange() {
+      if (applyingRoute) return;
+      if (currentView === 'auth' || currentView === 'onboarding' || currentView === 'loading') return;
+      restoreFromLocation();
     }
 
     boot();
+    window.addEventListener('hashchange', onHashChange);
+    window.addEventListener('popstate', onHashChange);
 
     return () => {
       mounted = false;
       stopEngagement();
+      window.removeEventListener('hashchange', onHashChange);
+      window.removeEventListener('popstate', onHashChange);
     };
   });
 
   function skipAuth() {
     sessionStorage.setItem('qubix_guest', '1');
-    currentView = 'home';
+    navigate('home', undefined, { replace: true });
   }
 
   // ── Guest sign-up prompt: appears once a guest has explored a little ──
@@ -166,11 +231,9 @@
   function handleGateway(gateway) {
     const group = PATH_GROUPS[gateway];
     if (group && group.firstTopic) {
-      currentView = 'topicDetail';
-      currentPathId = group.firstTopic;
+      navigate('topicDetail', group.firstTopic);
     } else {
-      // Path not built yet — go to topics
-      currentView = 'topics';
+      navigate('path');
     }
   }
 
@@ -179,12 +242,19 @@
     sessionStorage.removeItem('qubix_guest');
     const profileData = await profile.init();
     if (new URLSearchParams(location.search).has('auth')) {
-      history.replaceState({}, '', location.pathname);
+      history.replaceState({}, '', `${location.pathname}${location.hash || ''}`);
     }
-    currentView = isNewUser || !profileData.onboardingCompleted ? 'onboarding' : 'home';
+    if (isNewUser || !profileData.onboardingCompleted) {
+      currentView = 'onboarding';
+      return;
+    }
+    if (!restoreFromLocation()) {
+      navigate('home', undefined, { replace: true });
+    }
   }
 
-  function navigate(view, arg) {
+  function navigate(view, arg, opts = {}) {
+    const { sync = true, replace = false } = opts;
     view = LEGACY_VIEWS[view] || view;
     if (view === 'author' && !appEnvironment.testToolsEnabled) return;
     if (view !== 'workshop') workshopRunning = false;
@@ -206,11 +276,19 @@
     else if (view === 'reader') {
       readerNumbers = arg?.numbers || Array.from({ length: 84 }, (_, i) => i + 1);
       readerStart = arg?.start || readerNumbers[0] || 1;
+      if (arg?.pathId) currentPathId = arg.pathId;
+      else if (arg?.pathId === '') currentPathId = '';
       currentView = 'reader';
     }
     else if (view === 'quiz') { currentPathId = arg; currentView = 'quiz'; }
     else if (view === 'author') { currentView = 'author'; }
     else { currentView = view; }
+
+    if (sync && !applyingRoute) {
+      // Tabs replace; deeper screens push so Back can leave them.
+      const useReplace = replace || TAB_VIEWS.includes(view);
+      syncHash(useReplace);
+    }
   }
 </script>
 
@@ -234,7 +312,7 @@
 
   {:else if currentView === 'onboarding'}
     <div class="view-layer">
-      <Onboarding onComplete={() => currentView = 'home'} />
+      <Onboarding onComplete={() => navigate('home', undefined, { replace: true })} />
     </div>
 
   {:else if TAB_VIEWS.includes(currentView)}
