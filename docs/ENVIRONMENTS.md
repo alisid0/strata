@@ -51,10 +51,10 @@ variables are public.
 ## Local commands
 
 ```bash
-pnpm run dev                 # staging/test configuration
-pnpm run build:staging       # staging build, no production SEO pages
-pnpm run build:production    # production build + SEO pages
-pnpm run dev:production      # explicit production connection; use carefully
+npm run dev                 # staging/test configuration
+npm run build:staging       # staging build, no production SEO pages
+npm run build:production    # production build + SEO pages
+npm run dev:production      # explicit production connection; use carefully
 ```
 
 ## Which URL talks to which database (verified 2026-08-02)
@@ -63,10 +63,10 @@ pnpm run dev:production      # explicit production connection; use carefully
 | --- | --- | --- |
 | Production app | `qubix.university` | `wmetdmfsniqrshuaoodc` (prod) |
 | Staging app | `qubix-staging.vercel.app` | `atmmfkhjsdqqwnhqifxm` (staging) |
-| Local `pnpm run dev` | `http://localhost:8000` | `atmmfkhjsdqqwnhqifxm` (staging) |
+| Local `npm run dev` | `http://localhost:8000` | `atmmfkhjsdqqwnhqifxm` (staging) |
 | Content scripts (CLI) | n/a | whatever `.env.local`'s `SUPABASE_URL` points at |
 
-Only `pnpm run deploy` changes the production app; a `git push` changes nothing
+Only `npm run deploy` changes the production app; a `git push` changes nothing
 live (see `RELEASE-MODEL.md`). Local dev shows **staging** data, not what
 production users see.
 
@@ -123,7 +123,7 @@ Current state: `qubix-staging.vercel.app` is isolated correctly but its Vercel
 project still follows `main`. Moving that project to a persistent `staging`
 branch is the next release-process improvement. Until then, a push to `main`
 updates staging automatically, while the public production deployment remains
-manual through `pnpm run deploy`.
+manual through `npm run deploy`.
 
 ## Release workflow
 
@@ -159,7 +159,7 @@ Git does not promote dynamic rows stored in Supabase. To produce idempotent SQL
 chunks containing public card content only, run:
 
 ```bash
-pnpm run content:export-staging-sql
+npm run content:export-staging-sql
 ```
 
 The command reads the public production catalog and writes reviewed SQL chunks

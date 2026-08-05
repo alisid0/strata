@@ -47,10 +47,10 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 | ✅ | F-08 under-13 age band removed | `0005` + Onboarding |
 | ✅ | F-09 legacy tables retired | `0005` |
 | ✅ | F-01 HTML sanitiser at all DB render sites | on `main`; sanitiser suite passes; tracked bundle live 2026-07-29 |
-| ✅ | F-02 security headers (CSP report-only, HSTS, frame-deny, nosniff) | verified on stable production URL 2026-07-29 |
+| ✅ | F-02 security headers (CSP enforcing, HSTS, frame-deny, nosniff) | enforcing since 2026-07-30; see `2026-07-30-security-hardening.md` |
 | ✅ | F-10 immutable asset caching | verified on the live hashed application asset 2026-07-29 |
-| ⬜ | CSP reporting endpoint stood up | `api/csp-report.js` drafted dormant; `CSP-REPORTING.md` |
-| ⬜ | CSP flipped report-only → enforcing after observation | after endpoint + 1–2 wk watch |
+| 🟡 | CSP reporting endpoint wired under enforcing policy | `api/csp-report.js` + `report-uri`/`report-to` in `vercel.json` (2026-08-05); confirm 204 + log lines after next deploy |
+| ~~⬜~~ | ~~CSP flipped report-only → enforcing after observation~~ | ✅ already enforcing; reporting added after the flip |
 
 ## 4. Tests
 
@@ -104,10 +104,11 @@ Legend: ✅ done and verified · 🟡 done in code, not yet live/verified ·
 Most items above are parallel. The chain that actually gates a closed beta:
 
 1. ~~**Merge and deploy F-01/F-02/F-10.**~~ Complete and verified on the stable
-   production URL on 2026-07-29.
-2. **Stand up the CSP reporting endpoint, observe, then enforce.** Until the
-   flip, the sanitiser is the only active XSS defence — acceptable for a closed
-   beta, not for a wide launch.
+   production URL on 2026-07-29. CSP has been **enforcing** since 2026-07-30.
+2. **Confirm CSP reporting after deploy.** `/api/csp-report` is referenced from
+   the enforcing policy (2026-08-05). After the next production/staging deploy,
+   POST a synthetic report and confirm a trimmed line in Vercel logs, then watch
+   real sessions for genuine violations.
 3. **Execute both DB security tests against staging**, green. Harden the RLS
    test's guard first (Risks).
 4. **Companies House → Play verification.** The long pole; everything Android is
@@ -120,7 +121,9 @@ be settled before *wide* launch but do not block a closed beta on the current
 
 ## Open risks carried into beta
 
-- **CSP is report-only.** F-02 is latent, not active, until the enforce flip.
+- **CSP reporting is newly wired and unverified in production logs.** The
+  policy itself is already enforcing; confirm `/api/csp-report` receives
+  traffic after deploy.
 - **Neither DB test has been executed against staging in this workstream** — I
   have no `SUPABASE_SERVICE_ROLE_KEY`. Guards and syntax are verified; live runs
   are not.

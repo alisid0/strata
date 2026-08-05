@@ -25,7 +25,7 @@ draft inventories or archived handoffs.
 Before stating how many BBs/floors are live or planning media, run:
 
 ```bash
-pnpm run audit:live-media
+npm run audit:live-media
 ```
 
 ## Media rule
@@ -47,12 +47,13 @@ pnpm run audit:live-media
 
 ## Environments and release
 
-- Local `pnpm run dev` uses staging.
+- Local `npm run dev` uses staging.
 - Staging and production use separate Supabase projects and user data.
 - Supabase BB edits are independent of Git.
 - A Git push is not a production release.
-- Production deployment is manual via `pnpm run deploy` and should run from a
+- Production deployment is manual via `npm run deploy` and should run from a
   clean worktree after staging and production builds pass.
+- Package manager is npm (`package-lock.json`); do not add a pnpm lockfile.
 
 See `docs/ENVIRONMENTS.md`, `docs/RELEASE-MODEL.md`, and
 `docs/LAUNCH-HANDOVER.md` for the full operational rules.

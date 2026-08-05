@@ -10,9 +10,9 @@ import { MATHS_MEDIA_80_EXPANSION } from './mathsMedia80Expansion.js';
  * video / interactive specs for the dynamic launch boards (1000+) will live too;
  * Three.js 3D is the first type wired up.
  *
- * NOTE: keyed by Supabase sort_order, which the review ingest reassigns on every
- * run. Re-check these against the live board titles after any re-ingest.
- * Current mapping verified against the 2026-06-28 re-ingest (78 boards, 1000-1077).
+ * NOTE: keyed by Supabase sort_order / path BB numbers. Re-check mappings
+ * against live board titles after any content re-ingest. Live membership is
+ * defined by paths.js — not by historical ingest batch sizes.
  *
  * 3D specs (rendered by src/lib/components/media/ThreeScene.svelte):
  *   { type:'three', spec:{ kind:'atom',     symbol, shells:[2,8,1] } }

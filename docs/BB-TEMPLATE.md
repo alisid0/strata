@@ -75,7 +75,7 @@ Choose one treatment only when it adds teaching value:
 - **Evidence:** name the real photograph, artefact, or source and record rights.
 - **None:** valid whenever media would merely repeat the paragraph.
 
-Run `pnpm run audit:live-media` before producing anything so the BB number,
+Run `npm run audit:live-media` before producing anything so the BB number,
 current floor text, and existing media are verified against production.
 
 ## Card numbering

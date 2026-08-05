@@ -135,7 +135,7 @@ let createClient;
 try {
   ({ createClient } = await import('@supabase/supabase-js'));
 } catch (e) {
-  console.error('Could not load @supabase/supabase-js. Run `pnpm install` first.');
+  console.error('Could not load @supabase/supabase-js. Run `npm install` first.');
   console.error(e.message);
   process.exit(2);
 }

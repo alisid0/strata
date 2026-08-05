@@ -52,8 +52,8 @@ Static cards 1–84 in `deck.js` are bundled into the build and are Tier 2.
 Anything in `src/`, `public/`, or the static `DECK`. Ship with:
 
 ```bash
-pnpm run build:production
-pnpm run deploy
+npm run build:production
+npm run deploy
 ```
 
 Vercel serves the new build. Users get it on next app launch, because the
@@ -93,7 +93,7 @@ change that would otherwise be a five-minute DNS edit.
 | Tier | Example | Mechanism | User sees it |
 |---|---|---|---|
 | 1 | Fix a typo in card 412 | Supabase row edit | Immediately |
-| 2 | Reader layout, new workshop, static deck | `pnpm run deploy` | Next launch |
+| 2 | Reader layout, new workshop, static deck | `npm run deploy` | Next launch |
 | 3 | App icon, app ID, target SDK | New `.aab` + Play review | On store update |
 
 ---
@@ -135,7 +135,7 @@ difference is entirely environment variables plus a few build-time guards.
 | Page title | `Qubix` | `[STAGING] Qubix` |
 | Author/test tools | Off | On |
 | Env badge | None | Yellow |
-| Deploy trigger | Manual `pnpm run deploy` | Auto on push to `main` |
+| Deploy trigger | Manual `npm run deploy` | Auto on push to `main` |
 
 ### What this actually means
 
@@ -151,7 +151,7 @@ false. So staging always shows the newest build, with no cache layer.
 The trade-off: **you cannot test offline behaviour or cache-update behaviour on
 staging.** Those are production-only code paths. Before a release that touches
 `sw.js`, the shell files, or offline handling, test against a production build
-locally with `pnpm run build:production && pnpm run preview` — not staging.
+locally with `npm run build:production && npm run preview` — not staging.
 
 **The build refuses to cross the streams.** `vite.config.js` throws if a staging
 build is pointed at the production Supabase URL, and throws if `mode=staging`
@@ -160,7 +160,7 @@ silently writing test data to production.
 
 **Content is not shared.** Git does not promote Supabase rows. Staging holds a
 snapshot — 1,145 production cards as of 2026-07-18 — refreshed manually via
-`pnpm run content:export-staging-sql`. Staging content drifts from production
+`npm run content:export-staging-sql`. Staging content drifts from production
 between refreshes. Staging is not a preview of live content.
 
 **Media ships with the app.** Runtime assets must not be read from the retired
@@ -201,11 +201,11 @@ app.
 
 **Code change**
 1. Feature branch.
-2. `pnpm run dev` (staging config) and test.
+2. `npm run dev` (staging config) and test.
 3. If `sw.js` or shell files changed, bump the `CACHE` version.
-4. If offline or caching behaviour changed, test `pnpm run build:production && pnpm run preview` locally.
+4. If offline or caching behaviour changed, test `npm run build:production && npm run preview` locally.
 5. Merge to `main`; verify on `qubix-staging.vercel.app`.
-6. `pnpm run build:production` then `pnpm run deploy`.
+6. `npm run build:production` then `npm run deploy`.
 7. Smoke-test the public URL: load, sign in, open a board, run a workshop.
 
 **Schema change**
