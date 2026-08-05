@@ -274,11 +274,13 @@ export class TrackEnvironment {
     for (let i = 0; i < TRACK.markerCount; i++) {
       const metres = i * TRACK.markerSpacing;
       const mat = new THREE.MeshBasicMaterial({
-        map: makeMarkerTexture(metres), transparent: true, depthWrite: false
+        map: makeMarkerTexture(metres), transparent: true,
+        depthWrite: false, side: THREE.DoubleSide
       });
       const plane = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 1.1), mat);
+      // Flat on the road and reading along the direction of travel, which is
+      // the only orientation that stays legible from the side-on camera.
       plane.rotation.x = -Math.PI / 2;
-      plane.rotation.z = Math.PI / 2;
       plane.position.set(metres, 0.02, halfLane - 1.4);
       this.scene.add(plane);
       this.markers.push({ mesh: plane, metres });

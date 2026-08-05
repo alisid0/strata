@@ -19,6 +19,22 @@ loaded van (2200 kg), and human push (500 N max). The 3D model is unchanged;
 switching preset updates mass and force limits so students can compare
 F<sub>net</sub>/m across vehicles on the same surface.
 
+## The exhibit
+
+`src/environment.js` builds the world the car sits in. It is a measured test
+lane rather than scenery, and it feeds nothing back into the physics:
+
+- gradient sky, verge, shoulders and painted edge lines;
+- distance numerals every 10 m, so stopping distance can be read off the ground
+  against the marker the Reader draws at `v²/(2μg)`;
+- a road material per surface — wet is reflective, ice pale, gravel speckled —
+  with a caption when the surface changes;
+- tyre smoke on wheelspin and spray on a locked axle.
+
+The sidebar is split into **Observe**, **Lesson** and **Instruments** tabs with a
+pinned driver bar, so throttle, brake, surface and preset stay reachable from
+any tab.
+
 ## Running it
 
 There is no build step, but ES modules will not load over `file://`. Serve the
@@ -47,6 +63,9 @@ it runs in Node unchanged — that is the point of keeping it free of Three.js.
 | --- | --- |
 | `index.html` | Page shell, layout, all styling |
 | `src/physics.js` | Vehicle dynamics. Pure maths, no graphics, fully testable |
+| `src/environment.js` | Test-track exhibit: sky, lane, distance markers, tyre plumes |
+| `src/vehicles.js` | Vehicle presets (mass and force limits) |
+| `src/observations.js` | The numbered observation booklet |
 | `src/car.js` | Builds the Mustang from extruded profiles; returns part handles |
 | `src/arrows.js` | The live free-body diagram |
 | `src/hud.js` | Driver controls and telemetry readouts |
