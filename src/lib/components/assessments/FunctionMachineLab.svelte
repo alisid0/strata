@@ -79,25 +79,30 @@
   }
 
   // ── Stage 4: Graph scanner — f(x) = x + 1 ──────────────────────────────────
-  const graphPoints = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]];
+  // Table first, then find the glowing target point. x runs across; f(x) runs up.
+  const graphRows = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]];
   const graphTargets = [[1, 2], [3, 4], [4, 5]];
   let graphMatched = [];
   let graphFlash = null;
-  $: graphTarget = graphTargets[graphMatched.length];
+  $: graphTarget = graphTargets[graphMatched.length] || null;
+  $: graphFound = (p) => graphMatched.some(m => m[0] === p[0] && m[1] === p[1]);
+  $: graphIsTarget = (p) => graphTarget && p[0] === graphTarget[0] && p[1] === graphTarget[1];
   function tapPoint(p) {
     if (stageDone) return;
-    if (graphTarget && p[0] === graphTarget[0] && p[1] === graphTarget[1]) {
+    if (graphIsTarget(p)) {
       graphMatched = [...graphMatched, p];
       hint = '';
       if (graphMatched.length === graphTargets.length) stageDone = true;
+    } else if (graphFound(p)) {
+      hint = 'That point is already found. Look for the glowing target.';
     } else {
       graphFlash = p;
-      hint = 'The input is the horizontal coordinate. The output is the vertical coordinate.';
+      hint = `Not that one. Go across to x = ${graphTarget[0]}, then up to f(x) = ${graphTarget[1]}.`;
       setTimeout(() => { graphFlash = null; }, 500);
     }
   }
-  const gx = x => 24 + x * 38;
-  const gy = y => 168 - y * 26;
+  const gx = x => 36 + x * 34;
+  const gy = y => 158 - y * 24;
 
   // ── Stage 5: Reverse machine ────────────────────────────────────────────────
   const reverseQs = [
@@ -238,34 +243,76 @@
       {#if stageDone}<div class="fm-good">Correct. The domain controls what may go in. The range is what actually comes out.</div>{/if}
 
     {:else if stage === 3}
-      <div class="fm-rule">Machine: <strong>f(x) = x + 1</strong> — every pair (x, f(x)) is a point.</div>
+      <div class="fm-rule">Machine: <strong>f(x) = x + 1</strong></div>
+      <div class="fm-question">
+        Each table row becomes one point: <strong>x across</strong>, <strong>f(x) up</strong>.
+      </div>
+      <table class="fm-table fm-table-graph">
+        <thead><tr><th>x (across)</th><th>f(x) (up)</th><th></th></tr></thead>
+        <tbody>
+          {#each graphRows as row}
+            <tr
+              class:target={graphIsTarget(row)}
+              class:found={graphFound(row)}
+            >
+              <td>{row[0]}</td>
+              <td>{row[1]}</td>
+              <td class="fm-row-status">
+                {#if graphFound(row)}found
+                {:else if graphIsTarget(row)}find this
+                {:else}·{/if}
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
       {#if graphTarget}
-        <div class="fm-question">Tap the point for the row <strong>({graphTarget[0]}, {graphTarget[1]})</strong></div>
+        <div class="fm-question">
+          Tap the glowing point for
+          <strong> x = {graphTarget[0]} → f(x) = {graphTarget[1]} </strong>
+        </div>
+      {:else if stageDone}
+        <div class="fm-question">All three target points found.</div>
       {/if}
       <svg class="fm-graph" viewBox="0 0 230 190" aria-label="Graph of f(x) = x + 1">
         {#each [0, 1, 2, 3, 4, 5] as t}
-          <line x1={gx(t)} y1="18" x2={gx(t)} y2="168" class="fm-grid" />
+          <line x1={gx(t)} y1="22" x2={gx(t)} y2="158" class="fm-grid" />
+          <line x1="36" y1={gy(t)} x2="206" y2={gy(t)} class="fm-grid" />
+          <text x={gx(t)} y="174" class="fm-tick" text-anchor="middle">{t}</text>
+          <text x="26" y={gy(t) + 4} class="fm-tick" text-anchor="end">{t}</text>
         {/each}
-        {#each [0, 1, 2, 3, 4, 5] as t}
-          <line x1="24" y1={gy(t)} x2="214" y2={gy(t)} class="fm-grid" />
-        {/each}
-        <line x1="24" y1="168" x2="214" y2="168" class="fm-axis" />
-        <line x1="24" y1="18" x2="24" y2="168" class="fm-axis" />
-        {#each graphPoints as p}
+        <line x1="36" y1="158" x2="206" y2="158" class="fm-axis" />
+        <line x1="36" y1="22" x2="36" y2="158" class="fm-axis" />
+        <text x="121" y="188" class="fm-axis-label" text-anchor="middle">x → input</text>
+        <text x="12" y="90" class="fm-axis-label" text-anchor="middle" transform="rotate(-90 12 90)">f(x) → output</text>
+        {#if graphTarget}
+          <circle cx={gx(graphTarget[0])} cy={gy(graphTarget[1])} r="16" class="fm-target-ring" />
+        {/if}
+        {#each graphRows as p}
           <circle
             cx={gx(p[0])} cy={gy(p[1])} r="9"
             class="fm-point"
-            class:hit={graphMatched.some(m => m[0] === p[0] && m[1] === p[1])}
+            class:hit={graphFound(p)}
+            class:target={graphIsTarget(p)}
             class:flash={graphFlash === p}
             role="button" tabindex="0"
-            aria-label={`Point ${p[0]}, ${p[1]}`}
+            aria-label={`Point x ${p[0]}, f(x) ${p[1]}`}
             on:click={() => tapPoint(p)}
             on:keydown={(e) => e.key === 'Enter' && tapPoint(p)}
           />
         {/each}
       </svg>
-      <div class="fm-note">{graphMatched.length}/{graphTargets.length} matched</div>
-      {#if stageDone}<div class="fm-good">Yes. A graph is the machine's table drawn as a picture.</div>{/if}
+      <div class="fm-legend">
+        <span><i class="lg target"></i> find this</span>
+        <span><i class="lg hit"></i> found</span>
+        <span><i class="lg idle"></i> other points</span>
+      </div>
+      <div class="fm-note">{graphMatched.length} of {graphTargets.length} target points found</div>
+      {#if stageDone}
+        <div class="fm-good">
+          Yes. The table and the graph say the same thing: each input lands on exactly one height.
+        </div>
+      {/if}
 
     {:else if stage === 4}
       {#key reverseIdx}
@@ -424,6 +471,57 @@
     padding: 5px 18px;
     border-top: 1px solid var(--qx-border);
   }
+  .fm-table-graph { width: 100%; }
+  .fm-table-graph td, .fm-table-graph th { padding: 5px 8px; }
+  .fm-table-graph tr.target td {
+    background: var(--qx-accent-soft);
+    color: var(--qx-accent-text);
+  }
+  .fm-table-graph tr.found td {
+    background: var(--qx-green-soft);
+    color: var(--qx-green-text);
+  }
+  .fm-row-status {
+    font-size: 10px !important;
+    font-weight: 850 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--qx-text-faint) !important;
+  }
+  .fm-table-graph tr.target .fm-row-status { color: var(--qx-accent-text) !important; }
+  .fm-table-graph tr.found .fm-row-status { color: var(--qx-green-text) !important; }
+
+  .fm-legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 750;
+    color: var(--qx-text-dim);
+  }
+  .fm-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .fm-legend i.lg {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1.5px solid var(--qx-accent);
+    background: var(--qx-surface);
+  }
+  .fm-legend i.lg.target {
+    border-color: var(--qx-accent);
+    background: var(--qx-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--qx-accent) 28%, transparent);
+  }
+  .fm-legend i.lg.hit {
+    border-color: var(--qx-green);
+    background: var(--qx-green);
+  }
+  .fm-legend i.lg.idle {
+    border-color: var(--qx-border-2);
+    background: var(--qx-surface);
+  }
 
   .fm-options {
     width: 100%;
@@ -465,14 +563,34 @@
 
   .fm-graph {
     width: 100%;
-    max-width: 250px;
+    max-width: 280px;
     border: 1.5px solid var(--qx-border);
     border-radius: 8px;
     background: var(--qx-surface-2);
   }
   .fm-grid { stroke: var(--qx-border); stroke-width: 0.6; stroke-dasharray: 3 3; }
   .fm-axis { stroke: var(--qx-text-dim); stroke-width: 1.4; }
-  .fm-point { fill: var(--qx-surface); stroke: var(--qx-accent); stroke-width: 2; cursor: pointer; transition: fill 0.12s; }
+  .fm-tick {
+    fill: var(--qx-text-faint);
+    font-size: 9px;
+    font-weight: 700;
+    font-family: var(--qx-font);
+  }
+  .fm-axis-label {
+    fill: var(--qx-text-dim);
+    font-size: 9px;
+    font-weight: 800;
+    font-family: var(--qx-font);
+  }
+  .fm-target-ring {
+    fill: none;
+    stroke: var(--qx-accent);
+    stroke-width: 2;
+    stroke-dasharray: 4 3;
+    opacity: 0.85;
+  }
+  .fm-point { fill: var(--qx-surface); stroke: var(--qx-border-2); stroke-width: 2; cursor: pointer; transition: fill 0.12s, stroke 0.12s; }
+  .fm-point.target { fill: var(--qx-accent); stroke: var(--qx-accent); }
   .fm-point.hit { fill: var(--qx-green); stroke: var(--qx-green); }
   .fm-point.flash { fill: var(--qx-danger); stroke: var(--qx-danger); }
 
