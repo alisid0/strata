@@ -1,6 +1,6 @@
 # Claude handoff — Qubix
 
-Start with `AGENTS.md` and `docs/SOURCE-OF-TRUTH.md`. Do not begin from old
+Start with `AGENTS.md`, `DESIGN.md`, and `docs/SOURCE-OF-TRUTH.md`. Do not begin from old
 draft inventories or archived handoffs.
 
 ## Identity and design

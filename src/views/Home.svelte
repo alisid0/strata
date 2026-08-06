@@ -171,12 +171,12 @@
 </script>
 
 <div class="qx-shell home-view">
-  <!-- Header: greeting + avatar + streak -->
+  <!-- Header: brand-first studio chrome -->
   <div class="header">
     <button class="avatar" on:click={() => onNavigate?.('wscore')} aria-label="Your W Score">{$displayName.charAt(0).toUpperCase()}</button>
     <div class="greeting">
-      <div class="home-kicker">Your learning studio</div>
-      <div class="hi qx-display">Good to see you, {$displayName}</div>
+      <div class="brand-mark qx-display">QUBIX</div>
+      <div class="hi">Good to see you, {$displayName}</div>
       <div class="level">
         <span class="level-badge">Level {level}</span>
       </div>
@@ -316,15 +316,22 @@
   }
   .avatar:hover { transform: translateY(-1px); }
   .greeting { flex: 1; min-width: 0; }
-  .home-kicker {
-    margin-bottom: 2px;
+  .brand-mark {
+    margin-bottom: 4px;
     color: var(--qx-accent-text);
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .11em;
-    text-transform: uppercase;
+    font-size: clamp(22px, 4.2vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
   }
-  .hi { font-size: clamp(18px, 3vw, 22px); font-weight: 900; color: var(--qx-text); line-height: 1.15; letter-spacing: -.025em; }
+  .hi {
+    font-family: var(--qx-font);
+    font-size: clamp(14px, 2.4vw, 16px);
+    font-weight: 700;
+    color: var(--qx-text-2);
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
   .level { font-size: 12px; font-weight: 600; color: var(--qx-text-dim); margin-top: 2px; }
   .level-badge { color: var(--qx-text-faint); }
   .streak-chip {
@@ -341,15 +348,17 @@
   .focus-card { margin-bottom: clamp(16px, 3vw, 22px); }
   .focus-main {
     width: 100%; min-height: 118px; display: flex; align-items: center; gap: 15px; text-align: left;
-    padding: clamp(18px, 4vw, 25px); border-radius: 26px;
-    border: 1.5px solid var(--qx-accent-soft);
+    padding: clamp(18px, 4vw, 25px); border-radius: var(--qx-radius-lg);
+    border: 1px solid var(--qx-border);
     background:
-      radial-gradient(circle at 90% 5%, var(--qx-accent-soft), transparent 44%),
-      var(--qx-surface);
+      radial-gradient(circle at 92% 0%, color-mix(in srgb, var(--qx-accent) 14%, transparent), transparent 46%),
+      linear-gradient(165deg, var(--qx-surface), var(--qx-surface-2));
     cursor: pointer;
     font-family: var(--qx-font); box-sizing: border-box;
-    box-shadow: 0 1px 2px rgba(61,46,31,.06), 0 10px 30px -18px rgba(61,46,31,.14);
+    box-shadow: var(--qx-shadow-card);
+    transition: transform var(--qx-duration-fast) var(--qx-ease-out), border-color var(--qx-duration-fast);
   }
+  .focus-main:hover { border-color: var(--qx-accent); transform: translateY(-2px); }
 
   .learning-loop {
     margin: 0 0 clamp(28px, 5vw, 42px);
@@ -385,10 +394,10 @@
     min-height: 36px;
     flex: 0 0 auto;
     padding: 0 13px;
-    border: 1px solid var(--qx-accent);
-    border-radius: 11px;
-    background: var(--qx-accent);
-    color: #fff;
+    border: 1px solid var(--qx-accent-strong);
+    border-radius: var(--qx-radius-md);
+    background: var(--qx-accent-strong);
+    color: var(--qx-on-accent);
     font: 900 10px var(--qx-font);
     cursor: pointer;
   }
@@ -434,9 +443,9 @@
   .focus-title { font-size: clamp(17px, 3vw, 21px); font-weight: 900; color: var(--qx-text); line-height: 1.2; letter-spacing: -.02em; }
   .focus-meta { font-size: 12px; font-weight: 650; color: var(--qx-text-dim); }
   .focus-cta {
-    flex-shrink: 0; padding: 10px 17px; border-radius: 14px;
-    background: var(--qx-accent); color: #fff; font-size: 12px; font-weight: 900;
-    box-shadow: 0 2px 8px rgba(74,140,92,.25);
+    flex-shrink: 0; padding: 10px 17px; border-radius: var(--qx-radius-md);
+    background: var(--qx-accent-strong); color: var(--qx-on-accent); font-size: 12px; font-weight: 900;
+    box-shadow: 0 2px 10px color-mix(in srgb, var(--qx-accent) 28%, transparent);
   }
   .focus-alt {
     display: block; width: 100%; text-align: center; margin-top: 8px; padding: 6px;
@@ -524,13 +533,17 @@
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 18px; }
   .door {
     min-height: 154px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px;
-    padding: 20px; border-radius: 22px; border: 1.5px solid var(--qx-border);
+    padding: 20px; border-radius: var(--qx-radius-lg); border: 1px solid var(--qx-border);
     background: var(--qx-surface); cursor: pointer; font-family: var(--qx-font);
-    box-shadow: 0 1px 2px rgba(61,46,31,.04), 0 4px 12px -6px rgba(61,46,31,.08);
+    box-shadow: var(--qx-shadow-card);
     text-align: left;
     transition: transform var(--qx-duration-fast) var(--qx-ease-out), border-color var(--qx-duration-fast) var(--qx-ease-out), box-shadow var(--qx-duration-fast) var(--qx-ease-out);
   }
-  .door:hover { border-color: var(--qx-accent); transform: translateY(-3px); box-shadow: 0 4px 16px -6px rgba(74,140,92,.18); }
+  .door:hover {
+    border-color: var(--qx-accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px -14px color-mix(in srgb, var(--qx-accent) 45%, transparent);
+  }
   .door-icon { display: block; margin-bottom: 4px; }
   .door-name { font-size: 15px; font-weight: 900; color: var(--qx-text); line-height: 1.18; letter-spacing: -.015em; }
   .door-sub { font-size: 11px; font-weight: 650; color: var(--qx-text-faint); line-height: 1.3; }
