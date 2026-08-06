@@ -1,49 +1,42 @@
-# Functions study material — calculus baby-step arc
+# Functions — de-AI rewrite + merged floors
 
 Authoring draft for MATH_FUNCTIONS (BBs 1219–1228).
 
 **Status:** Bundled fallback updated in `src/lib/content/functionBoards.js`.
-Live Supabase rows should be synced from this draft when publishing.
-Not a production inventory on its own — see `docs/SOURCE-OF-TRUTH.md`.
+Sync these floors into production Supabase `cards` (sort_order 1219–1228)
+when publishing. Not a production inventory on its own.
 
-## Learner promise
+## What changed
 
-After this path a beginner can say:
+- De-AI tone per `docs/QUBIX-WRITING-STYLE.md`: concrete scenes, “we”,
+  abrupt endings, no tidy summary landings, no parallel catalogues.
+- Merged thin 5-floor swipe stacks into **2–3 denser floors** per BB.
+- Remapped Reader media to floors 0 and 1.
 
-> A function is a reliable input–output rule. I can test one-output, read f(x),
-> name domain and range, use the vertical line test, recognise linear /
-> exponential / quadratic shapes, reverse a simple rule, and chain two rules.
-> I am ready for limits.
+## Floor counts
 
-## Reading order (baby steps)
+| BB | Title | Floors |
+|----|-------|-------:|
+| 1219 | The mechanical rule | 3 |
+| 1220 | The broken machine | 2 |
+| 1221 | The mathematical shorthand | 2 |
+| 1222 | The boundaries | 2 |
+| 1223 | The visual test | 2 |
+| 1224 | The straight path | 2 |
+| 1225 | The explosion | 2 |
+| 1226 | The falling object | 2 |
+| 1227 | Running it backward | 2 |
+| 1228 | Chaining them together | 2 |
 
-| BB | Title | Idea | Interactive focus |
-|----|-------|------|-------------------|
-| 1219 | The mechanical rule | Input → rule → output | Feed several inputs through one rule |
-| 1220 | The broken machine | One input, one output | Spot the split output |
-| 1221 | The mathematical shorthand | f(x) notation | Read f(5) as a button press |
-| 1222 | The boundaries | Domain and range | Accept / reject inputs; list outputs |
-| 1223 | The visual test | Graph + vertical line test | One x → at most one y |
-| 1224 | The straight path | Linear / constant slope | Steady gradient |
-| 1225 | The explosion | Exponential | Repeated multiply |
-| 1226 | The falling object | Quadratic / changing steepness | Flat bottom, steep sides |
-| 1227 | Running it backward | Inverse | Undo a rule |
-| 1228 | Chaining them together | Composition | Inside machine first |
+## Workshops (unchanged order)
 
-Each floor ends with a light bridge toward limits / derivatives / integrals
-without teaching those topics yet.
+1. Functions basics
+2. Function or not?
+3. Function machine
+4. Transformation lab (optional)
 
-## Workshops (do after reading, in order)
+## Supabase sync note
 
-1. **Functions basics** (`functions-basics`) — MC + sorting for every BB idea
-2. **Function or not?** (`functions-or-not`) — everyday + maths: one arrow vs a fork
-3. **Function machine** (`functions`) — signature lab (feed, repair, domain, graph, reverse, chain) + reinforcement
-4. **Transformation lab** (`transformation-lab`) — optional stretch: translate / stretch / reflect
-
-## Media rule
-
-Technical graphs use concept-explorer / SVG only. No raster formulae.
-
-## Next path after Functions
-
-`MATH_LIMITS` → `MATH_DIFF` → integrals (when authored).
+Update `layers` JSON for sort_order 1219–1228 from `functionBoards.js`.
+Titles in prod may still differ (e.g. “Input, process, output”); either
+keep prod titles or align to the fallback titles in the same edit.
