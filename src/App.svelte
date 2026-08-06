@@ -488,9 +488,15 @@
   .loading-screen {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
   }
-  .loading-brand { font-size: 24px; font-weight: 900; letter-spacing: 0.16em; color: var(--qx-accent); }
+  .loading-brand {
+    font-family: var(--qx-font-display);
+    font-size: clamp(28px, 6vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--qx-accent-text);
+  }
   .loading-dots { display: flex; gap: 8px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--qx-text-faint); animation: bounce 1.4s infinite ease-in-out both; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--qx-accent); opacity: 0.45; animation: bounce 1.4s infinite ease-in-out both; }
   .dot:nth-child(1) { animation-delay: -0.32s; }
   .dot:nth-child(2) { animation-delay: -0.16s; }
   @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }

@@ -32,16 +32,16 @@
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     align-self: center;
-    gap: 4px;
+    gap: var(--qx-space-xs);
     margin: 0 8px max(8px, env(safe-area-inset-bottom, 0px));
-    border: 1.5px solid var(--qx-border);
-    border-radius: 22px;
-    background: var(--qx-surface);
-    backdrop-filter: blur(22px) saturate(1.15);
+    border: 1px solid var(--qx-border);
+    border-radius: var(--qx-radius-lg);
+    background: color-mix(in srgb, var(--qx-surface) 92%, transparent);
+    backdrop-filter: blur(22px) saturate(1.12);
     padding: 6px;
     flex-shrink: 0;
     position: relative;
-    box-shadow: 0 1px 3px rgba(61,46,31,.06), 0 8px 24px -14px rgba(61,46,31,.10);
+    box-shadow: var(--qx-shadow-card);
   }
   .tab {
     min-width: 0;
@@ -50,15 +50,15 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    color: var(--qx-text-faintest);
-    font-size: 9.5px;
-    font-weight: 760;
+    color: var(--qx-text-faint);
+    font-size: 10px;
+    font-weight: 750;
     font-family: var(--qx-font);
     background: none;
     border: none;
     cursor: pointer;
     padding: 7px 3px 6px;
-    border-radius: 15px;
+    border-radius: var(--qx-radius-md);
     transition: color 0.2s, transform 0.15s, background-color 0.2s;
     position: relative;
   }
@@ -76,9 +76,9 @@
     transform: translateX(-50%) scaleX(0);
     width: 18px;
     height: 2px;
-    border-radius: 999px;
+    border-radius: var(--qx-radius-pill);
     background: var(--qx-accent);
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.25s var(--qx-ease-out);
   }
   .tab.active::after {
     transform: translateX(-50%) scaleX(1);

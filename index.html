@@ -89,20 +89,31 @@
   <style>
     #seo-splash {
       position: fixed; inset: 0; z-index: 9999; overflow-y: auto;
-      background: radial-gradient(ellipse at 50% 6%, #1D1A15, #141310 80%), #141310;
+      background:
+        radial-gradient(ellipse at 50% -10%, rgba(210,138,94,0.16), transparent 42%),
+        radial-gradient(ellipse at 50% 6%, #1D1A15, #141310 80%),
+        #141310;
       color: #F2EADB; font-family: 'Mulish', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
       display: flex; align-items: center; justify-content: center; padding: 32px;
     }
     #seo-splash .seo-hero { max-width: 560px; text-align: center; }
-    #seo-splash .seo-brand { font-size: 14px; font-weight: 900; letter-spacing: 0.18em; color: #D28A5E; margin-bottom: 18px; }
-    #seo-splash h1 { font-size: clamp(26px, 6vw, 40px); font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 16px; }
+    #seo-splash .seo-brand {
+      font-family: 'Bricolage Grotesque', 'Mulish', system-ui, sans-serif;
+      font-size: clamp(28px, 7vw, 40px); font-weight: 800; letter-spacing: -0.02em;
+      color: #DDA079; margin-bottom: 18px; line-height: 1.05;
+    }
+    #seo-splash h1 {
+      font-family: 'Bricolage Grotesque', 'Mulish', system-ui, sans-serif;
+      font-size: clamp(22px, 5vw, 32px); font-weight: 700; line-height: 1.15;
+      letter-spacing: -0.015em; margin: 0 0 16px; color: #F2EADB;
+    }
     #seo-splash p { font-size: 16px; line-height: 1.6; color: #CFC6B4; margin: 0 auto 16px; max-width: 48ch; }
     #seo-splash .seo-topics { list-style: none; padding: 0; margin: 0 auto 16px; max-width: 48ch; text-align: left; display: grid; gap: 8px; }
     #seo-splash .seo-topics li { font-size: 14px; color: #CFC6B4; padding-left: 18px; position: relative; }
     #seo-splash .seo-topics li::before { content: "▸"; position: absolute; left: 0; color: #D28A5E; }
     #seo-splash .seo-alt { font-size: 14px; color: #A79E8B; }
     #seo-splash .seo-loading { display: flex; gap: 8px; justify-content: center; margin-top: 22px; }
-    #seo-splash .seo-loading span { width: 8px; height: 8px; border-radius: 50%; background: #6F6656; animation: seoBounce 1.4s infinite ease-in-out both; }
+    #seo-splash .seo-loading span { width: 8px; height: 8px; border-radius: 50%; background: #D28A5E; opacity: 0.5; animation: seoBounce 1.4s infinite ease-in-out both; }
     #seo-splash .seo-loading span:nth-child(1) { animation-delay: -0.32s; }
     #seo-splash .seo-loading span:nth-child(2) { animation-delay: -0.16s; }
     @keyframes seoBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }

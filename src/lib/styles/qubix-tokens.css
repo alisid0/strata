@@ -34,6 +34,13 @@
   /* Reading-optimised type: larger, book-like body with generous line-height. */
   --qx-fs-body: 17.5px;
   --qx-lh-body: 1.72;
+
+  /* Spacing scale (DESIGN.md) */
+  --qx-space-xs: 4px;
+  --qx-space-sm: 8px;
+  --qx-space-md: 16px;
+  --qx-space-lg: 24px;
+  --qx-space-xl: 40px;
 }
 
 /* ── Light — Warm book feel: cream canvas, forest-green accent ── */
