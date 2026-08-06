@@ -554,12 +554,14 @@ export const BOARD_MEDIA = {
 };
 
 // Keep the large, audited Mathematics expansion separate from the hand-tuned
-// legacy catalogue while exposing one lookup surface to the reader.
+// catalogue while exposing one lookup surface to the reader.
+// Hand-tuned BOARD_MEDIA floors win over bulk expansion (so a curated
+// concept-explorer is never replaced by a looping math-motion filler).
 for (const [board, floors] of Object.entries(MATHS_MEDIA_EXPANSION)) {
-  BOARD_MEDIA[board] = { ...(BOARD_MEDIA[board] || {}), ...floors };
+  BOARD_MEDIA[board] = { ...floors, ...(BOARD_MEDIA[board] || {}) };
 }
 for (const [board, floors] of Object.entries(MATHS_MEDIA_80_EXPANSION)) {
-  BOARD_MEDIA[board] = { ...(BOARD_MEDIA[board] || {}), ...floors };
+  BOARD_MEDIA[board] = { ...floors, ...(BOARD_MEDIA[board] || {}) };
 }
 
 /** Media spec for a board number + floor index, or null. */
