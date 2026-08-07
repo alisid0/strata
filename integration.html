@@ -577,7 +577,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <div class="tryit step locked" id="k2">
   <p class="q"><span class="stepnum">2</span>A speed that will not stay put</p>
-  <p class="ask">Now the real journey. Over one hour the train pulls away from the station, climbing from 20 km/h to 80 km/h, and the needle never sits still. Do to it what you did to the curve in section 3: take the <strong>fastest</strong> speed reached in the hour and multiply by the whole hour. What distance does that give?</p>
+  <p class="ask">Now the real journey. The train speeds up the whole way, starting at 20 km/h and reaching <strong>80 km/h</strong> by the end of the hour. Suppose it had travelled at that top speed of 80 km/h for the entire hour. How far would it have gone?</p>
   <div class="answer">
     <input type="text" inputmode="decimal" id="k2i" aria-label="Distance using the fastest speed" placeholder="distance" />
     <span class="unit">km</span>
@@ -1133,17 +1133,17 @@ function exercise(o){
     input:'k1i',check:'k1b',fb:'k1f',answer:25,
     near:[{value:50,msg:'That is the speed, not the distance. At 50 km/h you would cover 50 km in a full hour, but you only travelled for half of one.'},
           {value:100,msg:'You multiplied by two rather than by a half. Half an hour is 0.5 hours, so the distance is smaller than the speed, not larger.'}],
-    right:'Correct. <span class="eqn">50 &times; 0.5 = 25</span> km. This is the very first shape on the page again, a height of 50 and a width of 0.5. The difference is that the height is now a speed, the width is a stretch of time, and the answer is a distance rather than an area.',
+    right:'Correct. <span class="eqn">50 &times; 0.5 = 25</span> km. Notice the shape of that calculation: one number that never changes, multiplied by the stretch over which it never changes. That is the same multiplication you would use for the area of a rectangle, except here it gives you a distance.',
     wrong:'Not quite. Multiply the speed by the length of time you held it, in hours.',
     onRight:function(){done('k1');lock('k2',false);}
   });
   exercise({
     input:'k2i',check:'k2b',fb:'k2f',answer:80,
-    near:[{value:20,msg:'That is the slowest speed, which would give an under-estimate. Take the fastest one, so that the block is guaranteed to cover the whole journey.'},
-          {value:50,msg:'That looks like the average of 20 and 80. It is a reasonable guess, but the block we want here is the one that covers the curve, so use the fastest speed.'},
-          {value:40,msg:'That is the right answer to the wrong question. It is what the train actually travelled, which you are not supposed to know yet.'}],
-    right:'Correct. <span class="eqn">80 &times; 1 = 80</span> km. One block, badly over the truth, exactly like the single rectangle over the semicircle in section 3. Because the block is tall enough to cover every speed the train reached, the real distance is certainly less than 80 km.',
-    wrong:'Not quite. Take the fastest speed reached during the hour and multiply it by one hour.',
+    near:[{value:20,msg:'That is the speed it started at, not its top speed. The question asks what would happen if it had held 80 km/h the whole way.'},
+          {value:50,msg:'That is the average of 20 and 80, which is a sensible guess at the real answer. But the question asks something simpler: 80 km/h held for one hour.'},
+          {value:40,msg:'That is very close to how far the train really went, but it is not what the question asked. Try 80 km/h held for the full hour.'}],
+    right:'Correct. <span class="eqn">80 &times; 1 = 80</span> km. Now here is the useful part. The train only touched 80 km/h at the very end, and was slower than that for the whole rest of the hour. So it definitely travelled <em>less</em> than 80 km. You do not know the real distance yet, but you know a number it cannot beat.',
+    wrong:'Not quite. Multiply the top speed of 80 km/h by the one hour it was travelling.',
     onRight:function(){done('k2');lock('k3',false);}
   });
   exercise({
@@ -1151,7 +1151,7 @@ function exercise(o){
     near:[{value:115,msg:'You have added the two speeds and multiplied by a whole hour. Each block only lasts half an hour, so each speed is multiplied by 0.5.'},
           {value:80,msg:'That is still the one-block answer. Work out the two halves separately: 35 for the first, 80 for the second, each lasting 0.5 hours.'},
           {value:57,msg:'Very close. Keep the half: 17.5 plus 40.'}],
-    right:'Correct. <span class="eqn">35 &times; 0.5 + 80 &times; 0.5 = 17.5 + 40 = 57.5</span> km. Splitting the hour once has already knocked more than 22 km off the over-estimate, because the first half hour is no longer being charged at the speed the train only reached at the very end.',
+    right:'Correct. <span class="eqn">35 &times; 0.5 + 80 &times; 0.5 = 17.5 + 40 = 57.5</span> km. One cut has taken the answer from 80 km down to 57.5 km. The reason is that the first half hour is no longer being charged at 80 km/h, a speed the train did not reach until the very end.',
     wrong:'Not quite. Work out each half hour on its own, then add the two distances together.',
     onRight:function(){done('k3');lock('k4',false);draw();}
   });
@@ -1160,7 +1160,7 @@ function exercise(o){
     near:[{value:41,msg:'Very close, and you can get closer still. Push the blocks up to 64 and round to the nearest whole kilometre.'},
           {value:42,msg:'Close. That is roughly the 16-block figure. Keep going and see what it settles on.'},
           {value:80,msg:'That is where you started, with a single block. Drag the slider up and watch the number come down.'}],
-    right:'Correct, 40 km. The blocks never quite reach it, because every one of them is an over-estimate just as in section 3, but the overshoot halves each time you double the count, so you can get as close to 40 as you care to. That number is the integral of the speed over the hour, and it is the distance the train travelled.',
+    right:'Correct, 40 km. No number of blocks ever reaches it exactly, because every block is still charging its whole stretch at the fastest speed inside it. But the overshoot halves each time you double the count, so you can get as close to 40 km as you like. That number is the distance the train travelled.',
     wrong:'Not quite. Push the block count up and watch the distance estimate settle towards a whole number.',
     onRight:function(){done('k4');}
   });
