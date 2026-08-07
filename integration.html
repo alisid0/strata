@@ -220,7 +220,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 <p style="color:var(--faint);font-size:14px">Every diagram is live. Drag the sliders.</p>
 
 <h2 id="s1">1. The one idea</h2>
-<p>Before any calculus, three shapes. Work out the area of each one and see where you get stuck.</p>
+<p>Here are three shapes. Work out the area of each one, and notice where you get stuck.</p>
 
 <div class="tryit">
   <p class="q">Shape one</p>
@@ -336,12 +336,12 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work out each strip as a rectangle, add them all up, then make the strips narrower still. That is integration, and everything that follows is either a demonstration that it works, a faster way to do it, or an example of it being used on something that is not a shape at all.</p>
 </div>
 
-<p>Before we make the strips infinitely thin, it is worth seeing the same idea in a case where nothing is thin, nothing is infinite, and no curves appear at all. That is the next section.</p>
+<p>The next section is exactly this, in a setting with no curves and nothing that needs to shrink.</p>
 
 
 <h2 id="s2">2. Pocket money</h2>
-<p>Section 1 left us with strips we were about to make narrower and narrower. Hold that thought, because you have done all of this before, in pounds, at the kitchen table.</p>
-<p>Say you get pocket money every day. Some days more, some days less. Whatever you get goes into a jar, and the jar is never emptied. Here is a week of it &mdash; drag the slider to walk through the days.</p>
+<p>Before we start making those strips narrower, it is worth seeing the same idea somewhere the numbers are small enough to check in your head.</p>
+<p>Imagine you are given pocket money every day, and the amount changes from one day to the next. All of it goes into a jar, and nothing is ever taken out. The chart below covers a single week, and the slider moves you through it one day at a time.</p>
 
 <div class="widget">
   <p class="wtitle">Bars and the jar</p>
@@ -352,7 +352,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   </div>
   <p class="cap">Money you got each day</p>
   <div id="w5r1" style="display:flex;align-items:flex-end;gap:8px;height:112px;margin:0 0 18px" role="img" aria-labelledby="w5-fallback"></div>
-  <p class="cap">Money in the jar &mdash; the running total</p>
+  <p class="cap">Money in the jar, the running total</p>
   <div class="jarrow">
     <svg class="jarsvg" viewBox="0 0 150 212" role="img" aria-labelledby="w5-fallback">
       <defs>
@@ -394,7 +394,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p class="note" id="w5t"></p>
 </div>
 
-<p>Two questions come up about that jar, and between them they are the whole of calculus. Here is the first.</p>
+<p>There are two questions worth asking about that jar. Neither needs anything beyond primary school arithmetic, although both have formal names that make them sound harder than they are.</p>
 
 <div class="tryit">
   <p class="q">Going one way</p>
@@ -407,11 +407,11 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p class="fb" id="p1f"></p>
 </div>
 
-<p>You added the days up to get the jar. That is <strong>integration</strong>, and it is the same move you made in section 1 when you added the strips up to get the area. Now the other direction.</p>
+<p>You added the days up to get the jar, which is exactly what you did in section 1 when you added the strips up to get the area. That operation is called <strong>integration</strong>. The second question runs in the opposite direction.</p>
 
 <div class="tryit">
   <p class="q">Going the other way</p>
-  <p class="ask">Forget the daily amounts for a moment &mdash; suppose all you have is the jar. It held <strong>&pound;18</strong> at the end of Wednesday and <strong>&pound;22</strong> at the end of Thursday. How much did you get on Thursday?</p>
+  <p class="ask">Now suppose the daily amounts have been lost and the jar is all you have left. It held <strong>&pound;18</strong> at the end of Wednesday and <strong>&pound;22</strong> at the end of Thursday. How much did you get on Thursday?</p>
   <div class="answer">
     <span class="unit">&pound;</span>
     <input type="text" inputmode="decimal" id="p2i" aria-label="Pocket money received on Thursday" placeholder="Thursday" />
@@ -420,9 +420,9 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p class="fb" id="p2f"></p>
 </div>
 
-<p>You subtracted two jar readings to recover a single day. That is <strong>differentiation</strong>. And it should be obvious why the two undo each other: if you put &pound;8 into the jar and then ask how much the jar changed by, the answer has to be &pound;8. There is nothing to prove here.</p>
+<p>You subtracted two jar readings to recover a single day, and that operation is called <strong>differentiation</strong>. It should be clear enough why the two undo one another. If you put &pound;8 into the jar and then ask how much the jar changed by, the answer has to be &pound;8. There is nothing to prove.</p>
 
-<p>Now the part that is worth the trouble. Both routes are open to you, and one of them is much less work.</p>
+<p>Both operations are available to you whenever you want the total for a stretch of several days, and one of them turns out to be a good deal less work than the other.</p>
 
 <div class="tryit">
   <p class="q">Two routes, one answer</p>
@@ -440,7 +440,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p class="fb" id="p3r">Once you have the answer, compare how you could have got it.</p>
 </div>
 
-<p>The short way never looked at a single day's money. It read the jar twice and took the difference &mdash; four additions turned into one subtraction. That is the shortcut, and this is how it gets written down:</p>
+<p>The short way never looked at a single day's money. It read the jar twice and took the difference, turning four additions into one subtraction. Written down, that is the shortcut:</p>
 
 <div class="eq"><span class="intg"><span class="sgn">&int;</span><span class="lim"><span class="hi">b</span><span class="lo">a</span></span></span> f = F(b) &minus; F(a)<span class="lbl">the jar at the end, minus the jar at the start</span></div>
 
@@ -451,10 +451,10 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p>The <strong>bars</strong> are the curve. The <strong>jar</strong> is the area underneath it.<br>
   Filling the jar from the bars is <strong>integration</strong>.<br>
   Getting one bar back out of the jar is <strong>differentiation</strong>.<br>
-  And for a run of several bars, don't add them up &mdash; read the jar twice and subtract.</p>
+  For a run of several bars, read the jar twice and subtract rather than adding them up.</p>
 </div>
 
-<p>The rest of the page is this picture with the days made thinner and thinner. Nothing else changes. Calculus isn't a new idea sitting on top of this one &mdash; it is this one, with the steps shrunk to nothing.</p>
+<p>The rest of the page is this same picture with the days made thinner and thinner. Nothing else changes. Calculus is not a new idea sitting on top of this one. It is this one, with the steps shrunk to nothing.</p>
 
 <h2 id="s3">3. Rectangles under a curve</h2>
 <p>Take a semicircle of radius 1. Its true area is <span class="math">&pi;/2 &asymp; 1.5708</span>, but suppose we did not know that and had to measure it using the slicing method described above.</p>
@@ -488,7 +488,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 <p>Each rectangle is drawn tall enough to cover the highest point the curve reaches within its own strip, so the whole staircase sits over the semicircle and the total always comes out too big. Two things to try:</p>
 <ul>
   <li><strong>Start at 1 rectangle</strong> (use the jump buttons). A single rectangle gives 2.00 against a true area of 1.57, so it is about 27% over. That is the straight-edge answer applied to a shape that is not straight, and it fails for exactly the reason section 1 gave.</li>
-  <li><strong>Jump 20 &rarr; 40 &rarr; 80.</strong> Each time you double the number of rectangles, the overshoot roughly halves &mdash; 0.081, then 0.043, then 0.023. That relationship is what makes the method work, and section 4 shows why it holds.</li>
+  <li><strong>Jump 20 &rarr; 40 &rarr; 80.</strong> Each time you double the number of rectangles, the overshoot roughly halves: 0.081, then 0.043, then 0.023. That relationship is what makes the method work, and section 4 shows why it holds.</li>
 </ul>
 <p>The overshoot never quite reaches zero at any particular number of rectangles, but you can make it as small as you like by using enough of them. The number all these totals are closing in on is what we call the integral.</p>
 <p>The middle card is not a number we looked up. It is the jar trick from section 2 applied to this curve: find the running total <span class="math">F</span>, read it at both ends, subtract. It is there so you have something to check the rectangles against.</p>
@@ -499,7 +499,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 </details>
 <details>
   <summary>If every total is too big, how can the answer ever be exact?</summary>
-  <div class="ans"><p>No individual sum is exact &mdash; every one of them is genuinely too big. The integral isn't any one of those sums; it is the number they close in on. The definition contains a limit, and the limit is exact even though no member of the sequence is.</p></div>
+  <div class="ans"><p>No individual sum is exact, because every one of them is genuinely too big. The integral is not any one of those sums. It is the number they close in on. The definition contains a limit, and the limit is exact even though no member of the sequence is.</p></div>
 </details>
 <details>
   <summary>Where does 1.5708 come from without memorising &pi;/2?</summary>
@@ -516,7 +516,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <input type="range" id="w2k" min="0" max="6" step="1" value="0" />
     <span class="out" id="w2o">5 rects</span>
   </div>
-  <p class="cap">Whole semicircle &mdash; every rectangle, zoom window marked</p>
+  <p class="cap">Whole semicircle, with every rectangle and the zoom window marked</p>
   <div class="cvwrap" style="height:120px">
     <canvas id="w2a" role="img" aria-labelledby="w2-fallback"></canvas>
   </div>
@@ -552,7 +552,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <div class="callout">
   <span class="tag">Where that leaves us</span>
-  <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work each strip out as a rectangle, the way you did with the very first shape on this page. Add them up, then make the strips narrower still. Section 2 showed those two moves &mdash; building a total up and taking one back apart &mdash; in whole pounds, and this section showed that the error really does shrink away rather than piling up.</p>
+  <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work each strip out as a rectangle, the way you did with the very first shape on this page. Add them up, then make the strips narrower still. Section 2 showed those same two moves in whole pounds, building a total up and then taking one back apart, and this section showed that the error really does shrink away rather than piling up.</p>
 </div>
 
 <p>Everything else in calculus is machinery built on top of that: quicker ways to find the running total, ways of proving it behaves for badly behaved curves, and the same slicing applied to volumes, forces and probabilities rather than areas. The machinery gets large. The idea does not get any bigger than this.</p>
