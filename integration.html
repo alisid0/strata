@@ -2,8 +2,15 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Integration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" id="tcolor" content="#faf9f7" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Integration" />
+<meta name="description" content="An introduction to integration, starting from the area of a rectangle." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23185fa5'/%3E%3Ctext x='16' y='24' font-size='23' font-family='Georgia,serif' fill='%23fff' text-anchor='middle'%3E%E2%88%AB%3C/text%3E%3C/svg%3E" />
+<title>Integration — an introduction</title>
 <style>
 :root{
   --bg:#faf9f7; --surface:#ffffff; --surface2:#f1efe8;
@@ -22,7 +29,8 @@ html[data-theme="dark"]{
   --ok:#97c459; --okbg:#173404;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);overflow-x:hidden;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
 .wrap{display:flex;gap:40px;max-width:1180px;margin:0 auto;padding:0 24px}
@@ -104,10 +112,6 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
 .jarrow{display:flex;align-items:flex-end;gap:20px;margin:0 0 18px}
 .jarrow .jarsvg{width:132px;max-width:132px;flex:0 0 132px;height:auto;display:block;margin:0}
 .jarrow>div{flex:1;min-width:0}
-@media(max-width:600px){
-  .jarrow{gap:14px}
-  .jarrow .jarsvg{width:104px;max-width:104px;flex:0 0 104px}
-}
 /* shape figures — used inside .tryit cards and the strip widget.
    Scoped to svg so the short class names can't collide with page styles. */
 .tryit svg,.widget svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
@@ -190,15 +194,65 @@ td.n{font-variant-numeric:tabular-nums}
 .signed .box .v{font-size:15px;margin:0;line-height:1.45}
 footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   font-size:14px;color:var(--faint)}
+/* ---------- tablet and below: the sidebar becomes a bar across the top ---------- */
 @media(max-width:900px){
   .wrap{flex-direction:column;gap:0;padding:0 18px}
-  nav{width:auto;position:static;height:auto;padding:20px 0 0;border-bottom:1px solid var(--border)}
-  nav .links{display:flex;flex-wrap:wrap;gap:2px;padding-bottom:14px}
-  nav a{border-left:none;border-bottom:2px solid transparent;padding:4px 9px;font-size:13px}
-  nav a.on{border-left-color:transparent;border-bottom-color:var(--accent)}
-  main{padding:26px 0 80px}
-  h1{font-size:27px} h2{font-size:21px} body{font-size:16px}
+  nav{width:auto;position:sticky;top:0;z-index:20;height:auto;padding:0;
+    background:var(--bg);border-bottom:1px solid var(--border);
+    padding-top:env(safe-area-inset-top)}
+  nav .nav-top{padding:12px 0 8px;margin:0;align-items:center}
+  nav .sub{display:none}
+  nav .brand{font-size:16px;margin:0}
+  /* one scrolling strip rather than a block of wrapped links eating the screen */
+  nav .links{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding:0 0 10px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  nav .links::-webkit-scrollbar{display:none}
+  nav a{flex:0 0 auto;white-space:nowrap;border-left:none;border-radius:999px;
+    padding:7px 13px;font-size:13px;background:var(--surface2);scroll-snap-align:start}
+  nav a.on{border-left-color:transparent;background:var(--accent);color:var(--bg);font-weight:600}
+  main{padding:22px 0 80px}
+  h1{font-size:27px} h2{font-size:21px;margin:44px 0 12px} body{font-size:16px}
   .jar-sketch,.signed{grid-template-columns:1fr}
+}
+/* ---------- phones ---------- */
+@media(max-width:620px){
+  .wrap{padding:0 14px}
+  main{padding:18px 0 calc(64px + env(safe-area-inset-bottom))}
+  h1{font-size:24px} h2{font-size:20px;margin:38px 0 10px} h3{font-size:17px}
+  body{font-size:16px;line-height:1.65}
+  .lede{font-size:17px}
+  .widget,.tryit{padding:15px;border-radius:12px}
+  .eq{padding:14px 12px;font-size:17px;margin:16px 0}
+  .callout{padding:14px 15px}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:8px}
+  .card .v{font-size:17px}
+  /* thumbs need a bigger target than a mouse pointer does */
+  .ctrl{gap:10px}
+  .ctrl label{font-size:13px}
+  input[type=range]{height:22px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--border2)}
+  input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:var(--border2)}
+  input[type=range]::-webkit-slider-thumb{width:28px;height:28px;margin-top:-11.5px}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px}
+  .seg,.preset{min-height:42px;padding:9px 14px;font-size:14px}
+  .segs{gap:7px}
+  .answer{gap:8px}
+  .answer input{flex:1 1 100px;min-width:0;min-height:44px;font-size:16px}
+  .answer .go,.answer .hint{min-height:44px;padding:11px 18px}
+  .themebtn{min-height:36px;padding:6px 12px}
+  .tryit svg,.widget svg{max-width:100%}
+  .jarrow{gap:12px}
+  .jarrow .jarsvg{width:88px;max-width:88px;flex:0 0 88px}
+  table{font-size:14px}
+  .stepnum{width:20px;height:20px;font-size:11px;margin-right:6px}
+}
+/* very narrow phones: let the jar sit above the bars instead of beside them */
+@media(max-width:400px){
+  .jarrow{flex-direction:column;align-items:center;gap:10px}
+  .jarrow .jarsvg{width:104px;max-width:104px;flex:0 0 auto}
+  .jarrow>div{width:100%}
+  .cards{grid-template-columns:1fr 1fr}
+  .answer input{flex:1 1 100%}
 }
 </style>
 </head>
@@ -209,7 +263,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <div class="nav-top">
     <div>
       <p class="brand">Integration</p>
-      <p class="sub">Rectangles to real life</p>
+      <p class="sub">An introduction</p>
     </div>
     <button class="themebtn" id="themebtn" type="button" aria-label="Toggle colour theme">Dark</button>
   </div>
@@ -225,9 +279,9 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <main>
 
-<p class="sec-no">A visual course</p>
+<p class="sec-no">An introduction</p>
 <h1>Integration</h1>
-<p class="lede">This started with one question: is integration just a complicated way of finding the area of shapes? It isn't, and the rest of this page works through why.</p>
+<p class="lede">An introduction for anyone who has never met integration, or has met it and come away none the wiser. It starts with the area of a rectangle and ends with why a driverless car needs the same idea. Nothing is assumed beyond multiplying and adding.</p>
 <p style="color:var(--faint);font-size:14px">Every diagram is live. Drag the sliders.</p>
 
 <h2 id="s1">1. The one idea</h2>
@@ -702,7 +756,6 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <button class="seg" data-app="robot" aria-pressed="true">Robots &amp; driverless cars</button>
     <button class="seg" data-app="ml" aria-pressed="false">Machine learning</button>
     <button class="seg" data-app="mil" aria-pressed="false">Missiles &amp; navigation</button>
-    <button class="seg" data-app="dna" aria-pressed="false">DNA &amp; drug testing</button>
     <button class="seg" data-app="super" aria-pressed="false">Superconductors</button>
     <button class="seg" data-app="bill" aria-pressed="false">Your electricity bill</button>
   </div>
@@ -1333,10 +1386,6 @@ function exercise(o){
       t:'Where it is now, without asking anyone',
       yl:'acceleration',xl:'time',
       note:'A submarine underwater or a missile facing jamming cannot rely on satellite navigation, so it carries accelerometers and gyroscopes and integrates their readings continuously from a known starting point. Blast measurement uses the same idea: the damage a shockwave does depends not on peak pressure alone but on pressure added up over the fraction of a second it lasts.'},
-    dna:{h:'Signal coming off the detector',w:'Time, as the sample passes through',
-      t:'How much of that substance is in the sample',
-      yl:'detector signal',xl:'time',
-      note:'Run a sample through a chromatograph or a mass spectrometer and the detector traces a line with peaks in it. Which peak appears tells you what the substance is; the area under that peak tells you how much of it there is. Forensic and sequencing labs depend on this, and so does drug dosing, where the area under a blood concentration curve is the standard measure of how much of a drug a patient has actually absorbed.'},
     super:{h:'Strength of the magnetic field',w:'Area of the loop it passes through',
       t:'Total magnetic flux',
       yl:'field strength',xl:'area',
@@ -1382,6 +1431,9 @@ function exercise(o){
   function apply(t){
     document.documentElement.setAttribute('data-theme',t);
     btn.textContent=(t==='dark')?'Light':'Dark';
+    /* the static theme-color metas follow the OS, not this button */
+    var m=document.getElementById('tcolor');
+    if(m){m.setAttribute('content',t==='dark'?'#151514':'#faf9f7');}
     redrawAll();
   }
   apply(init);
@@ -1391,7 +1443,7 @@ function exercise(o){
     apply(t);
   });
 
-  var links=document.querySelectorAll('nav a'),heads=[];
+  var links=document.querySelectorAll('nav a'),heads=[],strip=document.querySelector('nav .links');
   for(var i=0;i<links.length;i++){
     var h=document.getElementById(links[i].getAttribute('href').slice(1));
     if(h){heads.push({a:links[i],h:h});}
@@ -1401,9 +1453,19 @@ function exercise(o){
     for(var i=0;i<heads.length;i++){
       if(heads[i].h.offsetTop<=y){best=heads[i];}
     }
-    for(var j=0;j<heads.length;j++){heads[j].a.className=(heads[j]===best)?'on':'';}
+    var changed=false;
+    for(var j=0;j<heads.length;j++){
+      var on=(heads[j]===best);
+      if(on!==(heads[j].a.className==='on')){changed=true;}
+      heads[j].a.className=on?'on':'';
+    }
+    /* on a phone the links are a horizontal strip, so keep the current one visible */
+    if(changed&&best&&strip&&strip.scrollWidth>strip.clientWidth+4){
+      var l=best.a.offsetLeft-strip.clientWidth/2+best.a.offsetWidth/2;
+      if(strip.scrollTo){strip.scrollTo({left:l,behavior:'smooth'});}else{strip.scrollLeft=l;}
+    }
   }
-  window.addEventListener('scroll',spy);spy();
+  window.addEventListener('scroll',spy,{passive:true});spy();
 })();
 
 var rt;
