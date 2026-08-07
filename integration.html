@@ -92,6 +92,15 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
 /* keep the sign in proportion where the surrounding type is small */
 .lbl .intg .sgn,td .intg .sgn,.k .intg .sgn{font-size:1.35em}
 .lbl .intg,td .intg,.k .intg{vertical-align:-0.22em}
+/* workshop steps: each one stays dimmed and inert until the step above it is right */
+.step.locked{opacity:.42}
+.step.locked .ask,.step.locked svg{filter:grayscale(1)}
+.step .lockmsg{font-size:13px;color:var(--faint);margin:8px 0 0;font-style:italic}
+.step.open .lockmsg{display:none}
+.stepnum{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;background:var(--surface2);
+  color:var(--muted);font-size:12px;font-weight:600;margin-right:8px;font-style:normal}
+.step.done .stepnum{background:var(--okbg);color:var(--ok)}
 .jarrow{display:flex;align-items:flex-end;gap:20px;margin:0 0 18px}
 .jarrow .jarsvg{width:132px;max-width:132px;flex:0 0 132px;height:auto;display:block;margin:0}
 .jarrow>div{flex:1;min-width:0}
@@ -209,6 +218,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <a href="#s2">2. Pocket money</a>
     <a href="#s3">3. Rectangles under a curve</a>
     <a href="#s4">4. Why it converges</a>
+    <a href="#s5">5. Workshop: a journey</a>
   </div>
 </nav>
 
@@ -550,9 +560,94 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <div class="ans"><p>Over a short stretch, a smooth curve is close to a straight line with some slope <span class="math">m</span>. For a straight line, the change in height is the slope times the run, so <span class="math">&Delta;h &asymp; m&middot;w</span>. Halve the run and the height change halves with it. Since the wedge's area depends on both the width and that height change, halving the width brings both down, and the area drops to a quarter.</p></div>
 </details>
 
+<h2 id="s5">5. Workshop: how far did the train go?</h2>
+<p>Everything so far has measured an area. This workshop measures something that is not an area at all, and the only thing that changes is what the two sides of each rectangle stand for.</p>
+<p>A train leaves a station and you can see the speedometer, but the odometer is broken. Work out how far it travelled.</p>
+
+<div class="tryit step open" id="k1">
+  <p class="q"><span class="stepnum">1</span>A speed that stays put</p>
+  <p class="ask">Start with the easy case. A train holds a steady <strong>50 km/h</strong> for <strong>half an hour</strong>. How far does it go?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="k1i" aria-label="Distance travelled in kilometres" placeholder="distance" />
+    <span class="unit">km</span>
+    <button type="button" class="go" id="k1b">Check</button>
+  </div>
+  <p class="fb" id="k1f"></p>
+</div>
+
+<div class="tryit step locked" id="k2">
+  <p class="q"><span class="stepnum">2</span>A speed that will not stay put</p>
+  <p class="ask">Now the real journey. Over one hour the train pulls away from the station, climbing from 20 km/h to 80 km/h, and the needle never sits still. Do to it what you did to the curve in section 3: take the <strong>fastest</strong> speed reached in the hour and multiply by the whole hour. What distance does that give?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="k2i" aria-label="Distance using the fastest speed" placeholder="distance" />
+    <span class="unit">km</span>
+    <button type="button" class="go" id="k2b">Check</button>
+  </div>
+  <p class="fb" id="k2f"></p>
+  <p class="lockmsg">Answer step 1 first.</p>
+</div>
+
+<div class="tryit step locked" id="k3">
+  <p class="q"><span class="stepnum">3</span>Cut the hour in half</p>
+  <p class="ask">Split the journey into two half-hours and treat each one separately. In the first half hour the train never exceeds <strong>35 km/h</strong>; in the second it never exceeds <strong>80 km/h</strong>. Work out the distance for each half and add them together.</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="k3i" aria-label="Distance using two half-hour blocks" placeholder="distance" />
+    <span class="unit">km</span>
+    <button type="button" class="go" id="k3b">Check</button>
+  </div>
+  <p class="fb" id="k3f"></p>
+  <p class="lockmsg">Answer step 2 first.</p>
+</div>
+
+<div class="tryit step locked" id="k4">
+  <p class="q"><span class="stepnum">4</span>Keep cutting</p>
+  <p class="ask">Doing that by hand gets tedious quickly, so the slider does it for you. Each block still uses the fastest speed reached inside it, so every total is an over-estimate. Push the block count up and watch where the distance settles.</p>
+  <div class="widget" style="margin:16px 0">
+    <div class="ctrl">
+      <label for="w8n">Blocks</label>
+      <input type="range" id="w8n" min="1" max="64" step="1" value="2" disabled />
+      <span class="out" id="w8o">2</span>
+    </div>
+    <div class="presets" role="group" aria-label="Jump to block count">
+      <span class="plab">Jump</span>
+      <button type="button" class="preset" data-w8n="1">1</button>
+      <button type="button" class="preset" data-w8n="4">4</button>
+      <button type="button" class="preset" data-w8n="16">16</button>
+      <button type="button" class="preset" data-w8n="64">64</button>
+    </div>
+    <div class="cvwrap" style="height:230px">
+      <canvas id="w8c" role="img" aria-labelledby="w8-fallback"></canvas>
+      <p class="sr-only" id="w8-fallback">Speed against time for a train accelerating from 20 to 80 km per hour, with blocks covering the curve. Readouts show the distance estimate and how far above the true distance it is.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><p class="k">Blocks</p><p class="v" id="w8b">&mdash;</p></div>
+      <div class="card"><p class="k">Distance estimate</p><p class="v" id="w8s">&mdash;</p></div>
+      <div class="card"><p class="k">Over by</p><p class="v" id="w8e">&mdash;</p></div>
+    </div>
+    <p class="note" id="w8t"></p>
+  </div>
+  <p class="ask">To the nearest whole kilometre, what distance is the estimate closing in on?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="k4i" aria-label="The distance the estimate approaches" placeholder="distance" />
+    <span class="unit">km</span>
+    <button type="button" class="go" id="k4b">Check</button>
+  </div>
+  <p class="fb" id="k4f"></p>
+  <p class="lockmsg">Answer step 3 first.</p>
+</div>
+
+<p>Look back at what you multiplied. In section 1 it was a height in centimetres times a width in centimetres, and the answer was an area in square centimetres. Here it was a speed in kilometres per hour times a stretch of time in hours, and the answer came out in kilometres. The hours cancelled.</p>
+
+<div class="callout">
+  <span class="tag">What this workshop was really about</span>
+  <p>The rectangles were never about area. A rectangle is just a quantity that is not changing, multiplied by the stretch over which it is not changing. Whenever something varies and you want its total, you can slice the stretch thinly enough that the thing stops varying across any one slice, multiply, and add. Area is only the case where the quantity happens to be a height.</p>
+</div>
+
+<p>This is also why the jar from section 2 works on a moving train. The speedometer is the daily pocket money and the odometer is the jar: the odometer climbs fastest when the speedometer reads highest, and the distance covered between two moments is one odometer reading minus the other.</p>
+
 <div class="callout">
   <span class="tag">Where that leaves us</span>
-  <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work each strip out as a rectangle, the way you did with the very first shape on this page. Add them up, then make the strips narrower still. Section 2 showed those same two moves in whole pounds, building a total up and then taking one back apart, and this section showed that the error really does shrink away rather than piling up.</p>
+  <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work each strip out as a rectangle, the way you did with the very first shape on this page. Add them up, then make the strips narrower still. Section 2 showed those same two moves in whole pounds, building a total up and then taking one back apart. Section 4 showed that the error really does shrink away rather than piling up, and section 5 showed that none of it was ever about area in the first place.</p>
 </div>
 
 <p>Everything else in calculus is machinery built on top of that: quicker ways to find the running total, ways of proving it behaves for badly behaved curves, and the same slicing applied to volumes, forces and probabilities rather than areas. The machinery gets large. The idea does not get any bigger than this.</p>
@@ -952,6 +1047,123 @@ function exercise(o){
   }
   sl.addEventListener('input',draw);
   reg(draw);
+})();
+
+/* ---------- 8. Workshop: distance from speed ---------- */
+(function(){
+  var TRUE_KM=40;                       /* integral of 20 + 60t^2 over [0,1] */
+  function vel(t){return 20+60*t*t;}    /* km/h, increasing across the hour */
+  /* v is increasing, so the fastest speed in a block sits at its right edge */
+  function estimate(n){var w=1/n,S=0;for(var i=0;i<n;i++){S+=vel((i+1)*w)*w;}return S;}
+
+  var cv=document.getElementById('w8c'),sl=document.getElementById('w8n');
+  function syncPresets(){
+    var n=+sl.value,ps=document.querySelectorAll('[data-w8n]');
+    for(var i=0;i<ps.length;i++){
+      ps[i].setAttribute('aria-pressed',(+ps[i].getAttribute('data-w8n')===n)?'true':'false');
+    }
+  }
+  function draw(){
+    if(!cv)return;
+    var f=fit(cv),c=f.c,W=f.W,H=f.H,p=P(),pad=20,base=H-26,VMAX=90;
+    var sx=function(t){return pad+t*(W-2*pad-10);};
+    var sy=function(v){return base-(v/VMAX)*(base-pad);};
+    /* the true region under the speed curve */
+    c.beginPath();c.moveTo(sx(0),sy(0));
+    for(var i=0;i<=300;i++){var t=i/300;c.lineTo(sx(t),sy(vel(t)));}
+    c.lineTo(sx(1),sy(0));c.closePath();c.fillStyle=p.area;c.fill();
+    /* covering blocks */
+    var n=+sl.value,w=1/n,S=0;
+    c.fillStyle=p.rect;
+    for(var k=0;k<n;k++){
+      var a=k*w,b=a+w,h=vel(b);
+      S+=h*w;
+      var top=sy(h);
+      c.fillRect(sx(a)+0.5,top,Math.max(sx(b)-sx(a)-1,0.6),sy(0)-top);
+    }
+    /* the curve on top */
+    c.beginPath();
+    for(var j=0;j<=300;j++){var tt=j/300,px=sx(tt),py=sy(vel(tt));if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
+    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(sx(0),sy(0));c.lineTo(sx(1),sy(0));c.stroke();
+    c.beginPath();c.moveTo(sx(0),sy(0));c.lineTo(sx(0),pad);c.stroke();
+    c.fillStyle=p.ink;c.font='11px sans-serif';
+    c.textAlign='center';
+    c.fillText('0',sx(0),base+16);c.fillText('30 min',sx(0.5),base+16);c.fillText('1 hour',sx(1),base+16);
+    c.textAlign='left';
+    c.fillText('80 km/h',sx(0)+4,sy(80)-4);
+    c.fillText('20 km/h',sx(0)+4,sy(20)-4);
+    var e=S-TRUE_KM;
+    txt('w8o',n);txt('w8b',n);txt('w8s',S.toFixed(2)+' km');txt('w8e',e.toFixed(2)+' km');
+    txt('w8t',n+' block'+(n===1?'':'s')+', each covering '+(60/n).toFixed(1)+
+      ' minutes at the fastest speed reached inside it. That gives '+S.toFixed(2)+
+      ' km, which is '+e.toFixed(2)+' km more than the train actually travelled.');
+    setFallback('w8-fallback','Speed against time with '+n+' covering blocks. Distance estimate '+
+      S.toFixed(2)+' km, over the true distance by '+e.toFixed(2)+' km.');
+    syncPresets();
+  }
+  if(sl){
+    sl.addEventListener('input',draw);
+    var ps=document.querySelectorAll('[data-w8n]');
+    for(var q=0;q<ps.length;q++){
+      (function(b){b.addEventListener('click',function(){
+        if(sl.disabled)return;
+        sl.value=b.getAttribute('data-w8n');draw();
+      });})(ps[q]);
+    }
+    reg(draw);
+  }
+
+  /* each step stays inert until the one above it is answered */
+  function lock(id,on){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.className='tryit step '+(on?'locked':'open');
+    var f=el.querySelectorAll('input,button');
+    for(var i=0;i<f.length;i++){f[i].disabled=on;}
+  }
+  function done(id){
+    var el=document.getElementById(id);
+    if(el){el.className=el.className.replace(/\blocked\b/,'open')+' done';}
+  }
+  lock('k2',true);lock('k3',true);lock('k4',true);
+
+  exercise({
+    input:'k1i',check:'k1b',fb:'k1f',answer:25,
+    near:[{value:50,msg:'That is the speed, not the distance. At 50 km/h you would cover 50 km in a full hour, but you only travelled for half of one.'},
+          {value:100,msg:'You multiplied by two rather than by a half. Half an hour is 0.5 hours, so the distance is smaller than the speed, not larger.'}],
+    right:'Correct. <span class="eqn">50 &times; 0.5 = 25</span> km. This is the very first shape on the page again, a height of 50 and a width of 0.5. The difference is that the height is now a speed, the width is a stretch of time, and the answer is a distance rather than an area.',
+    wrong:'Not quite. Multiply the speed by the length of time you held it, in hours.',
+    onRight:function(){done('k1');lock('k2',false);}
+  });
+  exercise({
+    input:'k2i',check:'k2b',fb:'k2f',answer:80,
+    near:[{value:20,msg:'That is the slowest speed, which would give an under-estimate. Take the fastest one, so that the block is guaranteed to cover the whole journey.'},
+          {value:50,msg:'That looks like the average of 20 and 80. It is a reasonable guess, but the block we want here is the one that covers the curve, so use the fastest speed.'},
+          {value:40,msg:'That is the right answer to the wrong question. It is what the train actually travelled, which you are not supposed to know yet.'}],
+    right:'Correct. <span class="eqn">80 &times; 1 = 80</span> km. One block, badly over the truth, exactly like the single rectangle over the semicircle in section 3. Because the block is tall enough to cover every speed the train reached, the real distance is certainly less than 80 km.',
+    wrong:'Not quite. Take the fastest speed reached during the hour and multiply it by one hour.',
+    onRight:function(){done('k2');lock('k3',false);}
+  });
+  exercise({
+    input:'k3i',check:'k3b',fb:'k3f',answer:57.5,
+    near:[{value:115,msg:'You have added the two speeds and multiplied by a whole hour. Each block only lasts half an hour, so each speed is multiplied by 0.5.'},
+          {value:80,msg:'That is still the one-block answer. Work out the two halves separately: 35 for the first, 80 for the second, each lasting 0.5 hours.'},
+          {value:57,msg:'Very close. Keep the half: 17.5 plus 40.'}],
+    right:'Correct. <span class="eqn">35 &times; 0.5 + 80 &times; 0.5 = 17.5 + 40 = 57.5</span> km. Splitting the hour once has already knocked more than 22 km off the over-estimate, because the first half hour is no longer being charged at the speed the train only reached at the very end.',
+    wrong:'Not quite. Work out each half hour on its own, then add the two distances together.',
+    onRight:function(){done('k3');lock('k4',false);draw();}
+  });
+  exercise({
+    input:'k4i',check:'k4b',fb:'k4f',answer:40,
+    near:[{value:41,msg:'Very close, and you can get closer still. Push the blocks up to 64 and round to the nearest whole kilometre.'},
+          {value:42,msg:'Close. That is roughly the 16-block figure. Keep going and see what it settles on.'},
+          {value:80,msg:'That is where you started, with a single block. Drag the slider up and watch the number come down.'}],
+    right:'Correct, 40 km. The blocks never quite reach it, because every one of them is an over-estimate just as in section 3, but the overshoot halves each time you double the count, so you can get as close to 40 as you care to. That number is the integral of the speed over the hour, and it is the distance the train travelled.',
+    wrong:'Not quite. Push the block count up and watch the distance estimate settle towards a whole number.',
+    onRight:function(){done('k4');}
+  });
 })();
 
 /* ---------- theme + nav ---------- */
