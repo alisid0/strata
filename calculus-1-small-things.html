@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" id="tcolor" content="#faf9f7" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Integration" />
+<meta name="description" content="Chapter one of a calculus course: what the symbols mean, and why some small quantities stop counting." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23185fa5'/%3E%3Ctext x='16' y='24' font-size='23' font-family='Georgia,serif' fill='%23fff' text-anchor='middle'%3E%E2%88%AB%3C/text%3E%3C/svg%3E" />
+<title>Small things</title>
+<style>
+:root{
+  --bg:#faf9f7; --surface:#ffffff; --surface2:#f1efe8;
+  --text:#1a1a19; --muted:#5f5e5a; --faint:#898781;
+  --border:#e1e0d9; --border2:#c3c2b7;
+  --accent:#185fa5; --accentbg:#e6f1fb; --accentline:#378add;
+  --warm:#ba7517; --warmbg:#faeeda; --coral:#f5c4b3;
+  --ok:#3b6d11; --okbg:#eaf3de;
+}
+html[data-theme="dark"]{
+  --bg:#151514; --surface:#1e1e1c; --surface2:#2c2c2a;
+  --text:#f2f1ec; --muted:#b5b4ac; --faint:#898781;
+  --border:#33332f; --border2:#4a4a45;
+  --accent:#85b7eb; --accentbg:#0c447c; --accentline:#378add;
+  --warm:#ef9f27; --warmbg:#412402; --coral:#993c1d;
+  --ok:#97c459; --okbg:#173404;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);overflow-x:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{display:flex;gap:40px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav{width:230px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;padding:32px 0 40px}
+nav .brand{font-size:15px;font-weight:600;margin:0 0 4px}
+nav .sub{font-size:13px;color:var(--muted);margin:0 0 20px}
+nav a{display:block;text-decoration:none;color:var(--muted);font-size:14px;
+  padding:5px 10px;border-left:2px solid transparent;border-radius:0;line-height:1.4}
+nav a:hover{color:var(--text);background:var(--surface2)}
+nav a.on{color:var(--accent);border-left-color:var(--accent);font-weight:500}
+nav .nav-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:0 0 4px}
+nav .themebtn{position:static;flex-shrink:0;margin:0}
+main{flex:1;min-width:0;max-width:780px;padding:40px 0 120px}
+h1{font-size:34px;line-height:1.25;font-weight:600;margin:0 0 8px;letter-spacing:-0.02em}
+h2{font-size:24px;font-weight:600;margin:56px 0 14px;letter-spacing:-0.01em;scroll-margin-top:24px}
+h3{font-size:18px;font-weight:600;margin:32px 0 10px}
+p{margin:0 0 16px}
+.lede{font-size:19px;color:var(--muted);margin:0 0 8px}
+.sec-no{font-size:13px;color:var(--warm);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:0}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin:0 0 8px}
+strong{font-weight:600}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
+  background:var(--surface2);padding:1px 5px;border-radius:4px}
+.math{font-family:Georgia,"Times New Roman",serif;font-size:1.06em;font-style:italic}
+.eq{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:16px 20px;margin:20px 0;font-family:Georgia,"Times New Roman",serif;
+  font-size:19px;text-align:center;overflow-x:auto;line-height:1.9}
+.eq .lbl{display:block;font-family:inherit;font-size:13px;font-style:normal;
+  color:var(--faint);margin-top:8px;font-family:-apple-system,sans-serif}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--warm);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:22px 0}
+.callout p:last-child{margin:0}
+.callout .tag{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--warm);margin:0 0 6px}
+.tryit{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin:22px 0}
+.tryit .q{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 12px}
+.tryit svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+.tryit .ask{margin:12px 0 12px}
+.tryit p:last-child{margin-bottom:0}
+.answer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.answer input{width:120px;padding:8px 11px;font-size:16px;font-family:inherit;
+  border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--text)}
+.answer input:focus{outline:2px solid var(--accentline);outline-offset:1px}
+.answer .go{padding:9px 18px;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:var(--bg);border-radius:8px}
+.answer .go:hover{opacity:.88}
+.answer .hint{padding:9px 14px;font-size:14px;font-family:inherit;cursor:pointer;
+  border:1px solid var(--border2);background:transparent;color:var(--muted);border-radius:8px}
+.answer .hint:hover{color:var(--text);border-color:var(--faint)}
+.answer .unit{font-size:14px;color:var(--muted)}
+.fb{font-size:15px;margin:0;min-height:26px;color:var(--muted)}
+.fb.good{color:var(--ok)}
+.fb.bad{color:var(--warm)}
+.fb .eqn{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:1.04em}
+/* Integral sign with its limits stacked properly, instead of a sub and a sup
+   sitting side by side and reading as "int-a-b". */
+.intg{display:inline-flex;align-items:center;vertical-align:-0.32em;margin:0 2px}
+.intg .sgn{font-family:Georgia,"Times New Roman",serif;font-size:1.85em;
+  line-height:.72;font-style:normal}
+.intg .lim{display:inline-flex;flex-direction:column;justify-content:center;
+  font-size:.62em;line-height:1.12;text-align:left;margin-left:1px;font-style:normal}
+.intg .lim .hi{margin-bottom:.42em}
+.eq .intg{vertical-align:-0.36em}
+/* keep the sign in proportion where the surrounding type is small */
+.lbl .intg .sgn,td .intg .sgn,.k .intg .sgn{font-size:1.35em}
+.lbl .intg,td .intg,.k .intg{vertical-align:-0.22em}
+/* workshop steps: each one stays dimmed and inert until the step above it is right */
+.step.locked{opacity:.42}
+.step.locked .ask,.step.locked svg{filter:grayscale(1)}
+.step .lockmsg{font-size:13px;color:var(--faint);margin:8px 0 0;font-style:italic}
+.step.open .lockmsg{display:none}
+.stepnum{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;background:var(--surface2);
+  color:var(--muted);font-size:12px;font-weight:600;margin-right:8px;font-style:normal}
+.step.done .stepnum{background:var(--okbg);color:var(--ok)}
+.jarrow{display:flex;align-items:flex-end;gap:20px;margin:0 0 18px}
+.jarrow .jarsvg{width:132px;max-width:132px;flex:0 0 132px;height:auto;display:block;margin:0}
+.jarrow>div{flex:1;min-width:0}
+/* shape figures — used inside .tryit cards and the strip widget.
+   Scoped to svg so the short class names can't collide with page styles. */
+.tryit svg,.widget svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+svg .fill{fill:var(--accentline);fill-opacity:.16}
+svg .edge{fill:none;stroke:var(--accent);stroke-width:2.5;
+  stroke-linejoin:round;stroke-linecap:round}
+svg .wfill{fill:var(--warm);fill-opacity:.20}
+svg .wedge{fill:none;stroke:var(--warm);stroke-width:2.5;
+  stroke-linejoin:round;stroke-linecap:round}
+svg .dim{fill:none;stroke:var(--border2);stroke-width:1.25}
+svg .tick{fill:none;stroke:var(--border2);stroke-width:1.25}
+svg .hmark{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:4 4;opacity:.7}
+svg .dl{fill:var(--muted);font-size:13.5px;text-anchor:middle;
+  font-family:Georgia,"Times New Roman",serif;font-style:italic}
+.widget{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin:26px 0}
+.wtitle{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 16px}
+.ctrl{display:flex;align-items:center;gap:14px;margin:0 0 16px}
+.ctrl label{font-size:14px;color:var(--muted);white-space:nowrap}
+.ctrl .out{font-size:14px;font-weight:600;min-width:76px;text-align:right;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;
+  background:var(--border2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;
+  border-radius:50%;background:var(--accentline);cursor:pointer;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+  background:var(--accentline);cursor:pointer;border:2px solid var(--surface)}
+.segs{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+.seg{font-size:13px;padding:6px 13px;border-radius:8px;border:1px solid var(--border2);
+  background:transparent;color:var(--text);cursor:pointer;font-family:inherit}
+.seg:hover{background:var(--surface2)}
+.seg[aria-pressed=true]{background:var(--accentbg);border-color:var(--accentline);color:var(--accent);font-weight:600}
+.presets{display:flex;gap:6px;margin:-6px 0 16px;flex-wrap:wrap;align-items:center}
+.presets .plab{font-size:12px;color:var(--faint);margin-right:2px}
+.preset{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);
+  background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;
+  font-variant-numeric:tabular-nums}
+.preset:hover{background:var(--surface2);color:var(--text)}
+.preset[aria-pressed=true]{background:var(--accentbg);border-color:var(--accentline);color:var(--accent);font-weight:600}
+.cvwrap{position:relative;width:100%;margin:0 0 14px}
+canvas{display:block}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.cap{font-size:12px;color:var(--faint);margin:0 0 6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin:0 0 14px}
+.card{background:var(--surface2);border-radius:9px;padding:10px 13px}
+.card .k{font-size:12px;color:var(--muted);margin:0 0 3px}
+.card .v{font-size:19px;font-weight:600;margin:0;font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--muted);margin:0;line-height:1.6}
+details{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;margin:10px 0}
+details summary{cursor:pointer;font-size:15px;font-weight:500;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"?";display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:50%;background:var(--accentbg);color:var(--accent);
+  font-size:12px;font-weight:700;margin-right:10px;vertical-align:1px}
+details[open] summary{margin-bottom:10px}
+details .ans{font-size:15px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px}
+details .ans p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 20px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border)}
+th{font-weight:600;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.n{font-variant-numeric:tabular-nums}
+.ref{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:8px 22px 18px}
+.ref h3{font-size:15px;margin:22px 0 6px;color:var(--warm)}
+.themebtn{font-size:13px;padding:7px 13px;
+  border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);
+  cursor:pointer;font-family:inherit}
+.themebtn:hover{background:var(--surface2)}
+.jar-sketch{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0 0}
+.jar-sketch .pane{background:var(--surface2);border-radius:9px;padding:12px 14px}
+.jar-sketch .pt{font-size:12px;color:var(--muted);margin:0 0 8px}
+.jar-sketch .bars{display:flex;align-items:flex-end;gap:5px;height:56px}
+.jar-sketch .b{flex:1;border-radius:3px 3px 0 0;background:var(--accentline);opacity:.85}
+.jar-sketch .run{height:8px;border-radius:4px;background:var(--warm);margin-top:10px}
+.signed{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 8px}
+.signed .box{background:var(--surface2);border-radius:9px;padding:12px 14px}
+.signed .box .k{font-size:12px;color:var(--muted);margin:0 0 4px}
+.signed .box .v{font-size:15px;margin:0;line-height:1.45}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
+  font-size:14px;color:var(--faint)}
+/* ---------- tablet and below: the sidebar becomes a bar across the top ---------- */
+@media(max-width:900px){
+  .wrap{flex-direction:column;gap:0;padding:0 18px}
+  nav{width:auto;position:sticky;top:0;z-index:20;height:auto;padding:0;
+    background:var(--bg);border-bottom:1px solid var(--border);
+    padding-top:env(safe-area-inset-top)}
+  nav .nav-top{padding:12px 0 8px;margin:0;align-items:center}
+  nav .sub{display:none}
+  nav .brand{font-size:16px;margin:0}
+  /* one scrolling strip rather than a block of wrapped links eating the screen */
+  nav .links{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding:0 0 10px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  nav .links::-webkit-scrollbar{display:none}
+  nav a{flex:0 0 auto;white-space:nowrap;border-left:none;border-radius:999px;
+    padding:7px 13px;font-size:13px;background:var(--surface2);scroll-snap-align:start}
+  nav a.on{border-left-color:transparent;background:var(--accent);color:var(--bg);font-weight:600}
+  main{padding:22px 0 80px}
+  h1{font-size:27px} h2{font-size:21px;margin:44px 0 12px} body{font-size:16px}
+  .jar-sketch,.signed{grid-template-columns:1fr}
+}
+/* ---------- phones ---------- */
+@media(max-width:620px){
+  .wrap{padding:0 14px}
+  main{padding:18px 0 calc(64px + env(safe-area-inset-bottom))}
+  h1{font-size:24px} h2{font-size:20px;margin:38px 0 10px} h3{font-size:17px}
+  body{font-size:16px;line-height:1.65}
+  .lede{font-size:17px}
+  .widget,.tryit{padding:15px;border-radius:12px}
+  .eq{padding:14px 12px;font-size:17px;margin:16px 0}
+  .callout{padding:14px 15px}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:8px}
+  .card .v{font-size:17px}
+  /* thumbs need a bigger target than a mouse pointer does */
+  .ctrl{gap:10px}
+  .ctrl label{font-size:13px}
+  input[type=range]{height:22px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--border2)}
+  input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:var(--border2)}
+  input[type=range]::-webkit-slider-thumb{width:28px;height:28px;margin-top:-11.5px}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px}
+  .seg,.preset{min-height:42px;padding:9px 14px;font-size:14px}
+  .segs{gap:7px}
+  .answer{gap:8px}
+  .answer input{flex:1 1 100px;min-width:0;min-height:44px;font-size:16px}
+  .answer .go,.answer .hint{min-height:44px;padding:11px 18px}
+  .themebtn{min-height:36px;padding:6px 12px}
+  .tryit svg,.widget svg{max-width:100%}
+  .jarrow{gap:12px}
+  .jarrow .jarsvg{width:88px;max-width:88px;flex:0 0 88px}
+  table{font-size:14px}
+  .stepnum{width:20px;height:20px;font-size:11px;margin-right:6px}
+}
+/* very narrow phones: let the jar sit above the bars instead of beside them */
+@media(max-width:400px){
+  .jarrow{flex-direction:column;align-items:center;gap:10px}
+  .jarrow .jarsvg{width:104px;max-width:104px;flex:0 0 auto}
+  .jarrow>div{width:100%}
+  .cards{grid-template-columns:1fr 1fr}
+  .answer input{flex:1 1 100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="nav-top">
+    <div>
+      <p class="brand">Calculus</p>
+      <p class="sub">1. Small things</p>
+    </div>
+    <button class="themebtn" id="themebtn" type="button" aria-label="Toggle colour theme">Dark</button>
+  </div>
+  <div class="links">
+    <a href="#s1">1. The symbols</a>
+    <a href="#s2">2. Two kinds of small</a>
+    <a href="#s3">3. A square that grows</a>
+    <a href="#s4">4. The ratio</a>
+    <a href="#s5">5. What you have</a>
+  </div>
+</nav>
+
+<main>
+
+<p class="sec-no">Chapter one</p>
+<h1>Small things</h1>
+<p class="lede">Most people who give up on calculus give up on the notation rather than the ideas. This chapter deals with the symbols first, then with the one fact everything else is built on: that some small quantities are so much smaller than others that they stop counting. Nothing is assumed beyond multiplying and adding.</p>
+
+<h2 id="s1">1. The symbols</h2>
+<p>There is one letter to get past, and it is <span class="math">d</span>. It is not a number, and it is not something you multiply by. It is a label, and it means <strong>a little bit of</strong>.</p>
+<p>So <span class="math">dx</span> is a little bit of <span class="math">x</span>. That is the entire translation. Everything else in the notation is built from it.</p>
+
+<div class="widget">
+  <p class="wtitle">Read it out loud</p>
+  <div class="segs" role="group" aria-label="Choose a symbol">
+    <button class="seg" data-sym="d" aria-pressed="true">d</button>
+    <button class="seg" data-sym="dx" aria-pressed="false">dx</button>
+    <button class="seg" data-sym="dydx" aria-pressed="false">dy/dx</button>
+    <button class="seg" data-sym="d2" aria-pressed="false">d&sup2;y/dx&sup2;</button>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Say it like this</p><p class="v" id="sym-a" style="font-size:15px">&mdash;</p></div>
+    <div class="card"><p class="k">In plain words</p><p class="v" id="sym-b" style="font-size:15px">&mdash;</p></div>
+  </div>
+  <p class="note" id="sym-n"></p>
+</div>
+
+<div class="tryit step open" id="a1">
+  <p class="q"><span class="stepnum">1</span>Check you have it</p>
+  <p class="ask">A tank is filling with water. <span class="math">V</span> is the volume in the tank and <span class="math">t</span> is the time. Which of these does <span class="math">dV/dt</span> describe?</p>
+  <div class="segs" role="group" aria-label="What dV by dt means">
+    <button class="seg" data-a1="total" aria-pressed="false">How much water is in the tank</button>
+    <button class="seg" data-a1="rate" aria-pressed="false">How fast the water is going in</button>
+    <button class="seg" data-a1="time" aria-pressed="false">How long the tank takes to fill</button>
+  </div>
+  <p class="fb" id="a1f">Pick the one you think is right.</p>
+</div>
+
+<h2 id="s2">2. Two kinds of small</h2>
+<p>Now the fact that makes calculus work, and it is the part most courses hurry past.</p>
+<p>Take a small number and square it. The result is not just smaller. It is smaller <em>in a different league</em>, and the gap widens the smaller you started.</p>
+
+<div class="tryit step open" id="a2">
+  <p class="q"><span class="stepnum">2</span>Square a small number</p>
+  <p class="ask">Let <span class="math">h = 0.01</span>, which is one hundredth. What is <span class="math">h&sup2;</span>?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a2i" aria-label="h squared" placeholder="h&sup2;" />
+    <button type="button" class="go" id="a2b">Check</button>
+  </div>
+  <p class="fb" id="a2f"></p>
+</div>
+
+<div class="tryit step locked" id="a3">
+  <p class="q"><span class="stepnum">3</span>Compare the two</p>
+  <p class="ask">So <span class="math">h</span> is a hundredth and <span class="math">h&sup2;</span> is a ten thousandth. How many times smaller than <span class="math">h</span> is <span class="math">h&sup2;</span>?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a3i" aria-label="How many times smaller" placeholder="times" />
+    <button type="button" class="go" id="a3b">Check</button>
+  </div>
+  <p class="fb" id="a3f"></p>
+  <p class="lockmsg">Answer step 2 first.</p>
+</div>
+
+<p>That factor is the whole point, and it is not fixed. Shrink <span class="math">h</span> and the factor grows without limit. Drag it down and watch.</p>
+
+<div class="widget">
+  <p class="wtitle">How far apart they drift</p>
+  <div class="ctrl">
+    <label for="smh">h</label>
+    <input type="range" id="smh" min="1" max="300" step="1" value="120" />
+    <span class="out" id="smo">0.500</span>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">h</p><p class="v" id="smA">&mdash;</p></div>
+    <div class="card"><p class="k">h&sup2;</p><p class="v" id="smB">&mdash;</p></div>
+    <div class="card"><p class="k">h&sup3;</p><p class="v" id="smC">&mdash;</p></div>
+    <div class="card"><p class="k">h&sup2; smaller than h by</p><p class="v" id="smD">&mdash;</p></div>
+  </div>
+  <p class="note" id="smt"></p>
+</div>
+
+<p>This is what is meant by <strong>degrees of smallness</strong>. If <span class="math">h</span> is small then <span class="math">h&sup2;</span> is negligible beside it, and <span class="math">h&sup3;</span> is beneath consideration entirely. Hold on to that, because in a moment you will see it decide an answer.</p>
+
+<h2 id="s3">3. A square that grows</h2>
+<p>Here is a square with sides of length <span class="math">x</span>. Push each side out by a little bit, <span class="math">h</span>, and the square gains some area. The question is how much, and the picture answers it exactly.</p>
+
+<div class="widget">
+  <p class="wtitle">Growing a square of side 10</p>
+  <div class="ctrl">
+    <label for="sqh">Grow by h</label>
+    <input type="range" id="sqh" min="5" max="300" step="1" value="150" />
+    <span class="out" id="sqo">1.50</span>
+  </div>
+  <svg viewBox="0 0 330 300" role="img" aria-labelledby="sq-fallback" style="max-width:360px">
+    <title id="sq-fallback">A square of side 10 grown by h, showing two rectangular strips and one small corner square</title>
+    <rect class="fill" x="30" y="60" width="180" height="180" />
+    <rect id="sqR" x="210" y="60" width="27" height="180" fill="var(--accent)" fill-opacity="0.34" />
+    <rect id="sqT" x="30" y="33" width="180" height="27" fill="var(--accent)" fill-opacity="0.34" />
+    <rect id="sqC" x="210" y="33" width="27" height="27" fill="var(--warm)" fill-opacity="0.65" />
+    <rect class="edge" x="30" y="60" width="180" height="180" />
+    <rect id="sqO" class="wedge" x="30" y="33" width="207" height="207" />
+    <text class="dl" x="120" y="258">x = 10</text>
+    <text class="dl" id="sqLh" x="270" y="152">h</text>
+    <text class="dl" x="270" y="52" id="sqLc">h&sup2;</text>
+  </svg>
+  <div class="cards">
+    <div class="card"><p class="k">The two strips</p><p class="v" id="sqS">&mdash;</p></div>
+    <div class="card"><p class="k">The corner</p><p class="v" id="sqK">&mdash;</p></div>
+    <div class="card"><p class="k">Extra area in total</p><p class="v" id="sqE">&mdash;</p></div>
+    <div class="card"><p class="k">Corner's share</p><p class="v" id="sqP">&mdash;</p></div>
+  </div>
+  <p class="note" id="sqt"></p>
+</div>
+
+<p>The new area is made of three pieces added to the original: a strip up the right side, a strip along the top, and a small square in the corner where the two strips meet. Each strip is <span class="math">x</span> long and <span class="math">h</span> wide. The corner is <span class="math">h</span> by <span class="math">h</span>.</p>
+
+<div class="eq">(x + h)&sup2; = x&sup2; + 2xh + h&sup2;<span class="lbl">the original, two strips, and the corner</span></div>
+
+<p>That is ordinary algebra, and you may have multiplied it out at school without anyone mentioning that the three terms are three pieces of a picture. Now put numbers to it.</p>
+
+<div class="tryit step locked" id="a4">
+  <p class="q"><span class="stepnum">4</span>The two strips</p>
+  <p class="ask">The square has side <span class="math">x = 10</span> and grows by <span class="math">h = 0.1</span>. Each strip is 10 long and 0.1 wide. What do the two strips come to together?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a4i" aria-label="Area of the two strips" placeholder="area" />
+    <button type="button" class="go" id="a4b">Check</button>
+  </div>
+  <p class="fb" id="a4f"></p>
+  <p class="lockmsg">Answer step 3 first.</p>
+</div>
+
+<div class="tryit step locked" id="a5">
+  <p class="q"><span class="stepnum">5</span>The corner</p>
+  <p class="ask">And the corner square, which is <span class="math">0.1</span> by <span class="math">0.1</span>?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a5i" aria-label="Area of the corner" placeholder="area" />
+    <button type="button" class="go" id="a5b">Check</button>
+  </div>
+  <p class="fb" id="a5f"></p>
+  <p class="lockmsg">Answer step 4 first.</p>
+</div>
+
+<p>Two units of new area from the strips, and one hundredth of a unit from the corner. The corner is already almost irrelevant, and it was <span class="math">h&sup2;</span> that made it so. Drag the slider above down towards zero and watch its share collapse.</p>
+
+<h2 id="s4">4. The ratio</h2>
+<p>We are not really interested in how much area appeared. We want to know how much appeared <em>per unit of growth</em>, because that is what tells us how sensitive the area is to the side. So divide the extra area by <span class="math">h</span>.</p>
+
+<div class="eq">[ (x + h)&sup2; &minus; x&sup2; ] / h = (2xh + h&sup2;) / h = 2x + h<span class="lbl">exact, with nothing thrown away yet</span></div>
+
+<div class="tryit step locked" id="a6">
+  <p class="q"><span class="stepnum">6</span>Put numbers in</p>
+  <p class="ask">With <span class="math">x = 10</span> and <span class="math">h = 0.1</span>, the extra area was <span class="math">2.01</span>. Divide that by <span class="math">h</span> to get the extra area per unit of growth.</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a6i" aria-label="Extra area divided by h" placeholder="ratio" />
+    <button type="button" class="go" id="a6b">Check</button>
+  </div>
+  <p class="fb" id="a6f"></p>
+  <p class="lockmsg">Answer step 5 first.</p>
+</div>
+
+<div class="tryit step locked" id="a7">
+  <p class="q"><span class="stepnum">7</span>Shrink it</p>
+  <p class="ask">The formula says the ratio is <span class="math">2x + h</span>, so at <span class="math">x = 10</span> it is <span class="math">20 + h</span>. With <span class="math">h = 0.1</span> you got 20.1. With <span class="math">h = 0.01</span> it would be 20.01. What number is it closing in on as <span class="math">h</span> shrinks?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a7i" aria-label="The value the ratio approaches" placeholder="value" />
+    <button type="button" class="go" id="a7b">Check</button>
+  </div>
+  <p class="fb" id="a7f"></p>
+  <p class="lockmsg">Answer step 6 first.</p>
+</div>
+
+<p>There is a question you should be asking here, and it is the one that makes people suspect calculus of cheating.</p>
+
+<div class="tryit step locked" id="a8">
+  <p class="q"><span class="stepnum">8</span>Was that a swindle?</p>
+  <p class="ask">If <span class="math">h</span> is not zero, then <span class="math">2x + h</span> is not <span class="math">2x</span>, so the answer looks wrong. But if <span class="math">h</span> is zero, then dividing by <span class="math">h</span> was dividing by zero, which is not allowed. So what actually happened?</p>
+  <div class="segs" role="group" aria-label="What actually happened">
+    <button class="seg" data-a8="ignore" aria-pressed="false">We ignored h because it was too small to matter</button>
+    <button class="seg" data-a8="zero" aria-pressed="false">We set h to zero once the dividing was over</button>
+    <button class="seg" data-a8="limit" aria-pressed="false">We divided first, which was exact, then asked what 2x + h gets close to</button>
+  </div>
+  <p class="fb" id="a8f">Take your time over this one.</p>
+  <p class="lockmsg">Answer step 7 first.</p>
+</div>
+
+<h2 id="s5">5. What you have</h2>
+<p>You have just differentiated something. The rate at which the area of a square grows, per unit of growth in its side, is <span class="math">2x</span>, and it was obtained with nothing but the algebra of <span class="math">(x+h)&sup2;</span> and the observation that the corner is in a smaller league than the strips.</p>
+
+<div class="eq">y = x&sup2;&nbsp;&nbsp;&rArr;&nbsp;&nbsp; dy/dx = 2x<span class="lbl">read: a little bit of y, per little bit of x, is 2x</span></div>
+
+<p>Check it against the picture. At <span class="math">x = 10</span> the answer is 20, and the two strips did indeed have area <span class="math">2 &times; 10 &times; h</span>. The strips are the answer. The corner was never anything but a distraction, and the whole art of the next chapter is knowing which parts of an expression are strips and which are corners.</p>
+
+<div class="callout">
+  <span class="tag">The method, in three lines</span>
+  <p>Work out what the quantity becomes when you nudge the input by <span class="math">h</span>, and subtract the original to find what the nudge added.<br>
+  Divide by <span class="math">h</span>, which is exact and legal because <span class="math">h</span> is not yet zero.<br>
+  Ask what the result approaches as <span class="math">h</span> shrinks, and read off the answer.</p>
+</div>
+
+<p>The same three lines will handle <span class="math">x&sup3;</span>, and then any power at all, which is the next chapter. What they will not yet handle is anything with a division in it, or a sine, or a power of a power. Those come later and none of them change the method.</p>
+
+<footer>
+  <p>Chapter one of a course in calculus, following the order of Silvanus Thompson's <em>Calculus Made Easy</em> (1910).<br>
+  It opens in any browser and needs no internet connection.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+"use strict";
+var draws=[];
+function reg(fn){draws.push(fn);}
+function redrawAll(){
+  for(var i=0;i<draws.length;i++){
+    try{draws[i]();}catch(e){if(window.console&&console.warn){console.warn('widget '+i+' failed',e);}}
+  }
+}
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+function P(){
+  var d=isDark();
+  return {area:d?'#0c447c':'#e6f1fb',rect:d?'#378add':'#85b7eb',rect2:d?'#185fa5':'#b5d4f4',
+    sliv:d?'#993c1d':'#f5c4b3',line:d?'#b5d4f4':'#185fa5',warm:d?'#ef9f27':'#ba7517',
+    axis:d?'#4a4a45':'#c3c2b7',ink:d?'#898781':'#898781',off:d?'#2c2c2a':'#e8e6de',
+    txt:d?'#b5d4f4':'#0c447c'};
+}
+function fit(cv){
+  var w=cv.parentNode.clientWidth,h=cv.parentNode.clientHeight,dp=window.devicePixelRatio||1;
+  cv.width=Math.max(w*dp,1);cv.height=Math.max(h*dp,1);
+  cv.style.width=w+'px';cv.style.height=h+'px';
+  var c=cv.getContext('2d');c.setTransform(dp,0,0,dp,0,0);c.clearRect(0,0,w,h);
+  return {c:c,W:w,H:h};
+}
+function seg(attr,cb){
+  var bs=document.querySelectorAll('[data-'+attr+']');
+  for(var i=0;i<bs.length;i++){
+    (function(b){
+      b.addEventListener('click',function(){
+        for(var j=0;j<bs.length;j++){bs[j].setAttribute('aria-pressed','false');}
+        b.setAttribute('aria-pressed','true');
+        cb(b.getAttribute('data-'+attr));
+      });
+    })(bs[i]);
+  }
+}
+function txt(id,v){var e=document.getElementById(id);if(e){e.textContent=v;}}
+function setFallback(id,msg){var e=document.getElementById(id);if(e){e.textContent=msg;}}
+function num(v){
+  v=String(v).replace(/[, ]/g,'').replace(/cm2|cm²|£|\$/gi,'').trim();
+  if(v==='')return null;
+  var fr=v.match(/^(-?\d*\.?\d+)\/(-?\d*\.?\d+)$/);   /* answers typed as 8/3 */
+  if(fr){var d=parseFloat(fr[2]);return d?parseFloat(fr[1])/d:null;}
+  var n=parseFloat(v);
+  return isFinite(n)?n:null;
+}
+function say(id,cls,html){
+  var e=document.getElementById(id);
+  if(!e)return;
+  e.className='fb'+(cls?' '+cls:'');
+  e.innerHTML=html;
+}
+/* A question with a box to type in. o.near lets a specific wrong answer get
+   its own reply, which is usually more useful than a generic "not quite". */
+function exercise(o){
+  var inp=document.getElementById(o.input),btn=document.getElementById(o.check),
+      hint=o.hint?document.getElementById(o.hint):null,i;
+  if(!inp||!btn)return;
+  function check(){
+    var v=num(inp.value);
+    if(v===null){say(o.fb,'','Type a number in the box, then press Check.');return;}
+    var tol=(o.tol===undefined)?0.01:o.tol;
+    if(Math.abs(v-o.answer)<=tol){say(o.fb,'good',o.right);if(o.onRight){o.onRight();}return;}
+    if(o.near){
+      for(i=0;i<o.near.length;i++){
+        if(Math.abs(v-o.near[i].value)<=Math.max(tol,0.01)){say(o.fb,'bad',o.near[i].msg);return;}
+      }
+    }
+    say(o.fb,'bad',o.wrong);
+  }
+  btn.addEventListener('click',check);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();check();}});
+  if(hint){hint.addEventListener('click',function(){say(o.fb,'',o.reveal);});}
+}
+
+/* ---------- 1. Notation decoder ---------- */
+(function(){
+  var SYM={
+    d:{a:'"a little bit of"',b:'A label, not a number',
+       n:'It never stands alone and it is never multiplied by anything. Seeing d in front of a letter simply means you are talking about a small piece of that quantity rather than the whole of it.'},
+    dx:{a:'"a little bit of x"',b:'A small step in whatever x measures',
+       n:'If x is a length, dx is a small extra length. If x is time, dx is a short interval. It takes its units from x, which is worth remembering when the answer comes out in odd units later on.'},
+    dydx:{a:'"a little bit of y, per little bit of x"',b:'How much y shifts for a small nudge in x',
+       n:'This is a ratio of two small quantities, not a fraction waiting to be cancelled down. The d on top and the d underneath do not cancel, any more than the word "per" cancels. Written together they name one thing: the rate at which y responds to x.'},
+    d2:{a:'"do that twice"',b:'How fast the rate itself is changing',
+       n:'Take dy/dx, which is itself a quantity that varies, and ask how fast that varies. For a car, dy/dx would be the speed and this would be the acceleration. The twos are bookkeeping for having done the operation twice, not powers.'}
+  };
+  function show(k){var o=SYM[k];txt('sym-a',o.a);txt('sym-b',o.b);txt('sym-n',o.n);}
+  seg('sym',show); show('d');
+})();
+
+/* ---------- 2. Degrees of smallness ---------- */
+(function(){
+  var sl=document.getElementById('smh');
+  if(!sl)return;
+  function draw(){
+    var h=+sl.value/240;                 /* 1..300 -> about 0.004 .. 1.25 */
+    h=Math.round(h*1000)/1000;
+    if(h<0.004){h=0.004;}
+    txt('smo',h.toFixed(3));
+    txt('smA',h.toFixed(3));
+    txt('smB',(h*h).toPrecision(3));
+    txt('smC',(h*h*h).toPrecision(3));
+    txt('smD',(1/h).toFixed(1)+' times');
+    txt('smt','With h = '+h.toFixed(3)+', its square is '+(h*h).toPrecision(3)+
+      ' and its cube is '+(h*h*h).toPrecision(3)+'. The square is '+(1/h).toFixed(1)+
+      ' times smaller than h itself, and that factor is nothing other than 1/h, so it grows without limit as h shrinks.');
+  }
+  sl.addEventListener('input',draw); reg(draw);
+})();
+
+/* ---------- 3. The growing square ---------- */
+(function(){
+  var sl=document.getElementById('sqh');
+  if(!sl)return;
+  var X=10, PX=18, X0=30, Y1=240, S=180;   /* 18px per unit, square 180px */
+  function draw(){
+    var h=+sl.value/100;                   /* 5..300 -> 0.05 .. 3.00 */
+    var hp=h*PX;
+    function set(id,a){var e=document.getElementById(id);if(e){for(var k in a){e.setAttribute(k,a[k]);}}}
+    set('sqR',{x:X0+S,y:Y1-S,width:hp,height:S});
+    set('sqT',{x:X0,y:Y1-S-hp,width:S,height:hp});
+    set('sqC',{x:X0+S,y:Y1-S-hp,width:hp,height:hp});
+    set('sqO',{x:X0,y:Y1-S-hp,width:S+hp,height:S+hp});
+    set('sqLh',{x:X0+S+hp+10,y:Y1-S+14});
+    /* the corner label sits beside the corner, and hides when there is no corner to see */
+    set('sqLc',{x:X0+S+hp+10,y:Y1-S-hp+4,opacity:(hp<12?0:1)});
+    var strips=2*X*h, corner=h*h, extra=strips+corner;
+    txt('sqo',h.toFixed(2));
+    txt('sqS',strips.toFixed(3));
+    txt('sqK',corner.toFixed(4));
+    txt('sqE',extra.toFixed(4));
+    txt('sqP',(100*corner/extra).toFixed(2)+'%');
+    txt('sqt','Growing the side by '+h.toFixed(2)+' adds '+strips.toFixed(3)+
+      ' from the two strips and '+corner.toFixed(4)+' from the corner, '+extra.toFixed(4)+
+      ' in all. The corner accounts for '+(100*corner/extra).toFixed(2)+
+      '% of what was gained, and that share keeps falling as h shrinks.');
+  }
+  sl.addEventListener('input',draw); reg(draw);
+})();
+
+/* ---------- 4. The questions ---------- */
+(function(){
+  function lock(id,on){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.className='tryit step '+(on?'locked':'open');
+    var f=el.querySelectorAll('input,button');
+    for(var i=0;i<f.length;i++){f[i].disabled=on;}
+  }
+  function done(id){
+    var el=document.getElementById(id);
+    if(el){el.className=el.className.replace(/\blocked\b/,'open')+' done';}
+  }
+  lock('a3',true);lock('a4',true);lock('a5',true);lock('a6',true);lock('a7',true);lock('a8',true);
+
+  seg('a1',function(k){
+    if(k==='total'){
+      say('a1f','bad','That would just be V on its own. The d and the division are there precisely because we are asking about change rather than amount.');
+    }else if(k==='time'){
+      say('a1f','bad','That is a single number for the whole job. dV/dt is something you could read at any moment, and it may be different at each of them.');
+    }else{
+      say('a1f','good','Right. A little bit of volume, per little bit of time, is a filling rate. If it were litres and seconds, dV/dt would come out in litres per second.');
+    }
+  });
+
+  exercise({
+    input:'a2i',check:'a2b',fb:'a2f',answer:0.0001,tol:0.000001,
+    near:[{value:0.02,msg:'That is h doubled. Squaring means multiplying it by itself, so 0.01 &times; 0.01.'},
+          {value:0.001,msg:'One zero short. 0.01 &times; 0.01 moves the point four places, not three.'}],
+    right:'Correct. <span class="eqn">0.01 &times; 0.01 = 0.0001</span>, one ten thousandth.',
+    wrong:'Not quite. Multiply 0.01 by itself.',
+    onRight:function(){done('a2');lock('a3',false);}
+  });
+  exercise({
+    input:'a3i',check:'a3b',fb:'a3f',answer:100,tol:0.5,
+    near:[{value:10,msg:'Compare them directly: a hundredth is 0.01 and a ten thousandth is 0.0001, so you need to divide one by the other.'},
+          {value:10000,msg:'That is one over h&sup2;. The question compares h&sup2; with h, not with 1.'}],
+    right:'Correct. <span class="eqn">0.01 &divide; 0.0001 = 100</span>. And notice where that 100 comes from: it is 1/h. The factor is not fixed, it is set by h itself.',
+    wrong:'Not quite. Divide h by h&sup2; and see what you get.',
+    onRight:function(){done('a3');lock('a4',false);}
+  });
+  exercise({
+    input:'a4i',check:'a4b',fb:'a4f',answer:2,tol:0.005,
+    near:[{value:1,msg:'That is one strip. There are two of them, one up the side and one along the top.'},
+          {value:0.2,msg:'Check the multiplication: 10 long by 0.1 wide is 1, and there are two.'}],
+    right:'Correct. Each strip is <span class="eqn">10 &times; 0.1 = 1</span>, and there are two, so <span class="eqn">2xh = 2</span>.',
+    wrong:'Not quite. One strip is 10 by 0.1. Work out one and double it.',
+    onRight:function(){done('a4');lock('a5',false);}
+  });
+  exercise({
+    input:'a5i',check:'a5b',fb:'a5f',answer:0.01,tol:0.0005,
+    near:[{value:0.2,msg:'That is the strip area, not the corner. The corner is only h by h, and h is 0.1.'},
+          {value:0.1,msg:'That is h itself. The corner is a square of side h, so multiply h by h.'}],
+    right:'Correct. <span class="eqn">0.1 &times; 0.1 = 0.01</span>. Set that beside the 2 from the strips: the corner is one two-hundredth of what the strips brought in.',
+    wrong:'Not quite. The corner is a small square with sides of length h.',
+    onRight:function(){done('a5');lock('a6',false);}
+  });
+  exercise({
+    input:'a6i',check:'a6b',fb:'a6f',answer:20.1,tol:0.02,
+    near:[{value:2.01,msg:'That is the extra area itself. The question asks for it per unit of growth, so divide by h = 0.1.'},
+          {value:0.201,msg:'You multiplied by 0.1 rather than dividing. Dividing by a tenth makes the number larger.'},
+          {value:20,msg:'Very close, and that is where this is heading, but the exact answer at h = 0.1 still carries the h.'}],
+    right:'Correct. <span class="eqn">2.01 &divide; 0.1 = 20.1</span>, which is exactly <span class="eqn">2x + h = 20 + 0.1</span>. The 20 came from the strips and the 0.1 from the corner.',
+    wrong:'Not quite. Divide 2.01 by 0.1.',
+    onRight:function(){done('a6');lock('a7',false);}
+  });
+  exercise({
+    input:'a7i',check:'a7b',fb:'a7f',answer:20,tol:0.005,
+    near:[{value:20.1,msg:'That is the value at one particular h. The question asks where the values are heading as h keeps shrinking.'},
+          {value:10,msg:'That is x. The ratio is 2x + h, so the part that survives is twice x.'},
+          {value:0,msg:'The ratio does not collapse. The h shrinks away but the 2x does not depend on h at all.'}],
+    right:'Correct, 20. The h in <span class="eqn">2x + h</span> can be made as small as you please, and the 2x does not move, so the ratio closes in on <span class="eqn">2x = 20</span>.',
+    wrong:'Not quite. In 2x + h, the 2x stays put and the h shrinks. What is left?',
+    onRight:function(){done('a7');lock('a8',false);}
+  });
+
+  seg('a8',function(k){
+    if(k==='ignore'){
+      say('a8f','bad','Understandable, but it would leave the answer approximate, and it is not. Nothing was ignored. Look again at the line where we divided: h was still there afterwards, sitting in 2x + h, perfectly intact.');
+    }else if(k==='zero'){
+      say('a8f','bad','That is what it looks like, but it is not quite honest, because it would mean h changed its mind about being zero halfway through. What we do instead is never set h to anything.');
+    }else{
+      say('a8f','good','That is it. Every step was exact while h was a genuine number, and the division was legal because h was not zero. Only afterwards do we ask a different sort of question: not what 2x + h equals for some particular h, but what it can be brought arbitrarily close to. That answer is 2x, and no rule was bent to get it.');
+      done('a8');
+    }
+  });
+})();
+
+/* ---------- theme + nav ---------- */
+(function(){
+  var btn=document.getElementById('themebtn');
+  var stored=null;
+  try{stored=window.localStorage?localStorage.getItem('int-theme'):null;}catch(e){stored=null;}
+  var init=stored||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  function apply(t){
+    document.documentElement.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?'Light':'Dark';
+    /* the static theme-color metas follow the OS, not this button */
+    var m=document.getElementById('tcolor');
+    if(m){m.setAttribute('content',t==='dark'?'#151514':'#faf9f7');}
+    redrawAll();
+  }
+  apply(init);
+  btn.addEventListener('click',function(){
+    var t=isDark()?'light':'dark';
+    try{if(window.localStorage){localStorage.setItem('int-theme',t);}}catch(e){}
+    apply(t);
+  });
+
+  var links=document.querySelectorAll('nav a'),heads=[],strip=document.querySelector('nav .links');
+  for(var i=0;i<links.length;i++){
+    var h=document.getElementById(links[i].getAttribute('href').slice(1));
+    if(h){heads.push({a:links[i],h:h});}
+  }
+  function spy(){
+    var best=null,y=window.pageYOffset+120;
+    for(var i=0;i<heads.length;i++){
+      if(heads[i].h.offsetTop<=y){best=heads[i];}
+    }
+    var changed=false;
+    for(var j=0;j<heads.length;j++){
+      var on=(heads[j]===best);
+      if(on!==(heads[j].a.className==='on')){changed=true;}
+      heads[j].a.className=on?'on':'';
+    }
+    /* on a phone the links are a horizontal strip, so keep the current one visible */
+    if(changed&&best&&strip&&strip.scrollWidth>strip.clientWidth+4){
+      var l=best.a.offsetLeft-strip.clientWidth/2+best.a.offsetWidth/2;
+      if(strip.scrollTo){strip.scrollTo({left:l,behavior:'smooth'});}else{strip.scrollLeft=l;}
+    }
+  }
+  window.addEventListener('scroll',spy,{passive:true});spy();
+})();
+
+var rt;
+
+window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(redrawAll,120);});
+redrawAll();
+})();
+</script>
+</body>
+</html>
