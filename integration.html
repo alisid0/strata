@@ -273,7 +273,6 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <a href="#s3">3. Rectangles under a curve</a>
     <a href="#s4">4. Why it converges</a>
     <a href="#s5">5. Workshop: a journey</a>
-    <a href="#s6">6. Where it gets used</a>
   </div>
 </nav>
 
@@ -281,7 +280,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <p class="sec-no">An introduction</p>
 <h1>Integration</h1>
-<p class="lede">An introduction for anyone who has never met integration, or has met it and come away none the wiser. It starts with the area of a rectangle and ends with why a driverless car needs the same idea. Nothing is assumed beyond multiplying and adding.</p>
+<p class="lede">An introduction for anyone who has never met integration, or has met it and come away none the wiser. It starts with the area of a rectangle and ends with working out how far a train travelled. Nothing is assumed beyond multiplying and adding.</p>
 <p style="color:var(--faint);font-size:14px">Every diagram is live. Drag the sliders.</p>
 
 <h2 id="s1">1. The one idea</h2>
@@ -746,38 +745,9 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <p>One loose end worth knowing about. Every one of your totals came out too low, because each reading went stale as the train accelerated. Had you instead taken each reading at the <em>end</em> of its stretch, every total would have come out too high. Four readings that way give 50 km. So without knowing the answer at all, you could have said the distance was somewhere between 35 and 50 km, and narrowed that gap as far as you liked by reading more often.</p>
 
-<h2 id="s6">6. Where this actually gets used</h2>
-<p>It is reasonable to suspect that slicing things into strips is a schoolroom exercise that stops mattering once you leave. It is not. The reason it turns up everywhere is that reality mostly hands you <em>rates</em> when what you want are <em>totals</em>, and the gap between those two things is exactly what you closed on the train.</p>
-<p>Pick a field and see what is being sliced. The picture never changes, only the labels on it.</p>
-
-<div class="widget">
-  <p class="wtitle">The same calculation, wearing different clothes</p>
-  <div class="segs" role="group" aria-label="Choose a field" style="margin-bottom:16px">
-    <button class="seg" data-app="robot" aria-pressed="true">Robots &amp; driverless cars</button>
-    <button class="seg" data-app="ml" aria-pressed="false">Machine learning</button>
-    <button class="seg" data-app="mil" aria-pressed="false">Missiles &amp; navigation</button>
-    <button class="seg" data-app="super" aria-pressed="false">Superconductors</button>
-    <button class="seg" data-app="bill" aria-pressed="false">Your electricity bill</button>
-  </div>
-  <div class="cvwrap" style="height:215px">
-    <canvas id="w10c" role="img" aria-labelledby="w10-fallback"></canvas>
-    <p class="sr-only" id="w10-fallback">A varying quantity plotted against a stretch, with the area beneath it shaded.</p>
-  </div>
-  <div class="cards">
-    <div class="card"><p class="k">The thing that varies</p><p class="v" id="a-h" style="font-size:15px">&mdash;</p></div>
-    <div class="card"><p class="k">Sliced along</p><p class="v" id="a-w" style="font-size:15px">&mdash;</p></div>
-    <div class="card"><p class="k">What the total means</p><p class="v" id="a-t" style="font-size:15px">&mdash;</p></div>
-  </div>
-  <p class="note" id="a-note"></p>
-</div>
-
-<p>Two of those deserve a word of warning, because they are where the ideas from section 4 stop being decorative.</p>
-<p>A robot or a missile finding its position by adding up acceleration has no independent check on its answer. Every reading carries a small error, and integration adds those errors up along with the signal, so the estimated position slowly drifts away from the true one. This is why such systems are always paired with something that can correct them, whether that is a satellite fix, a landmark, or a wheel that counts its own turns. The mathematics tells you the answer converges as your readings get finer; it does not promise your readings were right.</p>
-<p>Machine learning has the opposite problem. The integrals it needs are usually impossible to write down, so nothing is ever computed exactly. Instead the model samples, in effect taking a scattering of readings rather than evenly spaced ones, and accepts an answer that is close enough. Every large model you have used was trained by approximating integrals nobody can solve.</p>
-
 <div class="callout">
   <span class="tag">Where that leaves us</span>
-  <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work each strip out as a rectangle, the way you did with the very first shape on this page. Add them up, then make the strips narrower still. Section 2 showed those same two moves in whole pounds, building a total up and then taking one back apart. Section 4 showed that the error really does shrink away rather than piling up, section 5 showed that none of it was ever about area in the first place, and section 6 showed how much of the modern world is quietly doing this in the background.</p>
+  <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work each strip out as a rectangle, the way you did with the very first shape on this page. Add them up, then make the strips narrower still. Section 2 showed those same two moves in whole pounds, building a total up and then taking one back apart. Section 4 showed that the error really does shrink away rather than piling up, and section 5 showed that none of it was ever about area in the first place.</p>
 </div>
 
 <p>Everything else in calculus is machinery built on top of that: quicker ways to find the running total, ways of proving it behaves for badly behaved curves, and the same slicing applied to volumes, forces and probabilities rather than areas. The machinery gets large. The idea does not get any bigger than this.</p>
@@ -1362,64 +1332,6 @@ function exercise(o){
     wrong:'Not quite. Push the slider towards 200 readings and read off the whole number the distance is settling on.',
     onRight:function(){done('k7');}
   });
-})();
-
-/* ---------- 9. Where it gets used ---------- */
-(function(){
-  var cv=document.getElementById('w10c');
-  if(!cv)return;
-  /* one generic varying quantity, reused for every field */
-  function g(u){
-    var y=0.46+0.30*Math.sin(2*Math.PI*1.2*u+0.6)+0.12*Math.sin(2*Math.PI*2.9*u+2.0);
-    return Math.max(0.10,Math.min(0.94,y));
-  }
-  var APP={
-    robot:{h:'Acceleration reported by the sensor',w:'Time, thousands of times a second',
-      t:'How fast it is going, and then where it is',
-      yl:'acceleration',xl:'time',
-      note:'Every phone, drone and driverless car carries an accelerometer telling it how hard it is being pushed. Being pushed is not the same as being somewhere, so the chip adds up acceleration over time to get speed, then adds up speed over time to get distance travelled. This is how a car keeps track of itself in a tunnel with no satellite signal, and how a robot knows roughly where it has moved to.'},
-    ml:{h:'How wrong the model is on one example',w:'Every example it might ever be shown, weighted by how likely each is',
-      t:'The average error that training tries to reduce',
-      yl:'error',xl:'possible inputs',
-      note:'Training a model means reducing its average error, and that average runs over a whole range of possible inputs rather than a finite list, which makes it an integral. Almost none of these can be worked out exactly, so the machinery does what you did on the train: sample, multiply, add, and take more samples when the answer is not good enough. Image generators go further and build a picture by integrating an equation step by step, starting from noise.'},
-    mil:{h:'Acceleration felt by the guidance unit',w:'Time since launch',
-      t:'Where it is now, without asking anyone',
-      yl:'acceleration',xl:'time',
-      note:'A submarine underwater or a missile facing jamming cannot rely on satellite navigation, so it carries accelerometers and gyroscopes and integrates their readings continuously from a known starting point. Blast measurement uses the same idea: the damage a shockwave does depends not on peak pressure alone but on pressure added up over the fraction of a second it lasts.'},
-    super:{h:'Strength of the magnetic field',w:'Area of the loop it passes through',
-      t:'Total magnetic flux',
-      yl:'field strength',xl:'area',
-      note:'Flux is field strength added up across an area, which is this same slicing done over a surface instead of a line. Inside a superconducting ring the flux cannot take just any value: it arrives in fixed multiples. Instruments called SQUIDs exploit that to measure magnetic fields faint enough to be produced by currents inside a living brain.'},
-    bill:{h:'Power the house is drawing, in kilowatts',w:'Time, in hours',
-      t:'Energy used, in kilowatt-hours',
-      yl:'power (kW)',xl:'time (hours)',
-      note:'A kilowatt-hour is an integral, and it is the one you pay for every month. Your power draw jumps around all day as things switch on and off, and the meter totals it over time. This is the train problem with different words: a rate that will not hold still, added up over a stretch.'}
-  };
-  var cur='robot';
-  function draw(){
-    var f=fit(cv),c=f.c,W=f.W,H=f.H,p=P(),pad=26,base=H-24,a=APP[cur];
-    var sx=function(u){return pad+u*(W-pad-14);};
-    var sy=function(y){return base-y*(base-pad);};
-    c.beginPath();c.moveTo(sx(0),sy(0));
-    for(var i=0;i<=300;i++){c.lineTo(sx(i/300),sy(g(i/300)));}
-    c.lineTo(sx(1),sy(0));c.closePath();c.fillStyle=p.area;c.fill();
-    c.beginPath();
-    for(var j=0;j<=300;j++){var x=sx(j/300),y=sy(g(j/300));if(j){c.lineTo(x,y);}else{c.moveTo(x,y);}}
-    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
-    c.strokeStyle=p.axis;c.lineWidth=1;
-    c.beginPath();c.moveTo(sx(0),sy(0));c.lineTo(sx(1),sy(0));c.stroke();
-    c.beginPath();c.moveTo(sx(0),sy(0));c.lineTo(sx(0),pad-6);c.stroke();
-    c.fillStyle=p.txt;c.font='600 12px sans-serif';c.textAlign='center';
-    c.fillText('total = the shaded area',sx(0.5),sy(0.42));
-    c.fillStyle=p.ink;c.font='11px sans-serif';
-    c.fillText(a.xl,sx(0.5),base+16);
-    c.save();c.translate(11,(base+pad)/2);c.rotate(-Math.PI/2);
-    c.textAlign='center';c.fillText(a.yl,0,0);c.restore();
-    txt('a-h',a.h);txt('a-w',a.w);txt('a-t',a.t);txt('a-note',a.note);
-    setFallback('w10-fallback',a.yl+' plotted against '+a.xl+'. The shaded area is '+a.t.toLowerCase()+'.');
-  }
-  seg('app',function(k){cur=k;draw();});
-  reg(draw);
 })();
 
 /* ---------- theme + nav ---------- */
