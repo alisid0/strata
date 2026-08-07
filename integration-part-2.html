@@ -272,7 +272,8 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <a href="#s2">2. Doing one the hard way</a>
     <a href="#s3">3. The pattern</a>
     <a href="#s4">4. The shortcut</a>
-    <a href="#s5">5. Rules and practice</a>
+    <a href="#s5">5. Why the shortcut works</a>
+    <a href="#s6">6. Rules and practice</a>
   </div>
   <p style="margin:10px 0 0;font-size:13px"><a href="integration.html" style="color:var(--accent);text-decoration:none">&larr; Part 1: the idea</a></p>
 </nav>
@@ -401,7 +402,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <div class="eq"><span class="intg"><span class="sgn">&int;</span><span class="lim"><span class="hi">3</span><span class="lo">1</span></span></span> x&sup2; dx = [ x&sup3;/3 ]<sub>1</sub><sup>3</sup> = 27/3 &minus; 1/3 = 26/3<span class="lbl">the square brackets just mean "evaluate at the top, subtract the bottom"</span></div>
 
-<p>Two summations, an induction proof and a limit, all replaced by one subtraction. This is why nobody integrates by adding strips unless they have to.</p>
+<p>Two summations, an induction proof and a limit, all replaced by one subtraction. This is why nobody integrates by adding strips unless they have to. It should also look suspicious, because nothing so far explains why undoing a rate of growth ought to tell you anything about adding up strips. Section 5 shows why it does.</p>
 
 <div class="callout">
   <span class="tag">Why the constant does not matter</span>
@@ -418,7 +419,112 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p class="fb" id="q3f"></p>
 </div>
 
-<h2 id="s5">5. Rules and practice</h2>
+<h2 id="s5">5. Why the shortcut works</h2>
+<p>Section 4 asked you to believe something odd. Find a function whose rate of growth is <span class="math">f</span>, read it at both ends, subtract, and out falls a total. There is no obvious reason why undoing a rate of change should tell you anything about adding up strips. This section shows why it does, in two halves, and neither half needs anything you have not already done.</p>
+<p>Take <span class="math">f(x) = x&sup2;</span> throughout, and write <span class="math">A(x)</span> for the running total accumulated up to <span class="math">x</span>. From section 2 that total is <span class="math">x&sup3;/3</span>.</p>
+
+<div class="tryit step open" id="r1">
+  <p class="q"><span class="stepnum">1</span>What one thin strip adds</p>
+  <p class="ask">Push <span class="math">x</span> from 3 to 3.1 and the jar gains a single thin strip. The running total reads <strong>9</strong> at <span class="math">x = 3</span> and <strong>9.930333</strong> at <span class="math">x = 3.1</span>. How much did the jar gain, to four decimal places?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="r1i" aria-label="Amount the running total gained" placeholder="gain" />
+    <button type="button" class="go" id="r1b">Check</button>
+  </div>
+  <p class="fb" id="r1f"></p>
+</div>
+
+<div class="tryit step locked" id="r2">
+  <p class="q"><span class="stepnum">2</span>Turn it into a rate</p>
+  <p class="ask">That gain arrived across a window <strong>0.1</strong> wide. Divide by the width to get the rate at which the running total was growing across that window, to three decimal places.</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="r2i" aria-label="Rate of growth over the window" placeholder="rate" />
+    <button type="button" class="go" id="r2b">Check</button>
+  </div>
+  <p class="fb" id="r2f"></p>
+  <p class="lockmsg">Answer step 1 first.</p>
+</div>
+
+<div class="tryit step locked" id="r3">
+  <p class="q"><span class="stepnum">3</span>Squeeze the window</p>
+  <p class="ask">Do it again with a window a tenth as wide. The running total reads <strong>9</strong> at <span class="math">x = 3</span> and <strong>9.090300</strong> at <span class="math">x = 3.01</span>. Gain divided by width, to three decimal places?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="r3i" aria-label="Rate of growth over the narrower window" placeholder="rate" />
+    <button type="button" class="go" id="r3b">Check</button>
+  </div>
+  <p class="fb" id="r3f"></p>
+  <p class="lockmsg">Answer step 2 first.</p>
+</div>
+
+<div class="tryit step locked" id="r4">
+  <p class="q"><span class="stepnum">4</span>Recognise the number</p>
+  <p class="ask">The growth rates came out as <strong>9.303</strong>, then <strong>9.030</strong>. They are closing in on something. What is <span class="math">f(3)</span>, that is, <span class="math">3&sup2;</span>?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="r4i" aria-label="Value of f at 3" placeholder="f(3)" />
+    <button type="button" class="go" id="r4b">Check</button>
+  </div>
+  <p class="fb" id="r4f"></p>
+  <p class="lockmsg">Answer step 3 first.</p>
+</div>
+
+<p>That is the first half, and it is worth stating plainly. The reason it happens is that a narrow strip is almost a rectangle of height <span class="math">f(x)</span> and width <span class="math">h</span>, so the jar gains about <span class="math">f(x)&middot;h</span>, and dividing by <span class="math">h</span> leaves <span class="math">f(x)</span>. The narrower the strip, the flatter its top and the better that is.</p>
+
+<div class="eq">A(x+h) &minus; A(x) &asymp; f(x) &middot; h&nbsp;&nbsp;&rArr;&nbsp;&nbsp; [ A(x+h) &minus; A(x) ] / h &rarr; f(x)<span class="lbl">the running total grows at a rate equal to the function itself</span></div>
+
+<p>Now the second half. You have one running total, <span class="math">A</span>. Section 4 claimed that <em>any</em> function with the right rate of growth will do, which is a stronger claim and needs its own argument.</p>
+
+<div class="tryit step locked" id="r5">
+  <p class="q"><span class="stepnum">5</span>Two functions, one rate</p>
+  <p class="ask">Suppose somebody hands you a different function <span class="math">F</span>, and it also grows at rate <span class="math">f</span> at every single point, exactly as <span class="math">A</span> does. What can you conclude about <span class="math">F</span> and <span class="math">A</span>?</p>
+  <div class="segs" role="group" aria-label="What follows about the two functions">
+    <button class="seg" data-r5="same" aria-pressed="false">They must be the same function</button>
+    <button class="seg" data-r5="const" aria-pressed="false">They can differ, but only by a fixed amount</button>
+    <button class="seg" data-r5="any" aria-pressed="false">They could be completely unrelated</button>
+  </div>
+  <p class="fb" id="r5f">Pick the one you think is right.</p>
+  <p class="lockmsg">Answer step 4 first.</p>
+</div>
+
+<div class="tryit step locked" id="r6">
+  <p class="q"><span class="stepnum">6</span>Pin down the fixed amount</p>
+  <p class="ask">So <span class="math">A(x) = F(x) + C</span> for some fixed <span class="math">C</span>. Take <span class="math">F(x) = x&sup3;/3</span> and start totalling at <span class="math">a = 1</span>. At the very start nothing has accumulated, so <span class="math">A(1) = 0</span>. Given that <span class="math">F(1) = 1/3</span>, what must <span class="math">C</span> be? Give it to four decimal places.</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="r6i" aria-label="Value of the constant C" placeholder="C" />
+    <button type="button" class="go" id="r6b">Check</button>
+  </div>
+  <p class="fb" id="r6f"></p>
+  <p class="lockmsg">Answer step 5 first.</p>
+</div>
+
+<div class="tryit step locked" id="r7">
+  <p class="q"><span class="stepnum">7</span>Collect the prize</p>
+  <p class="ask">You now know the running total exactly: <span class="math">A(x) = x&sup3;/3 &minus; 1/3</span>. The total accumulated from 1 to 2 is just the jar reading at 2. Work out <span class="math">A(2)</span>, to four decimal places.</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="r7i" aria-label="The running total at 2" placeholder="A(2)" />
+    <button type="button" class="go" id="r7b">Check</button>
+  </div>
+  <p class="fb" id="r7f"></p>
+  <p class="lockmsg">Answer step 6 first.</p>
+</div>
+
+<p>Look at what you just wrote down. <span class="math">A(2) = F(2) &minus; F(1)</span>, and you never chose <span class="math">F</span> for any reason other than that its rate of growth was right. That is the whole shortcut, derived rather than asserted, and it explains the loose end from section 4: the fixed amount <span class="math">C</span> cancels because it appears in both readings and gets subtracted away.</p>
+
+<div class="callout">
+  <span class="tag">The argument in four lines</span>
+  <p>A thin strip is nearly a rectangle, so the running total grows at the rate of the function: <span class="math">A&prime; = f</span>.<br>
+  Any <span class="math">F</span> with <span class="math">F&prime; = f</span> therefore grows exactly as <span class="math">A</span> does, so it can differ only by a fixed amount.<br>
+  The running total starts at nothing, which fixes that amount at <span class="math">&minus;F(a)</span>.<br>
+  So the total from <span class="math">a</span> to <span class="math">b</span> is <span class="math">F(b) &minus; F(a)</span>.</p>
+</div>
+
+<h3>And where the power rule comes from</h3>
+<p>One formula is still unexplained. The power rule works because <span class="math">x&sup3;/3</span> really does grow at rate <span class="math">x&sup2;</span>, and that can be checked with school algebra and no calculus at all. Expand a small step and see what survives.</p>
+
+<div class="eq">(x + h)&sup3; &minus; x&sup3; = 3x&sup2;h + 3xh&sup2; + h&sup3;<span class="lbl">multiply out and the x&sup3; terms cancel</span></div>
+<div class="eq">&divide; h &nbsp;&rarr;&nbsp; 3x&sup2; + 3xh + h&sup2;&nbsp;&nbsp;&rarr;&nbsp;&nbsp; 3x&sup2;<span class="lbl">every term after the first still carries an h, so all of them vanish</span></div>
+
+<p>So <span class="math">x&sup3;</span> grows at rate <span class="math">3x&sup2;</span>, and dividing by 3 gives a function growing at rate <span class="math">x&sup2;</span>, which is <span class="math">x&sup3;/3</span>. The same expansion works for any power: multiply out <span class="math">(x+h)<sup>n</sup></span> and the only term without a spare <span class="math">h</span> in it is <span class="math">n&middot;x<sup>n&minus;1</sup>&middot;h</span>. That is where the <span class="math">n</span> comes down and the power drops by one, and running it backwards is exactly the rule from section 3: raise the power, divide by the new one.</p>
+
+<h2 id="s6">6. Rules and practice</h2>
 <p>Two more rules and you have everything needed for polynomials. Both are obvious once stated, and both follow from the fact that an integral is a sum.</p>
 
 <div class="eq"><span class="intg"><span class="sgn">&int;</span></span> c &middot; f(x) dx = c <span class="intg"><span class="sgn">&int;</span></span> f(x) dx<span class="lbl">a constant multiplier can be moved outside</span></div>
@@ -659,6 +765,80 @@ function exercise(o){
           {value:1,msg:'Check the two limits. They are both 1, so whatever the running total is, you are subtracting it from itself.'}],
     right:'Correct, zero. Both limits are the same, so you are totalling across a stretch of no width at all. The running total is <span class="eqn">x&#8310;/6</span>, and <span class="eqn">1/6 &minus; 1/6 = 0</span>. No calculation was needed.',
     wrong:'Look at the limits again. You are asked to total from 1 to 1.'
+  });
+})();
+
+/* ---------- 4. Why the shortcut works ---------- */
+(function(){
+  function lock(id,on){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.className='tryit step '+(on?'locked':'open');
+    var fl=el.querySelectorAll('input,button');
+    for(var i=0;i<fl.length;i++){fl[i].disabled=on;}
+  }
+  function done(id){
+    var el=document.getElementById(id);
+    if(el){el.className=el.className.replace(/\blocked\b/,'open')+' done';}
+  }
+  lock('r2',true);lock('r3',true);lock('r4',true);lock('r5',true);lock('r6',true);lock('r7',true);
+
+  exercise({
+    input:'r1i',check:'r1b',fb:'r1f',answer:0.9303,tol:0.002,
+    near:[{value:18.9303,msg:'You have added the two readings. The gain is the difference between them.'},
+          {value:9.9303,msg:'That is the reading at 3.1, which includes everything accumulated before. Subtract the reading at 3.'}],
+    right:'Correct. <span class="eqn">9.930333 &minus; 9 = 0.9303</span>. That is one thin strip, added to a jar that already held 9.',
+    wrong:'Not quite. Subtract the earlier reading from the later one.'
+  });
+  exercise({
+    input:'r2i',check:'r2b',fb:'r2f',answer:9.303,tol:0.01,
+    near:[{value:0.09303,msg:'You divided by 10 rather than by 0.1. Dividing by a tenth makes the answer ten times larger, not smaller.'},
+          {value:0.9303,msg:'That is the gain itself. To turn an amount into a rate, divide by the width of the window it arrived in.'}],
+    right:'Correct. <span class="eqn">0.9303 &divide; 0.1 = 9.303</span>. Hold on to that number and watch what it does when the window shrinks.',
+    wrong:'Not quite. Divide the gain by 0.1.'
+  });
+  exercise({
+    input:'r3i',check:'r3b',fb:'r3f',answer:9.030,tol:0.01,
+    near:[{value:0.0903,msg:'That is the gain. Divide it by the width of the window, which is now 0.01.'},
+          {value:9.303,msg:'That was the answer for the wider window. This one is ten times narrower, and the rate has moved.'}],
+    right:'Correct. <span class="eqn">0.0903 &divide; 0.01 = 9.030</span>. The wider window gave 9.303 and this one gives 9.030, so the rate is settling.',
+    wrong:'Not quite. Subtract to get the gain, then divide by 0.01.'
+  });
+  exercise({
+    input:'r4i',check:'r4b',fb:'r4f',answer:9,tol:0.01,
+    near:[{value:6,msg:'That is 3 &times; 2. Squaring 3 means 3 &times; 3.'},
+          {value:9.03,msg:'That was the narrow-window rate. The question asks for f(3) itself, which is a whole number.'}],
+    right:'Correct, 9. And there it is: the growth rates 9.303 and 9.030 are heading for exactly <span class="eqn">f(3)</span>. The running total grows at a rate equal to the function, which is the first half of the argument.',
+    wrong:'Not quite. f(x) = x&sup2;, so f(3) is 3 squared.',
+    onRight:function(){done('r4');lock('r5',false);}
+  });
+
+  seg('r5',function(k){
+    if(k==='same'){
+      say('r5f','bad','Not quite, and this is the useful part. Add 7 to A and you get a different function that still grows at exactly the same rate everywhere, because a fixed amount added on does not change how fast something climbs.');
+    }else if(k==='any'){
+      say('r5f','bad','They are tied together more tightly than that. If they grew apart at any point, one would have to be climbing faster than the other there, and they were given the same rate at every point.');
+    }else{
+      say('r5f','good','Right. If two functions climb at the same rate everywhere, the distance between them can never change, so it is some fixed amount. Write it as C and you have A(x) = F(x) + C.');
+      done('r5');lock('r6',false);
+    }
+  });
+
+  exercise({
+    input:'r6i',check:'r6b',fb:'r6f',answer:-0.3333,tol:0.002,
+    near:[{value:0.3333,msg:'Right size, wrong sign. You need F(1) + C to come out at zero, so C has to cancel the 1/3 rather than add to it.'},
+          {value:0,msg:'If C were zero then A(1) would equal F(1), which is 1/3, not 0. The jar is empty at the start.'},
+          {value:1,msg:'Try putting your value into A(1) = F(1) + C and check that it gives zero.'}],
+    right:'Correct, <span class="eqn">C = &minus;1/3 = &minus;0.3333</span>. It has to cancel F(1) exactly, because the jar is empty when you start counting.',
+    wrong:'Not quite. You need A(1) = F(1) + C to equal zero, and F(1) is 1/3.'
+  });
+  exercise({
+    input:'r7i',check:'r7b',fb:'r7f',answer:2.3333,tol:0.002,
+    near:[{value:2.6667,msg:'That is F(2) on its own, which is 8/3. You still have to add the constant, and the constant is negative.'},
+          {value:3,msg:'Check F(2): it is 2&sup3;/3 = 8/3, not 8.'},
+          {value:0.3333,msg:'That looks like 1/3. You want 8/3 minus 1/3.'}],
+    right:'Correct. <span class="eqn">8/3 &minus; 1/3 = 7/3 &asymp; 2.3333</span>. Compare that with section 4: it is F(2) &minus; F(1), and you have just built it from scratch rather than being handed it.',
+    wrong:'Not quite. Work out 2&sup3;/3 and then subtract 1/3.'
   });
 })();
 
