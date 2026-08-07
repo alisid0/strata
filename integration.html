@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Integration</title>
+<style>
+:root{
+  --bg:#faf9f7; --surface:#ffffff; --surface2:#f1efe8;
+  --text:#1a1a19; --muted:#5f5e5a; --faint:#898781;
+  --border:#e1e0d9; --border2:#c3c2b7;
+  --accent:#185fa5; --accentbg:#e6f1fb; --accentline:#378add;
+  --warm:#ba7517; --warmbg:#faeeda; --coral:#f5c4b3;
+  --ok:#3b6d11; --okbg:#eaf3de;
+}
+html[data-theme="dark"]{
+  --bg:#151514; --surface:#1e1e1c; --surface2:#2c2c2a;
+  --text:#f2f1ec; --muted:#b5b4ac; --faint:#898781;
+  --border:#33332f; --border2:#4a4a45;
+  --accent:#85b7eb; --accentbg:#0c447c; --accentline:#378add;
+  --warm:#ef9f27; --warmbg:#412402; --coral:#993c1d;
+  --ok:#97c459; --okbg:#173404;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{display:flex;gap:40px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav{width:230px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;padding:32px 0 40px}
+nav .brand{font-size:15px;font-weight:600;margin:0 0 4px}
+nav .sub{font-size:13px;color:var(--muted);margin:0 0 20px}
+nav a{display:block;text-decoration:none;color:var(--muted);font-size:14px;
+  padding:5px 10px;border-left:2px solid transparent;border-radius:0;line-height:1.4}
+nav a:hover{color:var(--text);background:var(--surface2)}
+nav a.on{color:var(--accent);border-left-color:var(--accent);font-weight:500}
+nav .nav-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:0 0 4px}
+nav .themebtn{position:static;flex-shrink:0;margin:0}
+main{flex:1;min-width:0;max-width:780px;padding:40px 0 120px}
+h1{font-size:34px;line-height:1.25;font-weight:600;margin:0 0 8px;letter-spacing:-0.02em}
+h2{font-size:24px;font-weight:600;margin:56px 0 14px;letter-spacing:-0.01em;scroll-margin-top:24px}
+h3{font-size:18px;font-weight:600;margin:32px 0 10px}
+p{margin:0 0 16px}
+.lede{font-size:19px;color:var(--muted);margin:0 0 8px}
+.sec-no{font-size:13px;color:var(--warm);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:0}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin:0 0 8px}
+strong{font-weight:600}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
+  background:var(--surface2);padding:1px 5px;border-radius:4px}
+.math{font-family:Georgia,"Times New Roman",serif;font-size:1.06em;font-style:italic}
+.eq{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:16px 20px;margin:20px 0;font-family:Georgia,"Times New Roman",serif;
+  font-size:19px;text-align:center;overflow-x:auto;line-height:1.9}
+.eq .lbl{display:block;font-family:inherit;font-size:13px;font-style:normal;
+  color:var(--faint);margin-top:8px;font-family:-apple-system,sans-serif}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--warm);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:22px 0}
+.callout p:last-child{margin:0}
+.callout .tag{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--warm);margin:0 0 6px}
+.tryit{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin:22px 0}
+.tryit .q{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 12px}
+.tryit svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+.tryit .ask{margin:12px 0 12px}
+.tryit p:last-child{margin-bottom:0}
+.answer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.answer input{width:120px;padding:8px 11px;font-size:16px;font-family:inherit;
+  border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--text)}
+.answer input:focus{outline:2px solid var(--accentline);outline-offset:1px}
+.answer .go{padding:9px 18px;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:var(--bg);border-radius:8px}
+.answer .go:hover{opacity:.88}
+.answer .hint{padding:9px 14px;font-size:14px;font-family:inherit;cursor:pointer;
+  border:1px solid var(--border2);background:transparent;color:var(--muted);border-radius:8px}
+.answer .hint:hover{color:var(--text);border-color:var(--faint)}
+.answer .unit{font-size:14px;color:var(--muted)}
+.fb{font-size:15px;margin:0;min-height:26px;color:var(--muted)}
+.fb.good{color:var(--ok)}
+.fb.bad{color:var(--warm)}
+.fb .eqn{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:1.04em}
+/* Integral sign with its limits stacked properly, instead of a sub and a sup
+   sitting side by side and reading as "int-a-b". */
+.intg{display:inline-flex;align-items:center;vertical-align:-0.32em;margin:0 2px}
+.intg .sgn{font-family:Georgia,"Times New Roman",serif;font-size:1.85em;
+  line-height:.72;font-style:normal}
+.intg .lim{display:inline-flex;flex-direction:column;justify-content:center;
+  font-size:.62em;line-height:1.12;text-align:left;margin-left:1px;font-style:normal}
+.intg .lim .hi{margin-bottom:.42em}
+.eq .intg{vertical-align:-0.36em}
+/* keep the sign in proportion where the surrounding type is small */
+.lbl .intg .sgn,td .intg .sgn,.k .intg .sgn{font-size:1.35em}
+.lbl .intg,td .intg,.k .intg{vertical-align:-0.22em}
+.jarrow{display:flex;align-items:flex-end;gap:20px;margin:0 0 18px}
+.jarrow .jarsvg{width:132px;max-width:132px;flex:0 0 132px;height:auto;display:block;margin:0}
+.jarrow>div{flex:1;min-width:0}
+@media(max-width:600px){
+  .jarrow{gap:14px}
+  .jarrow .jarsvg{width:104px;max-width:104px;flex:0 0 104px}
+}
+/* shape figures — used inside .tryit cards and the strip widget.
+   Scoped to svg so the short class names can't collide with page styles. */
+.tryit svg,.widget svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+svg .fill{fill:var(--accentline);fill-opacity:.16}
+svg .edge{fill:none;stroke:var(--accent);stroke-width:2.5;
+  stroke-linejoin:round;stroke-linecap:round}
+svg .wfill{fill:var(--warm);fill-opacity:.20}
+svg .wedge{fill:none;stroke:var(--warm);stroke-width:2.5;
+  stroke-linejoin:round;stroke-linecap:round}
+svg .dim{fill:none;stroke:var(--border2);stroke-width:1.25}
+svg .tick{fill:none;stroke:var(--border2);stroke-width:1.25}
+svg .hmark{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:4 4;opacity:.7}
+svg .dl{fill:var(--muted);font-size:13.5px;text-anchor:middle;
+  font-family:Georgia,"Times New Roman",serif;font-style:italic}
+.widget{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin:26px 0}
+.wtitle{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 16px}
+.ctrl{display:flex;align-items:center;gap:14px;margin:0 0 16px}
+.ctrl label{font-size:14px;color:var(--muted);white-space:nowrap}
+.ctrl .out{font-size:14px;font-weight:600;min-width:76px;text-align:right;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;
+  background:var(--border2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;
+  border-radius:50%;background:var(--accentline);cursor:pointer;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+  background:var(--accentline);cursor:pointer;border:2px solid var(--surface)}
+.segs{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+.seg{font-size:13px;padding:6px 13px;border-radius:8px;border:1px solid var(--border2);
+  background:transparent;color:var(--text);cursor:pointer;font-family:inherit}
+.seg:hover{background:var(--surface2)}
+.seg[aria-pressed=true]{background:var(--accentbg);border-color:var(--accentline);color:var(--accent);font-weight:600}
+.presets{display:flex;gap:6px;margin:-6px 0 16px;flex-wrap:wrap;align-items:center}
+.presets .plab{font-size:12px;color:var(--faint);margin-right:2px}
+.preset{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);
+  background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;
+  font-variant-numeric:tabular-nums}
+.preset:hover{background:var(--surface2);color:var(--text)}
+.preset[aria-pressed=true]{background:var(--accentbg);border-color:var(--accentline);color:var(--accent);font-weight:600}
+.cvwrap{position:relative;width:100%;margin:0 0 14px}
+canvas{display:block}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.cap{font-size:12px;color:var(--faint);margin:0 0 6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin:0 0 14px}
+.card{background:var(--surface2);border-radius:9px;padding:10px 13px}
+.card .k{font-size:12px;color:var(--muted);margin:0 0 3px}
+.card .v{font-size:19px;font-weight:600;margin:0;font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--muted);margin:0;line-height:1.6}
+details{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;margin:10px 0}
+details summary{cursor:pointer;font-size:15px;font-weight:500;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"?";display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:50%;background:var(--accentbg);color:var(--accent);
+  font-size:12px;font-weight:700;margin-right:10px;vertical-align:1px}
+details[open] summary{margin-bottom:10px}
+details .ans{font-size:15px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px}
+details .ans p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 20px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border)}
+th{font-weight:600;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.n{font-variant-numeric:tabular-nums}
+.ref{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:8px 22px 18px}
+.ref h3{font-size:15px;margin:22px 0 6px;color:var(--warm)}
+.themebtn{font-size:13px;padding:7px 13px;
+  border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);
+  cursor:pointer;font-family:inherit}
+.themebtn:hover{background:var(--surface2)}
+.jar-sketch{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0 0}
+.jar-sketch .pane{background:var(--surface2);border-radius:9px;padding:12px 14px}
+.jar-sketch .pt{font-size:12px;color:var(--muted);margin:0 0 8px}
+.jar-sketch .bars{display:flex;align-items:flex-end;gap:5px;height:56px}
+.jar-sketch .b{flex:1;border-radius:3px 3px 0 0;background:var(--accentline);opacity:.85}
+.jar-sketch .run{height:8px;border-radius:4px;background:var(--warm);margin-top:10px}
+.signed{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 8px}
+.signed .box{background:var(--surface2);border-radius:9px;padding:12px 14px}
+.signed .box .k{font-size:12px;color:var(--muted);margin:0 0 4px}
+.signed .box .v{font-size:15px;margin:0;line-height:1.45}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
+  font-size:14px;color:var(--faint)}
+@media(max-width:900px){
+  .wrap{flex-direction:column;gap:0;padding:0 18px}
+  nav{width:auto;position:static;height:auto;padding:20px 0 0;border-bottom:1px solid var(--border)}
+  nav .links{display:flex;flex-wrap:wrap;gap:2px;padding-bottom:14px}
+  nav a{border-left:none;border-bottom:2px solid transparent;padding:4px 9px;font-size:13px}
+  nav a.on{border-left-color:transparent;border-bottom-color:var(--accent)}
+  main{padding:26px 0 80px}
+  h1{font-size:27px} h2{font-size:21px} body{font-size:16px}
+  .jar-sketch,.signed{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="nav-top">
+    <div>
+      <p class="brand">Integration</p>
+      <p class="sub">Rectangles to real life</p>
+    </div>
+    <button class="themebtn" id="themebtn" type="button" aria-label="Toggle colour theme">Dark</button>
+  </div>
+  <div class="links">
+    <a href="#s1">1. The one idea</a>
+    <a href="#s2">2. Pocket money</a>
+    <a href="#s3">3. Rectangles under a curve</a>
+    <a href="#s4">4. Why it converges</a>
+  </div>
+</nav>
+
+<main>
+
+<p class="sec-no">A visual course</p>
+<h1>Integration</h1>
+<p class="lede">This started with one question: is integration just a complicated way of finding the area of shapes? It isn't, and the rest of this page works through why.</p>
+<p style="color:var(--faint);font-size:14px">Every diagram is live. Drag the sliders.</p>
+
+<h2 id="s1">1. The one idea</h2>
+<p>Before any calculus, three shapes. Work out the area of each one and see where you get stuck.</p>
+
+<div class="tryit">
+  <p class="q">Shape one</p>
+  <svg viewBox="0 0 430 220" role="img" aria-labelledby="e1t">
+    <title id="e1t">A rectangle 8 cm wide and 5 cm tall</title>
+    <rect class="fill" x="95" y="20" width="240" height="150" />
+    <rect class="edge" x="95" y="20" width="240" height="150" />
+    <path class="dim" d="M81 20 L81 170" />
+    <path class="tick" d="M76 20 L86 20 M76 170 L86 170" />
+    <text class="dl" x="52" y="99">5 cm</text>
+    <path class="dim" d="M95 186 L335 186" />
+    <path class="tick" d="M95 181 L95 191 M335 181 L335 191" />
+    <text class="dl" x="215" y="206">8 cm</text>
+  </svg>
+  <p class="ask">What is the area of this rectangle?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="e1i" aria-label="Area of the rectangle" placeholder="area" />
+    <span class="unit">cm&sup2;</span>
+    <button type="button" class="go" id="e1b">Check</button>
+    <button type="button" class="hint" id="e1h">Show me</button>
+  </div>
+  <p class="fb" id="e1f"></p>
+</div>
+
+<div class="tryit">
+  <p class="q">Shape two</p>
+  <svg viewBox="0 0 430 220" role="img" aria-labelledby="e2t">
+    <title id="e2t">A triangle with a base of 10 cm and a height of 6 cm</title>
+    <path class="fill" d="M95 170 L215 26 L335 170 Z" />
+    <path class="hmark" d="M215 26 L215 170" />
+    <path class="edge" d="M95 170 L215 26 L335 170 Z" />
+    <path class="dim" d="M81 26 L81 170" />
+    <path class="tick" d="M76 26 L86 26 M76 170 L86 170" />
+    <text class="dl" x="52" y="102">6 cm</text>
+    <path class="dim" d="M95 186 L335 186" />
+    <path class="tick" d="M95 181 L95 191 M335 181 L335 191" />
+    <text class="dl" x="215" y="206">10 cm</text>
+  </svg>
+  <p class="ask">And this triangle?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="e2i" aria-label="Area of the triangle" placeholder="area" />
+    <span class="unit">cm&sup2;</span>
+    <button type="button" class="go" id="e2b">Check</button>
+    <button type="button" class="hint" id="e2h">Show me</button>
+  </div>
+  <p class="fb" id="e2f"></p>
+</div>
+
+<div class="tryit">
+  <p class="q">Shape three</p>
+  <svg viewBox="0 0 430 220" role="img" aria-labelledby="e3t">
+    <title id="e3t">A region 8 cm wide under a curved top, whose height changes along its length</title>
+    <rect id="e3g" x="95" y="170" width="240" height="0" fill="var(--accent)" fill-opacity="0.20"
+          stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="5 4" />
+    <path class="wfill" d="M95.0 170.0 L95.0 130.0 L98.8 125.6 L102.5 121.2 L106.2 117.0 L110.0 112.9 L113.8 108.9 L117.5 105.0 L121.2 101.3 L125.0 97.6 L128.8 94.1 L132.5 90.6 L136.2 87.3 L140.0 84.1 L143.8 81.0 L147.5 78.0 L151.2 75.2 L155.0 72.4 L158.8 69.8 L162.5 67.2 L166.2 64.8 L170.0 62.5 L173.8 60.3 L177.5 58.2 L181.2 56.3 L185.0 54.4 L188.8 52.7 L192.5 51.0 L196.2 49.5 L200.0 48.1 L203.8 46.8 L207.5 45.6 L211.2 44.6 L215.0 43.6 L218.8 42.8 L222.5 42.0 L226.2 41.4 L230.0 40.9 L233.8 40.5 L237.5 40.2 L241.2 40.1 L245.0 40.0 L248.8 40.1 L252.5 40.2 L256.2 40.5 L260.0 40.9 L263.8 41.4 L267.5 42.0 L271.2 42.8 L275.0 43.6 L278.8 44.6 L282.5 45.6 L286.2 46.8 L290.0 48.1 L293.8 49.5 L297.5 51.0 L301.2 52.7 L305.0 54.4 L308.8 56.3 L312.5 58.2 L316.2 60.3 L320.0 62.5 L323.8 64.8 L327.5 67.2 L331.2 69.8 L335.0 72.4 L335.0 170.0 Z" />
+    <path class="wedge" d="M95.0 130.0 L98.8 125.6 L102.5 121.2 L106.2 117.0 L110.0 112.9 L113.8 108.9 L117.5 105.0 L121.2 101.3 L125.0 97.6 L128.8 94.1 L132.5 90.6 L136.2 87.3 L140.0 84.1 L143.8 81.0 L147.5 78.0 L151.2 75.2 L155.0 72.4 L158.8 69.8 L162.5 67.2 L166.2 64.8 L170.0 62.5 L173.8 60.3 L177.5 58.2 L181.2 56.3 L185.0 54.4 L188.8 52.7 L192.5 51.0 L196.2 49.5 L200.0 48.1 L203.8 46.8 L207.5 45.6 L211.2 44.6 L215.0 43.6 L218.8 42.8 L222.5 42.0 L226.2 41.4 L230.0 40.9 L233.8 40.5 L237.5 40.2 L241.2 40.1 L245.0 40.0 L248.8 40.1 L252.5 40.2 L256.2 40.5 L260.0 40.9 L263.8 41.4 L267.5 42.0 L271.2 42.8 L275.0 43.6 L278.8 44.6 L282.5 45.6 L286.2 46.8 L290.0 48.1 L293.8 49.5 L297.5 51.0 L301.2 52.7 L305.0 54.4 L308.8 56.3 L312.5 58.2 L316.2 60.3 L320.0 62.5 L323.8 64.8 L327.5 67.2 L331.2 69.8 L335.0 72.4" />
+    <path class="dim" d="M95 186 L335 186" />
+    <path class="tick" d="M95 181 L95 191 M335 181 L335 191" />
+    <text class="dl" x="215" y="206">8 cm</text>
+  </svg>
+  <p class="ask">Now this one. It is 8 cm across, like the rectangle. What is its area?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="e3i" aria-label="Area of the curved region" placeholder="area" />
+    <span class="unit">cm&sup2;</span>
+    <button type="button" class="go" id="e3b">Check</button>
+  </div>
+  <p class="fb" id="e3f"></p>
+</div>
+
+<p>This shape has no name. It is not a rectangle or a triangle or a circle, so there is no formula to look up, and that is the position you are in with most real shapes. To multiply the width by a height, as we did for the rectangle, you first have to decide <em>which</em> height. Try each one:</p>
+
+<div class="tryit">
+  <p class="q">Pick a height and multiply</p>
+  <div class="segs" role="group" aria-label="Choose which height to use">
+    <button class="seg" data-e3="l" aria-pressed="false">Height at the left</button>
+    <button class="seg" data-e3="m" aria-pressed="false">Height in the middle</button>
+    <button class="seg" data-e3="r" aria-pressed="false">Height at the right</button>
+  </div>
+  <p class="fb" id="e3g2">Choose one of the three and the rectangle it gives you will be drawn over the shape above.</p>
+</div>
+
+<p>Curves are a bit more complex. The height is different at every point along the way, so there is no single number to multiply by. Whichever height you pick is correct at one place and wrong everywhere else, which is why all three answers miss.</p>
+
+<p>But notice what went wrong. The height only causes trouble because it changes <em>across the width you are multiplying by</em>. Over a narrow enough strip it barely changes at all. So cut the shape into narrow strips, treat each one as a rectangle, and add them up:</p>
+
+<div class="widget">
+  <p class="wtitle">Cutting the shape into strips</p>
+  <div class="segs" role="group" aria-label="Number of strips">
+    <button class="seg" data-cut="1" aria-pressed="true">1 strip</button>
+    <button class="seg" data-cut="2" aria-pressed="false">2 strips</button>
+    <button class="seg" data-cut="4" aria-pressed="false">4 strips</button>
+    <button class="seg" data-cut="8" aria-pressed="false">8 strips</button>
+  </div>
+  <svg viewBox="0 0 430 220" role="img" aria-labelledby="e4t">
+    <title id="e4t">The same curved region cut into strips, each treated as a rectangle</title>
+    <g id="e4r"></g>
+    <path class="wedge" d="M95.0 130.0 L98.8 125.6 L102.5 121.2 L106.2 117.0 L110.0 112.9 L113.8 108.9 L117.5 105.0 L121.2 101.3 L125.0 97.6 L128.8 94.1 L132.5 90.6 L136.2 87.3 L140.0 84.1 L143.8 81.0 L147.5 78.0 L151.2 75.2 L155.0 72.4 L158.8 69.8 L162.5 67.2 L166.2 64.8 L170.0 62.5 L173.8 60.3 L177.5 58.2 L181.2 56.3 L185.0 54.4 L188.8 52.7 L192.5 51.0 L196.2 49.5 L200.0 48.1 L203.8 46.8 L207.5 45.6 L211.2 44.6 L215.0 43.6 L218.8 42.8 L222.5 42.0 L226.2 41.4 L230.0 40.9 L233.8 40.5 L237.5 40.2 L241.2 40.1 L245.0 40.0 L248.8 40.1 L252.5 40.2 L256.2 40.5 L260.0 40.9 L263.8 41.4 L267.5 42.0 L271.2 42.8 L275.0 43.6 L278.8 44.6 L282.5 45.6 L286.2 46.8 L290.0 48.1 L293.8 49.5 L297.5 51.0 L301.2 52.7 L305.0 54.4 L308.8 56.3 L312.5 58.2 L316.2 60.3 L320.0 62.5 L323.8 64.8 L327.5 67.2 L331.2 69.8 L335.0 72.4" />
+    <path class="dim" d="M95 186 L335 186" />
+    <path class="tick" d="M95 181 L95 191 M335 181 L335 191" />
+    <text class="dl" x="215" y="206">8 cm</text>
+  </svg>
+  <div class="cards">
+    <div class="card"><p class="k">Strips</p><p class="v" id="e4n">&mdash;</p></div>
+    <div class="card"><p class="k">Adding them up</p><p class="v" id="e4s">&mdash;</p></div>
+    <div class="card"><p class="k">How far off</p><p class="v" id="e4e">&mdash;</p></div>
+  </div>
+</div>
+
+<p>Every time you cut the strips in half, the leftover gaps get smaller and the total gets closer. Nothing here is new: each strip is worked out with the same multiplication you did on the very first shape. The only change is that you do it many times over and add up the results.</p>
+
+<div class="callout">
+  <span class="tag">The whole idea</span>
+  <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work out each strip as a rectangle, add them all up, then make the strips narrower still. That is integration, and everything that follows is either a demonstration that it works, a faster way to do it, or an example of it being used on something that is not a shape at all.</p>
+</div>
+
+<p>Before we make the strips infinitely thin, it is worth seeing the same idea in a case where nothing is thin, nothing is infinite, and no curves appear at all. That is the next section.</p>
+
+
+<h2 id="s2">2. Pocket money</h2>
+<p>Section 1 left us with strips we were about to make narrower and narrower. Hold that thought, because you have done all of this before, in pounds, at the kitchen table.</p>
+<p>Say you get pocket money every day. Some days more, some days less. Whatever you get goes into a jar, and the jar is never emptied. Here is a week of it &mdash; drag the slider to walk through the days.</p>
+
+<div class="widget">
+  <p class="wtitle">Bars and the jar</p>
+  <div class="ctrl">
+    <label for="w5d">Up to</label>
+    <input type="range" id="w5d" min="1" max="7" step="1" value="4" />
+    <span class="out" id="w5o">Wednesday</span>
+  </div>
+  <p class="cap">Money you got each day</p>
+  <div id="w5r1" style="display:flex;align-items:flex-end;gap:8px;height:112px;margin:0 0 18px" role="img" aria-labelledby="w5-fallback"></div>
+  <p class="cap">Money in the jar &mdash; the running total</p>
+  <div class="jarrow">
+    <svg class="jarsvg" viewBox="0 0 150 212" role="img" aria-labelledby="w5-fallback">
+      <defs>
+        <clipPath id="jarclip">
+          <path d="M25 45 Q25 31 43 29 L107 29 Q125 31 125 45 L125 175 Q125 185 115 185 L35 185 Q25 185 25 175 Z" />
+        </clipPath>
+      </defs>
+      <!-- contents, clipped to the inside of the glass -->
+      <g clip-path="url(#jarclip)">
+        <rect id="w5jFill" x="20" y="185" width="110" height="0"
+              fill="var(--accent)" fill-opacity="0.26" />
+        <rect id="w5jBand" x="20" y="185" width="110" height="0"
+              fill="var(--warm)" fill-opacity="0.55" />
+      </g>
+      <line id="w5jLine" x1="25" y1="185" x2="125" y2="185"
+            stroke="var(--warm)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0" />
+      <!-- the glass itself -->
+      <rect x="49" y="6" width="52" height="11" rx="3"
+            fill="var(--border2)" fill-opacity="0.55" stroke="var(--border2)" stroke-width="1.5" />
+      <path d="M56 17 L56 27 M94 17 L94 27" stroke="var(--border2)" stroke-width="1.5" fill="none" />
+      <path d="M22 44 Q22 28 42 26 L108 26 Q128 28 128 44 L128 176 Q128 188 116 188 L34 188 Q22 188 22 176 Z"
+            fill="none" stroke="var(--border2)" stroke-width="2.5" stroke-linejoin="round" />
+      <text id="w5jTot" x="75" y="207" text-anchor="middle"
+            font-family="Georgia,'Times New Roman',serif" font-size="17"
+            fill="var(--text)">&pound;0</text>
+      <text id="w5jInc" x="134" y="185" text-anchor="start"
+            font-family="Georgia,'Times New Roman',serif" font-size="13"
+            fill="var(--warm)" opacity="0"></text>
+    </svg>
+    <div id="w5r2" style="display:flex;align-items:flex-end;gap:8px;height:150px;margin:0" role="img" aria-labelledby="w5-fallback"></div>
+  </div>
+  <p class="sr-only" id="w5-fallback">Bar charts of daily pocket money and the running jar total. The readouts below show that subtracting neighbouring jar totals recovers today's money.</p>
+  <div class="cards">
+    <div class="card"><p class="k" id="w5yk">Jar before Wednesday</p><p class="v" id="w5y">&mdash;</p></div>
+    <div class="card"><p class="k" id="w5jk">Jar Wednesday</p><p class="v" id="w5j">&mdash;</p></div>
+    <div class="card"><p class="k">Difference</p><p class="v" id="w5f">&mdash;</p></div>
+    <div class="card"><p class="k" id="w5pk">Wednesday money</p><p class="v" id="w5p">&mdash;</p></div>
+  </div>
+  <p class="note" id="w5t"></p>
+</div>
+
+<p>Two questions come up about that jar, and between them they are the whole of calculus. Here is the first.</p>
+
+<div class="tryit">
+  <p class="q">Going one way</p>
+  <p class="ask">On <strong>Sunday</strong> you got &pound;3, on <strong>Monday</strong> &pound;5 and on <strong>Tuesday</strong> &pound;2. How much is in the jar at the end of Tuesday?</p>
+  <div class="answer">
+    <span class="unit">&pound;</span>
+    <input type="text" inputmode="decimal" id="p1i" aria-label="Amount in the jar at the end of Tuesday" placeholder="jar" />
+    <button type="button" class="go" id="p1b">Check</button>
+  </div>
+  <p class="fb" id="p1f"></p>
+</div>
+
+<p>You added the days up to get the jar. That is <strong>integration</strong>, and it is the same move you made in section 1 when you added the strips up to get the area. Now the other direction.</p>
+
+<div class="tryit">
+  <p class="q">Going the other way</p>
+  <p class="ask">Forget the daily amounts for a moment &mdash; suppose all you have is the jar. It held <strong>&pound;18</strong> at the end of Wednesday and <strong>&pound;22</strong> at the end of Thursday. How much did you get on Thursday?</p>
+  <div class="answer">
+    <span class="unit">&pound;</span>
+    <input type="text" inputmode="decimal" id="p2i" aria-label="Pocket money received on Thursday" placeholder="Thursday" />
+    <button type="button" class="go" id="p2b">Check</button>
+  </div>
+  <p class="fb" id="p2f"></p>
+</div>
+
+<p>You subtracted two jar readings to recover a single day. That is <strong>differentiation</strong>. And it should be obvious why the two undo each other: if you put &pound;8 into the jar and then ask how much the jar changed by, the answer has to be &pound;8. There is nothing to prove here.</p>
+
+<p>Now the part that is worth the trouble. Both routes are open to you, and one of them is much less work.</p>
+
+<div class="tryit">
+  <p class="q">Two routes, one answer</p>
+  <p class="ask">How much did you collect from <strong>Tuesday</strong> to <strong>Friday</strong>?</p>
+  <div class="answer">
+    <span class="unit">&pound;</span>
+    <input type="text" inputmode="decimal" id="p3i" aria-label="Total collected from Tuesday to Friday" placeholder="total" />
+    <button type="button" class="go" id="p3b">Check</button>
+  </div>
+  <p class="fb" id="p3f"></p>
+  <div class="segs" role="group" aria-label="Compare the two routes" style="margin-top:14px">
+    <button class="seg" data-route="long" aria-pressed="false">The long way</button>
+    <button class="seg" data-route="short" aria-pressed="false">The short way</button>
+  </div>
+  <p class="fb" id="p3r">Once you have the answer, compare how you could have got it.</p>
+</div>
+
+<p>The short way never looked at a single day's money. It read the jar twice and took the difference &mdash; four additions turned into one subtraction. That is the shortcut, and this is how it gets written down:</p>
+
+<div class="eq"><span class="intg"><span class="sgn">&int;</span><span class="lim"><span class="hi">b</span><span class="lo">a</span></span></span> f = F(b) &minus; F(a)<span class="lbl">the jar at the end, minus the jar at the start</span></div>
+
+<p>The symbols are new but nothing else is. <span class="math">f</span> is the daily money, <span class="math">F</span> is the jar, and <span class="math">a</span> and <span class="math">b</span> are the two days you read it on.</p>
+
+<div class="callout">
+  <span class="tag">The short version</span>
+  <p>The <strong>bars</strong> are the curve. The <strong>jar</strong> is the area underneath it.<br>
+  Filling the jar from the bars is <strong>integration</strong>.<br>
+  Getting one bar back out of the jar is <strong>differentiation</strong>.<br>
+  And for a run of several bars, don't add them up &mdash; read the jar twice and subtract.</p>
+</div>
+
+<p>The rest of the page is this picture with the days made thinner and thinner. Nothing else changes. Calculus isn't a new idea sitting on top of this one &mdash; it is this one, with the steps shrunk to nothing.</p>
+
+<h2 id="s3">3. Rectangles under a curve</h2>
+<p>Take a semicircle of radius 1. Its true area is <span class="math">&pi;/2 &asymp; 1.5708</span>, but suppose we did not know that and had to measure it using the slicing method described above.</p>
+
+<div class="widget">
+  <p class="wtitle">Riemann sums on a semicircle</p>
+  <div class="ctrl">
+    <label for="w1n">Rectangles</label>
+    <input type="range" id="w1n" min="1" max="200" step="1" value="6" />
+    <span class="out" id="w1o">6</span>
+  </div>
+  <div class="presets" role="group" aria-label="Jump to rectangle count">
+    <span class="plab">Jump</span>
+    <button type="button" class="preset" data-w1n="1">1</button>
+    <button type="button" class="preset" data-w1n="20">20</button>
+    <button type="button" class="preset" data-w1n="40">40</button>
+    <button type="button" class="preset" data-w1n="80">80</button>
+  </div>
+  <div class="cvwrap" style="height:250px">
+    <canvas id="w1c" role="img" aria-labelledby="w1-fallback"></canvas>
+    <p class="sr-only" id="w1-fallback">Live diagram of Riemann rectangles under a semicircle. See the rectangle sum, exact antiderivative value, and error readouts below.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Rectangle sum</p><p class="v" id="w1s">&mdash;</p></div>
+    <div class="card"><p class="k">Exact F(1)&minus;F(&minus;1)</p><p class="v" id="w1x">1.5708</p></div>
+    <div class="card"><p class="k">Error</p><p class="v" id="w1e">&mdash;</p></div>
+  </div>
+  <p class="note" id="w1t"></p>
+</div>
+
+<p>Each rectangle is drawn tall enough to cover the highest point the curve reaches within its own strip, so the whole staircase sits over the semicircle and the total always comes out too big. Two things to try:</p>
+<ul>
+  <li><strong>Start at 1 rectangle</strong> (use the jump buttons). A single rectangle gives 2.00 against a true area of 1.57, so it is about 27% over. That is the straight-edge answer applied to a shape that is not straight, and it fails for exactly the reason section 1 gave.</li>
+  <li><strong>Jump 20 &rarr; 40 &rarr; 80.</strong> Each time you double the number of rectangles, the overshoot roughly halves &mdash; 0.081, then 0.043, then 0.023. That relationship is what makes the method work, and section 4 shows why it holds.</li>
+</ul>
+<p>The overshoot never quite reaches zero at any particular number of rectangles, but you can make it as small as you like by using enough of them. The number all these totals are closing in on is what we call the integral.</p>
+<p>The middle card is not a number we looked up. It is the jar trick from section 2 applied to this curve: find the running total <span class="math">F</span>, read it at both ends, subtract. It is there so you have something to check the rectangles against.</p>
+
+<details>
+  <summary>Why is the total always too big?</summary>
+  <div class="ans"><p>Because on each strip the rectangle is given the <em>highest</em> height the curve reaches anywhere in that strip. The curve is at or below that height across the whole strip, so the rectangle always covers the region beneath it and a little more besides. Every strip overshoots, so the total overshoots.</p></div>
+</details>
+<details>
+  <summary>If every total is too big, how can the answer ever be exact?</summary>
+  <div class="ans"><p>No individual sum is exact &mdash; every one of them is genuinely too big. The integral isn't any one of those sums; it is the number they close in on. The definition contains a limit, and the limit is exact even though no member of the sequence is.</p></div>
+</details>
+<details>
+  <summary>Where does 1.5708 come from without memorising &pi;/2?</summary>
+  <div class="ans"><p>An antiderivative of <span class="math">&radic;(1&minus;x&sup2;)</span> is <span class="math">F(x) = (x&radic;(1&minus;x&sup2;) + arcsin x)/2</span>. Then <span class="math">F(1) = (0 + &pi;/2)/2 = &pi;/4</span> and <span class="math">F(&minus;1) = (0 &minus; &pi;/2)/2 = &minus;&pi;/4</span>, so <span class="math">F(1) &minus; F(&minus;1) = &pi;/2</span>. That is the same number the rectangles are working towards, but here it took a single calculation.</p></div>
+</details>
+
+<h2 id="s4">4. Why it converges</h2>
+<p>Because each rectangle is tall enough to cover the highest point of its strip, a thin wedge of it pokes out above the curve. Those wedges are roughly triangular, and together they are exactly the overshoot you saw in section 3. You might reasonably worry that using more rectangles means more wedges, so the error would build up rather than shrink. It does not, and this section explains why.</p>
+
+<div class="widget">
+  <p class="wtitle">One strip, magnified</p>
+  <div class="ctrl">
+    <label for="w2k">Halve the width</label>
+    <input type="range" id="w2k" min="0" max="6" step="1" value="0" />
+    <span class="out" id="w2o">5 rects</span>
+  </div>
+  <p class="cap">Whole semicircle &mdash; every rectangle, zoom window marked</p>
+  <div class="cvwrap" style="height:120px">
+    <canvas id="w2a" role="img" aria-labelledby="w2-fallback"></canvas>
+  </div>
+  <p class="cap">Zoomed into one strip</p>
+  <div class="cvwrap" style="height:190px">
+    <canvas id="w2b" role="img" aria-labelledby="w2-fallback"></canvas>
+    <p class="sr-only" id="w2-fallback">Diagram comparing a full semicircle Riemann sum with a magnified view of one overshoot wedge. Readouts show strip width, one wedge area, and total error.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Rectangles</p><p class="v" id="w2n">&mdash;</p><p class="k" id="w2nt" style="color:var(--accent)">&nbsp;</p></div>
+    <div class="card"><p class="k">Width w</p><p class="v" id="w2w">&mdash;</p><p class="k" id="w2wt" style="color:var(--accent)">&nbsp;</p></div>
+    <div class="card"><p class="k">One wedge</p><p class="v" id="w2s">&mdash;</p><p class="k" id="w2st" style="color:var(--accent)">&nbsp;</p></div>
+    <div class="card"><p class="k">Total error</p><p class="v" id="w2e">&mdash;</p><p class="k" id="w2et" style="color:var(--accent)">&nbsp;</p></div>
+  </div>
+  <p class="note" id="w2t"></p>
+</div>
+
+<p>Each wedge is roughly a triangle, so its area is about <span class="math">&frac12; &middot; w &middot; &Delta;h</span>, where <span class="math">w</span> is the width of the strip and <span class="math">&Delta;h</span> is how far the curve falls across it. If you halve the strip width, <em>two</em> things shrink at the same time. The width <span class="math">w</span> halves, and so does <span class="math">&Delta;h</span>, because a narrower strip covers a shorter piece of curve and the curve has less room to fall.</p>
+
+<table>
+  <tr><th>Halvings</th><th>Width</th><th>One wedge</th><th>Count</th><th>Total error</th></tr>
+  <tr><td class="n">0</td><td class="n">w</td><td class="n">s</td><td class="n">n</td><td class="n">n&middot;s</td></tr>
+  <tr><td class="n">1</td><td class="n">w/2</td><td class="n">s/4</td><td class="n">2n</td><td class="n">n&middot;s/2</td></tr>
+  <tr><td class="n">2</td><td class="n">w/4</td><td class="n">s/16</td><td class="n">4n</td><td class="n">n&middot;s/4</td></tr>
+</table>
+
+<p>Because both <span class="math">w</span> and <span class="math">&Delta;h</span> halve, each wedge shrinks to a <strong>quarter</strong> of its previous area, while the number of wedges only <strong>doubles</strong>. Shrinking by four while multiplying by two leaves you with half the total error. So every time you halve the strip width, the error halves as well, and it goes to zero.</p>
+
+<details>
+  <summary>Why does &Delta;h halve when the width halves?</summary>
+  <div class="ans"><p>Over a short stretch, a smooth curve is close to a straight line with some slope <span class="math">m</span>. For a straight line, the change in height is the slope times the run, so <span class="math">&Delta;h &asymp; m&middot;w</span>. Halve the run and the height change halves with it. Since the wedge's area depends on both the width and that height change, halving the width brings both down, and the area drops to a quarter.</p></div>
+</details>
+
+<div class="callout">
+  <span class="tag">Where that leaves us</span>
+  <p>Cut the shape into strips narrow enough that the height barely changes across any one of them. Work each strip out as a rectangle, the way you did with the very first shape on this page. Add them up, then make the strips narrower still. Section 2 showed those two moves &mdash; building a total up and taking one back apart &mdash; in whole pounds, and this section showed that the error really does shrink away rather than piling up.</p>
+</div>
+
+<p>Everything else in calculus is machinery built on top of that: quicker ways to find the running total, ways of proving it behaves for badly behaved curves, and the same slicing applied to volumes, forces and probabilities rather than areas. The machinery gets large. The idea does not get any bigger than this.</p>
+
+<footer>
+  <p>This page began with the question "is integration just a complicated way of finding the area of shapes?"<br>
+  It opens in any browser and needs no internet connection, because every diagram is drawn on your own machine.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+"use strict";
+var draws=[];
+function reg(fn){draws.push(fn);}
+function redrawAll(){
+  for(var i=0;i<draws.length;i++){
+    try{draws[i]();}catch(e){if(window.console&&console.warn){console.warn('widget '+i+' failed',e);}}
+  }
+}
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+function P(){
+  var d=isDark();
+  return {area:d?'#0c447c':'#e6f1fb',rect:d?'#378add':'#85b7eb',rect2:d?'#185fa5':'#b5d4f4',
+    sliv:d?'#993c1d':'#f5c4b3',line:d?'#b5d4f4':'#185fa5',warm:d?'#ef9f27':'#ba7517',
+    axis:d?'#4a4a45':'#c3c2b7',ink:d?'#898781':'#898781',off:d?'#2c2c2a':'#e8e6de',
+    txt:d?'#b5d4f4':'#0c447c'};
+}
+function fit(cv){
+  var w=cv.parentNode.clientWidth,h=cv.parentNode.clientHeight,dp=window.devicePixelRatio||1;
+  cv.width=Math.max(w*dp,1);cv.height=Math.max(h*dp,1);
+  cv.style.width=w+'px';cv.style.height=h+'px';
+  var c=cv.getContext('2d');c.setTransform(dp,0,0,dp,0,0);c.clearRect(0,0,w,h);
+  return {c:c,W:w,H:h};
+}
+function semi(x){var v=1-x*x;return v>0?Math.sqrt(v):0;}
+function semiF(x){
+  var s=semi(x);
+  return (x*s+Math.asin(Math.max(-1,Math.min(1,x))))/2;
+}
+function seg(attr,cb){
+  var bs=document.querySelectorAll('[data-'+attr+']');
+  for(var i=0;i<bs.length;i++){
+    (function(b){
+      b.addEventListener('click',function(){
+        for(var j=0;j<bs.length;j++){bs[j].setAttribute('aria-pressed','false');}
+        b.setAttribute('aria-pressed','true');
+        cb(b.getAttribute('data-'+attr));
+      });
+    })(bs[i]);
+  }
+}
+function txt(id,v){var e=document.getElementById(id);if(e){e.textContent=v;}}
+function setFallback(id,msg){var e=document.getElementById(id);if(e){e.textContent=msg;}}
+function num(v){
+  v=String(v).replace(/[, ]/g,'').replace(/cm2|cm²|£|\$/gi,'').trim();
+  if(v==='')return null;
+  var n=parseFloat(v);
+  return isFinite(n)?n:null;
+}
+function say(id,cls,html){
+  var e=document.getElementById(id);
+  if(!e)return;
+  e.className='fb'+(cls?' '+cls:'');
+  e.innerHTML=html;
+}
+/* A question with a box to type in. o.near lets a specific wrong answer get
+   its own reply, which is usually more useful than a generic "not quite". */
+function exercise(o){
+  var inp=document.getElementById(o.input),btn=document.getElementById(o.check),
+      hint=o.hint?document.getElementById(o.hint):null,i;
+  if(!inp||!btn)return;
+  function check(){
+    var v=num(inp.value);
+    if(v===null){say(o.fb,'','Type a number in the box, then press Check.');return;}
+    if(Math.abs(v-o.answer)<0.01){say(o.fb,'good',o.right);if(o.onRight){o.onRight();}return;}
+    if(o.near){
+      for(i=0;i<o.near.length;i++){
+        if(Math.abs(v-o.near[i].value)<0.01){say(o.fb,'bad',o.near[i].msg);return;}
+      }
+    }
+    say(o.fb,'bad',o.wrong);
+  }
+  btn.addEventListener('click',check);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();check();}});
+  if(hint){hint.addEventListener('click',function(){say(o.fb,'',o.reveal);});}
+}
+
+/* ---------- 0a. Area exercises ---------- */
+(function(){
+  var CURVE_TRUE=21.44;
+  function fc(x){return 1+0.9*x-0.09*x*x;}
+  exercise({
+    input:'e1i',check:'e1b',hint:'e1h',fb:'e1f',answer:40,
+    right:'Correct. <span class="eqn">area = height &times; width = 5 &times; 8 = 40</span> cm&sup2;. One multiplication and you are done.',
+    wrong:'Not quite. The height is the same the whole way across, so multiply that height by the width.',
+    reveal:'For a rectangle, <span class="eqn">area = height &times; width</span>, so <span class="eqn">5 &times; 8 = 40</span> cm&sup2;.'
+  });
+  exercise({
+    input:'e2i',check:'e2b',hint:'e2h',fb:'e2f',answer:30,
+    near:[{value:60,msg:'That is the area of the rectangle you would get by boxing the triangle in. The triangle is exactly half of it, so halve your answer.'}],
+    right:'Correct. <span class="eqn">area = &#189; &times; base &times; height = &#189; &times; 10 &times; 6 = 30</span> cm&sup2;. One extra step, but the same kind of calculation.',
+    wrong:'Not quite. A triangle is half of the rectangle that would box it in, so multiply the base by the height and halve it.',
+    reveal:'For a triangle, <span class="eqn">area = &#189; &times; base &times; height</span>, so <span class="eqn">&#189; &times; 10 &times; 6 = 30</span> cm&sup2;.'
+  });
+  (function(){
+    var inp=document.getElementById('e3i'),btn=document.getElementById('e3b');
+    if(!inp||!btn)return;
+    function check(){
+      var v=num(inp.value);
+      if(v===null){say('e3f','','There is no formula for this one, which is rather the point. Try the three heights below.');return;}
+      if(Math.abs(v-CURVE_TRUE)<0.5){
+        say('e3f','good','That is right, and you must already know how it is done — the area is '+CURVE_TRUE.toFixed(2)+' cm&sup2;. The rest of this section is about where that number comes from.');
+      }else{
+        say('e3f','bad','No formula was given for this shape, because it does not have one. Have a look at what goes wrong when you try to use a single height.');
+      }
+    }
+    btn.addEventListener('click',check);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();check();}});
+  })();
+  (function(){
+    var g=document.getElementById('e3g');
+    if(!g)return;
+    var opt={l:{x:0,name:'left edge'},m:{x:4,name:'middle'},r:{x:8,name:'right edge'}};
+    seg('e3',function(k){
+      var o=opt[k],h=fc(o.x),est=h*8,base=170,sy=40;
+      g.setAttribute('y',String(base-h*sy));
+      g.setAttribute('height',String(h*sy));
+      var diff=est-CURVE_TRUE,
+          dir=diff>0?'too big':'too small',
+          pct=Math.abs(diff)/CURVE_TRUE*100;
+      say('e3g2',diff>0?'bad':'bad',
+        'Using the height at the '+o.name+': <span class="eqn">'+h.toFixed(2)+' &times; 8 = '+est.toFixed(2)+
+        '</span> cm&sup2;. The true area is '+CURVE_TRUE.toFixed(2)+' cm&sup2;, so this is '+dir+
+        ' by '+Math.abs(diff).toFixed(2)+' cm&sup2; — about '+pct.toFixed(0)+'%.');
+    });
+  })();
+  (function(){
+    var g=document.getElementById('e4r');
+    if(!g)return;
+    var X0=0,X1=8,PX0=95,PX1=335,BASE=170,SY=40;
+    function pxs(x){return PX0+(x-X0)/(X1-X0)*(PX1-PX0);}
+    function draw(n){
+      while(g.firstChild){g.removeChild(g.firstChild);}
+      var w=(X1-X0)/n,sum=0,i,r;
+      for(i=0;i<n;i++){
+        var x=X0+i*w,h=fc(x);
+        sum+=h*w;
+        r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        r.setAttribute('x',String(pxs(x)));
+        r.setAttribute('y',String(BASE-h*SY));
+        r.setAttribute('width',String(pxs(x+w)-pxs(x)));
+        r.setAttribute('height',String(h*SY));
+        r.setAttribute('fill','var(--accentline)');
+        r.setAttribute('fill-opacity','0.16');
+        r.setAttribute('stroke','var(--accent)');
+        r.setAttribute('stroke-width','1.5');
+        r.setAttribute('stroke-linejoin','round');
+        g.appendChild(r);
+      }
+      txt('e4n',String(n)+(n===1?' strip':' strips'));
+      txt('e4s',sum.toFixed(2)+' cm²');
+      txt('e4e',(Math.abs(sum-CURVE_TRUE)/CURVE_TRUE*100).toFixed(0)+'% short');
+    }
+    seg('cut',function(v){draw(+v);});
+    draw(1);
+  })();
+})();
+
+/* ---------- 1. Riemann sums ---------- */
+(function(){
+  /* One kind of rectangle only: each one is tall enough to cover the highest
+     point of the curve in its own strip. That always has a height to draw, so
+     the picture always shows exactly as many rectangles as the slider says.
+     (Taking the lowest point instead gives zero-height rectangles at the ends
+     of the semicircle, which is why the count appeared to disagree.) */
+  var cv=document.getElementById('w1c'),sl=document.getElementById('w1n');
+  var exact=semiF(1)-semiF(-1);
+  function syncPresets(){
+    var n=+sl.value,ps=document.querySelectorAll('[data-w1n]');
+    for(var i=0;i<ps.length;i++){
+      ps[i].setAttribute('aria-pressed',(+ps[i].getAttribute('data-w1n')===n)?'true':'false');
+    }
+  }
+  function draw(){
+    var f=fit(cv),c=f.c,W=f.W,H=f.H,p=P(),pad=18,base=H-26;
+    var sx=function(x){return pad+(x+1)/2*(W-2*pad);};
+    var sy=function(y){return base-y*(base-pad);};
+    c.beginPath();c.moveTo(sx(-1),sy(0));
+    for(var i=0;i<=400;i++){var x=-1+2*i/400;c.lineTo(sx(x),sy(semi(x)));}
+    c.closePath();c.fillStyle=p.area;c.fill();
+    var n=+sl.value,w=2/n,S=0;
+    c.fillStyle=p.rect;
+    for(var k=0;k<n;k++){
+      var a=(k===0)?-1:-1+k*w,b=(k===n-1)?1:-1+(k+1)*w,h;
+      /* tallest point of the curve on [a,b]; the peak sits at x=0 */
+      h=(a<=0&&b>=0)?1:Math.max(semi(a),semi(b));
+      S+=h*w;
+      var t=sy(h);
+      c.fillRect(sx(a)+0.5,t,Math.max(sx(b)-sx(a)-1,0.6),sy(0)-t);
+    }
+    c.beginPath();
+    for(var j=0;j<=400;j++){var xx=-1+2*j/400,px=sx(xx),py=sy(semi(xx));if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
+    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(sx(-1),sy(0));c.lineTo(sx(1),sy(0));c.stroke();
+    c.fillStyle=p.ink;c.font='11px sans-serif';c.textAlign='center';
+    c.fillText('-1',sx(-1),base+16);c.fillText('0',sx(0),base+16);c.fillText('1',sx(1),base+16);
+    var e=Math.abs(exact-S);
+    txt('w1o',n);txt('w1s',S.toFixed(4));txt('w1x',exact.toFixed(4));txt('w1e',e.toFixed(4));
+    txt('w1t','With '+n+' rectangle'+(n===1?'':'s')+', each is '+(2/n).toFixed(3)+
+      ' wide and the total is '+(e/exact*100).toFixed(2)+'% above the true area of π/2.');
+    setFallback('w1-fallback','Riemann sum with '+n+
+      ' rectangles covering a unit semicircle. Sum '+S.toFixed(4)+', exact antiderivative '+exact.toFixed(4)+
+      ', overshoot '+e.toFixed(4)+'.');
+    syncPresets();
+  }
+  sl.addEventListener('input',draw);
+  var presets=document.querySelectorAll('[data-w1n]');
+  for(var i=0;i<presets.length;i++){
+    (function(b){
+      b.addEventListener('click',function(){
+        sl.value=b.getAttribute('data-w1n');
+        draw();
+      });
+    })(presets[i]);
+  }
+  reg(draw);
+})();
+
+/* ---------- 2. Overshoot wedge zoom ---------- */
+(function(){
+  var ov=document.getElementById('w2a'),zm=document.getElementById('w2b'),sl=document.getElementById('w2k');
+  var x0=0.5,xa=0.44,xb=0.98,ya=0.14,yb=0.92;
+  /* same convention as section 3: each rectangle covers the tallest point of its strip */
+  function covering(n){var w=2/n,S=0;for(var i=0;i<n;i++){var a=-1+i*w,b=a+w;
+    S+=((a<=0&&b>=0)?1:Math.max(semi(a),semi(b)))*w;}return S;}
+  function draw(){
+    var k=+sl.value,w=0.4/Math.pow(2,k),n=Math.round(2/w),p=P();
+    var f1=fit(ov),c=f1.c,W=f1.W,H=f1.H,pad=12,base=H-18;
+    var sx=function(x){return pad+(x+1)/2*(W-2*pad);};
+    var sy=function(y){return base-y*(base-pad);};
+    c.beginPath();c.moveTo(sx(-1),sy(0));
+    for(var i=0;i<=400;i++){var x=-1+2*i/400;c.lineTo(sx(x),sy(semi(x)));}
+    c.closePath();c.fillStyle=p.area;c.fill();
+    c.fillStyle=p.rect;
+    for(var q=0;q<n;q++){
+      var a=-1+q*w,b=a+w,h=(a<=0&&b>=0)?1:Math.max(semi(a),semi(b)),t=sy(h);
+      c.fillRect(sx(a),t,Math.max(sx(b)-sx(a)-(n>80?0:0.6),0.5),sy(0)-t);
+    }
+    c.beginPath();
+    for(var j=0;j<=400;j++){var xx=-1+2*j/400,px=sx(xx),py=sy(semi(xx));if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
+    c.strokeStyle=p.line;c.lineWidth=1.5;c.stroke();
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(sx(-1),sy(0));c.lineTo(sx(1),sy(0));c.stroke();
+    c.strokeStyle=p.warm;c.lineWidth=1.5;
+    c.strokeRect(sx(xa),pad-4,sx(xb)-sx(xa),base-pad+8);
+    c.fillStyle=p.warm;c.font='11px sans-serif';c.textAlign='left';
+    c.fillText('zoom',sx(xa)+4,pad+6);
+
+    var f2=fit(zm),z=f2.c,W2=f2.W,H2=f2.H,pd=14,bs=H2-22;
+    var zx=function(x){return pd+(x-xa)/(xb-xa)*(W2-2*pd);};
+    var zy=function(y){return bs-(y-ya)/(yb-ya)*(bs-pd);};
+    var hTop=semi(x0),dh=hTop-semi(x0+w),xL=zx(x0),xR=zx(x0+w),yT=zy(hTop);
+    z.fillStyle=p.rect;z.fillRect(xL,yT,Math.max(xR-xL,1.2),bs-yT);
+    /* the overshoot: flat top above, curve below */
+    z.beginPath();z.moveTo(xL,yT);z.lineTo(xR,yT);
+    for(var m=120;m>=0;m--){var xm=x0+w*m/120;z.lineTo(zx(xm),zy(semi(xm)));}
+    z.closePath();z.fillStyle=p.sliv;z.fill();
+    z.beginPath();
+    for(var r=0;r<=400;r++){var xr=xa+(xb-xa)*r/400,rx=zx(xr),ry=zy(semi(xr));if(r){z.lineTo(rx,ry);}else{z.moveTo(rx,ry);}}
+    z.strokeStyle=p.line;z.lineWidth=2;z.lineJoin='round';z.stroke();
+    z.strokeStyle=p.axis;z.lineWidth=1;
+    z.beginPath();z.moveTo(pd,bs);z.lineTo(W2-pd,bs);z.stroke();
+    z.setLineDash([3,3]);
+    z.beginPath();z.moveTo(xL,zy(semi(x0+w)));z.lineTo(Math.max(xR,xL+1),zy(semi(x0+w)));z.stroke();
+    z.setLineDash([]);
+    z.fillStyle=p.ink;z.font='11px sans-serif';z.textAlign='left';
+    z.fillText('height drop = '+dh.toFixed(4),Math.min(xR+8,W2-pd-96),zy(semi(x0+w))-4);
+    z.textAlign='center';
+    z.fillText('w = '+w.toFixed(4),Math.min(Math.max(xL+(xR-xL)/2,pd+32),W2-pd-32),bs+15);
+
+    var sv=0,M=400;
+    for(var s=0;s<M;s++){sv+=(hTop-semi(x0+w*(s+0.5)/M))*(w/M);}
+    var err=covering(n)-Math.PI/2;
+    txt('w2o',n+' rects');
+    txt('w2n',n);txt('w2w',w.toFixed(4));txt('w2s',sv.toExponential(2));txt('w2e',err.toFixed(5));
+    txt('w2nt',k?'× '+Math.pow(2,k):'\u00a0');
+    txt('w2wt',k?'÷ '+Math.pow(2,k):'\u00a0');
+    txt('w2st',k?'÷ ~'+Math.pow(4,k):'\u00a0');
+    txt('w2et',k?'÷ ~'+Math.pow(2,k):'\u00a0');
+    txt('w2t',n+' rectangles, each '+w.toFixed(4)+' wide. Every one pokes out by about '+
+      sv.toExponential(2)+', and all '+n+' together make up the '+err.toFixed(5)+' overshoot.');
+    setFallback('w2-fallback',n+' rectangles of width '+w.toFixed(4)+
+      '. One wedge about '+sv.toExponential(2)+'; total overshoot '+err.toFixed(5)+'.');
+  }
+  sl.addEventListener('input',draw);
+  reg(draw);
+})();
+
+/* ---------- 5a. Pocket money exercises ---------- */
+(function(){
+  exercise({
+    input:'p1i',check:'p1b',fb:'p1f',answer:10,
+    near:[{value:3,msg:'That is Sunday on its own. The jar keeps everything, so Monday and Tuesday go in on top of it.'},
+          {value:8,msg:'Close — that is Sunday and Monday. Tuesday still has to go in.'},
+          {value:2,msg:'That is Tuesday on its own. The jar is never emptied, so Sunday and Monday are still in there too.'}],
+    right:'Correct. <span class="eqn">3 + 5 + 2 = 10</span>. You added the days up to get the jar.',
+    wrong:'Not quite. The jar is never emptied, so add all three days together.'
+  });
+  exercise({
+    input:'p2i',check:'p2b',fb:'p2f',answer:4,
+    near:[{value:40,msg:'You added the two readings. The jar already contained the &pound;18, so to find what Thursday added you need the difference, not the sum.'},
+          {value:22,msg:'That is the whole jar at the end of Thursday, which includes every day before it. You only want the bit Thursday put in.'}],
+    right:'Correct. <span class="eqn">22 &minus; 18 = 4</span>. You never saw Thursday directly — you recovered it from the jar.',
+    wrong:'Not quite. The difference between the two readings is exactly what Thursday put in.'
+  });
+  exercise({
+    input:'p3i',check:'p3b',fb:'p3f',answer:20,
+    near:[{value:28,msg:'That is the jar at the end of Friday, but it includes Sunday and Monday as well. You only want Tuesday to Friday.'},
+          {value:29,msg:'That is the whole week. Tuesday to Friday only.'}],
+    right:'Correct, &pound;20. Now look at the two buttons below — there were two ways to get there.',
+    wrong:'Not quite. Tuesday to Friday were &pound;2, &pound;8, &pound;4 and &pound;6.'
+  });
+  seg('route',function(k){
+    if(k==='long'){
+      say('p3r','','Add the four days: <span class="eqn">2 + 8 + 4 + 6 = 20</span>. Four numbers, three additions.');
+    }else{
+      say('p3r','good','Read the jar twice: <span class="eqn">28 &minus; 8 = 20</span>. The jar held &pound;28 at the end of Friday and &pound;8 at the end of Monday. One subtraction, and you never looked at a daily amount.');
+    }
+  });
+})();
+
+/* ---------- 5. Pocket money ---------- */
+(function(){
+  var pay=[3,5,2,8,4,6,1],tot=[],run=0;
+  var DAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  for(var i=0;i<pay.length;i++){run+=pay[i];tot.push(run);}
+  var sl=document.getElementById('w5d'),r1=document.getElementById('w5r1'),r2=document.getElementById('w5r2');
+  function row(el,vals,max,sel,p){
+    el.innerHTML='';
+    for(var i=0;i<vals.length;i++){
+      var on=i<sel;
+      var col=document.createElement('div');
+      col.style.cssText='flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px';
+      var val=document.createElement('div');
+      val.style.cssText='font-size:11px;font-variant-numeric:tabular-nums;color:'+(on?p.txt:'var(--faint)');
+      val.textContent='\u00a3'+vals[i];
+      var bar=document.createElement('div');
+      bar.style.cssText='width:100%;border-radius:4px 4px 0 0;height:'+
+        Math.max(vals[i]/max*70,3)+'px;background:'+(on?p.rect:p.off);
+      var lab=document.createElement('div');
+      lab.style.cssText='font-size:11px;color:var(--faint)';
+      lab.textContent=SHORT[i];
+      col.appendChild(val);col.appendChild(bar);col.appendChild(lab);el.appendChild(col);
+    }
+  }
+  /* Fill level inside the glass: yBot when empty, yTop at the week's total. */
+  var JY_BOT=185,JY_TOP=40,JMAX=tot[tot.length-1];
+  function level(v){return JY_BOT-(v/JMAX)*(JY_BOT-JY_TOP);}
+  function jar(prevTot,curTot,inc){
+    var yPrev=level(prevTot),yCur=level(curTot),
+        f=document.getElementById('w5jFill'),b=document.getElementById('w5jBand'),
+        ln=document.getElementById('w5jLine'),it=document.getElementById('w5jInc'),
+        tt=document.getElementById('w5jTot');
+    if(!f)return;
+    /* everything banked before today */
+    f.setAttribute('y',String(yPrev));
+    f.setAttribute('height',String(Math.max(JY_BOT-yPrev,0)));
+    /* today's money, sitting on top so the gap is the thing you notice */
+    b.setAttribute('y',String(yCur));
+    b.setAttribute('height',String(Math.max(yPrev-yCur,0)));
+    ln.setAttribute('y1',String(yPrev));ln.setAttribute('y2',String(yPrev));
+    ln.setAttribute('opacity',prevTot>0?'1':'0');
+    it.setAttribute('y',String((yPrev+yCur)/2+4));
+    it.setAttribute('opacity',inc>0?'1':'0');
+    it.textContent='+£'+inc;
+    tt.textContent='£'+curTot;
+  }
+  function draw(){
+    var k=+sl.value,p=P();
+    row(r1,pay,8,k,p);row(r2,tot,29,k,p);
+    var jy=k>1?tot[k-2]:0,jt=tot[k-1],today=DAY[k-1],prev=k>1?DAY[k-2]:'the start of the week';
+    jar(jy,jt,pay[k-1]);
+    txt('w5o',today);
+    txt('w5yk','Jar before '+today);txt('w5jk','Jar '+today);txt('w5pk',today+' money');
+    txt('w5y','\u00a3'+jy);txt('w5j','\u00a3'+jt);
+    txt('w5f','\u00a3'+(jt-jy));txt('w5p','\u00a3'+pay[k-1]);
+    txt('w5t','Add up Sunday to '+today+' and you get \u00a3'+jt+
+      '. Subtract the jar on '+prev+' from the jar on '+today+
+      ' and you get back that day\u2019s \u00a3'+pay[k-1]+'. Adding and subtracting undo each other.');
+    setFallback('w5-fallback','Through '+today+': jar is \u00a3'+jt+
+      '. '+today+' minus '+prev+' is \u00a3'+(jt-jy)+', matching '+today+'\u2019s \u00a3'+pay[k-1]+'.');
+  }
+  sl.addEventListener('input',draw);
+  reg(draw);
+})();
+
+/* ---------- theme + nav ---------- */
+(function(){
+  var btn=document.getElementById('themebtn');
+  var stored=null;
+  try{stored=window.localStorage?localStorage.getItem('int-theme'):null;}catch(e){stored=null;}
+  var init=stored||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  function apply(t){
+    document.documentElement.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?'Light':'Dark';
+    redrawAll();
+  }
+  apply(init);
+  btn.addEventListener('click',function(){
+    var t=isDark()?'light':'dark';
+    try{if(window.localStorage){localStorage.setItem('int-theme',t);}}catch(e){}
+    apply(t);
+  });
+
+  var links=document.querySelectorAll('nav a'),heads=[];
+  for(var i=0;i<links.length;i++){
+    var h=document.getElementById(links[i].getAttribute('href').slice(1));
+    if(h){heads.push({a:links[i],h:h});}
+  }
+  function spy(){
+    var best=null,y=window.pageYOffset+120;
+    for(var i=0;i<heads.length;i++){
+      if(heads[i].h.offsetTop<=y){best=heads[i];}
+    }
+    for(var j=0;j<heads.length;j++){heads[j].a.className=(heads[j]===best)?'on':'';}
+  }
+  window.addEventListener('scroll',spy);spy();
+})();
+
+var rt;
+window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(redrawAll,120);});
+redrawAll();
+})();
+</script>
+</body>
+</html>
