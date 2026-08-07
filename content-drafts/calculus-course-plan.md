@@ -1,10 +1,10 @@
 # Calculus course — the full arc
 
 Working plan. Thompson's *Calculus Made Easy* (1910, public domain) is the **syllabus**,
-not the text. We follow his teaching order where it earns its place and write every
-chapter ourselves, in the voice established on the two existing pages.
+not the text. We follow his teaching order and write every chapter ourselves, in the
+voice established on the two existing pages.
 
-Nothing here is built yet except pages 1 and 2.
+Nothing here is built except the two integration pages, which now sit late in the order.
 
 ---
 
@@ -13,8 +13,8 @@ Nothing here is built yet except pages 1 and 2.
 - The uploaded PDF is a Google Books scan: 296 pages, second edition, prefaced Oct 1914.
 - **It has no text layer.** 295 of 296 pages are bilevel scans. OCR of the contents page
   at 300 dpi is clean; body pages with fractions and subscripts will not be. Do not plan
-  any workflow that depends on OCRing the maths.
-- If his actual wording is ever needed, source a proofread transcription rather than
+  any workflow that depends on OCRing the mathematics.
+- If his actual wording is ever wanted, source a proofread transcription rather than
   OCRing this scan.
 - Copyright expired. Using the chapter progression is unproblematic; we are not
   reproducing his prose.
@@ -48,23 +48,33 @@ Nothing here is built yet except pages 1 and 2.
 
 ---
 
-## The one structural decision
+## Order: differentiation first
 
-**Thompson teaches differentiation first and integration last. We have done the
-opposite, and should keep going that way.**
+**Settled.** Differentiation comes first, integration second, as Thompson has it and as
+almost every course has it since. The reasons are good ones:
 
-His order is the traditional one. Ours happened by accident and turned out better for
-this audience, for three reasons:
+- Differentiating is mechanically easier than integrating. The reader gets to *do*
+  something correctly within the first page or two, instead of approximating.
+- Rates of change are the more fundamental idea. Integration is best understood as
+  undoing one, and undoing is hard to motivate before the thing being undone exists.
+- The fundamental theorem is a genuine surprise when both operations are already
+  familiar and apparently unrelated. Introduced early it is just a definition.
 
-1. Totals are more intuitive than rates. A jar filling up and a train covering ground
-   need no setup. "Rate of change at an instant" needs a limit before it means anything.
-2. The jar in page 1 already teaches differentiation without naming it. Subtracting two
-   readings *is* a derivative. The ground is prepared.
-3. Page 2 §5 already derives `A′ = f` and expands `(x+h)³`. Differentiation is now
-   demanded by what we have built, which is the best possible reason to introduce it.
+The two existing pages therefore move to positions **7 and 8**.
 
-So: **integration → rates → what rates are for → the two together → harder functions.**
-Thompson's chapters get redistributed accordingly.
+### What that costs, and it is small
+
+The existing pages were written to assume nothing, which turns out to be a virtue: they
+still work wherever they sit. Three small edits when we get there.
+
+1. Page 7 opens by promising "nothing is assumed beyond multiplying and adding." True
+   but odd as the seventh page. Reword to acknowledge what came before.
+2. Page 7's jar names subtraction as differentiation. That becomes a moment of
+   recognition rather than a reveal, which is better, but the wording should change from
+   introducing the word to pointing out that they already know it.
+3. Page 8 §5 derives `A′ = f` from scratch. With differentiation already taught this
+   becomes a short application rather than a from-scratch argument, and the
+   `(x+h)³` expansion in it moves earlier, to page 2 where it belongs.
 
 ---
 
@@ -72,139 +82,163 @@ Thompson's chapters get redistributed accordingly.
 
 | Page | Title | Thompson | Status |
 |---|---|---|---|
-| 1 | Integration — an introduction | XVII, XIX | **built** |
-| 2 | Integration, algebraically | XVIII, and I for notation | **built** |
-| 3 | Rates | II, III | planned |
-| 4 | The rules | IV, V, VI, VII, IX | planned |
-| 5 | Slope and shape | X, XII | planned |
+| 1 | What the symbols mean | I | planned |
+| 2 | Degrees of smallness | II | planned |
+| 3 | Rates of change | III, IV | planned |
+| 4 | The rules | V, VI, VII, IX | planned |
+| 5 | Slope, shape and time | VIII, X, XII | planned |
 | 6 | Finding the best | XI | planned |
-| 7 | The two halves | XVIII again, properly | planned |
-| 8 | Growth that feeds itself | XIV | planned |
-| 9 | Things that go round | XV | planned |
-| 10 | Harder integrals | XIII, XX | optional |
-| 11 | Equations about change | XXI | optional |
-| — | Partial differentiation | XVI | probably drop |
+| 7 | Integration — an introduction | XVII, XIX | **built**, needs reframing |
+| 8 | Integration, algebraically | XVIII | **built**, needs trimming |
+| 9 | The two halves | XVIII, XIX | planned |
+| 10 | Growth and waves | XIV, XV | planned |
+| 11 | Harder integrals and equations | XIII, XX, XXI | optional |
+| — | Partial differentiation | XVI | dropped |
 
 ---
 
 ## Page by page
 
-Each page follows the shape that worked: a concrete situation first, hand
-calculations the reader performs, one question arithmetic cannot answer, then a widget
-that repeats their own work faster. No page may depend on remembering another page in
-order to answer a question.
+Each page follows the shape that worked: a concrete situation first, hand calculations
+the reader performs, one question arithmetic cannot answer, then a widget that repeats
+their own work faster. No page may require scrolling back to another page to answer a
+question.
 
-### Page 3 — Rates
+### Page 1 — What the symbols mean
 
-**Teaches** the derivative as a limit of differences. Thompson II and III.
+**Teaches** the notation, before any operation. Thompson I, and he is right to put it
+first: most people who bounce off calculus bounce off `dy/dx` and `∫` rather than off
+any idea.
 
-**Hook.** The jar again, but the money now trickles in continuously instead of arriving
-each morning, so the gap between readings can shrink below a day. Drafted once already
-and cut; the numbers were good and are worth reusing: with `F(t) = t²`, every window
-gives exactly `6 + h`, so the pattern is visible by hand before any widget.
+**Hook.** `d` means "a little bit of". That is the whole chapter. A little bit of `y`
+over a little bit of `x` is a ratio of two small things, and the elongated S is a sum.
 
-**The one hard question.** No window is short enough to *be* an instant, and a window of
-zero width gives nothing over nothing. So what does "the rate right now" even mean?
+**Interactive.** A notation decoder. Page 8 §1 already has one built for the integral
+sign; extend the same pattern to `dy/dx`, `d²y/dx²`, and the limits.
 
-**Watch for.** This is the page where "degrees of smallness" belongs — why `h²` can be
-thrown away when `h` cannot. Thompson is very good on this and it is the idea most
-courses skip.
+**Size.** Short. Possibly folded into page 2 if it cannot fill a page honestly.
+
+### Page 2 — Degrees of smallness
+
+**Teaches** why `h²` may be thrown away when `h` may not. Thompson II, and the idea most
+courses skip entirely, leaving the reader to think the algebra is a swindle.
+
+**Hook.** Concrete comparisons of scale. A small quantity, its square, its cube, and how
+absurdly fast the later ones stop mattering.
+
+**The one hard question.** If `h` is not zero, throwing away `h²` makes the answer wrong.
+So why is the result exact rather than approximate? This is the honest difficulty and
+the page should not pretend otherwise.
+
+**Payoff.** Expand `(x+h)²` and `(x+h)³` here, watch the spare `h` terms die, and the
+power rule falls out on page 3 with no work left to do.
+
+### Page 3 — Rates of change
+
+**Teaches** the derivative itself. Thompson III and IV.
+
+**Hook.** Two quantities where one drags the other along. Thompson uses a growing
+square, which is good: widen it by a little and the area grows by two strips plus a
+negligible corner, and the corner is exactly the `h²` from page 2.
+
+**Interactive.** The window-closing widget already drafted for the jar: two readings, a
+line through them, and the line settling as the gap shuts. Reusable almost as-is.
 
 ### Page 4 — The rules
 
-**Teaches** the power rule, constants, sums, products, quotients, the chain rule.
-Thompson IV, V, VI, VII, IX.
+**Teaches** constants, sums, products, quotients, the chain rule, second derivatives.
+Thompson V, VI, VII, IX.
 
-**Hook.** Weak on its own. This is the page most at risk of becoming a list of rules,
-which is exactly what the reader has been rejecting all along. Each rule needs to be
-*derived* from the `(x+h)` expansion rather than stated, the way page 2 §5 does.
+**Risk.** The page most likely to turn into a list, which is exactly what has been
+rejected everywhere else. Every rule must be *derived* from the `(x+h)` expansion, never
+stated. If a rule cannot be derived in three lines it goes in a reference card instead.
 
-**Open question.** Whether the product and quotient rules earn their place at all, or
-whether they belong in a reference card. Decide when writing.
+**Open question.** Whether the quotient rule earns a place at all at this level.
 
-### Page 5 — Slope and shape
+### Page 5 — Slope, shape and time
 
-**Teaches** the derivative as steepness, the tangent, and the second derivative as
-bendiness. Thompson X and XII.
+**Teaches** the derivative as steepness, the tangent, the second derivative as bendiness,
+and velocity and acceleration. Thompson VIII, X, XII.
 
-**Hook.** A road gradient or a hillside. The distinction that matters and always
-confuses: steep is not the same as bending sharply. A straight line can be violently
-steep and never bend.
+**Hook.** A road gradient, then a car. The distinction that always confuses: steep is not
+the same as bending sharply. A straight line can be violently steep and never bend at all.
 
-**Interactive.** A point dragged along a curve with its tangent following, and a second
-readout showing how fast the slope itself is changing.
+**Interactive.** A point dragged along a curve with the tangent following it, and a
+second readout for how fast the slope itself is changing.
 
 ### Page 6 — Finding the best
 
-**Teaches** maxima and minima. Thompson XI.
+**Teaches** maxima and minima. Thompson XI. **The highest value page in the course.**
 
-**Hook.** The strongest one available in the whole book. Something with a real cost:
-the cheapest tin can holding a fixed volume, the throw that goes furthest, the price
-that makes the most money. At the top of a hill the slope is zero, so set the derivative
-to zero and solve.
+**Hook.** Something with a real cost. The cheapest tin holding a fixed volume, the throw
+that goes furthest, the price that makes the most money. At the top of a hill the slope
+is zero, so set the derivative to zero and solve.
 
-**Why it matters.** This is what derivatives are overwhelmingly *for*, and nothing on
-the existing pages touches it. If only one more page ever gets built, build this one.
+**Why it matters.** This is what derivatives are overwhelmingly used for, and it is the
+first point in the course where calculus answers a question the reader could not have
+answered by any other means.
 
-### Page 7 — The two halves
+### Pages 7 and 8 — the existing integration pages
 
-**Teaches** the fundamental theorem as a single idea rather than a trick.
+Built. See the reframing notes above. Page 7 should now open by pointing out that
+everything so far has gone one way, and asking what happens if you run it backwards.
 
-**Hook.** Return to the train. Page 1 went speed → distance. Now go distance → speed on
-the same journey, same graph, opposite direction, and show the two operations undoing
-each other on data the reader already knows.
+### Page 9 — The two halves
 
-**Note.** Page 2 §5 already proves this algebraically. Page 7 is the picture, not the
-proof, and should say so.
+**Teaches** the fundamental theorem as the surprise it is.
 
-### Page 8 — Growth that feeds itself
+**Hook.** The train from page 7. That page went speed → distance. Now go
+distance → speed on the same journey, same graph, opposite direction, and watch the two
+operations undo each other on data the reader already has.
 
-**Teaches** `e`, exponential growth and decay. Thompson XIV, the best chapter in the book.
+**Note.** With differentiation taught first this page becomes the climax of the course
+rather than an aside, which is the main argument for the order.
 
-**Hook.** Interest that compounds continuously; a population; a cooling cup of coffee.
-The defining question: what function grows at a rate equal to its own size?
+### Page 10 — Growth and waves
 
-**Interactive.** Compounding a pound at ever shorter intervals and watching it converge
-on `e`. Same shape as the strip and window widgets, which is the point.
+**Teaches** `e` and the trigonometric functions. Thompson XIV and XV, the two best
+chapters in the book.
 
-### Page 9 — Things that go round
+**Hook for `e`.** What function grows at a rate equal to its own size? Compound a pound
+at ever shorter intervals and watch it converge, which is the same widget shape as the
+strips and the window, and that is the point.
 
-**Teaches** differentiating sine and cosine. Thompson XV.
+**Hook for sine.** A tide table, a swing, mains electricity. Sine and cosine chase each
+other round: differentiate one and you get the other.
 
-**Hook.** A tide table, a swing, mains electricity. Sine and cosine chase each other:
-differentiate one and you get the other.
+### Page 11 — optional
 
-### Pages 10 and 11 — optional
+Substitution, integration by parts, and simple differential equations. A cooling cup of
+coffee is the natural hook and connects back to `e`.
 
-Substitution, integration by parts, and simple differential equations. Only worth
-building if the earlier pages land. A cooling cup of coffee is the natural hook for
-page 11 and connects back to page 8.
+### Dropped
 
-### Dropping partial differentiation
-
-Thompson XVI. Nothing before it needs it, and nothing after it uses it. Out unless a
-specific reason appears.
+Partial differentiation, Thompson XVI. Nothing before it needs it and nothing after it
+uses it.
 
 ---
 
 ## Sizing, honestly
 
-Pages 1 and 2 together are about 2,600 lines and took a full working session, including
-several rebuilds after review. Nine more pages at that standard is a large project, not
-an afternoon. Two ways to cut it down:
+The two built pages are about 2,600 lines and took a full session including several
+rebuilds after review. Nine more at that standard is a substantial project.
 
-- **Build page 6 next and stop.** Maxima and minima is the highest value per page by a
-  wide margin.
-- **Build 3, 4 and 7 as one page.** Rates, rules and the fundamental theorem compress
-  reasonably into a single longer page if the rules section stays short.
+Sensible reductions:
+
+- **Fold pages 1 and 2 together.** Notation and smallness are both short and belong
+  next to each other.
+- **Build 1–4 as the first release.** That is enough to differentiate a polynomial,
+  which is a real skill and a natural stopping point.
+- **Page 6 is the one to protect.** If the project stalls anywhere, make sure maxima and
+  minima got built.
 
 ## Conventions to hold to
 
-Carried over from the existing pages, and worth stating so they do not drift:
+Carried over from the built pages, stated so they do not drift:
 
 - One self-contained HTML file per page, no network, opens by double-clicking.
 - Phone first. Every control clears a 42px touch target.
-- Questions never require scrolling back to another section.
+- Questions never require scrolling back to another section or page.
 - Wrong answers get specific replies, not "not quite".
 - Every number quoted in prose is verified against what the widget computes.
 - Complete sentences. No em dashes standing in for punctuation. No claiming something is
