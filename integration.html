@@ -561,12 +561,22 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 </details>
 
 <h2 id="s5">5. Workshop: how far did the train go?</h2>
-<p>Everything so far has measured an area. This workshop measures something that is not an area at all.</p>
-<p>A train leaves a station. You can see the speedometer the whole way, but the odometer is broken. Work out how far it travelled.</p>
+<p>An old locomotive pulls out of a station onto a rising gradient. It is heavy and it builds speed slowly, so the speedometer creeps: 20 km/h as it leaves, and only 80 km/h an hour later. The odometer is broken, so the speedometer is all you have.</p>
+<p>Here is the whole journey. The line is the speed at every moment of that hour.</p>
+
+<div class="widget">
+  <p class="wtitle">The journey</p>
+  <div class="cvwrap" style="height:220px">
+    <canvas id="w9c" role="img" aria-labelledby="w9-fallback"></canvas>
+    <p class="sr-only" id="w9-fallback">Speed against time. The train starts at 20 km per hour and rises to 80 km per hour after one hour, slowly at first and more steeply later. It passes 50 km per hour at about 41 minutes.</p>
+  </div>
+</div>
+
+<p>The question is simple to ask and surprisingly awkward to answer. How far did it go?</p>
 
 <div class="tryit step open" id="k1">
-  <p class="q"><span class="stepnum">1</span>A speed that stays put</p>
-  <p class="ask">Start with the easy case. A train holds a steady <strong>50 km/h</strong> for <strong>half an hour</strong>. How far does it go?</p>
+  <p class="q"><span class="stepnum">1</span>When the speed holds still</p>
+  <p class="ask">Start with a case that gives no trouble. A train holds a steady <strong>50 km/h</strong> for <strong>half an hour</strong>. How far does it go?</p>
   <div class="answer">
     <input type="text" inputmode="decimal" id="k1i" aria-label="Distance travelled in kilometres" placeholder="distance" />
     <span class="unit">km</span>
@@ -576,10 +586,10 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 </div>
 
 <div class="tryit step locked" id="k2">
-  <p class="q"><span class="stepnum">2</span>A speed that will not stay put</p>
-  <p class="ask">Now the real journey. The train speeds up the whole way, starting at 20 km/h and reaching <strong>80 km/h</strong> by the end of the hour. Suppose it had travelled at that top speed of 80 km/h for the entire hour. How far would it have gone?</p>
+  <p class="q"><span class="stepnum">2</span>The obvious guess</p>
+  <p class="ask">Our train is not so obliging. It starts at 20 km/h and ends at 80 km/h. The natural thing to try is to split the difference: take the average of those two speeds and treat the train as though it held that average for the whole hour. What distance does that give?</p>
   <div class="answer">
-    <input type="text" inputmode="decimal" id="k2i" aria-label="Distance at the top speed" placeholder="distance" />
+    <input type="text" inputmode="decimal" id="k2i" aria-label="Distance from averaging the two end speeds" placeholder="distance" />
     <span class="unit">km</span>
     <button type="button" class="go" id="k2b">Check</button>
   </div>
@@ -588,22 +598,22 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 </div>
 
 <div class="tryit step locked" id="k3">
-  <p class="q"><span class="stepnum">3</span>Cut the hour in half</p>
-  <p class="ask">80 km is too generous, because the train only touched 80 km/h at the very end. So split the journey into two half hours and look at each one separately. The train never went faster than <strong>38 km/h</strong> in the first half hour, or faster than <strong>80 km/h</strong> in the second. Work out a distance for each half and add them together.</p>
-  <div class="answer">
-    <input type="text" inputmode="decimal" id="k3i" aria-label="Distance using two half-hour pieces" placeholder="distance" />
-    <span class="unit">km</span>
-    <button type="button" class="go" id="k3b">Check</button>
+  <p class="q"><span class="stepnum">3</span>Why that guess is too generous</p>
+  <p class="ask">Look again at the graph above. The dashed line marks 50 km/h, the speed we just assumed the train held on average. It does not cross that line until about <strong>41 minutes</strong> in, so for roughly two thirds of the hour the train was travelling slower than 50 km/h, and only near the end was it faster. Knowing that, what can you say about the real distance?</p>
+  <div class="segs" role="group" aria-label="What the graph tells you about the real distance">
+    <button class="seg" data-k3="more" aria-pressed="false">More than 50 km</button>
+    <button class="seg" data-k3="less" aria-pressed="false">Less than 50 km</button>
+    <button class="seg" data-k3="same" aria-pressed="false">Exactly 50 km</button>
   </div>
-  <p class="fb" id="k3f"></p>
+  <p class="fb" id="k3f">Pick the one you think is right. Guessing wrong costs nothing.</p>
   <p class="lockmsg">Answer step 2 first.</p>
 </div>
 
 <div class="tryit step locked" id="k4">
-  <p class="q"><span class="stepnum">4</span>Cut it again</p>
-  <p class="ask">Nothing stops you cutting more finely. Split the hour into four quarters instead, still charging each quarter at the fastest speed the train reached inside it. Those top speeds are <strong>26</strong>, <strong>38</strong>, <strong>56</strong> and <strong>80</strong> km/h, and each quarter lasts 0.25 hours. What is the total this time?</p>
+  <p class="q"><span class="stepnum">4</span>Something you can actually trust</p>
+  <p class="ask">Averaging the two ends was guesswork, so try something honest instead. Glance at the speedometer twice, once at the start of each half hour, and pretend the reading holds until the next glance. At the start it says <strong>20 km/h</strong>. At the half hour mark it says <strong>38 km/h</strong>. Work out a distance for each half and add them.</p>
   <div class="answer">
-    <input type="text" inputmode="decimal" id="k4i" aria-label="Distance using four quarter-hour pieces" placeholder="distance" />
+    <input type="text" inputmode="decimal" id="k4i" aria-label="Distance from two speedometer readings" placeholder="distance" />
     <span class="unit">km</span>
     <button type="button" class="go" id="k4b">Check</button>
   </div>
@@ -612,62 +622,74 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 </div>
 
 <div class="tryit step locked" id="k5">
-  <p class="q"><span class="stepnum">5</span>Where is it heading?</p>
-  <p class="ask">Your three answers were <strong>80</strong>, then <strong>59</strong>, then <strong>50</strong> km. Each cut takes something off the total, but less than the cut before did: first 21 km came off, then 9 km. Suppose you kept going, to eight pieces, then sixteen, then a thousand. What happens to the answer?</p>
-  <div class="segs" role="group" aria-label="What happens as the pieces get smaller">
-    <button class="seg" data-k5="zero" aria-pressed="false">It keeps falling until it reaches zero</button>
-    <button class="seg" data-k5="settle" aria-pressed="false">It closes in on one particular number</button>
-    <button class="seg" data-k5="under" aria-pressed="false">It drops below the real distance and carries on</button>
+  <p class="q"><span class="stepnum">5</span>Glance more often</p>
+  <p class="ask">Every reading is stale the moment you take it, because the train keeps accelerating after you look. The obvious fix is to look more often, so each reading has less time to go out of date. Take four readings, one every quarter hour: <strong>20</strong>, <strong>26</strong>, <strong>38</strong> and <strong>56</strong> km/h, each held for 0.25 hours. What total do you get now?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="k5i" aria-label="Distance from four speedometer readings" placeholder="distance" />
+    <span class="unit">km</span>
+    <button type="button" class="go" id="k5b">Check</button>
   </div>
-  <p class="fb" id="k5f">Pick the one you think is right. There is no penalty for guessing wrong.</p>
+  <p class="fb" id="k5f"></p>
   <p class="lockmsg">Answer step 4 first.</p>
 </div>
 
 <div class="tryit step locked" id="k6">
-  <p class="q"><span class="stepnum">6</span>Find the number</p>
-  <p class="ask">The arithmetic never gets harder as you cut further, there is just more of it, so the slider does the repeating for you. It follows the same rule you have used since step 2: every piece is charged at the fastest speed the train reached inside that piece.</p>
-  <div class="widget" style="margin:16px 0">
-    <div class="ctrl">
-      <label for="w8n">Pieces</label>
-      <input type="range" id="w8n" min="1" max="64" step="1" value="4" disabled />
-      <span class="out" id="w8o">4</span>
-    </div>
-    <div class="presets" role="group" aria-label="Jump to a number of pieces">
-      <span class="plab">Jump</span>
-      <button type="button" class="preset" data-w8n="1">1</button>
-      <button type="button" class="preset" data-w8n="2">2</button>
-      <button type="button" class="preset" data-w8n="4">4</button>
-      <button type="button" class="preset" data-w8n="64">64</button>
-    </div>
-    <div class="cvwrap" style="height:230px">
-      <canvas id="w8c" role="img" aria-labelledby="w8-fallback"></canvas>
-      <p class="sr-only" id="w8-fallback">Speed against time for a train accelerating from 20 to 80 km per hour, cut into pieces each charged at its fastest speed.</p>
-    </div>
-    <div class="cards">
-      <div class="card"><p class="k">Pieces</p><p class="v" id="w8b">&mdash;</p></div>
-      <div class="card"><p class="k">Distance</p><p class="v" id="w8s">&mdash;</p></div>
-      <div class="card"><p class="k">Came off the last one</p><p class="v" id="w8e">&mdash;</p></div>
-    </div>
-    <p class="note" id="w8t"></p>
+  <p class="q"><span class="stepnum">6</span>Where is this heading?</p>
+  <p class="ask">Two readings gave <strong>29</strong> km and four gave <strong>35</strong> km. Both are too low, because each reading goes stale. But the gap is closing: the first jump added 9 km, and the next will add less. Suppose you kept going, to eight readings, then a hundred, then a million. What happens to the total?</p>
+  <div class="segs" role="group" aria-label="What happens as the readings get more frequent">
+    <button class="seg" data-k6="grow" aria-pressed="false">It keeps climbing without limit</button>
+    <button class="seg" data-k6="settle" aria-pressed="false">It closes in on one particular number</button>
+    <button class="seg" data-k6="over" aria-pressed="false">It climbs past the real distance and keeps going</button>
   </div>
-  <p class="ask">Push the slider up and watch the distance. To the nearest whole kilometre, what number is it closing in on?</p>
-  <div class="answer">
-    <input type="text" inputmode="decimal" id="k6i" aria-label="The distance the total approaches" placeholder="distance" />
-    <span class="unit">km</span>
-    <button type="button" class="go" id="k6b">Check</button>
-  </div>
-  <p class="fb" id="k6f"></p>
+  <p class="fb" id="k6f">Pick the one you think is right.</p>
   <p class="lockmsg">Answer step 5 first.</p>
 </div>
 
-<p>Look back at what you actually multiplied. A speed in kilometres per hour, times a stretch of time in hours. The hours cancelled and left kilometres. In section 1 it was centimetres times centimetres, which left square centimetres, and we called that an area. Same multiplication, different labels.</p>
-
-<div class="callout">
-  <span class="tag">What this workshop was really about</span>
-  <p>A rectangle is a quantity that is not changing, multiplied by the stretch over which it is not changing. That is the only thing rectangles have ever been used for on this page. When the quantity is a height you call the answer an area, and when it is a speed you call the answer a distance, but the work is identical. Anything that varies can be totalled this way: cut the stretch finely enough that the quantity holds still across any one piece, multiply, add up, and cut finer.</p>
+<div class="tryit step locked" id="k7">
+  <p class="q"><span class="stepnum">7</span>Find the number</p>
+  <p class="ask">Taking two hundred readings by hand would be miserable, but the arithmetic is no harder than what you did in step 5, only longer. The slider does that repetition. Each rectangle is one reading held until the next, and you can watch the gaps above them close.</p>
+  <div class="widget" style="margin:16px 0">
+    <div class="ctrl">
+      <label for="w8n">Readings</label>
+      <input type="range" id="w8n" min="1" max="200" step="1" value="4" disabled />
+      <span class="out" id="w8o">4</span>
+    </div>
+    <div class="presets" role="group" aria-label="Jump to a number of readings">
+      <span class="plab">Jump</span>
+      <button type="button" class="preset" data-w8n="2">2</button>
+      <button type="button" class="preset" data-w8n="4">4</button>
+      <button type="button" class="preset" data-w8n="16">16</button>
+      <button type="button" class="preset" data-w8n="200">200</button>
+    </div>
+    <div class="cvwrap" style="height:230px">
+      <canvas id="w8c" role="img" aria-labelledby="w8-fallback"></canvas>
+      <p class="sr-only" id="w8-fallback">The same journey, with each speedometer reading held until the next one.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><p class="k">Readings</p><p class="v" id="w8b">&mdash;</p></div>
+      <div class="card"><p class="k">Distance</p><p class="v" id="w8s">&mdash;</p></div>
+      <div class="card"><p class="k">Gap between readings</p><p class="v" id="w8e">&mdash;</p></div>
+    </div>
+    <p class="note" id="w8t"></p>
+  </div>
+  <p class="ask">Push the slider up. To the nearest whole kilometre, what number is the distance closing in on?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="k7i" aria-label="The distance the total approaches" placeholder="distance" />
+    <span class="unit">km</span>
+    <button type="button" class="go" id="k7b">Check</button>
+  </div>
+  <p class="fb" id="k7f"></p>
+  <p class="lockmsg">Answer step 6 first.</p>
 </div>
 
-<p>This is also why the jar from section 2 works on a moving train. The speedometer plays the part of the daily pocket money and the odometer plays the part of the jar. The odometer climbs fastest when the speedometer reads highest, and the distance covered between any two moments is one odometer reading minus the other.</p>
+<p>So the train covered 42 km, and its average speed over the hour was 42 km/h, not the 50 km/h you would get by averaging the two ends. The difference is the whole difficulty in one number. Averaging the ends treats the slow start and the fast finish as though the train spent equal time in each, when in truth it laboured below 50 km/h for about forty of the sixty minutes.</p>
+
+<div class="callout">
+  <span class="tag">What you just did</span>
+  <p>You could not use <span class="math">distance = speed &times; time</span> on the journey as a whole, because there was no single speed to put in it. So you chopped the hour into stretches short enough that the speed barely moved during any one of them, used the formula on each stretch where it did apply, and added the results. Then you made the stretches shorter until the answer stopped changing. That is integration, and it is the same move as cutting a curved shape into strips: find the places where the awkward thing holds still, solve those, and add.</p>
+</div>
+
+<p>One loose end worth knowing about. Every one of your totals came out too low, because each reading went stale as the train accelerated. Had you instead read the speedometer at the <em>end</em> of each stretch, every total would have come out too high. Four readings that way give 50 km. So without knowing the answer at all, you could have said the distance was somewhere between 35 and 50 km, and narrowed that gap as far as you liked by reading more often.</p>
 
 <div class="callout">
   <span class="tag">Where that leaves us</span>
@@ -1077,8 +1099,58 @@ function exercise(o){
 (function(){
   var TRUE_KM=42;                          /* integral of 20 + 12t + 48t^2 over [0,1] */
   function vel(t){return 20+12*t+48*t*t;}  /* km/h, rising for the whole hour */
-  /* v only ever rises, so the fastest speed in a piece is at its right-hand edge */
-  function estimate(n){var w=1/n,S=0;for(var i=0;i<n;i++){S+=vel((i+1)*w)*w;}return S;}
+  /* a reading taken at the start of a stretch, held until the next one */
+  function estimate(n){var w=1/n,S=0;for(var i=0;i<n;i++){S+=vel(i*w)*w;}return S;}
+
+  var VMAX=92;
+  function frame(f,pad){
+    var base=f.H-26;
+    return {sx:function(t){return pad+t*(f.W-2*pad-8);},
+            sy:function(v){return base-(v/VMAX)*(base-pad);},base:base,pad:pad};
+  }
+  function curve(c,g,p){
+    c.beginPath();c.moveTo(g.sx(0),g.sy(0));
+    for(var i=0;i<=300;i++){var t=i/300;c.lineTo(g.sx(t),g.sy(vel(t)));}
+    c.lineTo(g.sx(1),g.sy(0));c.closePath();c.fillStyle=p.area;c.fill();
+  }
+  function axes(c,g,p){
+    c.beginPath();
+    for(var j=0;j<=300;j++){var t=j/300,x=g.sx(t),y=g.sy(vel(t));if(j){c.lineTo(x,y);}else{c.moveTo(x,y);}}
+    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
+    c.strokeStyle=p.axis;c.lineWidth=1;
+    c.beginPath();c.moveTo(g.sx(0),g.sy(0));c.lineTo(g.sx(1),g.sy(0));c.stroke();
+    c.beginPath();c.moveTo(g.sx(0),g.sy(0));c.lineTo(g.sx(0),g.pad);c.stroke();
+    c.fillStyle=p.ink;c.font='11px sans-serif';c.textAlign='center';
+    c.fillText('start',g.sx(0),g.base+16);
+    c.fillText('30 min',g.sx(0.5),g.base+16);
+    c.fillText('1 hour',g.sx(1),g.base+16);
+    c.textAlign='left';
+    c.fillText('80 km/h',g.sx(0)+4,g.sy(80)-5);
+    c.fillText('20 km/h',g.sx(0)+4,g.sy(20)-5);
+  }
+
+  /* the static picture of the journey, with the 50 km/h line the guess assumed */
+  var jc=document.getElementById('w9c');
+  function drawJourney(){
+    if(!jc)return;
+    var f=fit(jc),c=f.c,p=P(),g=frame(f,20);
+    curve(c,g,p);axes(c,g,p);
+    c.save();
+    c.setLineDash([5,4]);c.strokeStyle=p.warm;c.lineWidth=1.5;
+    c.beginPath();c.moveTo(g.sx(0),g.sy(50));c.lineTo(g.sx(1),g.sy(50));c.stroke();
+    c.restore();
+    /* mark where it finally reaches 50 */
+    var t50=0.675;
+    c.save();
+    c.setLineDash([3,3]);c.strokeStyle=p.warm;c.lineWidth=1;
+    c.beginPath();c.moveTo(g.sx(t50),g.sy(50));c.lineTo(g.sx(t50),g.sy(0));c.stroke();
+    c.restore();
+    c.fillStyle=p.warm;c.font='11px sans-serif';c.textAlign='right';
+    c.fillText('50 km/h',g.sx(1)-2,g.sy(50)-5);
+    c.textAlign='center';
+    c.fillText('41 min',g.sx(t50),g.base+16);
+  }
+  if(jc){reg(drawJourney);}
 
   var cv=document.getElementById('w8c'),sl=document.getElementById('w8n');
   function syncPresets(){
@@ -1089,42 +1161,25 @@ function exercise(o){
   }
   function draw(){
     if(!cv)return;
-    var f=fit(cv),c=f.c,W=f.W,H=f.H,p=P(),pad=20,base=H-26,VMAX=92;
-    var sx=function(t){return pad+t*(W-2*pad-8);};
-    var sy=function(v){return base-(v/VMAX)*(base-pad);};
-    c.beginPath();c.moveTo(sx(0),sy(0));
-    for(var i=0;i<=300;i++){var t=i/300;c.lineTo(sx(t),sy(vel(t)));}
-    c.lineTo(sx(1),sy(0));c.closePath();c.fillStyle=p.area;c.fill();
+    var f=fit(cv),c=f.c,p=P(),g=frame(f,20);
+    curve(c,g,p);
     var n=+sl.value,w=1/n,S=0;
     c.fillStyle=p.rect;
     for(var k=0;k<n;k++){
-      var a=k*w,b=a+w,h=vel(b);
+      var a=k*w,h=vel(a);           /* the reading taken at the start of this stretch */
       S+=h*w;
-      var top=sy(h);
-      c.fillRect(sx(a)+0.5,top,Math.max(sx(b)-sx(a)-1,0.6),sy(0)-top);
+      var top=g.sy(h);
+      c.fillRect(g.sx(a)+(n>60?0:0.5),top,
+        Math.max(g.sx(a+w)-g.sx(a)-(n>60?0:1),0.5),g.sy(0)-top);
     }
-    c.beginPath();
-    for(var j=0;j<=300;j++){var tt=j/300,px=sx(tt),py=sy(vel(tt));if(j){c.lineTo(px,py);}else{c.moveTo(px,py);}}
-    c.strokeStyle=p.line;c.lineWidth=2;c.lineJoin='round';c.stroke();
-    c.strokeStyle=p.axis;c.lineWidth=1;
-    c.beginPath();c.moveTo(sx(0),sy(0));c.lineTo(sx(1),sy(0));c.stroke();
-    c.beginPath();c.moveTo(sx(0),sy(0));c.lineTo(sx(0),pad);c.stroke();
-    c.fillStyle=p.ink;c.font='11px sans-serif';
-    c.textAlign='center';
-    c.fillText('start',sx(0),base+16);
-    c.fillText('30 min',sx(0.5),base+16);
-    c.fillText('1 hour',sx(1),base+16);
-    c.textAlign='left';
-    c.fillText('80 km/h',sx(0)+4,sy(80)-5);
-    c.fillText('20 km/h',sx(0)+4,sy(20)-5);
-    var prev=(n>1)?estimate(Math.max(1,Math.floor(n/2))):null;
+    axes(c,g,p);
     txt('w8o',n);txt('w8b',n);txt('w8s',S.toFixed(2)+' km');
-    txt('w8e',prev===null?'—':(prev-S).toFixed(2)+' km');
-    txt('w8t',n+' piece'+(n===1?'':'s')+', each '+(60/n).toFixed(1)+
-      ' minutes long and charged at the fastest speed inside it. Total '+S.toFixed(2)+
-      ' km, which is '+(S-TRUE_KM).toFixed(2)+' km more than the train really travelled.');
-    setFallback('w8-fallback','Speed against time cut into '+n+
-      ' pieces. Distance estimate '+S.toFixed(2)+' km.');
+    txt('w8e',(60/n).toFixed(1)+' min');
+    txt('w8t',n+' reading'+(n===1?'':'s')+', one every '+(60/n).toFixed(1)+
+      ' minutes, each held until the next. Total '+S.toFixed(2)+' km, which is '+
+      (TRUE_KM-S).toFixed(2)+' km short of the truth because every reading goes stale.');
+    setFallback('w8-fallback','The journey with '+n+' speedometer readings held until the next. Total '+
+      S.toFixed(2)+' km.');
     syncPresets();
   }
   if(sl){
@@ -1143,72 +1198,85 @@ function exercise(o){
     var el=document.getElementById(id);
     if(!el)return;
     el.className='tryit step '+(on?'locked':'open');
-    var f=el.querySelectorAll('input,button');
-    for(var i=0;i<f.length;i++){f[i].disabled=on;}
+    var fl=el.querySelectorAll('input,button');
+    for(var i=0;i<fl.length;i++){fl[i].disabled=on;}
   }
   function done(id){
     var el=document.getElementById(id);
     if(el){el.className=el.className.replace(/\blocked\b/,'open')+' done';}
   }
-  lock('k2',true);lock('k3',true);lock('k4',true);lock('k5',true);lock('k6',true);
+  lock('k2',true);lock('k3',true);lock('k4',true);lock('k5',true);lock('k6',true);lock('k7',true);
 
   exercise({
     input:'k1i',check:'k1b',fb:'k1f',answer:25,
-    near:[{value:50,msg:'That is the speed, not the distance. At 50 km/h you would cover 50 km in a full hour, but the train only travelled for half of one.'},
+    near:[{value:50,msg:'That is the speed, not the distance. At 50 km/h you would cover 50 km in a full hour, but this train only travelled for half of one.'},
           {value:100,msg:'You multiplied by two rather than by a half. Half an hour is 0.5 hours, so the distance comes out smaller than the speed, not larger.'}],
-    right:'Correct. <span class="eqn">50 &times; 0.5 = 25</span> km. Notice the shape of that calculation: one number that never changes, multiplied by the stretch over which it never changes.',
-    wrong:'Not quite. Multiply the speed by the length of time it was held, measured in hours.',
+    right:'Correct. <span class="eqn">50 &times; 0.5 = 25</span> km. This works because the speed never changes, so there is one number to multiply by. Everything that follows is about what to do when there is not.',
+    wrong:'Not quite. Multiply the speed by the time it was held, measured in hours.',
     onRight:function(){done('k1');lock('k2',false);}
   });
   exercise({
-    input:'k2i',check:'k2b',fb:'k2f',answer:80,
-    near:[{value:20,msg:'That is the speed it started at, not its top speed. The question asks what would have happened if it had held 80 km/h all hour.'},
-          {value:50,msg:'That is the average of 20 and 80, which is a sensible guess at the real answer. But the question asks something simpler: 80 km/h, held for one hour.'},
-          {value:42,msg:'That is very close to how far the train really went, but it is not what was asked. Try 80 km/h held for the full hour.'}],
-    right:'Correct. <span class="eqn">80 &times; 1 = 80</span> km. That answer is too generous, and usefully so. The train only touched 80 km/h at the very end and was slower for the whole rest of the hour, so it certainly went <em>less</em> than 80 km. You now have a number the real distance cannot beat.',
-    wrong:'Not quite. Multiply the top speed of 80 km/h by the one hour the train was travelling.',
+    input:'k2i',check:'k2b',fb:'k2f',answer:50,
+    near:[{value:100,msg:'That is the two speeds added together. Averaging means adding them and halving.'},
+          {value:60,msg:'Check the average: halfway between 20 and 80 is 50.'},
+          {value:42,msg:'That is the right answer to the whole problem, but not to this step. Here we only want the guess you get from averaging 20 and 80.'}],
+    right:'Correct. The average of 20 and 80 is 50 km/h, and <span class="eqn">50 &times; 1 = 50</span> km. Hold on to that number. It is the answer almost everyone reaches for, and the next step shows why it is too big.',
+    wrong:'Not quite. Add the two speeds, halve them to get an average, then multiply by the one hour.',
     onRight:function(){done('k2');lock('k3',false);}
   });
-  exercise({
-    input:'k3i',check:'k3b',fb:'k3f',answer:59,
-    near:[{value:118,msg:'You have added the two speeds and multiplied by a whole hour. Each half only lasts 0.5 hours, so each speed gets multiplied by 0.5.'},
-          {value:80,msg:'That is still the whole-hour answer from step 2. Work the two halves out separately: 38 km/h for 0.5 hours, then 80 km/h for 0.5 hours.'},
-          {value:57.5,msg:'Close. Check the first half: 38 &times; 0.5 is 19, not 17.5.'}],
-    right:'Correct. <span class="eqn">38 &times; 0.5 + 80 &times; 0.5 = 19 + 40 = 59</span> km. One cut has brought the answer down from 80 km to 59 km, because the first half hour is no longer being charged at a speed the train had not reached yet.',
-    wrong:'Not quite. Work out each half hour on its own, then add the two distances together.',
-    onRight:function(){done('k3');lock('k4',false);}
-  });
-  exercise({
-    input:'k4i',check:'k4b',fb:'k4f',answer:50,
-    near:[{value:200,msg:'That is the four speeds added together. Each one only applies for a quarter of an hour, so multiply the total by 0.25.'},
-          {value:59,msg:'That is the two-piece answer from step 3. This time there are four pieces, each lasting 0.25 hours.'}],
-    right:'Correct. <span class="eqn">(26 + 38 + 56 + 80) &times; 0.25 = 50</span> km. Down again, from 80 to 59 to 50. Every cut brings the total closer to the truth, because no piece is charged at a speed the train held for very long.',
-    wrong:'Not quite. Multiply each of the four speeds by 0.25 hours and add the four distances up.',
-    onRight:function(){done('k4');lock('k5',false);}
-  });
 
-  /* step 5 is the only question here that arithmetic will not answer */
-  seg('k5',function(k){
-    if(k==='zero'){
-      say('k5f','bad','The pieces get thinner, but the train really did travel a certain distance, and no total can fall below it. Zero would mean the train never moved.');
-    }else if(k==='under'){
-      say('k5f','bad','It cannot go below. Every piece is charged at the fastest speed reached inside it, so every total is at least as large as the real distance. It can come down towards the truth but never through it.');
+  seg('k3',function(k){
+    if(k==='more'){
+      say('k3f','bad','The other way round. The train was below 50 km/h for about two thirds of the hour, so treating it as though it held 50 km/h throughout credits it with speed it did not have.');
+    }else if(k==='same'){
+      say('k3f','bad','It would be exactly 50 km only if the train spent as much time above 50 km/h as below it. The graph says otherwise: it does not even reach 50 km/h until 41 minutes in.');
     }else{
-      say('k5f','good','That is it. The totals keep falling, but by smaller and smaller amounts, and they close in on one particular number without ever dropping below it. That number is the distance the train travelled, and finding it is what integration means.');
-      done('k5');lock('k6',false);draw();
+      say('k3f','good','Right. The train spent about forty of the sixty minutes below 50 km/h and only the last twenty above it, so 50 km is too generous. That is the trouble with averaging the two ends: it assumes the train divided its time evenly between them, and this one did not.');
+      done('k3');lock('k4',false);
     }
   });
 
   exercise({
-    input:'k6i',check:'k6b',fb:'k6f',answer:42,
-    near:[{value:44,msg:'Very close. That is the sixteen-piece figure. Push the slider further, to 64 pieces, and round to the nearest whole kilometre.'},
-          {value:43,msg:'Very close. Push the slider further, to 64 pieces, and round to the nearest whole kilometre.'},
-          {value:46,msg:'That is roughly the eight-piece figure. Keep going and watch it come down further.'},
-          {value:50,msg:'That is where step 4 left off, at four pieces. Drag the slider up.'},
-          {value:80,msg:'That is the one-piece answer. Drag the slider to the right and watch the number fall.'}],
-    right:'Correct, 42 km. No number of pieces ever reaches it exactly, because every piece is still being charged at the fastest speed inside it. But the overshoot roughly halves each time you double the pieces, so you can get as close to 42 km as you care to. That is the distance the train travelled, and you found it without ever knowing the speed at more than a handful of moments.',
-    wrong:'Not quite. Push the slider up towards 64 pieces and read off the whole number the distance is settling towards.',
-    onRight:function(){done('k6');}
+    input:'k4i',check:'k4b',fb:'k4f',answer:29,
+    near:[{value:58,msg:'You have added the two speeds and multiplied by a whole hour. Each reading only stands for half an hour, so each gets multiplied by 0.5.'},
+          {value:50,msg:'That is the guess from step 2. This time use the two readings, 20 and 38, each held for half an hour.'},
+          {value:19,msg:'That is the second half on its own. Add the first half, 20 &times; 0.5, to it.'}],
+    right:'Correct. <span class="eqn">20 &times; 0.5 + 38 &times; 0.5 = 10 + 19 = 29</span> km. Every step of that was honest, and yet the answer is clearly too small: you charged the whole first half hour at the speed the train was doing before it had built any, and the same in the second half. Nothing was invented, but a lot was missed.',
+    wrong:'Not quite. Work out each half hour on its own, 20 km/h for 0.5 hours and then 38 km/h for 0.5 hours, and add them.',
+    onRight:function(){done('k4');lock('k5',false);}
+  });
+  exercise({
+    input:'k5i',check:'k5b',fb:'k5f',answer:35,
+    near:[{value:140,msg:'That is the four speeds added together. Each one only stands for a quarter of an hour, so multiply the total by 0.25.'},
+          {value:29,msg:'That is the two-reading answer from step 4. This time there are four readings, each held for 0.25 hours.'},
+          {value:50,msg:'That is still the guess from step 2. Use the four readings: 20, 26, 38 and 56, each for a quarter of an hour.'}],
+    right:'Correct. <span class="eqn">(20 + 26 + 38 + 56) &times; 0.25 = 35</span> km. Up from 29 km, and for a good reason: each reading now only has fifteen minutes to go stale instead of thirty, so less of the train’s speed goes uncounted.',
+    wrong:'Not quite. Multiply each of the four readings by 0.25 hours, then add the four distances.',
+    onRight:function(){done('k5');lock('k6',false);}
+  });
+
+  /* the one question on the page that no amount of arithmetic will settle */
+  seg('k6',function(k){
+    if(k==='grow'){
+      say('k6f','bad','It cannot climb for ever. Every total is built from speeds the train really reached, so no total can exceed the distance of a train that never went faster than 80 km/h. The answers are rising, but something is holding them down.');
+    }else if(k==='over'){
+      say('k6f','bad','It cannot pass the real distance. Each reading is taken at the start of its stretch and the train only speeds up afterwards, so every stretch is undercharged and every total stays below the truth.');
+    }else{
+      say('k6f','good','That is it. The totals keep rising, by smaller and smaller amounts, and they close in on one particular number without ever passing it. That number is the distance the train travelled, and pinning it down is what integration means.');
+      done('k6');lock('k7',false);draw();
+    }
+  });
+
+  exercise({
+    input:'k7i',check:'k7b',fb:'k7f',answer:42,
+    near:[{value:41,msg:'Very close. At 200 readings it shows 41.85, which rounds up.'},
+          {value:40,msg:'That is roughly the sixteen-reading figure. Keep pushing the slider right.'},
+          {value:38,msg:'That is about the eight-reading figure. There is further to go.'},
+          {value:35,msg:'That is where step 5 left off, at four readings. Drag the slider up.'},
+          {value:50,msg:'That was the guess from step 2, which we established was too generous. The readings are climbing towards something lower.'}],
+    right:'Correct, 42 km. No number of readings ever reaches it exactly, because each one is always slightly out of date, but the shortfall roughly halves every time you double the readings, so you can get as close as you like. The train averaged 42 km/h over the hour, not the 50 km/h that averaging the two ends suggested.',
+    wrong:'Not quite. Push the slider towards 200 readings and read off the whole number the distance is settling on.',
+    onRight:function(){done('k7');}
   });
 })();
 
