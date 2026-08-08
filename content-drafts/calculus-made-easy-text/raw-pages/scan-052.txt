@@ -1,0 +1,38 @@
+WHAT TO DO WITH CONSTANTS 31
+it is, however, always worth while to try whether the
+expression can be put in a simpler form.
+
+First we must try to bring it into the form y=some
+expression involving a only.
+
+- The expression may: be written
+(a—b)y+(a+b)e=(a+y)JA—B.
+
+Squaring, we get .
+
+(a—b/yy?+ (a+b)22+ 2(a+b)(a—b)ay :
+
+_ = +y?+2axy)(a?—- 8),
+which simplifies to. |
+
+(a—bfy’+ (a+ ba? = a°(a?—b*)+ ya — 6"); -
+or [(a—bP—(a?—B)]y’=[(a?—b*)—(a+ by] 2%,
+that is 2b(b—a)y*? = — 26(b+.4) 2" ;
+hence yaa ttee and ay itp. |
+
+. (4) The volume of a cylinder of radius r and height
+h is given by the formula V=zr°h. Find the rate of
+variation of volume with the radius when r=5'5 in.
+and h=20 in. If r=h, find the dimensions of the
+cylinder so that a change of 1 in. in radius causes a
+change of 400 cub. in. in the volume.
+
+The rate of. variation of V with regard to r is
+
+oo 2rrh.
+
+If r=5'5 in. and h=20 in. this becomes 6908. It.
+means that a change of radius of 1 inch will cause a
+change of volume of 6908 cub. inch. This can be
+easily verified, for the volumes with r=5 and r=6.
+

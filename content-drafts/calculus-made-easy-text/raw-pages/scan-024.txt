@@ -1,0 +1,30 @@
+CHAPTER II.
+
+ON DIFFERENT DEGREES OF SMALLNESS.
+WE shall find that in our processes of calculation we
+have to deal with small quantities of various degrees
+of smallness.
+
+We shall have also to learn under what circumstances
+we may consider small quantities to be so minute
+that we may omit them from consideration. Every-
+thing depends upon relative minuteness.
+
+Before we fix any rules let us think of some
+familiar cases. There are 60 minutes in the hour,
+24 hours in the day, 7 days in the week. There are
+therefore 1440 minutes in the day and 10080 minutes
+in the week.
+
+Obviously 1 minute is a very small quantity of
+
+- time compared with a whole week. Indeed, our
+forefathers considered it small as compared with an
+hour, and called it “one minute,” meaning a minute
+fraction—namely one sixtieth—of an hour. When
+they came to require still smaller subdivisions of time,
+they divided each minute into 60 still smaller parts,
+which, in Queen Elizabeth’s days, they called “second
+minutes” (i.e. small quantities of the second order of
+minuteness). Nowadays we call these small quantities
+

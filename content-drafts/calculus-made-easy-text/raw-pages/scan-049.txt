@@ -1,0 +1,25 @@
+28 CALCULUS MADE EASY
+Let us illustrate this example by working out the
+graphs of the equations y=7az* and ay = 140, by
+assigning to a a set of successive values, 0, 1, 2, 3, ete.,
+and finding the corresponding values of y and of ay
+These values we tabulate as follows:
+zxi!Oo;/1;/2;3)] 4] 5 -1 -2 | -3
+fy | o | 7 | 28) es |aelizs] 7 | 28 | 63
+dy O | 14} 28 | 42 | 56 | 70 || -14 | —28 | —42
+y #
+#0
+‘ 100
+_-----f |
+we i wo $- === a
+tt sor} |
+were t-- 1 -- 4
+! 60 44 -3 -2 -7 Eoe i i tit
+' aH : x
+rw ty 11 neG 1 2-3 2 5
+! ’ - i) ( : { A
+“32-2797 234 5 7-23
+Fic. 6.—Graph of y=728, Fra. 60.—Graph of 24-142,
+Now plot these values to some convenient scale,
+and we obtain the two curves, Figs. 6 and 6a.
+

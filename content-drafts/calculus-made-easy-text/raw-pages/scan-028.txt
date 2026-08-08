@@ -1,0 +1,31 @@
+DIFFERENT DEGREES OF SMALLNESS 7
+way. The enlarged square is made up of the original
+square 2%, the two rectangles at the top and on the
+right, each of which is of area a-da (or together
+2x -da), and the little square at the top right-hand
+corner which is (dx). In Fig. 2 we have taken da as
+
+x 2
+ax x: dx dx)?
+x x
+°
+x” ax
+Fie. 2, Fig. 3. '
+quite a big fraction of a—about }. But suppose we
+had taken it only 73,—about the thickness of an
+inked line drawn with a fine pen. Then the little
+corner square will have an area of only ;~4,, of 2”,
+and be practically invisible. Clearly (dx)? is negligible
+if only we consider the increment da to be itself
+small enough.
+
+Let us consider a simile.
+
+Suppose a millionaire were to say to his secretary :
+next week I will give you a small fraction of any
+money that comes in to me. Suppose that the
+secretary were to say to his boy: I will give you a
+small fraction of what I get. Suppose the fraction
+in each case to be z3, part. Now if Mr. Millionaire
+received during the next week £1000, the secretary
+

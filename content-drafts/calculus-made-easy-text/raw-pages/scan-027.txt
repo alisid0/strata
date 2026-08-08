@@ -1,0 +1,32 @@
+6 CALCULUS MADE EASY
+
+that such quantities as x-dax, or a’dx, or a*dx are
+negligible. But da xdx would be negligible, being a
+small quantity of the second order.
+
+A very simple example will serve as illustration.
+
+Let us think of a as a quantity that can grow by
+a small amount so as to become 2+da, where dx is
+the small increment added by growth. The square
+of this is 2?+2a-da+(da)% The second term is
+not negligible because it is a first-order quantity ;
+while the third term is of the second order of small-
+ness, being a bit of, a bit of x% Thus if we took
+dx to mean numerically, say, 5 of #, then the second
+term would be 2, of x, whereas the third term would
+be sg5y Of 2, This last term is clearly less important
+than the second. But if we go further and take
+dx to mean only y45y Of x, then the second term
+will be 3% 5 of x, while the third term will be
+only ssh Of 2.
+
+x
+| |
+Fig. 1.
+
+Geometrically this may be depicted as follows:
+Draw a square (Fig. 1) the side of which we will
+take to represent a Now suppose the square to
+grow by having a bit da added to its size each
+

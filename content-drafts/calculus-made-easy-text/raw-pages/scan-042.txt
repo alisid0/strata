@@ -1,0 +1,26 @@
+SIMPLEST CASES 21
+Doing the cubing we obtain
+ytdy=a' +32? -dx+3ax(dx)+(dx)y.
+Now we know that we may neglect small quantities
+of the second and third orders; since, when dy and dx
+are both made indefinitely small, (dx)? and (dx)
+will become indefinitely smaller by comparison. So,
+regarding them as negligible, we have left:
+yt+dy=2' +32? - dx.
+But y=2'; and, subtracting this, we have:
+, dy = 32? - dx,
+and | dy = 32%,
+Case 3.
+Try differentiating y=<a*. Starting as before by
+letting both y and x grow a bit, we have:
+yt+dy=(x+da)t.
+Working out the raising to the fourth power, we get
+ytdy=x' + 4a0%dax+ 62?(da)? + 4a(dx) +(da)*.
+Then striking out the terms containing all the
+higher powers of dx, as being negligible by com-
+parison, we have
+ytdy =x +4dax.
+Subtracting the original y=a*, we have left
+dy = 42°dax,
+and a = 4g.
+

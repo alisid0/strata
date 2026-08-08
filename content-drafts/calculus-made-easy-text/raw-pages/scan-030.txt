@@ -1,0 +1,30 @@
+CHAPTER III.
+
+ON RELATIVE GROWINGS. |
+ALL through the calculus we are dealing with quan-
+tities that are growing, and with rates of growth.
+We classify all quantities into two classes: constants
+and variables. Those which we regard as of fixed
+value, and call constants, we generally denote alge-
+braically by letters from the beginning of the
+alphabet, such as a, 6, or ¢; while those which we
+consider as capable of growing, or (as mathematicians:
+say) of “varying,” we denote by letters from the end
+of the alphabet, such as 2, y, z, wu, v, w, or sometimes ¢.
+
+Moreover, we are usually dealing with more than
+one variable at once, and thinking of the way in
+which one variable depends on the other : for instance,
+we think of the way in which the height reached
+by a projectile depends on the time of attaining that
+height. Or we are asked to consider a rectangle of
+given area, and to enquire how any increase in the
+length of it will compel a corresponding decrease in
+the breadth of it. Or we think of the way in which
+any variation in the slope of a ladder will cause the
+height that it reaches, to vary.
+
+Suppose we have got two such variables that
+
+an
+

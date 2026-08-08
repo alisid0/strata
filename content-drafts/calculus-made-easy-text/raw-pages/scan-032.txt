@@ -1,0 +1,23 @@
+ON RELATIVE GROWINGS ll
+of which is dz, is similar to the original triangle; and
+it is obvious that the value of the ratio oy is the
+same as that of the ratio ¥. As the angle is 30° it
+will be seen that here x
+
+dy_ 1
+dx 1-73
+(2) Let a represent, in Fig. 5, the horizontal dis-
+tance, from a wall, of the bottom end of a ladder,
+\,
+x
+Fie. 5.
+AB, of fixed length; and let y be the height it
+reaches up the wall. Now y clearly depends on 2.
+It is easy to see that, if we pull the bottom end A a
+bit further from the wall, the top end B will come
+down a little lower. Let us state this in scientific
+language. If we increase x to x+da, then y will
+become y—dy; that is, when wx receives a positive
+. ao
+’
+

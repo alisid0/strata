@@ -1,0 +1,37 @@
+WHAT TO DO WITH CONSTANTS — 33
+Exercises II. (See p. 254 for Answers.)
+Differentiate the following :
+
+(1) y=aa?+6. (2) y=18a*—e.
+(3) y=l2at+ch (4) yaa.
+(5) ya (6) y= 11882-4224,
+
+Make up some other examples for yourself, and try
+your hand at differentiating them.
+
+(7) If 7, and J, be the lengths of a rod of iron at
+the temperatures ¢°C. and 0°C. respectively, then
+1,=1,(1+0°000012¢). Find the change of length of the
+rod per degree Centigrade.
+
+(8) It has been found that if ¢ be the candle power
+of an incandescent electric lamp, and V be the voltage,
+c=aV°, where a and 6 are constants. .
+
+Find the rate of change of the candle power with
+the voltage, and calculate the change of candle power
+per volt at 80, 100 and 120 volts in the case of a lamp
+for which a=('5 x 10-" and 6=6.
+
+(9) The frequency » of vibration of a string of
+diameter D, length D and specific gravity o, stretched
+with a force 7, is given by
+
+=, (#.
+"DLN xe
+
+Find the rate of change of the frequency when D, L,
+
+a and 7’ are varied singly.
+C.M.E. Cc
+

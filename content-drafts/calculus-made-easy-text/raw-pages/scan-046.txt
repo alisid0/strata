@@ -1,0 +1,17 @@
+SIMPLEST CASES 25
+Summary. Let us see how far we have got. We
+have arrived at the following rule: To differentiate
+x", multiply by the power and reduce the power by
+one, so giving us nz"-1 as the result. .
+Exercises I. (See p. 254 for Answers.)
+Differentiate the following :
+() y=a (2) y=art
+(3) y=ar (4) w= 0"
+(5) e=a/u (6) y= a-5
+5
+(7) w= (8) y= 2a
+3 vi
+(9) y= a8 (10) y=
+You have now learned how to differentiate powers
+of x. How easy wt r8!
+

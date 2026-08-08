@@ -1,0 +1,36 @@
+DIFFERENT DEGREES OF SMALLNESS 5
+be a small fraction of the third order of smallness,
+being 1 per cent. of 1 per cent. of 1 per cent.
+
+Lastly, suppose that for some very precise purpose
+we should regard > >>3595 a8 “small.” Thus, if a
+first-rate chronometer is not to lose or gain more than
+half a minute in a year, it must keep time with an
+accuracy of 1 part in 1,051,200. Now if, for such a
+purpose, we regard 5553-900 (or one millionth) as a
+small quantity, then >>5t000 of Toosooe that is
+000.000.000.000 (Or one billionth) will be a small
+quantity of the second order of smallness, and may
+be utterly disregarded, by comparison.
+
+Then we see that the smaller a small quantity itself
+is, the more negligible does the corresponding small
+quantity of the second order become. Hence we
+know that in all cases we are justified in neglecting
+the small quantities of the second—or third (or
+higher)—orders, if only we take the small quantity
+of the first order small enough in itself.
+
+But, it must be remembered, that small quantities
+if they occur in our expressions as factors multiplied
+by some other factor, may become important if the
+other factor is itself large. Evena farthing becomes
+important if only it is multiplied by a few hundred. .
+
+Now in the calculus we write da for a little bit
+of x These things such as dx, and du, and dy, are
+called “differentials,” the differential of 2, or of wu,
+or of y, as the case may be. [You read them as
+dee-eks, or dee-you, or dee-wy.] If dx be a small bit
+of a, and relatively small of itself, it does not follow
+

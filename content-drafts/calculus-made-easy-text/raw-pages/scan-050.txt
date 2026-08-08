@@ -1,0 +1,31 @@
+WHAT TO DO WITH CONSTANTS 29
+Carefully compare the two figures, and verify by
+inspection that the height of the ordinate of the
+derived curve, Fig. 6a, is proportional to the slope of
+the original curve,* Fig. 6, at the corresponding value
+of x To the left of the origin, where the original
+curve slopes. negatively (that is, downward from left
+to right) the corresponding ordinates of the derived
+curve are negative.
+
+Now if we look back at p. 19, we shall see that
+simply differentiating a? gives us 2a. So that the
+differential coefficient of 7x? is just 7 times as big as
+that of a. If we had taken 82?, the differential
+coefficient would have come out eight times as great
+as that of «% If we put y=ax’, we shall get
+
+ay ax 2x.
+
+If we had begun with y=az”, we should have had
+WY max nach, So that any mere multiplication by
+a constant reappears as a mere multiplication when
+the thing is differentiated. And, what is true about
+multiplication is equally true about division: for if,
+in the example above, we had taken as the constant }
+instead of 7, we should have had the same + come
+out in the result after differentiation.
+
+*See p. 77 about slopes of curves.
+a
+

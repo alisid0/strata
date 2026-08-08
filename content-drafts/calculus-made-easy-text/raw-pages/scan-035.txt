@@ -1,0 +1,31 @@
+14 CALCULUS MADE EASY
+an expression for it. Whenever we use differentials
+dx, dy, dz, ete, the existence of some kind of
+relation between a, y, z, etc, is implied, and this
+relation is called a “function” in a, y, 2, ete.; the
+two expressions given above, for instance, namely
+Y—=tan 30° and x#*+y?=/?, are functions of # and y.
+"Such expressions contain implicitly (that is, contain
+without distinctly showing it) the means of expressing
+either 2 in terms of y or y in terms of a, and for
+this reason they are called implicit functions in
+aw and y; they can be respectively put into the forms
+y= tan 30° or a= —"
+and y=JP=—2 or w=J/P-y*
+
+These last expressions state explicitly (that is, dis-
+tinctly) the value of a in terms of y, or of y in terms
+of x,.and they are for this reason called explicit
+functions of a or y. For example 2?+3=2y—7 is
+an implicit function in # and y; it may be written
+
+2
+y= (explicit function of a) or r=/2y—10
+(explicit function of y). We see that an explicit —
+function in x, y, 2, etc, is simply something the
+value of which changes when 2, y, 2, ete, are
+changing, either one at the time or several together.
+Because of this, the value of the explicit function is
+called the dependent variable, as it depends on the
+value of the other variable quantities in the function ;
+

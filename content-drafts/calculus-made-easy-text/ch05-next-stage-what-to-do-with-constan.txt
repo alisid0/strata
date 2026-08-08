@@ -1,0 +1,320 @@
+CALCULUS MADE EASY - Silvanus P. Thompson, second edition 1914
+Chapter V. Next Stage. What To Do With Constants
+Book pages 26 to 34 (scan pages 47 to 55)
+Source: the uploaded Google Books scan. Text produced by OCR and NOT yet proofread.
+Prose is broadly reliable. Mathematics is not. See README.md.
+======================================================================
+
+[book page 26]
+
+CHAPTER V.
+NEXT STAGE. WHAT TO DO WITH CONSTANTS.
+In our equations we have regarded x as growing,
+and as a result of # being made to grow y also
+changed its value and grew. We usually think of x
+as a quantity that we can vary; and, regarding the
+variation of x as a sort of cause, we consider the re-
+‘ sulting variation of y as an effect. In other words, we
+
+regard the value of y as depending on that of 2. Both
+a and y are variables, but # is the one that we operate
+upon, and y is the “dependent variable.” In all the
+preceding chapter we have been trying to find out
+rules for the proportion which the dependent variation
+in y bears to the variation independently made in z.
+
+Our next step is to find out what effect on the
+process of differentiating is caused by the presence of
+constants, that is, of numbers which don’t change
+when «& or y change their values.
+
+Added Constants.
+
+Let us begin with some simple case of an added
+constant, thus :
+
+Let y= +5.
+Just as before, let us suppose # to grow to 7+daz and
+y to grow to y+dy.
+
+[book page 27]
+
+‘Then: y+dy=(a+da}+5 oS
+= 08+ 3a%dax +82(dx)+(dx)+5.
+Neglecting the small quantities of higher orders, this
+becomes y+dy=a°+38a?-dx+5.
+Subtract the original y=a°+5, and we have left:
+dy =32°dx.
+dy _
+
+| dx 3%" - .
+
+So the 5 has quite disappeared. It added nothing
+to the growth of a, and does not enter into the
+differential coefficient. If we had put 7, or 700, or
+any other number, instead of 5, it would have disappeared. So if we take the letter a, or b, or ¢ to
+represent any constant, it will simply disappear when
+we differentiate.
+
+If the additional constant had been of negative value,
+such as —5 or —b, it would equally have disappeared.
+
+Multiplied Constants.
+
+Take as a simple experiment this case:
+
+Let y=72*.
+
+Then on proceding as before we get:
+yt+dy=7(a+dx)?
+=1{x?+2x-dax+(dx)*} - .
+=Ta?+14x-dx+7 (day.
+Then, subtracting the original y=7a*, and neglecting
+the last term, we have Se?
+dy =14x-dzx. oo. .
+- a dy 14a. oo
+
+[book page 28]
+
+Let us illustrate this example by working out the
+graphs of the equations y=7az* and ay = 140, by
+assigning to a a set of successive values, 0, 1, 2, 3, ete.,
+and finding the corresponding values of y and of ay
+These values we tabulate as follows:
+zxi!Oo;/1;/2;3)] 4] 5 -1 -2 | -3
+fy | o | 7 | 28) es |aelizs] 7 | 28 | 63
+dy O | 14} 28 | 42 | 56 | 70 || -14 | —28 | —42
+y #
+#0
+‘ 100
+_-----f |
+we i wo $- === a
+tt sor} |
+were t-- 1 -- 4
+! 60 44 -3 -2 -7 Eoe i i tit
+' aH : x
+rw ty 11 neG 1 2-3 2 5
+! ’ - i) ( : { A
+“32-2797 234 5 7-23
+Fic. 6.—Graph of y=728, Fra. 60.—Graph of 24-142,
+Now plot these values to some convenient scale,
+and we obtain the two curves, Figs. 6 and 6a.
+
+[book page 29]
+
+Carefully compare the two figures, and verify by
+inspection that the height of the ordinate of the
+derived curve, Fig. 6a, is proportional to the slope of
+the original curve,* Fig. 6, at the corresponding value
+of x To the left of the origin, where the original
+curve slopes. negatively (that is, downward from left
+to right) the corresponding ordinates of the derived
+curve are negative.
+
+Now if we look back at p. 19, we shall see that
+simply differentiating a? gives us 2a. So that the
+differential coefficient of 7x? is just 7 times as big as
+that of a. If we had taken 82?, the differential
+coefficient would have come out eight times as great
+as that of «% If we put y=ax’, we shall get
+
+ay ax 2x.
+
+If we had begun with y=az”, we should have had
+WY max nach, So that any mere multiplication by
+a constant reappears as a mere multiplication when
+the thing is differentiated. And, what is true about
+multiplication is equally true about division: for if,
+in the example above, we had taken as the constant }
+instead of 7, we should have had the same + come
+out in the result after differentiation.
+
+*See p. 77 about slopes of curves.
+a
+
+[book page 30]
+
+Some Further Examples. :
+
+. The following further examples, fully worked out,
+will enable you to master completely the process of
+differentiation as applied to ordinary algebraical expressions, and enable you to.work out by yourself the
+examples given at the end of this chapter.
+
+. (1) Differentiate y=7-3
+
+; is an added constant and vanishes (see p. 26).
+_ We may then write at once
+dy _1 -1 .
+. dx 7* 5 xa-},
+Lo dy 5
+or dx 7" °
+(2) Differentiate y=a/a—3Va.
+
+' The term Bu @ vanishes, being an added constant ;
+and as as/x, in the index form, is written axt, we
+have oo
+
+DO WY axdxabiaexart,
+
+dy_ @
+or . + =—=.
+
+— dx Je
+(3) If ayt+bae=by—ax+(a+y)r/a?—B?,
+find the differential coefficient of y with respect to x.
+As a rule an expression of this kind will need a
+little more knowledge than we have acquired so far ;
+
+[book page 31]
+
+it is, however, always worth while to try whether the
+expression can be put in a simpler form.
+
+First we must try to bring it into the form y=some
+expression involving a only.
+
+- The expression may: be written
+(a—b)y+(a+b)e=(a+y)JA—B.
+
+Squaring, we get .
+
+(a—b/yy?+ (a+b)22+ 2(a+b)(a—b)ay :
+
+_ = +y?+2axy)(a?—- 8),
+which simplifies to. |
+
+(a—bfy’+ (a+ ba? = a°(a?—b*)+ ya — 6"); -
+or [(a—bP—(a?—B)]y’=[(a?—b*)—(a+ by] 2%,
+that is 2b(b—a)y*? = — 26(b+.4) 2" ;
+hence yaa ttee and ay itp. |
+
+. (4) The volume of a cylinder of radius r and height
+h is given by the formula V=zr°h. Find the rate of
+variation of volume with the radius when r=5'5 in.
+and h=20 in. If r=h, find the dimensions of the
+cylinder so that a change of 1 in. in radius causes a
+change of 400 cub. in. in the volume.
+
+The rate of. variation of V with regard to r is
+
+oo 2rrh.
+
+If r=5'5 in. and h=20 in. this becomes 6908. It.
+means that a change of radius of 1 inch will cause a
+change of volume of 6908 cub. inch. This can be
+easily verified, for the volumes with r=5 and r=6.
+
+[book page 32]
+
+are 1570 cub. in. and 2260°8 cub. in. respectively, and
+2260°8 — 1570 =690'8.
+
+Also, if
+rah, Maer 400 and raha pe=798 in,
+
+Tr 2a
+
+(5) The reading 6 of a Féry’s Radiation pyrometer
+is related to the Centigrade temperature ¢ of the
+observed body by the relation
+
+6 /(t\*
+
+$-(0)
+where 6, is the reading corresponding to a known temperature ¢, of the observed body.
+
+Compare the sensitiveness of the pyrometer at
+temperatures 800° C., 1000° C., 1200°C., given that it
+read 25 when the temperature was 1000°C.
+
+The sensitiveness is the rate of variation of the
+reading with the temperature, that is a. The formula
+may be written
+
+9a pa 2OE
+t,* 1000*
+and we have
+dé _ 1008 é&
+dé 1000” 10,000,000,000°
+
+When ¢= 800, 1000 and 1200, we get @ 0:0512, 01
+and 0°1728 respectively.
+
+The sensitiveness is approximately doubled from
+800° to 1000°, and becomes three-quarters as great
+again up to 1200°.
+
+[book page 33]
+
+WHAT TO DO WITH CONSTANTS — 33
+Exercises II. (See p. 254 for Answers.)
+Differentiate the following :
+
+(1) y=aa?+6. (2) y=18a*—e.
+(3) y=l2at+ch (4) yaa.
+(5) ya (6) y= 11882-4224,
+
+Make up some other examples for yourself, and try
+your hand at differentiating them.
+
+(7) If 7, and J, be the lengths of a rod of iron at
+the temperatures ¢°C. and 0°C. respectively, then
+1,=1,(1+0°000012¢). Find the change of length of the
+rod per degree Centigrade.
+
+(8) It has been found that if ¢ be the candle power
+of an incandescent electric lamp, and V be the voltage,
+c=aV°, where a and 6 are constants. .
+
+Find the rate of change of the candle power with
+the voltage, and calculate the change of candle power
+per volt at 80, 100 and 120 volts in the case of a lamp
+for which a=('5 x 10-" and 6=6.
+
+(9) The frequency » of vibration of a string of
+diameter D, length D and specific gravity o, stretched
+with a force 7, is given by
+
+=, (#.
+"DLN xe
+
+Find the rate of change of the frequency when D, L,
+
+a and 7’ are varied singly.
+C.M.E. Cc
+
+[book page 34]
+
+34 - ' CALCULUS MADE EASY
+(10) The greatest external pressure P which a tube
+can support without collapsing is given by
+2E \ é
+P=(i 3) DY
+where E and o are constants, ¢ is the thickness of the
+tube and D is its diameter. (This formula assumes
+that 4¢ is small compared to D.)~
+
+Compare the rate at which P varies for a small
+change of thickness and for a small change of diameter
+taking place separately.
+
+(11) Find, from first principles, the rate at which
+the following vary with respect to a change in
+radius:
+
+(a) the circumference of a circle of radius r;
+
+(b) the area of a circle of radius r ; Co
+(c) the lateral area of a cone of slant dimension 7;
+(d) the volume of a cone of radius r and height h ;
+‘(e) the area of a sphere of radius 7;
+
+(f) the volume of a sphere of radius r.
+
+(12) The length Z of an iron rod at the temperature
+T being given by D=1,[1+0-000012(7'—t)], where J,
+is the length at the temperature ¢, find the rate of
+variation of the diameter D of an iron tyre suitable
+for being shrunk on a wheel, when the temperature
+T varies.

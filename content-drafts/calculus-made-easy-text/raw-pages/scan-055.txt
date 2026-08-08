@@ -1,0 +1,33 @@
+34 - ' CALCULUS MADE EASY
+(10) The greatest external pressure P which a tube
+can support without collapsing is given by
+2E \ é
+P=(i 3) DY
+where E and o are constants, ¢ is the thickness of the
+tube and D is its diameter. (This formula assumes
+that 4¢ is small compared to D.)~
+
+Compare the rate at which P varies for a small
+change of thickness and for a small change of diameter
+taking place separately.
+
+(11) Find, from first principles, the rate at which
+the following vary with respect to a change in
+radius:
+
+(a) the circumference of a circle of radius r;
+
+(b) the area of a circle of radius r ; Co
+(c) the lateral area of a cone of slant dimension 7;
+(d) the volume of a cone of radius r and height h ;
+‘(e) the area of a sphere of radius 7;
+
+(f) the volume of a sphere of radius r.
+
+(12) The length Z of an iron rod at the temperature
+T being given by D=1,[1+0-000012(7'—t)], where J,
+is the length at the temperature ¢, find the rate of
+variation of the diameter D of an iron tyre suitable
+for being shrunk on a wheel, when the temperature
+T varies.
+

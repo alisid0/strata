@@ -1,0 +1,44 @@
+20 CALCULUS MADE EASY
+
+Numerical example.
+
+Suppose 2=100 and ... y=10,000. Then let 2 grow
+till it becomes 101 (that is, let da=1). Then the
+enlarged y will be 101 x 101=10,201. Butif we agree
+that we may ignore small quantities of the second
+order, 1 may be rejected as compared with 10,000; so
+we may round off the enlarged y to 10,200. y has
+grown from 10,000 to 10,200; the bit added on is dy,
+which is therefore 200.
+
+dy _ 200 _ 200, Accordi ki
+
+dem 1 7 200: ccording to the algebra-working
+qf the previous paragraph, we find oY 20, And so
+it is; for e=100 and 2x = 200.
+
+But, you will say, we neglected a whole unit.
+
+Well, try again, making dw a still smaller bit.
+
+Try dv=)5. Then a+dx=100'1, and
+
+(«+dx)*?=100'1 x 100°1 = 10,020°01.
+
+Now the last figure 1 is only one-millionth part of
+the 10,000, and is utterly negligible; so we may
+take 10,020 without the little decimal at the end.
+And this makes dy=20; and dy _ 20 _ 990, which
+ar dx 01
+is still the same as 2x.
+
+Case 2.
+
+Try differentiating y=. in the same way.
+
+We let y grow to y+dy, while x grows to #+dz.
+
+Then we have
+
+yt+dy=(a+dzy.
+

@@ -1,0 +1,58 @@
+CALCULUS MADE EASY - Silvanus P. Thompson, second edition 1914
+Chapter I. To Deliver You From The Preliminary Terrors
+Book pages 1 to 2 (scan pages 22 to 23)
+Source: the uploaded Google Books scan. Text produced by OCR and NOT yet proofread.
+Prose is broadly reliable. Mathematics is not. See README.md.
+======================================================================
+
+[book page 1]
+
+CHAPTER I.
+TO DELIVER YOU FROM THE PRELIMINARY
+TERRORS. *
+THE preliminary terror, which chokes off most fifthform boys from even attempting to learn how to
+calculate, can be abolished once for all by simply stating
+what is the meaning—in common-sense terms—of the
+two principal symbols that are used in calculating.
+
+These dreadful symbols are:
+
+(1) d which merely means “a little bit of.”
+
+Thus dx means a little bit of x; or du means a
+little bit of « Ordinary mathematicians think it
+more polite to say “an element of,” instead of “ a little
+bit of.” Just as you please. But you will find that
+these little bits (or elements) may be considered to be
+indefinitely small.
+
+(2) | which is merely a long S, and may be called
+(if you like) “the sum of.”
+
+Thus ae means the sum of all the little bits
+of a@; or fae means the sum of all the little bits
+of ¢t. Ordinary mathematicians call this symbol “the
+
+C.M.E. A
+
+[book page 2]
+
+integral of.” Now any fool can see that if aw is
+considered as made up of a lot of little bits, each of
+which is called da, if you add them all up together
+you get the sum of all the dz’s, (which is the same
+thing as the whole of x). The word “integral” simply
+means “the whole.” If you think of the duration
+of time for one hour, you may (if you like) think of
+it as cut up into 3600 little bits called seconds. The
+whole of the 3600 little bits added up together make
+one hour.
+
+When you see an expression that begins with this
+terrifying symbol, you will henceforth know that it
+is put there merely to give you instructions that you
+are now to perform the operation (if you can) of
+totalling up all the little bits that are indicated by
+the symbols that follow.
+
+That’s all.

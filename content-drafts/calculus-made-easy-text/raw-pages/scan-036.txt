@@ -1,0 +1,34 @@
+ON RELATIVE GROWINGS 15
+these other variables are called the independent
+variables because their value is not determined from
+the value assumed by the function. For example,
+if w=a*sin 0, 2 and 6 are the independent variables,
+and w is the dependent variable.
+
+Sometimes the exact relation between several
+quantities w, y, z either is not known or it is not
+convenient to state it; it is only known, or con-
+venient to state, that there is some sort of relation
+between these variables, so that one cannot alter
+
+' either a or y or z singly without affecting the other
+quantities; the existence of a function in a, y, z is
+then indicated by the notation F(x, y, 2) (implicit
+function) or by a= Fy, 2), y= F(a, z) or z= F(a, y)
+(explicit function). Sometimes the letter f or ¢ is used
+instead of F, so that y=F(ax), y=/f(x) and y=¢(a)
+all mean the same thing, namely, that the value of
+y depends on the value of 2 in some way which is
+not stated.
+
+We call the ratio ay, “the differential coefficient of
+y with respect to a.” It is a solemn scientific name
+for this very simple thing. But we are not going
+to be frightened by solemn names, when the things
+themselves are so easy. Instead of being frightened
+we will simply pronounce a brief curse on the
+stupidity of giving long crack-jaw names; and, having
+relieved our minds, will go on to the simple thing
+. . dy
+itself, namely the ratio dx
+

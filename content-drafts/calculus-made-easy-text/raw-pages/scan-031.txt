@@ -1,0 +1,34 @@
+10 CALCULUS MADE EASY
+
+depend one on the other. An alteration in one will
+bring about an alteration in the other, because of this
+dependence. Let us call one of the variables 2, and
+the other that depends on it y.
+
+Suppose we make x to vary, that is to say, we
+either alter it or imagine it to be altered, by adding
+to it a bit which we call da. We are thus causing x
+to become x+da. Then, because x has been altered,
+y will have altered also, and will have become y+dy.
+Here the bit dy may be in some cases positive, in
+others negative ; and it won’t (except by a miracle) be
+the same size as da.
+
+Take two examples.
+
+(1) Let a and y be respectively the base and the
+height of a right-angled triangle (Fig. 4), of which
+|
+
+x ax
+
+Fie. 4,
+the slope of the other side is fixed at 30°. If we
+suppose this triangle to expand and yet keep its
+angles the same as at first, then, when the base grows
+so as to become x+dz, the height becomes y+dy.
+Here, increasing x results in an increase of y. The
+little triangle, the height of which is dy, and the base
+
+t
+

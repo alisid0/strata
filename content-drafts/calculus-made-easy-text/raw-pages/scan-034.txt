@@ -1,0 +1,32 @@
+ON RELATIVE GROWINGS 13
+a mere ratio, namely, the proportion which dy
+bears to da when both of them are indefinitely
+small.
+
+It should be noted here that we can only find
+this ratio od when y and & are related to each
+
+. other in some way, so that whenever a varies y does .
+vary also. For instance, in the first example just
+taken, if the base a of the triangle be made longer,
+
+"the height y of the triangle becomes greater also,
+and in the second example, if the distance x of the
+foot of the ladder from the wall be made to increase,
+the height y reached by the ladder decreases in a
+corresponding manner, slowly at first, but more and
+more rapidly as x becomes greater. In these cases
+the relation between a and y is perfectly detinite,
+it can be expressed mathematically, being Y= tan 30°
+and 2?+y?=(? (where J is the length of the ladder)
+respectively, and wy has the meaning we found in
+each case.
+
+If, while x is, as before, the distance of the foot
+of the ladder from the wall, y is, instead of the
+height reached, the horizontal length of the wall, or
+the number of bricks in it, or the number of years
+since it was built, any change in a would naturally
+cause no change whatever in y; in this case ay has
+no meaning whatever, and it is not possible to find
+

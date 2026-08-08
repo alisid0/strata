@@ -1,0 +1,29 @@
+22 CALCULUS MADE EASY
+Now all these cases are quite easy. Let us collect
+the results to see if we can infer any general rule.
+Put them in two columns, the values of y in one
+and the corresponding values found for ae in the
+other: thus
+y | 2 |
+a 2x
+x8 3a? ;
+aot 4x8
+Just look at these results: the operation of differen-
+tiating appears to have had the effect of diminishing
+the power of a by 1 (for example in the last case
+reducing a‘ to a), and at the same time multiplying
+- by a number (the same number in fact which originally
+appeared as the power). Now, when you have once
+seen this, you might easily conjecture how the others
+will run. You would expect that differentiating a
+would give 52‘, or differentiating-a® would give 6a°.
+If you hesitate, try one of these, and see whether
+the conjecture comes right.
+Try y=x,
+Then y+dy=(a%+dx)
+= 25 + 5atda+ 102° (dx) + 10x*(dx)®
++52(dx)*+(dxy.
+Neglecting all the terms containing small quantities
+of the higher orders, we have left .
+y+ dy =a5 + Sada,
+

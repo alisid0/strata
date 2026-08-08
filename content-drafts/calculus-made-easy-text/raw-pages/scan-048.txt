@@ -1,0 +1,37 @@
+WHAT TO DO WITH CONSTANTS 27
+‘Then: y+dy=(a+da}+5 oS
+= 08+ 3a%dax +82(dx)+(dx)+5.
+Neglecting the small quantities of higher orders, this
+becomes y+dy=a°+38a?-dx+5.
+Subtract the original y=a°+5, and we have left:
+dy =32°dx.
+dy _
+
+| dx 3%" - .
+
+So the 5 has quite disappeared. It added nothing
+to the growth of a, and does not enter into the
+differential coefficient. If we had put 7, or 700, or
+any other number, instead of 5, it would have dis-
+appeared. So if we take the letter a, or b, or ¢ to
+represent any constant, it will simply disappear when
+we differentiate.
+
+If the additional constant had been of negative value,
+such as —5 or —b, it would equally have disappeared.
+
+Multiplied Constants.
+
+Take as a simple experiment this case:
+
+Let y=72*.
+
+Then on proceding as before we get:
+yt+dy=7(a+dx)?
+=1{x?+2x-dax+(dx)*} - .
+=Ta?+14x-dx+7 (day.
+Then, subtracting the original y=7a*, and neglecting
+the last term, we have Se?
+dy =14x-dzx. oo. .
+- a dy 14a. oo
+

@@ -1,0 +1,40 @@
+12 CALCULUS MADE EASY
+increment, the increment which results to y is
+negative.
+
+Yes, but how much? Suppose the ladder was so
+long that when the bottom end A was 19 inches from
+the wall the top end B reached just 15 feet from the
+ground. Now, if you were to pull the bottom end
+out 1 inch more, how much would: the top end come
+down? Put it all into inches: a2=19 inches, y=180
+
+_ inches. Now the increment of a which we call da,
+is 1 inch: or #+da= 20 inches.
+
+How much will y be diminished? The new height
+will be y—dy. If we work out the height by Euclid
+I. 47, then we shall be able to find how much dy will
+be. The length of the ladder is
+
+. »/(180)?+(19)?= 181 inches.
+Clearly then, the new height, which is y—dy, will be
+such that
+(y— dy)? = (181)? — (20)? = 32761 — 400 = 32361,
+y—dy= »/32361 =179°89 inches.
+Now y is 180, so that dy is 180—179'89=0:11 inch.
+
+So we see that making dz an increase of 1 inch
+has resulted in making dy a decrease of 0°11 inch.
+
+And the ratio of dy to dx may be stated thus:
+
+dy oll
+dz 1°
+
+It is also easy to see that (except in one particular
+position) dy will be of a different size from da.
+
+Now right through the differential calculus we
+are hunting, hunting, hunting for a curious thing,
+

@@ -1,0 +1,260 @@
+CALCULUS MADE EASY - Silvanus P. Thompson, second edition 1914
+Chapter IV. Simplest Cases
+Book pages 18 to 25 (scan pages 39 to 46)
+Source: the uploaded Google Books scan. Text produced by OCR and NOT yet proofread.
+Prose is broadly reliable. Mathematics is not. See README.md.
+======================================================================
+
+[book page 18]
+
+CHAPTER IV.
+' SIMPLEST CASES.. ,
+Now let us see how, on first principles, we can
+differentiate some simple algebraical expression.
+
+Case 1.
+
+Let us begin with the simple expression. y=.
+Now remember that the fundamental notion about
+the calculus is the idea of growing. Mathematicians
+call it varying. Now as y and 2” are equal to one
+another, it is clear that if 2 grows, 2? will also grow.
+And if a grows, then y will also grow. What we
+have got to find out is the proportion between the
+growing of y and the growing of a In other words
+our task is to find out the ratio between dy and dz,
+or, in brief, to find the value of we.
+
+Let x, then, grow a little bit bigger and become
+x+dex; similarly, y will grow a bit bigger and will
+become y+dy. Then, clearly, it will still be true
+that the enlarged y will be equal to the square of the
+enlarged a Writing this down, we have:
+
+y+dy=(a+dz). -
+
+Doing the squaring we get:
+
+yt+dy=x?+2x-dx+(dax)* .
+
+[book page 19]
+
+What does (da)? mean? Remember that da meant
+a bit—a little bit—of a. Then (dx)? will mean a little
+bit of a little bit of w; that is, as explained above
+(p. 4), it is a small quantity of the second order _
+of smallness. It may therefore be discarded as quite
+inconsiderable in comparison with the other terms.
+Leaving it out, we then have:
+
+y+dy=a2+ 2a de.
+
+Now y="; so let us subtract this from the equation and we have left
+
+dy =2x- da. oy
+Dividing across by dz, we find
+
+dy
+
+=* = 2x.
+
+dx
+
+Now this* is what we set out to find. The ratio of
+the growing of y to the growing of a is, in the case
+before us, found to be 2x.
+
+* N.B.—This ratio dy is the result of differentiating y with
+respect. to x. Differentiating means finding the differential coefficient. Suppose we had some other function of x, as, for
+example, u=727+3. Then if we were told to differentiate this
+with respect to x, we should have to find or, what is the same
+thing, aie +) On the other hand, we may have a case in which
+time was the independent variable (see p. 15), such as this:
+y=b+4aé2, Then, if we were told to differentiate it, that means we
+must find its differential coefficient with respect to ¢. So that then
+our business would be to try to find ay, that is, to find G+ 10)
+
+a
+
+[book page 20]
+
+Numerical example.
+
+Suppose 2=100 and ... y=10,000. Then let 2 grow
+till it becomes 101 (that is, let da=1). Then the
+enlarged y will be 101 x 101=10,201. Butif we agree
+that we may ignore small quantities of the second
+order, 1 may be rejected as compared with 10,000; so
+we may round off the enlarged y to 10,200. y has
+grown from 10,000 to 10,200; the bit added on is dy,
+which is therefore 200.
+
+dy _ 200 _ 200, Accordi ki
+
+dem 1 7 200: ccording to the algebra-working
+qf the previous paragraph, we find oY 20, And so
+it is; for e=100 and 2x = 200.
+
+But, you will say, we neglected a whole unit.
+
+Well, try again, making dw a still smaller bit.
+
+Try dv=)5. Then a+dx=100'1, and
+
+(«+dx)*?=100'1 x 100°1 = 10,020°01.
+
+Now the last figure 1 is only one-millionth part of
+the 10,000, and is utterly negligible; so we may
+take 10,020 without the little decimal at the end.
+And this makes dy=20; and dy _ 20 _ 990, which
+ar dx 01
+is still the same as 2x.
+
+Case 2.
+
+Try differentiating y=. in the same way.
+
+We let y grow to y+dy, while x grows to #+dz.
+
+Then we have
+
+yt+dy=(a+dzy.
+
+[book page 21]
+
+Doing the cubing we obtain
+ytdy=a' +32? -dx+3ax(dx)+(dx)y.
+Now we know that we may neglect small quantities
+of the second and third orders; since, when dy and dx
+are both made indefinitely small, (dx)? and (dx)
+will become indefinitely smaller by comparison. So,
+regarding them as negligible, we have left:
+yt+dy=2' +32? - dx.
+But y=2'; and, subtracting this, we have:
+, dy = 32? - dx,
+and | dy = 32%,
+Case 3.
+Try differentiating y=<a*. Starting as before by
+letting both y and x grow a bit, we have:
+yt+dy=(x+da)t.
+Working out the raising to the fourth power, we get
+ytdy=x' + 4a0%dax+ 62?(da)? + 4a(dx) +(da)*.
+Then striking out the terms containing all the
+higher powers of dx, as being negligible by comparison, we have
+ytdy =x +4dax.
+Subtracting the original y=a*, we have left
+dy = 42°dax,
+and a = 4g.
+
+[book page 22]
+
+Now all these cases are quite easy. Let us collect
+the results to see if we can infer any general rule.
+Put them in two columns, the values of y in one
+and the corresponding values found for ae in the
+other: thus
+y | 2 |
+a 2x
+x8 3a? ;
+aot 4x8
+Just look at these results: the operation of differentiating appears to have had the effect of diminishing
+the power of a by 1 (for example in the last case
+reducing a‘ to a), and at the same time multiplying
+- by a number (the same number in fact which originally
+appeared as the power). Now, when you have once
+seen this, you might easily conjecture how the others
+will run. You would expect that differentiating a
+would give 52‘, or differentiating-a® would give 6a°.
+If you hesitate, try one of these, and see whether
+the conjecture comes right.
+Try y=x,
+Then y+dy=(a%+dx)
+= 25 + 5atda+ 102° (dx) + 10x*(dx)®
++52(dx)*+(dxy.
+Neglecting all the terms containing small quantities
+of the higher orders, we have left .
+y+ dy =a5 + Sada,
+
+[book page 23]
+
+and subtracting y= leaves us .
+
+dy = Sarde, |
+whence -_ ay Sat, exactly as we supposed.
+
+Following out logically our observation, we should
+conclude that if we want to deal with any higher
+power,—call it m—we could tackle it in the same
+way. ow ;
+
+Let — -y=a",
+then, we should expect to find that
+
+a naira ce
+
+For example, let n=8, then y=28; and differentiating it would give dY = Bat, .
+
+And, indeed, the rule that differentiating a” gives as
+the result nz"-1! is true for all cases where m is a
+whole number and positive. [Expanding (a+dz)" by ,
+the binomial theorem will at once show this.] But
+the question whether it is true for cases where n
+has ‘negative or fractional values requires further
+consideration.
+
+Case of a negative power.
+
+Let y=a-% Then proceed as before:
+
+yt+dy=(a+dx)-? os
+dx\-*
+= -2 — . ,
+7 set)
+
+[book page 24]
+
+Expanding this by the binomial theorem (see p. 141),
+we get
+2dx , 2(2+1)/da\?
+= 2] 1 ATO)
+=e [2 ae * Ix (F) ete |
+=x-*—2¢-8.dxe+3a-(dx)—4a-(dax)’ +ete.
+So, neglecting the small quantities of higher orders
+of smallness, we have:
+y+dy=x-*—22x-5.dx.
+Subtracting the original y=a~?, we find
+dy = —2x-da,
+dy _ _op-s
+/ de 2x-8,
+And this is still in accordance with the rule inferred
+above.
+. Case of a fractional power.
+Let y=a. Then, as before,
+3
+ytdy=(e+da)=ai(14+)
+— 1 dx _1 (dx : :
+=/2¢+5 J=—-3 —J=t+ terms with higher
+2Ja 8 w/a powers of dx.
+Subtracting the original y =x, and neglecting higher
+powers we have left:
+dy =9 Ja = a” . dx,
+a W154, Agreeing with th 1 ral
+and 7p 7gh * Agreeing with the general rule.
+
+[book page 25]
+
+Summary. Let us see how far we have got. We
+have arrived at the following rule: To differentiate
+x", multiply by the power and reduce the power by
+one, so giving us nz"-1 as the result. .
+Exercises I. (See p. 254 for Answers.)
+Differentiate the following :
+() y=a (2) y=art
+(3) y=ar (4) w= 0"
+(5) e=a/u (6) y= a-5
+5
+(7) w= (8) y= 2a
+3 vi
+(9) y= a8 (10) y=
+You have now learned how to differentiate powers
+of x. How easy wt r8!

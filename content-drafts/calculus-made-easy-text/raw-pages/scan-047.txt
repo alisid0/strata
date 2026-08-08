@@ -1,0 +1,30 @@
+CHAPTER V.
+NEXT STAGE. WHAT TO DO WITH CONSTANTS.
+In our equations we have regarded x as growing,
+and as a result of # being made to grow y also
+changed its value and grew. We usually think of x
+as a quantity that we can vary; and, regarding the
+variation of x as a sort of cause, we consider the re-
+‘ sulting variation of y as an effect. In other words, we
+
+regard the value of y as depending on that of 2. Both
+a and y are variables, but # is the one that we operate
+upon, and y is the “dependent variable.” In all the
+preceding chapter we have been trying to find out
+rules for the proportion which the dependent variation
+in y bears to the variation independently made in z.
+
+Our next step is to find out what effect on the
+process of differentiating is caused by the presence of
+constants, that is, of numbers which don’t change
+when «& or y change their values.
+
+Added Constants.
+
+Let us begin with some simple case of an added
+constant, thus :
+
+Let y= +5.
+Just as before, let us suppose # to grow to 7+daz and
+y to grow to y+dy.
+

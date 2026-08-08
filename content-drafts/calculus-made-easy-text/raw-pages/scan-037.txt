@@ -1,0 +1,19 @@
+16 CALCULUS MADE EASY
+
+In ordinary algebra which you learned at school,
+you were always hunting after some unknown
+quantity which you called w or y; or sometimes
+there were two unknown quantities to be hunted
+for simultaneously. You have now to learn to go
+hunting in a new way; the fox being now neither
+az nor y. Instead of this you have to hunt for this
+curious cub called oy The process of finding the
+value of ay is called “differentiating.” But, remember,
+what is wanted is the value of this ratio when both
+dy and dx are themselves indefinitely small. The
+true value of the differential coefficient is that to which
+it approximates in the limiting case when each of
+them is considered as infinitesimally minute. .
+
+Let us now learn how to go in quest of ay
+

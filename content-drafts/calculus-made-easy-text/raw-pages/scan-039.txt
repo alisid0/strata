@@ -1,0 +1,30 @@
+CHAPTER IV.
+' SIMPLEST CASES.. ,
+Now let us see how, on first principles, we can
+differentiate some simple algebraical expression.
+
+Case 1.
+
+Let us begin with the simple expression. y=.
+Now remember that the fundamental notion about
+the calculus is the idea of growing. Mathematicians
+call it varying. Now as y and 2” are equal to one
+another, it is clear that if 2 grows, 2? will also grow.
+And if a grows, then y will also grow. What we
+have got to find out is the proportion between the
+growing of y and the growing of a In other words
+our task is to find out the ratio between dy and dz,
+or, in brief, to find the value of we.
+
+Let x, then, grow a little bit bigger and become
+x+dex; similarly, y will grow a bit bigger and will
+become y+dy. Then, clearly, it will still be true
+that the enlarged y will be equal to the square of the
+enlarged a Writing this down, we have:
+
+y+dy=(a+dz). -
+
+Doing the squaring we get:
+
+yt+dy=x?+2x-dx+(dax)* .
+

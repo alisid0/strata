@@ -1,0 +1,34 @@
+30 CALCULUS MADE EASY
+Some Further Examples. :
+
+. The following further examples, fully worked out,
+will enable you to master completely the process of
+differentiation as applied to ordinary algebraical ex-
+pressions, and enable you to.work out by yourself the
+examples given at the end of this chapter.
+
+. (1) Differentiate y=7-3
+
+; is an added constant and vanishes (see p. 26).
+_ We may then write at once
+dy _1 -1 .
+. dx 7* 5 xa-},
+Lo dy 5
+or dx 7" °
+(2) Differentiate y=a/a—3Va.
+
+' The term Bu @ vanishes, being an added constant ;
+and as as/x, in the index form, is written axt, we
+have oo
+
+DO WY axdxabiaexart,
+
+dy_ @
+or . + =—=.
+
+— dx Je
+(3) If ayt+bae=by—ax+(a+y)r/a?—B?,
+find the differential coefficient of y with respect to x.
+As a rule an expression of this kind will need a
+little more knowledge than we have acquired so far ;
+

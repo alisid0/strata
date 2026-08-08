@@ -1,0 +1,290 @@
+CALCULUS MADE EASY - Silvanus P. Thompson, second edition 1914
+Chapter III. On Relative Growings
+Book pages 9 to 17 (scan pages 30 to 38)
+Source: the uploaded Google Books scan. Text produced by OCR and NOT yet proofread.
+Prose is broadly reliable. Mathematics is not. See README.md.
+======================================================================
+
+[book page 9]
+
+CHAPTER III.
+
+ON RELATIVE GROWINGS. |
+ALL through the calculus we are dealing with quantities that are growing, and with rates of growth.
+We classify all quantities into two classes: constants
+and variables. Those which we regard as of fixed
+value, and call constants, we generally denote algebraically by letters from the beginning of the
+alphabet, such as a, 6, or ¢; while those which we
+consider as capable of growing, or (as mathematicians:
+say) of “varying,” we denote by letters from the end
+of the alphabet, such as 2, y, z, wu, v, w, or sometimes ¢.
+
+Moreover, we are usually dealing with more than
+one variable at once, and thinking of the way in
+which one variable depends on the other : for instance,
+we think of the way in which the height reached
+by a projectile depends on the time of attaining that
+height. Or we are asked to consider a rectangle of
+given area, and to enquire how any increase in the
+length of it will compel a corresponding decrease in
+the breadth of it. Or we think of the way in which
+any variation in the slope of a ladder will cause the
+height that it reaches, to vary.
+
+Suppose we have got two such variables that
+
+an
+
+[book page 10]
+
+depend one on the other. An alteration in one will
+bring about an alteration in the other, because of this
+dependence. Let us call one of the variables 2, and
+the other that depends on it y.
+
+Suppose we make x to vary, that is to say, we
+either alter it or imagine it to be altered, by adding
+to it a bit which we call da. We are thus causing x
+to become x+da. Then, because x has been altered,
+y will have altered also, and will have become y+dy.
+Here the bit dy may be in some cases positive, in
+others negative ; and it won’t (except by a miracle) be
+the same size as da.
+
+Take two examples.
+
+(1) Let a and y be respectively the base and the
+height of a right-angled triangle (Fig. 4), of which
+|
+
+x ax
+
+Fie. 4,
+the slope of the other side is fixed at 30°. If we
+suppose this triangle to expand and yet keep its
+angles the same as at first, then, when the base grows
+so as to become x+dz, the height becomes y+dy.
+Here, increasing x results in an increase of y. The
+little triangle, the height of which is dy, and the base
+
+t
+
+[book page 11]
+
+ON RELATIVE GROWINGS ll
+of which is dz, is similar to the original triangle; and
+it is obvious that the value of the ratio oy is the
+same as that of the ratio ¥. As the angle is 30° it
+will be seen that here x
+
+dy_ 1
+dx 1-73
+(2) Let a represent, in Fig. 5, the horizontal distance, from a wall, of the bottom end of a ladder,
+\,
+x
+Fie. 5.
+AB, of fixed length; and let y be the height it
+reaches up the wall. Now y clearly depends on 2.
+It is easy to see that, if we pull the bottom end A a
+bit further from the wall, the top end B will come
+down a little lower. Let us state this in scientific
+language. If we increase x to x+da, then y will
+become y—dy; that is, when wx receives a positive
+. ao
+’
+
+[book page 12]
+
+increment, the increment which results to y is
+negative.
+
+Yes, but how much? Suppose the ladder was so
+long that when the bottom end A was 19 inches from
+the wall the top end B reached just 15 feet from the
+ground. Now, if you were to pull the bottom end
+out 1 inch more, how much would: the top end come
+down? Put it all into inches: a2=19 inches, y=180
+
+_ inches. Now the increment of a which we call da,
+is 1 inch: or #+da= 20 inches.
+
+How much will y be diminished? The new height
+will be y—dy. If we work out the height by Euclid
+I. 47, then we shall be able to find how much dy will
+be. The length of the ladder is
+
+. »/(180)?+(19)?= 181 inches.
+Clearly then, the new height, which is y—dy, will be
+such that
+(y— dy)? = (181)? — (20)? = 32761 — 400 = 32361,
+y—dy= »/32361 =179°89 inches.
+Now y is 180, so that dy is 180—179'89=0:11 inch.
+
+So we see that making dz an increase of 1 inch
+has resulted in making dy a decrease of 0°11 inch.
+
+And the ratio of dy to dx may be stated thus:
+
+dy oll
+dz 1°
+
+It is also easy to see that (except in one particular
+position) dy will be of a different size from da.
+
+Now right through the differential calculus we
+are hunting, hunting, hunting for a curious thing,
+
+[book page 13]
+
+a mere ratio, namely, the proportion which dy
+bears to da when both of them are indefinitely
+small.
+
+It should be noted here that we can only find
+this ratio od when y and & are related to each
+
+. other in some way, so that whenever a varies y does .
+vary also. For instance, in the first example just
+taken, if the base a of the triangle be made longer,
+
+"the height y of the triangle becomes greater also,
+and in the second example, if the distance x of the
+foot of the ladder from the wall be made to increase,
+the height y reached by the ladder decreases in a
+corresponding manner, slowly at first, but more and
+more rapidly as x becomes greater. In these cases
+the relation between a and y is perfectly detinite,
+it can be expressed mathematically, being Y= tan 30°
+and 2?+y?=(? (where J is the length of the ladder)
+respectively, and wy has the meaning we found in
+each case.
+
+If, while x is, as before, the distance of the foot
+of the ladder from the wall, y is, instead of the
+height reached, the horizontal length of the wall, or
+the number of bricks in it, or the number of years
+since it was built, any change in a would naturally
+cause no change whatever in y; in this case ay has
+no meaning whatever, and it is not possible to find
+
+[book page 14]
+
+an expression for it. Whenever we use differentials
+dx, dy, dz, ete, the existence of some kind of
+relation between a, y, z, etc, is implied, and this
+relation is called a “function” in a, y, 2, ete.; the
+two expressions given above, for instance, namely
+Y—=tan 30° and x#*+y?=/?, are functions of # and y.
+"Such expressions contain implicitly (that is, contain
+without distinctly showing it) the means of expressing
+either 2 in terms of y or y in terms of a, and for
+this reason they are called implicit functions in
+aw and y; they can be respectively put into the forms
+y= tan 30° or a= —"
+and y=JP=—2 or w=J/P-y*
+
+These last expressions state explicitly (that is, distinctly) the value of a in terms of y, or of y in terms
+of x,.and they are for this reason called explicit
+functions of a or y. For example 2?+3=2y—7 is
+an implicit function in # and y; it may be written
+
+2
+y= (explicit function of a) or r=/2y—10
+(explicit function of y). We see that an explicit —
+function in x, y, 2, etc, is simply something the
+value of which changes when 2, y, 2, ete, are
+changing, either one at the time or several together.
+Because of this, the value of the explicit function is
+called the dependent variable, as it depends on the
+value of the other variable quantities in the function ;
+
+[book page 15]
+
+these other variables are called the independent
+variables because their value is not determined from
+the value assumed by the function. For example,
+if w=a*sin 0, 2 and 6 are the independent variables,
+and w is the dependent variable.
+
+Sometimes the exact relation between several
+quantities w, y, z either is not known or it is not
+convenient to state it; it is only known, or convenient to state, that there is some sort of relation
+between these variables, so that one cannot alter
+
+' either a or y or z singly without affecting the other
+quantities; the existence of a function in a, y, z is
+then indicated by the notation F(x, y, 2) (implicit
+function) or by a= Fy, 2), y= F(a, z) or z= F(a, y)
+(explicit function). Sometimes the letter f or ¢ is used
+instead of F, so that y=F(ax), y=/f(x) and y=¢(a)
+all mean the same thing, namely, that the value of
+y depends on the value of 2 in some way which is
+not stated.
+
+We call the ratio ay, “the differential coefficient of
+y with respect to a.” It is a solemn scientific name
+for this very simple thing. But we are not going
+to be frightened by solemn names, when the things
+themselves are so easy. Instead of being frightened
+we will simply pronounce a brief curse on the
+stupidity of giving long crack-jaw names; and, having
+relieved our minds, will go on to the simple thing
+. . dy
+itself, namely the ratio dx
+
+[book page 16]
+
+In ordinary algebra which you learned at school,
+you were always hunting after some unknown
+quantity which you called w or y; or sometimes
+there were two unknown quantities to be hunted
+for simultaneously. You have now to learn to go
+hunting in a new way; the fox being now neither
+az nor y. Instead of this you have to hunt for this
+curious cub called oy The process of finding the
+value of ay is called “differentiating.” But, remember,
+what is wanted is the value of this ratio when both
+dy and dx are themselves indefinitely small. The
+true value of the differential coefficient is that to which
+it approximates in the limiting case when each of
+them is considered as infinitesimally minute. .
+
+Let us now learn how to go in quest of ay
+
+[book page 17]
+
+NOTE TO CHAPTER III.
+How to read Differentials.
+
+It will never do to fall into the schoolboy error of
+thinking that dx means d times 2, for d is not a
+factor—it means “an element of” or “a bit of”
+whatever follows. One reads dx thus: “dee-eks.”
+
+In case the reader has no one to guide him in such
+matters it may here be simply said that one reads
+differential coefficients in the following way. The
+differential coefficient
+
+iy is read “dee-wy by dee-eks,” or “dee-wy over
+dee-eks.”
+
+So also S is read “ dee-you by dee-tee.”
+
+Second differential coefficients will be met with
+later on. They are like this:
+ey, which is read “ dee-two-wy over dee-eks-squared,”
+and it means that the operation of differentiating y
+with respect-to x has been (or has to be) performed
+twice over.
+
+Another way of indicating that a function has been
+differentiated is by putting an accent to the symbol of
+the function. Thus if y= F(a), which means that y
+is some unspecified function of a (see p. 14), we may
+write F"(x) instead of HF). Similarly, F(x)
+will mean that the original function F(a) has been
+differentiated twice over with respect to a.
+
+C.M.E. B
+waa

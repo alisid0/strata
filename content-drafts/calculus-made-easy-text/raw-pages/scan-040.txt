@@ -1,0 +1,41 @@
+SIMPLEST CASES 19
+
+What does (da)? mean? Remember that da meant
+a bit—a little bit—of a. Then (dx)? will mean a little
+bit of a little bit of w; that is, as explained above
+(p. 4), it is a small quantity of the second order _
+of smallness. It may therefore be discarded as quite
+inconsiderable in comparison with the other terms.
+Leaving it out, we then have:
+
+y+dy=a2+ 2a de.
+
+Now y="; so let us subtract this from the equa-
+tion and we have left
+
+dy =2x- da. oy
+Dividing across by dz, we find
+
+dy
+
+=* = 2x.
+
+dx
+
+Now this* is what we set out to find. The ratio of
+the growing of y to the growing of a is, in the case
+before us, found to be 2x.
+
+* N.B.—This ratio dy is the result of differentiating y with
+respect. to x. Differentiating means finding the differential co-
+efficient. Suppose we had some other function of x, as, for
+example, u=727+3. Then if we were told to differentiate this
+with respect to x, we should have to find or, what is the same
+thing, aie +) On the other hand, we may have a case in which
+time was the independent variable (see p. 15), such as this:
+y=b+4aé2, Then, if we were told to differentiate it, that means we
+must find its differential coefficient with respect to ¢. So that then
+our business would be to try to find ay, that is, to find G+ 10)
+
+a
+

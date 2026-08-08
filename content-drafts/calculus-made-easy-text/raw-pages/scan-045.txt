@@ -1,0 +1,29 @@
+24 CALCULUS MADE EASY
+Expanding this by the binomial theorem (see p. 141),
+we get
+2dx , 2(2+1)/da\?
+= 2] 1 ATO)
+=e [2 ae * Ix (F) ete |
+=x-*—2¢-8.dxe+3a-(dx)—4a-(dax)’ +ete.
+So, neglecting the small quantities of higher orders
+of smallness, we have:
+y+dy=x-*—22x-5.dx.
+Subtracting the original y=a~?, we find
+dy = —2x-da,
+dy _ _op-s
+/ de 2x-8,
+And this is still in accordance with the rule inferred
+above.
+. Case of a fractional power.
+Let y=a. Then, as before,
+3
+ytdy=(e+da)=ai(14+)
+— 1 dx _1 (dx : :
+=/2¢+5 J=—-3 —J=t+ terms with higher
+2Ja 8 w/a powers of dx.
+Subtracting the original y =x, and neglecting higher
+powers we have left:
+dy =9 Ja = a” . dx,
+a W154, Agreeing with th 1 ral
+and 7p 7gh * Agreeing with the general rule.
+

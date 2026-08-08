@@ -1,0 +1,36 @@
+SIMPLEST CASES 23
+and subtracting y= leaves us .
+
+dy = Sarde, |
+whence -_ ay Sat, exactly as we supposed.
+
+Following out logically our observation, we should
+conclude that if we want to deal with any higher
+power,—call it m—we could tackle it in the same
+way. ow ;
+
+Let — -y=a",
+then, we should expect to find that
+
+a naira ce
+
+For example, let n=8, then y=28; and differ-
+entiating it would give dY = Bat, .
+
+And, indeed, the rule that differentiating a” gives as
+the result nz"-1! is true for all cases where m is a
+whole number and positive. [Expanding (a+dz)" by ,
+the binomial theorem will at once show this.] But
+the question whether it is true for cases where n
+has ‘negative or fractional values requires further
+consideration.
+
+Case of a negative power.
+
+Let y=a-% Then proceed as before:
+
+yt+dy=(a+dx)-? os
+dx\-*
+= -2 — . ,
+7 set)
+
