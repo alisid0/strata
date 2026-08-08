@@ -52,8 +52,8 @@ So `(dx)²` comes out as `(da)?`, and `dy = 2x·dx` comes out as `dy =2x- da.` T
 is consistent, which is encouraging, but it cannot be fixed by find and replace alone
 because `a` is also a legitimate letter in the text.
 
-Figures are lost entirely. Chapter II's three diagrams of the growing square, and every
-graph in chapters III to V, exist only in the scan.
+Figures are lost entirely by OCR. They have been located and cropped separately as
+reference images. See FIGURES.md.
 
 ## What to do next
 
