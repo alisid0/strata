@@ -310,7 +310,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 </div>
 
 <h2 id="s2">2. A cube that grows</h2>
-<p>Now the same treatment as the square, one dimension further up. A cube of side <span class="math">x</span> has volume <span class="math">x&sup3;</span>. Push every face out by a little bit <span class="math">h</span> and it gains volume in three sorts of piece.</p>
+<p>Now the same treatment as the square, one dimension further up. A cube of side <span class="math">x</span> has volume <span class="math">x&sup3;</span>. Push every face out by a little bit <span class="math">dx</span> and it gains volume in three sorts of piece.</p>
 
 <div class="widget">
   <p class="wtitle">What a growing cube gains, taken apart</p>
@@ -333,22 +333,22 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <text class="dl" x="282" y="200">3 bars</text>
     <text class="dl" x="352" y="200">1 corner</text>
     <text class="dl" x="70" y="212">x&sup3;</text>
-    <text class="dl" x="190" y="212">3x&sup2;h</text>
-    <text class="dl" x="282" y="212">3xh&sup2;</text>
-    <text class="dl" x="352" y="212">h&sup3;</text>
+    <text class="dl" x="190" y="212">3x&sup2;&middot;dx</text>
+    <text class="dl" x="282" y="212">3x(dx)&sup2;</text>
+    <text class="dl" x="352" y="212">(dx)&sup3;</text>
   </svg>
   <p class="cap">The slabs and bars are drawn thicker than they would really be, so that you can see them at all.</p>
 </div>
 
 <p>A flat slab on each of the three faces you can see, a thin bar along each of the three edges where two slabs meet, and one small cube in the corner where all three meet. Written out, that is a line of algebra you may already know.</p>
 
-<div class="eq">(x + h)&sup3; = x&sup3; + 3x&sup2;h + 3xh&sup2; + h&sup3;<span class="lbl">the cube, three slabs, three bars, one corner</span></div>
+<div class="eq">(x + dx)&sup3; = x&sup3; + 3x&sup2;&middot;dx + 3x(dx)&sup2; + (dx)&sup3;<span class="lbl">the cube, three slabs, three bars, one corner</span></div>
 
 <p>Chapter 1 had one piece worth keeping and one worth discarding. Here there is one worth keeping and <em>two</em> worth discarding, and they are not even equally negligible.</p>
 
 <div class="predict" id="pc1">
   <p class="pq">Before you look at the numbers</p>
-  <p>Take a cube of side 10 and grow it by <span class="math">h = 0.1</span>. The three slabs will clearly contribute the most. Where do you think the three bars and the single corner cube will land beside them?</p>
+  <p>Take a cube of side 10 and grow it by <span class="math">dx = 0.1</span>. The three slabs will clearly contribute the most. Where do you think the three bars and the single corner cube will land beside them?</p>
   <div class="segs" role="group" aria-label="Predict the sizes of the pieces">
     <button class="seg" data-pc1="close" aria-pressed="false">All three roughly comparable</button>
     <button class="seg" data-pc1="tenth" aria-pressed="false">Bars a bit smaller, corner smaller again</button>
@@ -360,29 +360,29 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 <div class="widget locked-widget" id="w-cube">
   <p class="wtitle">Growing a cube of side 10</p>
   <div class="ctrl">
-    <label for="cbh">Grow by h</label>
+    <label for="cbh">Grow by dx</label>
     <input type="range" id="cbh" min="1" max="200" step="1" value="100" disabled />
     <span class="out" id="cbo">1.00</span>
   </div>
   <div class="cards">
-    <div class="card"><p class="k">3 slabs (3x&sup2;h)</p><p class="v" id="cbS">&mdash;</p></div>
-    <div class="card"><p class="k">3 bars (3xh&sup2;)</p><p class="v" id="cbB">&mdash;</p></div>
-    <div class="card"><p class="k">corner (h&sup3;)</p><p class="v" id="cbC">&mdash;</p></div>
+    <div class="card"><p class="k">3 slabs (3x&sup2;&middot;dx)</p><p class="v" id="cbS">&mdash;</p></div>
+    <div class="card"><p class="k">3 bars (3x(dx)&sup2;)</p><p class="v" id="cbB">&mdash;</p></div>
+    <div class="card"><p class="k">corner ((dx)&sup3;)</p><p class="v" id="cbC">&mdash;</p></div>
     <div class="card"><p class="k">bars + corner, as a share</p><p class="v" id="cbP">&mdash;</p></div>
   </div>
   <p class="note" id="cbt"></p>
 </div>
 
 <h2 id="s3">3. The ratio again</h2>
-<p>Same three lines as chapter 1. Take what the growth added, divide by <span class="math">h</span>, and see what survives when <span class="math">h</span> is driven towards nothing.</p>
+<p>Same three lines as chapter 1. Take what the growth added, divide by <span class="math">dx</span>, and see what survives when <span class="math">dx</span> is driven towards nothing.</p>
 
-<div class="eq">[ (x + h)&sup3; &minus; x&sup3; ] / h = (3x&sup2;h + 3xh&sup2; + h&sup3;) / h = 3x&sup2; + 3xh + h&sup2;<span class="lbl">exact, with nothing yet discarded</span></div>
+<div class="eq">[ (x + dx)&sup3; &minus; x&sup3; ] / h = (3x&sup2;&middot;dx + 3x(dx)&sup2; + (dx)&sup3;) / h = 3x&sup2; + 3x&middot;dx + (dx)&sup2;<span class="lbl">exact, with nothing yet discarded</span></div>
 
 <div class="tryit step locked" id="b2">
   <p class="q"><span class="stepnum">2</span>Put numbers in</p>
-  <p class="ask">With <span class="math">x = 10</span> and <span class="math">h = 0.1</span>, the cube gained <strong>30.301</strong> in volume. Divide that by <span class="math">h</span> to get the gain per unit of growth.</p>
+  <p class="ask">With <span class="math">x = 10</span> and <span class="math">dx = 0.1</span>, the cube gained <strong>30.301</strong> in volume. Divide that by <span class="math">dx</span> to get the gain per unit of growth.</p>
   <div class="answer">
-    <input type="text" inputmode="decimal" id="b2i" aria-label="Volume gained divided by h" placeholder="ratio" />
+    <input type="text" inputmode="decimal" id="b2i" aria-label="Volume gained divided by dx" placeholder="ratio" />
     <button type="button" class="go" id="b2b">Check</button>
   </div>
   <p class="fb" id="b2f"></p>
@@ -391,7 +391,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <div class="tryit step locked" id="b3">
   <p class="q"><span class="stepnum">3</span>Shrink h away</p>
-  <p class="ask">The ratio is <span class="math">3x&sup2; + 3xh + h&sup2;</span>, and at <span class="math">x = 10</span> that is <span class="math">300 + 3h + h&sup2;</span>. What number does it close in on as <span class="math">h</span> goes to nothing?</p>
+  <p class="ask">The ratio is <span class="math">3x&sup2; + 3x&middot;dx + (dx)&sup2;</span>, and at <span class="math">x = 10</span> that is <span class="math">300 + 3&middot;dx + (dx)&sup2;</span>. What number does it close in on as <span class="math">dx</span> goes to nothing?</p>
   <div class="answer">
     <input type="text" inputmode="decimal" id="b3i" aria-label="The value the ratio approaches" placeholder="value" />
     <button type="button" class="go" id="b3b">Check</button>
@@ -403,7 +403,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 <div class="eq">y = x&sup3;&nbsp;&nbsp;&rArr;&nbsp;&nbsp; dy/dx = 3x&sup2;<span class="lbl">the slabs survived, the bars and the corner did not</span></div>
 
 <h2 id="s4">4. The pattern</h2>
-<p>Two results is not a pattern. Three might be. Here is <span class="math">x</span> itself as well, which needs no picture: grow <span class="math">x</span> by <span class="math">h</span> and it gains exactly <span class="math">h</span>, so the gain per unit of growth is 1, whatever <span class="math">x</span> happens to be.</p>
+<p>Two results is not a pattern. Three might be. Here is <span class="math">x</span> itself as well, which needs no picture: grow <span class="math">x</span> by <span class="math">dx</span> and it gains exactly <span class="math">dx</span>, so the gain per unit of growth is 1, whatever <span class="math">x</span> happens to be.</p>
 
 <table>
   <tr><th>The quantity</th><th>What it gains, per unit of growth</th></tr>
@@ -429,7 +429,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <div class="eq">y = x<sup>n</sup>&nbsp;&nbsp;&rArr;&nbsp;&nbsp; dy/dx = n&middot;x<sup>n&minus;1</sup><span class="lbl">the power rule, and almost everything else is built on it</span></div>
 
-<p>You do not have to take it on trust. Multiply out <span class="math">(x+h)<sup>n</sup></span> and every term carries at least one <span class="math">h</span> except the leading <span class="math">x<sup>n</sup></span>, which cancels against the original. Exactly one term carries a single <span class="math">h</span> and no more, and there are <span class="math">n</span> ways of picking it, which is where the <span class="math">n</span> comes from. Everything else carries <span class="math">h&sup2;</span> or worse and is in the smaller league from chapter 1.</p>
+<p>You do not have to take it on trust. Multiply out <span class="math">(x+h)<sup>n</sup></span> and every term carries at least one <span class="math">dx</span> except the leading <span class="math">x<sup>n</sup></span>, which cancels against the original. Exactly one term carries a single <span class="math">dx</span> and no more, and there are <span class="math">n</span> ways of picking it, which is where the <span class="math">n</span> comes from. Everything else carries <span class="math">(dx)&sup2;</span> or worse and is in the smaller league from chapter 1.</p>
 
 <div class="widget">
   <p class="wtitle">Test it against a direct measurement</p>
@@ -625,13 +625,13 @@ var TRACK=(function(){
 (function(){
   var BANK={
     relative:{name:'Growing together',type:'num',answer:11,tol:0.5,
-      q:'A square of side <strong>5</strong> grows by <strong>1</strong>. Roughly how much area does it gain? The rough answer <span class="math">2x + h</span> is fine.',
+      q:'A square of side <strong>5</strong> grows by <strong>1</strong>. Roughly how much area does it gain? The rough answer <span class="math">2x + dx</span> is fine.',
       right:'Correct, 11. Two strips of 5 make 10, and the corner adds 1. Grow a square of side 50 by the same amount and it would gain about 101, ten times as much for the same nudge.',
       wrong:'Two strips, each 5 long and 1 wide, plus a corner of 1 by 1.'},
     ratio3:{name:'The ratio for a cube',type:'num',answer:76.51,tol:0.05,
       q:'A cube of side <strong>5</strong> is grown by <strong>0.1</strong> and gains <strong>7.651</strong> in volume. What is the gain per unit of growth?',
-      right:'Correct. <span class="eqn">7.651 &divide; 0.1 = 76.51</span>, which is <span class="eqn">3x&sup2; + 3xh + h&sup2; = 75 + 1.5 + 0.01</span>.',
-      wrong:'Divide the volume gained by h, which is 0.1 here.'},
+      right:'Correct. <span class="eqn">7.651 &divide; 0.1 = 76.51</span>, which is <span class="eqn">3x&sup2; + 3x&middot;dx + (dx)&sup2; = 75 + 1.5 + 0.01</span>.',
+      wrong:'Divide the volume gained by dx, which is 0.1 here.'},
     limit3:{name:'Letting h go for a cube',type:'num',answer:108,tol:0.5,
       q:'For <span class="math">y = x&sup3;</span> the rate is <span class="math">3x&sup2;</span>. What is it at <span class="math">x = 6</span>?',
       right:'Correct, 108. Six squared is 36, and three times that is 108.',
@@ -734,7 +734,7 @@ var TRACK=(function(){
     txt('cbt','Growing the side by '+h.toFixed(2)+' adds '+extra.toFixed(4)+
       ' in all. The slabs bring '+slabs.toFixed(3)+', the bars '+bars.toFixed(4)+
       ' and the corner '+corner.toFixed(6)+'. Everything except the slabs accounts for '+
-      (100*(bars+corner)/extra).toFixed(2)+'% of the gain, and that share falls roughly in step with h.');
+      (100*(bars+corner)/extra).toFixed(2)+'% of the gain, and that share falls roughly in step with dx.');
   }
   sl.addEventListener('input',draw); reg(draw);
 })();
@@ -755,7 +755,7 @@ var TRACK=(function(){
     txt('prt','For y = x^'+n+' at x = '+x.toFixed(1)+
       ', nudging x by a millionth and dividing gives '+measured.toFixed(4)+
       '. The rule says n·x^(n−1) = '+n+' × '+x.toFixed(1)+'^'+(n-1)+' = '+rule.toFixed(4)+
-      '. They differ only in the last decimals, and that difference is the leftover h, not a fault in the rule.');
+      '. They differ only in the last decimals, and that difference is the leftover dx, not a fault in the rule.');
   }
   sn.addEventListener('input',draw); sx.addEventListener('input',draw); reg(draw);
 })();
@@ -788,20 +788,20 @@ var TRACK=(function(){
 
   exercise({
     input:'b2i',check:'b2b',fb:'b2f',answer:303.01,tol:0.05,idea:'ratio3',
-    near:[{value:30.301,msg:'That is the volume gained. Divide it by h = 0.1 to get the gain per unit of growth.'},
+    near:[{value:30.301,msg:'That is the volume gained. Divide it by dx = 0.1 to get the gain per unit of growth.'},
           {value:3.0301,msg:'You multiplied by 0.1 instead of dividing by it. Dividing by a tenth makes the number bigger.'},
-          {value:300,msg:'Very close, and that is where it is heading, but at h = 0.1 the exact answer still carries the extra 3.01.'}],
-    right:'Correct. <span class="eqn">30.301 &divide; 0.1 = 303.01</span>, which is exactly <span class="eqn">3x&sup2; + 3xh + h&sup2; = 300 + 3 + 0.01</span>. The 300 is the slabs, the 3 is the bars and the 0.01 is the corner.',
+          {value:300,msg:'Very close, and that is where it is heading, but at dx = 0.1 the exact answer still carries the extra 3.01.'}],
+    right:'Correct. <span class="eqn">30.301 &divide; 0.1 = 303.01</span>, which is exactly <span class="eqn">3x&sup2; + 3x&middot;dx + (dx)&sup2; = 300 + 3 + 0.01</span>. The 300 is the slabs, the 3 is the bars and the 0.01 is the corner.',
     wrong:'Not quite. Divide 30.301 by 0.1.',
     onRight:function(){done('b2');lock('b3',false);}
   });
   exercise({
     input:'b3i',check:'b3b',fb:'b3f',answer:300,tol:0.05,idea:'limit3',
-    near:[{value:303.01,msg:'That is the value at one particular h. The question asks where the values head as h keeps shrinking.'},
+    near:[{value:303.01,msg:'That is the value at one particular h. The question asks where the values head as dx keeps shrinking.'},
           {value:100,msg:'That is x&sup2;. The rule brings the 3 down in front, so it is three times that.'},
           {value:30,msg:'That is 3x. Check the expression again: the surviving term is 3x&sup2;, not 3x.'}],
-    right:'Correct, 300. Both the <span class="eqn">3xh</span> and the <span class="eqn">h&sup2;</span> can be made as small as you like, while <span class="eqn">3x&sup2;</span> does not depend on h at all.',
-    wrong:'Not quite. In 300 + 3h + h&sup2;, which part survives when h goes to nothing?',
+    right:'Correct, 300. Both the <span class="eqn">3x&middot;dx</span> and the <span class="eqn">(dx)&sup2;</span> can be made as small as you like, while <span class="eqn">3x&sup2;</span> does not depend on h at all.',
+    wrong:'Not quite. In 300 + 3&middot;dx + (dx)&sup2;, which part survives when dx goes to nothing?',
     onRight:function(){done('b3');lock('b4',false);}
   });
 
@@ -837,9 +837,9 @@ var TRACK=(function(){
     var ok=(k==='tiny');
     TRACK.hit('predict-cube',ok);
     if(k==='close'){
-      say('pc1f','bad','Not close at all, as the numbers will show. Each bar carries an h&sup2; and the corner an h&sup3;, and chapter 1 established what squaring a small number does to it. Unlock and look.');
+      say('pc1f','bad','Not close at all, as the numbers will show. Each bar carries a (dx)&sup2; and the corner a (dx)&sup3;, and chapter 1 established what squaring a small number does to it. Unlock and look.');
     }else if(k==='tenth'){
-      say('pc1f','bad','The direction is right but the scale is far out. The bars are down by a factor of h against the slabs, which at h = 0.1 means a hundredth, not a bit smaller. Unlock and see.');
+      say('pc1f','bad','The direction is right but the scale is far out. The bars are down by a factor of dx against the slabs, which at dx = 0.1 means a hundredth, not a bit smaller. Unlock and see.');
     }else{
       say('pc1f','good','Right. Slabs 30, bars 0.3, corner 0.001. Each step down the list costs a factor of h, which is why only the slabs survive the division. Drag the slider and watch all three move.');
     }

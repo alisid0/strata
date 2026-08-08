@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Integration" />
-<meta name="description" content="Chapter one of a calculus course: what the symbols mean, and why some small quantities stop counting." />
+<meta name="description" content="Chapter one of a calculus course: the two symbols, and the orders of smallness everything rests on." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23185fa5'/%3E%3Ctext x='16' y='24' font-size='23' font-family='Georgia,serif' fill='%23fff' text-anchor='middle'%3E%E2%88%AB%3C/text%3E%3C/svg%3E" />
 <title>Small things</title>
 <style>
@@ -278,8 +278,8 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <button class="themebtn" id="themebtn" type="button" aria-label="Toggle colour theme">Dark</button>
   </div>
   <div class="links">
-    <a href="#s1">1. The symbols</a>
-    <a href="#s2">2. Two kinds of small</a>
+    <a href="#s1">1. The two symbols</a>
+    <a href="#s2">2. Orders of smallness</a>
     <a href="#s3">3. A square that grows</a>
     <a href="#s4">4. The ratio</a>
     <a href="#s5">5. What you have</a>
@@ -292,19 +292,21 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <p class="sec-no">Chapter one</p>
 <h1>Small things</h1>
-<p class="lede">Most people who give up on calculus give up on the notation rather than the ideas. This chapter deals with the symbols first, then with the one fact everything else is built on: that some small quantities are so much smaller than others that they stop counting. Nothing is assumed beyond multiplying and adding.</p>
+<p class="lede">Most people who give up on calculus give up on its two symbols rather than on any of its ideas. This chapter translates both of them into English, then deals with the single fact the whole subject rests on: that some small quantities are so much smaller than others that they can be dropped without doing any harm. Nothing is assumed beyond multiplying and adding.</p>
 
-<h2 id="s1">1. The symbols</h2>
-<p>There is one letter to get past, and it is <span class="math">d</span>. It is not a number, and it is not something you multiply by. It is a label, and it means <strong>a little bit of</strong>.</p>
-<p>So <span class="math">dx</span> is a little bit of <span class="math">x</span>. That is the entire translation. Everything else in the notation is built from it.</p>
+<h2 id="s1">1. The two symbols</h2>
+<p>There are two, and neither is as bad as it looks.</p>
+<p>The first is <span class="math">d</span>. It is not a number and you never multiply by it. It is a label, and it means <strong>a little bit of</strong>. So <span class="math">dx</span> is a little bit of <span class="math">x</span>, and <span class="math">dt</span> is a little bit of <span class="math">t</span>. Mathematicians usually say "an element of" instead, which means the same and sounds more formal.</p>
+<p>The second is <span class="intg"><span class="sgn">&int;</span></span>, which is a long letter S, and it means <strong>the sum of</strong>. So <span class="intg"><span class="sgn">&int;</span></span><span class="math">dt</span> means: add up all the little bits of <span class="math">t</span>.</p>
+<p>Put them together and something reassuring happens. Take an hour and cut it into little bits called seconds. There are 3600 of them. Add all 3600 back together and you have your hour again, which is all that <span class="intg"><span class="sgn">&int;</span></span><span class="math">dt</span> over one hour is saying. The symbols look severe and are describing something a child could do with a pile of coins.</p>
 
 <div class="widget">
-  <p class="wtitle">Read it out loud</p>
+  <p class="wtitle">Read them out loud</p>
   <div class="segs" role="group" aria-label="Choose a symbol">
     <button class="seg" data-sym="d" aria-pressed="true">d</button>
     <button class="seg" data-sym="dx" aria-pressed="false">dx</button>
+    <button class="seg" data-sym="int" aria-pressed="false">&int;</button>
     <button class="seg" data-sym="dydx" aria-pressed="false">dy/dx</button>
-    <button class="seg" data-sym="d2" aria-pressed="false">d&sup2;y/dx&sup2;</button>
   </div>
   <div class="cards">
     <div class="card"><p class="k">Say it like this</p><p class="v" id="sym-a" style="font-size:15px">&mdash;</p></div>
@@ -324,36 +326,70 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p class="fb" id="a1f">Pick the one you think is right.</p>
 </div>
 
-<h2 id="s2">2. Two kinds of small</h2>
-<p>Now the fact that makes calculus work, and it is the part most courses hurry past.</p>
-<p>Take a small number and square it. The result is not just smaller. It is smaller <em>in a different league</em>, and the gap widens the smaller you started.</p>
+<h2 id="s2">2. Orders of smallness</h2>
+<p>Now the fact everything else is built on, and it is one that most courses hurry past.</p>
+<p>Small is never absolute. It is always small <em>compared with</em> something, and once you have fixed on what counts as small, there is a further question: how small is a small quantity of a small quantity?</p>
+
+<div class="callout">
+  <span class="tag">You already use the answer every day</span>
+  <p>An hour was divided into sixty parts, and each part was called a <em>minute</em> because it was a minute, meaning tiny, fraction of the hour. When finer divisions were needed, each minute was cut into sixty again, and those were called <em>second minutes</em>: small quantities of the second order. We dropped the second word and kept the first, which is why the thing your watch counts is called a second. The name is a statement about orders of smallness.</p>
+</div>
 
 <div class="tryit step open" id="a2">
-  <p class="q"><span class="stepnum">2</span>Square a small number</p>
-  <p class="ask">Let <span class="math">h = 0.01</span>, which is one hundredth. What is <span class="math">h&sup2;</span>?</p>
+  <p class="q"><span class="stepnum">2</span>Two orders down</p>
+  <p class="ask">A minute is a sixtieth of an hour. A second is a sixtieth of a minute. How many seconds are there in an hour?</p>
   <div class="answer">
-    <input type="text" inputmode="decimal" id="a2i" aria-label="h squared" placeholder="h&sup2;" />
+    <input type="text" inputmode="decimal" id="a2i" aria-label="Seconds in an hour" placeholder="seconds" />
     <button type="button" class="go" id="a2b">Check</button>
   </div>
   <p class="fb" id="a2f"></p>
 </div>
 
+<p>Money makes the same point without any arithmetic. A pound is neither large nor small until you say what it is being set beside. Against a thousand pounds it is loose change. Against a million it may as well not exist. And a small fraction of a small fraction disappears faster than most people expect.</p>
+
 <div class="tryit step locked" id="a3">
-  <p class="q"><span class="stepnum">3</span>Compare the two</p>
-  <p class="ask">So <span class="math">h</span> is a hundredth and <span class="math">h&sup2;</span> is a ten thousandth. How many times smaller than <span class="math">h</span> is <span class="math">h&sup2;</span>?</p>
+  <p class="q"><span class="stepnum">3</span>A fraction of a fraction</p>
+  <p class="ask">A millionaire promises his secretary a hundredth of whatever comes in this week. The secretary promises the office boy a hundredth of whatever <em>he</em> gets. If <strong>&pound;1000</strong> comes in, the secretary receives &pound;10. How much does the boy receive, in pounds?</p>
   <div class="answer">
-    <input type="text" inputmode="decimal" id="a3i" aria-label="How many times smaller" placeholder="times" />
+    <span class="unit">&pound;</span>
+    <input type="text" inputmode="decimal" id="a3i" aria-label="What the office boy receives" placeholder="amount" />
     <button type="button" class="go" id="a3b">Check</button>
   </div>
   <p class="fb" id="a3f"></p>
   <p class="lockmsg">Answer step 2 first.</p>
 </div>
 
-<p>That factor is the whole point, and it is not fixed. Shrink <span class="math">h</span> and the factor grows without limit. Drag it down and watch.</p>
+<p>Thompson, whose book this course follows, put the same idea through Swift's verse about fleas having smaller fleas to bite them. An ox might well be bothered by a flea. It is not going to trouble itself about a flea's flea, and a hundred and forty-four of them would still be beneath its notice. The second order is not merely smaller. It is in a different league, and it drops out of the reckoning entirely.</p>
+
+<p>Now put numbers on it, which is where it stops being a story and starts being usable.</p>
+
+<div class="tryit step locked" id="a4">
+  <p class="q"><span class="stepnum">4</span>Square a small number</p>
+  <p class="ask">Let <span class="math">dx = 0.01</span>, one hundredth. What is <span class="math">(dx)&sup2;</span>?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a4i" aria-label="dx squared" placeholder="(dx)&sup2;" />
+    <button type="button" class="go" id="a4b">Check</button>
+  </div>
+  <p class="fb" id="a4f"></p>
+  <p class="lockmsg">Answer step 3 first.</p>
+</div>
+
+<div class="tryit step locked" id="a5">
+  <p class="q"><span class="stepnum">5</span>Compare the two</p>
+  <p class="ask">So <span class="math">dx</span> is a hundredth and <span class="math">(dx)&sup2;</span> is a ten thousandth. How many times smaller than <span class="math">dx</span> is <span class="math">(dx)&sup2;</span>?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a5i" aria-label="How many times smaller" placeholder="times" />
+    <button type="button" class="go" id="a5b">Check</button>
+  </div>
+  <p class="fb" id="a5f"></p>
+  <p class="lockmsg">Answer step 4 first.</p>
+</div>
+
+<p>That factor is the point, and it is not fixed. Shrink <span class="math">dx</span> and the factor grows without any limit at all.</p>
 
 <div class="predict" id="pr1">
   <p class="pq">Before you drag it</p>
-  <p>The slider below starts at <span class="math">h = 0.5</span> and you are about to drive it towards zero. You saw that at <span class="math">h = 0.01</span> the square was 100 times smaller than <span class="math">h</span>. What happens to that factor as <span class="math">h</span> keeps shrinking?</p>
+  <p>The slider below starts at <span class="math">dx = 0.5</span> and you are about to drive it towards zero. At <span class="math">dx = 0.01</span> the square was 100 times smaller. What happens to that factor as <span class="math">dx</span> keeps shrinking?</p>
   <div class="segs" role="group" aria-label="Predict what the factor does">
     <button class="seg" data-pr1="same" aria-pressed="false">It settles somewhere</button>
     <button class="seg" data-pr1="grow" aria-pressed="false">It grows without limit</button>
@@ -365,27 +401,32 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 <div class="widget locked-widget" id="w-small">
   <p class="wtitle">How far apart they drift</p>
   <div class="ctrl">
-    <label for="smh">h</label>
+    <label for="smh">dx</label>
     <input type="range" id="smh" min="1" max="300" step="1" value="120" disabled />
     <span class="out" id="smo">0.500</span>
   </div>
   <div class="cards">
-    <div class="card"><p class="k">h</p><p class="v" id="smA">&mdash;</p></div>
-    <div class="card"><p class="k">h&sup2;</p><p class="v" id="smB">&mdash;</p></div>
-    <div class="card"><p class="k">h&sup3;</p><p class="v" id="smC">&mdash;</p></div>
-    <div class="card"><p class="k">h&sup2; smaller than h by</p><p class="v" id="smD">&mdash;</p></div>
+    <div class="card"><p class="k">dx</p><p class="v" id="smA">&mdash;</p></div>
+    <div class="card"><p class="k">(dx)&sup2;</p><p class="v" id="smB">&mdash;</p></div>
+    <div class="card"><p class="k">(dx)&sup3;</p><p class="v" id="smC">&mdash;</p></div>
+    <div class="card"><p class="k">(dx)&sup2; smaller by</p><p class="v" id="smD">&mdash;</p></div>
   </div>
   <p class="note" id="smt"></p>
 </div>
 
-<p>This is what is meant by <strong>degrees of smallness</strong>. If <span class="math">h</span> is small then <span class="math">h&sup2;</span> is negligible beside it, and <span class="math">h&sup3;</span> is beneath consideration entirely. Hold on to that, because in a moment you will see it decide an answer.</p>
+<p>So a quantity of the second order can be dropped, provided the first-order quantity was made small enough to begin with. Thompson gives a test of what "small enough" can mean: a good chronometer losing no more than half a minute in a year is keeping time to about one part in a million, and against that a millionth of a millionth is not worth writing down.</p>
+
+<div class="callout">
+  <span class="tag">One caution, and it matters later</span>
+  <p>A second-order quantity is negligible <em>on its own</em>. It stops being negligible if something multiplies it by a very large number. A farthing is nothing; a few hundred thousand farthings are not. Dropping small quantities is a judgement about the situation, not a licence, and later chapters will occasionally have to be careful about it.</p>
+</div>
 
 <h2 id="s3">3. A square that grows</h2>
-<p>Here is a square with sides of length <span class="math">x</span>. Push each side out by a little bit, <span class="math">h</span>, and the square gains some area. The question is how much, and the picture answers it exactly.</p>
+<p>Here is the picture Thompson uses to make all of this concrete, and it is worth the space. Take a square with sides of length <span class="math">x</span>. Push both sides out by a little bit, <span class="math">dx</span>, and the square gains area in three pieces.</p>
 
 <div class="predict" id="pr2">
   <p class="pq">Before you drag it</p>
-  <p>The square below starts grown by <span class="math">h = 1.5</span>, and the corner is a visible chunk of what was gained. You are about to halve <span class="math">h</span>. What happens to the corner's <em>share</em> of the extra area?</p>
+  <p>The square below starts grown by <span class="math">dx = 1.5</span>, and the corner is a visible chunk of what was gained. You are about to halve <span class="math">dx</span>. What happens to the corner's <em>share</em> of the extra area?</p>
   <div class="segs" role="group" aria-label="Predict what the corner's share does">
     <button class="seg" data-pr2="same" aria-pressed="false">It stays about the same</button>
     <button class="seg" data-pr2="half" aria-pressed="false">It roughly halves</button>
@@ -397,12 +438,12 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 <div class="widget locked-widget" id="w-square">
   <p class="wtitle">Growing a square of side 10</p>
   <div class="ctrl">
-    <label for="sqh">Grow by h</label>
+    <label for="sqh">Grow by dx</label>
     <input type="range" id="sqh" min="5" max="300" step="1" value="150" disabled />
     <span class="out" id="sqo">1.50</span>
   </div>
   <svg viewBox="0 0 330 300" role="img" aria-labelledby="sq-fallback" style="max-width:360px">
-    <title id="sq-fallback">A square of side 10 grown by h, showing two rectangular strips and one small corner square</title>
+    <title id="sq-fallback">A square of side 10 grown by dx, showing two rectangular strips and one small corner square</title>
     <rect class="fill" x="30" y="60" width="180" height="180" />
     <rect id="sqR" x="210" y="60" width="27" height="180" fill="var(--accent)" fill-opacity="0.34" />
     <rect id="sqT" x="30" y="33" width="180" height="27" fill="var(--accent)" fill-opacity="0.34" />
@@ -410,8 +451,8 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <rect class="edge" x="30" y="60" width="180" height="180" />
     <rect id="sqO" class="wedge" x="30" y="33" width="207" height="207" />
     <text class="dl" x="120" y="258">x = 10</text>
-    <text class="dl" id="sqLh" x="270" y="152">h</text>
-    <text class="dl" x="270" y="52" id="sqLc">h&sup2;</text>
+    <text class="dl" id="sqLh" x="270" y="152">dx</text>
+    <text class="dl" x="270" y="52" id="sqLc">(dx)&sup2;</text>
   </svg>
   <div class="cards">
     <div class="card"><p class="k">The two strips</p><p class="v" id="sqS">&mdash;</p></div>
@@ -422,46 +463,17 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
   <p class="note" id="sqt"></p>
 </div>
 
-<p>The new area is made of three pieces added to the original: a strip up the right side, a strip along the top, and a small square in the corner where the two strips meet. Each strip is <span class="math">x</span> long and <span class="math">h</span> wide. The corner is <span class="math">h</span> by <span class="math">h</span>.</p>
+<p>A strip up the right side, a strip along the top, and a small square in the corner where the two strips meet. Each strip is <span class="math">x</span> long and <span class="math">dx</span> wide. The corner is <span class="math">dx</span> by <span class="math">dx</span>.</p>
 
-<div class="eq">(x + h)&sup2; = x&sup2; + 2xh + h&sup2;<span class="lbl">the original, two strips, and the corner</span></div>
+<div class="eq">(x + dx)&sup2; = x&sup2; + 2x&middot;dx + (dx)&sup2;<span class="lbl">the original, two strips, and the corner</span></div>
 
-<p>That is ordinary algebra, and you may have multiplied it out at school without anyone mentioning that the three terms are three pieces of a picture. Now put numbers to it.</p>
-
-<div class="tryit step locked" id="a4">
-  <p class="q"><span class="stepnum">4</span>The two strips</p>
-  <p class="ask">The square has side <span class="math">x = 10</span> and grows by <span class="math">h = 0.1</span>. Each strip is 10 long and 0.1 wide. What do the two strips come to together?</p>
-  <div class="answer">
-    <input type="text" inputmode="decimal" id="a4i" aria-label="Area of the two strips" placeholder="area" />
-    <button type="button" class="go" id="a4b">Check</button>
-  </div>
-  <p class="fb" id="a4f"></p>
-  <p class="lockmsg">Answer step 3 first.</p>
-</div>
-
-<div class="tryit step locked" id="a5">
-  <p class="q"><span class="stepnum">5</span>The corner</p>
-  <p class="ask">And the corner square, which is <span class="math">0.1</span> by <span class="math">0.1</span>?</p>
-  <div class="answer">
-    <input type="text" inputmode="decimal" id="a5i" aria-label="Area of the corner" placeholder="area" />
-    <button type="button" class="go" id="a5b">Check</button>
-  </div>
-  <p class="fb" id="a5f"></p>
-  <p class="lockmsg">Answer step 4 first.</p>
-</div>
-
-<p>Two units of new area from the strips, and one hundredth of a unit from the corner. The corner is already almost irrelevant, and it was <span class="math">h&sup2;</span> that made it so. Drag the slider above down towards zero and watch its share collapse.</p>
-
-<h2 id="s4">4. The ratio</h2>
-<p>We are not really interested in how much area appeared. We want to know how much appeared <em>per unit of growth</em>, because that is what tells us how sensitive the area is to the side. So divide the extra area by <span class="math">h</span>.</p>
-
-<div class="eq">[ (x + h)&sup2; &minus; x&sup2; ] / h = (2xh + h&sup2;) / h = 2x + h<span class="lbl">exact, with nothing thrown away yet</span></div>
+<p>That is ordinary algebra, and you may have multiplied it out at school without anyone mentioning that the three terms are three pieces of a picture. The corner is the second-order quantity, and section 2 has already told you what will become of it.</p>
 
 <div class="tryit step locked" id="a6">
-  <p class="q"><span class="stepnum">6</span>Put numbers in</p>
-  <p class="ask">With <span class="math">x = 10</span> and <span class="math">h = 0.1</span>, the extra area was <span class="math">2.01</span>. Divide that by <span class="math">h</span> to get the extra area per unit of growth.</p>
+  <p class="q"><span class="stepnum">6</span>The two strips</p>
+  <p class="ask">The square has side <span class="math">x = 10</span> and grows by <span class="math">dx = 0.1</span>. Each strip is 10 long and 0.1 wide. What do the two strips come to together?</p>
   <div class="answer">
-    <input type="text" inputmode="decimal" id="a6i" aria-label="Extra area divided by h" placeholder="ratio" />
+    <input type="text" inputmode="decimal" id="a6i" aria-label="Area of the two strips" placeholder="area" />
     <button type="button" class="go" id="a6b">Check</button>
   </div>
   <p class="fb" id="a6f"></p>
@@ -469,42 +481,71 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 </div>
 
 <div class="tryit step locked" id="a7">
-  <p class="q"><span class="stepnum">7</span>Shrink it</p>
-  <p class="ask">The formula says the ratio is <span class="math">2x + h</span>, so at <span class="math">x = 10</span> it is <span class="math">20 + h</span>. With <span class="math">h = 0.1</span> you got 20.1. With <span class="math">h = 0.01</span> it would be 20.01. What number is it closing in on as <span class="math">h</span> shrinks?</p>
+  <p class="q"><span class="stepnum">7</span>The corner</p>
+  <p class="ask">And the corner square, which is <span class="math">0.1</span> by <span class="math">0.1</span>?</p>
   <div class="answer">
-    <input type="text" inputmode="decimal" id="a7i" aria-label="The value the ratio approaches" placeholder="value" />
+    <input type="text" inputmode="decimal" id="a7i" aria-label="Area of the corner" placeholder="area" />
     <button type="button" class="go" id="a7b">Check</button>
   </div>
   <p class="fb" id="a7f"></p>
   <p class="lockmsg">Answer step 6 first.</p>
 </div>
 
-<p>There is a question you should be asking here, and it is the one that makes people suspect calculus of cheating.</p>
+<p>Two units of new area from the strips, and one hundredth of a unit from the corner. Drag the slider above down towards zero and watch the corner's share collapse. At a hundredth of the side it is already about the width of an inked line, and it keeps going.</p>
+
+<h2 id="s4">4. The ratio</h2>
+<p>We are not really interested in how much area appeared. We want to know how much appeared <em>per unit of growth</em>, because that is what says how sensitive the area is to the side. So divide the extra area by <span class="math">dx</span>.</p>
+
+<div class="eq">[ (x + dx)&sup2; &minus; x&sup2; ] / dx = (2x&middot;dx + (dx)&sup2;) / dx = 2x + dx<span class="lbl">exact, with nothing thrown away yet</span></div>
 
 <div class="tryit step locked" id="a8">
-  <p class="q"><span class="stepnum">8</span>Was that a swindle?</p>
-  <p class="ask">If <span class="math">h</span> is not zero, then <span class="math">2x + h</span> is not <span class="math">2x</span>, so the answer looks wrong. But if <span class="math">h</span> is zero, then dividing by <span class="math">h</span> was dividing by zero, which is not allowed. So what actually happened?</p>
-  <div class="segs" role="group" aria-label="What actually happened">
-    <button class="seg" data-a8="ignore" aria-pressed="false">We ignored h because it was too small to matter</button>
-    <button class="seg" data-a8="zero" aria-pressed="false">We set h to zero once the dividing was over</button>
-    <button class="seg" data-a8="limit" aria-pressed="false">We divided first, which was exact, then asked what 2x + h gets close to</button>
+  <p class="q"><span class="stepnum">8</span>Put numbers in</p>
+  <p class="ask">With <span class="math">x = 10</span> and <span class="math">dx = 0.1</span>, the extra area was <span class="math">2.01</span>. Divide that by <span class="math">dx</span> to get the extra area per unit of growth.</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a8i" aria-label="Extra area divided by dx" placeholder="ratio" />
+    <button type="button" class="go" id="a8b">Check</button>
   </div>
-  <p class="fb" id="a8f">Take your time over this one.</p>
+  <p class="fb" id="a8f"></p>
   <p class="lockmsg">Answer step 7 first.</p>
 </div>
 
+<div class="tryit step locked" id="a9">
+  <p class="q"><span class="stepnum">9</span>Shrink it</p>
+  <p class="ask">The formula says the ratio is <span class="math">2x + dx</span>, so at <span class="math">x = 10</span> it is <span class="math">20 + dx</span>. With <span class="math">dx = 0.1</span> you got 20.1, and with <span class="math">dx = 0.01</span> it would be 20.01. What number is it closing in on?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="a9i" aria-label="The value the ratio approaches" placeholder="value" />
+    <button type="button" class="go" id="a9b">Check</button>
+  </div>
+  <p class="fb" id="a9f"></p>
+  <p class="lockmsg">Answer step 8 first.</p>
+</div>
+
+<p>There is a question you should be asking, and it is the one that makes people suspect calculus of cheating.</p>
+
+<div class="tryit step locked" id="a10">
+  <p class="q"><span class="stepnum">10</span>Was that a swindle?</p>
+  <p class="ask">If <span class="math">dx</span> is not zero, then <span class="math">2x + dx</span> is not <span class="math">2x</span>, so the answer looks wrong. But if <span class="math">dx</span> is zero, then dividing by <span class="math">dx</span> was dividing by zero, which is not allowed. So what actually happened?</p>
+  <div class="segs" role="group" aria-label="What actually happened">
+    <button class="seg" data-a10="ignore" aria-pressed="false">We ignored dx because it was too small to matter</button>
+    <button class="seg" data-a10="zero" aria-pressed="false">We set dx to zero once the dividing was over</button>
+    <button class="seg" data-a10="limit" aria-pressed="false">We divided first, which was exact, then asked what 2x + dx gets close to</button>
+  </div>
+  <p class="fb" id="a10f">Take your time over this one.</p>
+  <p class="lockmsg">Answer step 9 first.</p>
+</div>
+
 <h2 id="s5">5. What you have</h2>
-<p>You have just differentiated something. The rate at which the area of a square grows, per unit of growth in its side, is <span class="math">2x</span>, and it was obtained with nothing but the algebra of <span class="math">(x+h)&sup2;</span> and the observation that the corner is in a smaller league than the strips.</p>
+<p>You have just differentiated something. The rate at which the area of a square grows, per unit of growth in its side, is <span class="math">2x</span>, and it came from the algebra of <span class="math">(x+dx)&sup2;</span> and one observation about orders of smallness.</p>
 
 <div class="eq">y = x&sup2;&nbsp;&nbsp;&rArr;&nbsp;&nbsp; dy/dx = 2x<span class="lbl">read: a little bit of y, per little bit of x, is 2x</span></div>
 
-<p>Check it against the picture. At <span class="math">x = 10</span> the answer is 20, and the two strips did indeed have area <span class="math">2 &times; 10 &times; h</span>. The strips are the answer. The corner was never anything but a distraction, and the whole art of the next chapter is knowing which parts of an expression are strips and which are corners.</p>
+<p>Check it against the picture. At <span class="math">x = 10</span> the answer is 20, and the two strips did indeed have area <span class="math">2 &times; 10 &times; dx</span>. The strips are the answer. The corner was never anything but a distraction, and knowing which parts of an expression are strips and which are corners is most of the skill.</p>
 
 <div class="callout">
   <span class="tag">The method, in three lines</span>
-  <p>Work out what the quantity becomes when you nudge the input by <span class="math">h</span>, and subtract the original to find what the nudge added.<br>
-  Divide by <span class="math">h</span>, which is exact and legal because <span class="math">h</span> is not yet zero.<br>
-  Ask what the result approaches as <span class="math">h</span> shrinks, and read off the answer.</p>
+  <p>Work out what the quantity becomes when the input grows by <span class="math">dx</span>, and subtract the original to find what the growth added.<br>
+  Divide by <span class="math">dx</span>, which is exact and legal because <span class="math">dx</span> is not yet zero.<br>
+  Ask what the result approaches as <span class="math">dx</span> shrinks, and read off the answer.</p>
 </div>
 
 <p>The same three lines will handle <span class="math">x&sup3;</span>, and then any power at all, which is the next chapter. What they will not yet handle is anything with a division in it, or a sine, or a power of a power. Those come later and none of them change the method.</p>
@@ -531,7 +572,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 <p>Chapter 2 does these same three lines to a cube, watches a pattern appear, and turns it into a rule that handles any power at all. <a href="calculus-2-the-pattern.html" style="color:var(--accent)">Carry on to chapter 2</a>.</p>
 
 <footer>
-  <p>Chapter one of a course in calculus, following the order of Silvanus Thompson's <em>Calculus Made Easy</em> (1910).<br>
+  <p>Chapter one of a course in calculus, following Silvanus Thompson's <em>Calculus Made Easy</em> (1910, out of copyright). The two symbols, the orders of smallness, the etymology of the second, the fraction of a fraction, the fleas and the growing square are all his. The wording, the numbers, the questions and the interactive parts are ours.<br>
   It opens in any browser and needs no internet connection.</p>
 </footer>
 
@@ -620,73 +661,6 @@ function exercise(o){
   if(hint){hint.addEventListener('click',function(){say(o.fb,'',o.reveal);});}
 }
 
-/* ---------- 1. Notation decoder ---------- */
-(function(){
-  var SYM={
-    d:{a:'"a little bit of"',b:'A label, not a number',
-       n:'It never stands alone and it is never multiplied by anything. Seeing d in front of a letter simply means you are talking about a small piece of that quantity rather than the whole of it.'},
-    dx:{a:'"a little bit of x"',b:'A small step in whatever x measures',
-       n:'If x is a length, dx is a small extra length. If x is time, dx is a short interval. It takes its units from x, which is worth remembering when the answer comes out in odd units later on.'},
-    dydx:{a:'"a little bit of y, per little bit of x"',b:'How much y shifts for a small nudge in x',
-       n:'This is a ratio of two small quantities, not a fraction waiting to be cancelled down. The d on top and the d underneath do not cancel, any more than the word "per" cancels. Written together they name one thing: the rate at which y responds to x.'},
-    d2:{a:'"do that twice"',b:'How fast the rate itself is changing',
-       n:'Take dy/dx, which is itself a quantity that varies, and ask how fast that varies. For a car, dy/dx would be the speed and this would be the acceleration. The twos are bookkeeping for having done the operation twice, not powers.'}
-  };
-  function show(k){var o=SYM[k];txt('sym-a',o.a);txt('sym-b',o.b);txt('sym-n',o.n);}
-  seg('sym',show); show('d');
-})();
-
-/* ---------- 2. Degrees of smallness ---------- */
-(function(){
-  var sl=document.getElementById('smh');
-  if(!sl)return;
-  function draw(){
-    var h=+sl.value/240;                 /* 1..300 -> about 0.004 .. 1.25 */
-    h=Math.round(h*1000)/1000;
-    if(h<0.004){h=0.004;}
-    txt('smo',h.toFixed(3));
-    txt('smA',h.toFixed(3));
-    txt('smB',(h*h).toPrecision(3));
-    txt('smC',(h*h*h).toPrecision(3));
-    txt('smD',(1/h).toFixed(1)+' times');
-    txt('smt','With h = '+h.toFixed(3)+', its square is '+(h*h).toPrecision(3)+
-      ' and its cube is '+(h*h*h).toPrecision(3)+'. The square is '+(1/h).toFixed(1)+
-      ' times smaller than h itself, and that factor is nothing other than 1/h, so it grows without limit as h shrinks.');
-  }
-  sl.addEventListener('input',draw); reg(draw);
-})();
-
-/* ---------- 3. The growing square ---------- */
-(function(){
-  var sl=document.getElementById('sqh');
-  if(!sl)return;
-  var X=10, PX=18, X0=30, Y1=240, S=180;   /* 18px per unit, square 180px */
-  function draw(){
-    var h=+sl.value/100;                   /* 5..300 -> 0.05 .. 3.00 */
-    var hp=h*PX;
-    function set(id,a){var e=document.getElementById(id);if(e){for(var k in a){e.setAttribute(k,a[k]);}}}
-    set('sqR',{x:X0+S,y:Y1-S,width:hp,height:S});
-    set('sqT',{x:X0,y:Y1-S-hp,width:S,height:hp});
-    set('sqC',{x:X0+S,y:Y1-S-hp,width:hp,height:hp});
-    set('sqO',{x:X0,y:Y1-S-hp,width:S+hp,height:S+hp});
-    set('sqLh',{x:X0+S+hp+10,y:Y1-S+14});
-    /* the corner label sits beside the corner, and hides when there is no corner to see */
-    set('sqLc',{x:X0+S+hp+10,y:Y1-S-hp+4,opacity:(hp<12?0:1)});
-    var strips=2*X*h, corner=h*h, extra=strips+corner;
-    txt('sqo',h.toFixed(2));
-    txt('sqS',strips.toFixed(3));
-    txt('sqK',corner.toFixed(4));
-    txt('sqE',extra.toFixed(4));
-    txt('sqP',(100*corner/extra).toFixed(2)+'%');
-    txt('sqt','Growing the side by '+h.toFixed(2)+' adds '+strips.toFixed(3)+
-      ' from the two strips and '+corner.toFixed(4)+' from the corner, '+extra.toFixed(4)+
-      ' in all. The corner accounts for '+(100*corner/extra).toFixed(2)+
-      '% of what was gained, and that share keeps falling as h shrinks.');
-  }
-  sl.addEventListener('input',draw); reg(draw);
-})();
-
-/* ---------- 5. Progress tracking and the adaptive review ---------- */
 /* ---------- Progress, shared across every chapter ---------- */
 var TRACK=(function(){
   var KEY='calculus-progress', CH='ch1';
@@ -726,36 +700,33 @@ var TRACK=(function(){
 /* ---------- The adaptive review ---------- */
 (function(){
   var BANK={
-    notation:{name:'What the symbols mean',
-      type:'choice',
+    notation:{name:'What the symbols mean',type:'choice',
       q:'A balloon is being inflated. <span class="math">r</span> is its radius and <span class="math">t</span> is time. What does <span class="math">dr/dt</span> describe?',
-      opts:[['big','How big the balloon is'],['rate','How fast the radius is growing'],['tot','How long inflating takes']],
-      ok:'rate',
+      opts:[['big','How big the balloon is'],['rate','How fast the radius is growing'],['tot','How long inflating takes']],ok:'rate',
       right:'Yes. A little bit of radius, per little bit of time, is the speed at which the radius grows.',
       wrong:'Not that one. The d and the division together always ask about change, never about amount.'},
-    smallness:{name:'Degrees of smallness',
-      type:'choice',
-      q:'Let <span class="math">h = 0.002</span>. Which is the larger number, <span class="math">h&sup2;</span> or <span class="math">h/100</span>?',
-      opts:[['sq','h&sup2;'],['div','h/100'],['eq','They are equal']],
-      ok:'div',
-      right:'Correct. h&sup2; is 0.000004 and h/100 is 0.00002, so h/100 is five times the larger. Squaring a small number takes it further down than dividing it by a hundred does, which is the point of the whole idea.',
-      wrong:'Work them out. h&sup2; is 0.002 &times; 0.002 = 0.000004, while h/100 is 0.00002.'},
-    pieces:{name:'Strips and corners',
-      type:'num',answer:0.04,tol:0.002,
+    orders:{name:'Orders of smallness',type:'num',answer:0.025,tol:0.002,
+      q:'A prize of <strong>&pound;250</strong> is shared so that one person gets a hundredth of it, and a second person gets a hundredth of <em>that</em>. How much does the second person get, in pounds?',
+      right:'Correct. &pound;250 becomes &pound;2.50 and then two and a half pence. Two innocent-sounding steps and the amount has fallen by ten thousand.',
+      wrong:'A hundredth of &pound;250 is &pound;2.50. Now take a hundredth of that.'},
+    smallness:{name:'Squaring a small number',type:'choice',
+      q:'Let <span class="math">dx = 0.002</span>. Which is the larger number, <span class="math">(dx)&sup2;</span> or <span class="math">dx/100</span>?',
+      opts:[['sq','(dx)&sup2;'],['div','dx/100'],['eq','They are equal']],ok:'div',
+      right:'Correct. (dx)&sup2; is 0.000004 and dx/100 is 0.00002, so dx/100 is five times the larger. Squaring a small number takes it further down than dividing it by a hundred does, which is the whole idea.',
+      wrong:'Work them out. (dx)&sup2; is 0.002 &times; 0.002 = 0.000004, while dx/100 is 0.00002.'},
+    pieces:{name:'Strips and corners',type:'num',answer:0.04,tol:0.002,
       q:'A square of side <strong>6</strong> is grown by <strong>0.2</strong>. What is the area of the corner square?',
       right:'Correct, <span class="eqn">0.2 &times; 0.2 = 0.04</span>. Compare it with the strips, which come to 2.4. The corner is small however you slice it.',
-      wrong:'The corner is a square whose sides are both h, and h is 0.2 here.'},
-    ratio:{name:'The ratio',
-      type:'num',answer:8.5,tol:0.02,
-      q:'With <span class="math">x = 4</span> and <span class="math">h = 0.5</span>, work out the extra area divided by <span class="math">h</span>. You can use the shortcut <span class="math">2x + h</span> if you trust it.',
-      right:'Correct. <span class="eqn">2x + h = 8 + 0.5 = 8.5</span>, and the long way round gives the same: <span class="eqn">(20.25 &minus; 16) &divide; 0.5</span>.',
-      wrong:'Either work out (4.5&sup2; &minus; 4&sup2;) &divide; 0.5, or put x = 4 and h = 0.5 into 2x + h.'},
-    limit:{name:'Letting h shrink',
-      type:'num',answer:14,tol:0.02,
+      wrong:'The corner is a square whose sides are both dx, and dx is 0.2 here.'},
+    ratio:{name:'The ratio',type:'num',answer:8.5,tol:0.02,
+      q:'With <span class="math">x = 4</span> and <span class="math">dx = 0.5</span>, work out the extra area divided by <span class="math">dx</span>. You can use the shortcut <span class="math">2x + dx</span> if you trust it.',
+      right:'Correct. <span class="eqn">2x + dx = 8 + 0.5 = 8.5</span>, and the long way round agrees: <span class="eqn">(20.25 &minus; 16) &divide; 0.5</span>.',
+      wrong:'Either work out (4.5&sup2; &minus; 4&sup2;) &divide; 0.5, or put x = 4 and dx = 0.5 into 2x + dx.'},
+    limit:{name:'Letting dx shrink',type:'num',answer:14,tol:0.02,
       q:'For <span class="math">y = x&sup2;</span>, the rate <span class="math">dy/dx</span> works out to <span class="math">2x</span>. What is it at <span class="math">x = 7</span>?',
-      right:'Correct, 14. And notice there is no h anywhere in the answer, which is the whole point of letting it shrink away.',
+      right:'Correct, 14. And notice there is no dx anywhere in the answer, which is the whole point of letting it shrink away.',
       wrong:'Put x = 7 into 2x.'}
-  };
+};
   var out=document.getElementById('rvOut'),go=document.getElementById('rvGo'),
       clr=document.getElementById('rvClear');
   if(!out||!go)return;
@@ -828,7 +799,179 @@ var TRACK=(function(){
   TRACK.paint();
 })();
 
-/* ---------- 6. Predict before the sliders move ---------- */
+/* ---------- 1. Notation decoder ---------- */
+(function(){
+  var SYM={
+    d:{a:'"a little bit of"',b:'A label, not a number',
+       n:'It never stands alone and it is never multiplied by anything. Seeing d in front of a letter simply means you are talking about a small piece of that quantity rather than the whole of it. Mathematicians tend to say "an element of", which is the same thing in a stiffer collar.'},
+    dx:{a:'"a little bit of x"',b:'A small step in whatever x measures',
+       n:'If x is a length, dx is a small extra length. If x is time, dx is a short interval. It takes its units from x, which is worth remembering when an answer comes out in odd units later on.'},
+    int:{a:'"the sum of"',b:'A long letter S',
+       n:'Written in front of dt it says: add up all the little bits of t. Cut an hour into 3600 seconds, add them all back, and you have the hour again. The word integral just means the whole, and that is the whole of what the symbol asks for.'},
+    dydx:{a:'"a little bit of y, per little bit of x"',b:'How much y shifts for a small nudge in x',
+       n:'This is a ratio of two small quantities, not a fraction waiting to be cancelled down. The d on top and the d underneath do not cancel, any more than the word "per" cancels. Written together they name one thing: the rate at which y responds to x.'}
+  };
+  function show(k){var o=SYM[k];txt('sym-a',o.a);txt('sym-b',o.b);txt('sym-n',o.n);}
+  seg('sym',show); show('d');
+})();
+
+/* ---------- 2. Orders of smallness ---------- */
+(function(){
+  var sl=document.getElementById('smh');
+  if(!sl)return;
+  function draw(){
+    var h=+sl.value/240;
+    h=Math.round(h*1000)/1000;
+    if(h<0.004){h=0.004;}
+    txt('smo',h.toFixed(3));
+    txt('smA',h.toFixed(3));
+    txt('smB',(h*h).toPrecision(3));
+    txt('smC',(h*h*h).toPrecision(3));
+    txt('smD',(1/h).toFixed(1)+' times');
+    txt('smt','With dx = '+h.toFixed(3)+', its square is '+(h*h).toPrecision(3)+
+      ' and its cube is '+(h*h*h).toPrecision(3)+'. The square is '+(1/h).toFixed(1)+
+      ' times smaller than dx itself, and that factor is nothing other than 1/dx, so it grows without limit as dx shrinks.');
+  }
+  sl.addEventListener('input',draw); reg(draw);
+})();
+
+/* ---------- 3. The growing square ---------- */
+(function(){
+  var sl=document.getElementById('sqh');
+  if(!sl)return;
+  var X=10, PX=18, X0=30, Y1=240, S=180;
+  function draw(){
+    var h=+sl.value/100, hp=h*PX;
+    function set(id,a){var e=document.getElementById(id);if(e){for(var k in a){e.setAttribute(k,a[k]);}}}
+    set('sqR',{x:X0+S,y:Y1-S,width:hp,height:S});
+    set('sqT',{x:X0,y:Y1-S-hp,width:S,height:hp});
+    set('sqC',{x:X0+S,y:Y1-S-hp,width:hp,height:hp});
+    set('sqO',{x:X0,y:Y1-S-hp,width:S+hp,height:S+hp});
+    set('sqLh',{x:X0+S+hp+12,y:Y1-S+14});
+    set('sqLc',{x:X0+S+hp+14,y:Y1-S-hp+4,opacity:(hp<12?0:1)});
+    var strips=2*X*h, corner=h*h, extra=strips+corner;
+    txt('sqo',h.toFixed(2));
+    txt('sqS',strips.toFixed(3));
+    txt('sqK',corner.toFixed(4));
+    txt('sqE',extra.toFixed(4));
+    txt('sqP',(100*corner/extra).toFixed(2)+'%');
+    txt('sqt','Growing the side by '+h.toFixed(2)+' adds '+strips.toFixed(3)+
+      ' from the two strips and '+corner.toFixed(4)+' from the corner, '+extra.toFixed(4)+
+      ' in all. The corner accounts for '+(100*corner/extra).toFixed(2)+
+      '% of what was gained, and that share keeps falling as dx shrinks.');
+  }
+  sl.addEventListener('input',draw); reg(draw);
+})();
+
+/* ---------- 4. The questions ---------- */
+(function(){
+  function lock(id,on){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.className='tryit step '+(on?'locked':'open');
+    var f=el.querySelectorAll('input,button');
+    for(var i=0;i<f.length;i++){f[i].disabled=on;}
+  }
+  function done(id){
+    var el=document.getElementById(id);
+    if(el){el.className=el.className.replace(/\blocked\b/,'open')+' done';}
+  }
+  ['a3','a4','a5','a6','a7','a8','a9','a10'].forEach(function(k){lock(k,true);});
+
+  seg('a1',function(k){
+    TRACK.hit('notation',k==='rate');
+    if(k==='total'){
+      say('a1f','bad','That would just be V on its own. The d and the division are there precisely because we are asking about change rather than amount.');
+    }else if(k==='time'){
+      say('a1f','bad','That is a single number for the whole job. dV/dt is something you could read at any moment, and it may be different at each of them.');
+    }else{
+      say('a1f','good','Right. A little bit of volume, per little bit of time, is a filling rate. If it were litres and seconds, dV/dt would come out in litres per second.');
+    }
+  });
+
+  exercise({
+    input:'a2i',check:'a2b',fb:'a2f',answer:3600,tol:0.5,idea:'orders',
+    near:[{value:120,msg:'You added the two sixties. Each minute contains sixty seconds, so the two divisions multiply rather than add.'},
+          {value:60,msg:'That is the number of seconds in a minute, or minutes in an hour. You need both steps: sixty of them, sixty times over.'},
+          {value:1440,msg:'That is minutes in a day. Stay inside one hour: sixty minutes, each of sixty seconds.'}],
+    right:'Correct, 3600. Sixty sixtieths of a sixtieth. That is what a second-order division does, and it is why a second feels so much smaller than a minute rather than a bit smaller.',
+    wrong:'Not quite. Sixty minutes in the hour, and sixty seconds in each of them.',
+    onRight:function(){done('a2');lock('a3',false);}
+  });
+  exercise({
+    input:'a3i',check:'a3b',fb:'a3f',answer:0.1,tol:0.005,idea:'orders',
+    near:[{value:10,msg:'That is the secretary’s share. The boy gets a hundredth of that again.'},
+          {value:1,msg:'That would be a tenth of the secretary’s share. He was promised a hundredth of it.'},
+          {value:0.01,msg:'Close, but check the arithmetic: a hundredth of &pound;10 is ten pence, not one.'}],
+    right:'Correct, ten pence. A thousand pounds became ten pounds and then ten pence. The boy’s share is a ten thousandth of what arrived, and it got there in two easy-sounding steps.',
+    wrong:'Not quite. Take a hundredth of the secretary’s &pound;10.',
+    onRight:function(){done('a3');lock('a4',false);}
+  });
+  exercise({
+    input:'a4i',check:'a4b',fb:'a4f',answer:0.0001,tol:0.000001,idea:'smallness',
+    near:[{value:0.02,msg:'That is dx doubled. Squaring means multiplying it by itself, so 0.01 &times; 0.01.'},
+          {value:0.001,msg:'One zero short. 0.01 &times; 0.01 moves the point four places, not three.'}],
+    right:'Correct. <span class="eqn">0.01 &times; 0.01 = 0.0001</span>, one ten thousandth, which is the same drop as from a minute to a second.',
+    wrong:'Not quite. Multiply 0.01 by itself.',
+    onRight:function(){done('a4');lock('a5',false);}
+  });
+  exercise({
+    input:'a5i',check:'a5b',fb:'a5f',answer:100,tol:0.5,idea:'smallness',
+    near:[{value:10,msg:'Compare them directly: a hundredth is 0.01 and a ten thousandth is 0.0001, so divide one by the other.'},
+          {value:10000,msg:'That is one over (dx)&sup2;. The question compares (dx)&sup2; with dx, not with 1.'}],
+    right:'Correct. <span class="eqn">0.01 &divide; 0.0001 = 100</span>. And notice where the 100 comes from: it is 1/dx. The factor is not fixed, it is set by dx itself.',
+    wrong:'Not quite. Divide dx by (dx)&sup2; and see what you get.',
+    onRight:function(){done('a5');lock('a6',false);}
+  });
+  exercise({
+    input:'a6i',check:'a6b',fb:'a6f',answer:2,tol:0.005,idea:'pieces',
+    near:[{value:1,msg:'That is one strip. There are two of them, one up the side and one along the top.'},
+          {value:0.2,msg:'Check the multiplication: 10 long by 0.1 wide is 1, and there are two.'}],
+    right:'Correct. Each strip is <span class="eqn">10 &times; 0.1 = 1</span>, and there are two, so <span class="eqn">2x&middot;dx = 2</span>.',
+    wrong:'Not quite. One strip is 10 by 0.1. Work out one and double it.',
+    onRight:function(){done('a6');lock('a7',false);}
+  });
+  exercise({
+    input:'a7i',check:'a7b',fb:'a7f',answer:0.01,tol:0.0005,idea:'pieces',
+    near:[{value:0.2,msg:'That is the strip area, not the corner. The corner is only dx by dx, and dx is 0.1.'},
+          {value:0.1,msg:'That is dx itself. The corner is a square of side dx, so multiply dx by dx.'}],
+    right:'Correct. <span class="eqn">0.1 &times; 0.1 = 0.01</span>. Set that beside the 2 from the strips: the corner is one two-hundredth of what the strips brought in.',
+    wrong:'Not quite. The corner is a small square with sides of length dx.',
+    onRight:function(){done('a7');lock('a8',false);}
+  });
+  exercise({
+    input:'a8i',check:'a8b',fb:'a8f',answer:20.1,tol:0.02,idea:'ratio',
+    near:[{value:2.01,msg:'That is the extra area itself. The question asks for it per unit of growth, so divide by dx = 0.1.'},
+          {value:0.201,msg:'You multiplied by 0.1 rather than dividing. Dividing by a tenth makes the number larger.'},
+          {value:20,msg:'Very close, and that is where this is heading, but the exact answer at dx = 0.1 still carries the dx.'}],
+    right:'Correct. <span class="eqn">2.01 &divide; 0.1 = 20.1</span>, which is exactly <span class="eqn">2x + dx = 20 + 0.1</span>. The 20 came from the strips and the 0.1 from the corner.',
+    wrong:'Not quite. Divide 2.01 by 0.1.',
+    onRight:function(){done('a8');lock('a9',false);}
+  });
+  exercise({
+    input:'a9i',check:'a9b',fb:'a9f',answer:20,tol:0.005,idea:'limit',
+    near:[{value:20.1,msg:'That is the value at one particular dx. The question asks where the values are heading as dx keeps shrinking.'},
+          {value:10,msg:'That is x. The ratio is 2x + dx, so the part that survives is twice x.'},
+          {value:0,msg:'The ratio does not collapse. The dx shrinks away but the 2x does not depend on dx at all.'}],
+    right:'Correct, 20. The dx in <span class="eqn">2x + dx</span> can be made as small as you please, and the 2x does not move, so the ratio closes in on <span class="eqn">2x = 20</span>.',
+    wrong:'Not quite. In 2x + dx, the 2x stays put and the dx shrinks. What is left?',
+    onRight:function(){done('a9');lock('a10',false);}
+  });
+
+  seg('a10',function(k){
+    TRACK.hit('limit',k==='limit');
+    if(k==='ignore'){
+      say('a10f','bad','Understandable, but it would leave the answer approximate, and it is not. Nothing was ignored. Look again at the line where we divided: dx was still there afterwards, sitting in 2x + dx, perfectly intact.');
+    }else if(k==='zero'){
+      say('a10f','bad','That is what it looks like, but it is not quite honest, because it would mean dx changed its mind about being zero halfway through. What we do instead is never set dx to anything.');
+    }else{
+      say('a10f','good','That is it. Every step was exact while dx was a genuine number, and the division was legal because dx was not zero. Only afterwards do we ask a different sort of question: not what 2x + dx equals for some particular dx, but what it can be brought arbitrarily close to. That answer is 2x, and no rule was bent to get it.');
+      done('a10');
+    }
+  });
+})();
+
+/* ---------- 5. Predict before the sliders move ---------- */
 (function(){
   function predict(attr,okKey,msgs,widgetId){
     var w=document.getElementById(widgetId);
@@ -846,105 +989,15 @@ var TRACK=(function(){
     });
   }
   predict('pr1','grow',{
-    same:'Have a look and see. The factor is 1/h, and 1/h does not settle anywhere as h heads for zero. The slider is unlocked, so check it against what you expected.',
-    grow:'That is right, and the reason is worth naming: the factor is exactly 1/h. Drive h down and 1/h climbs without any ceiling at all. Drag the slider and watch the last card.',
-    one:'The other way. Dividing h by h&sup2; gives 1/h, which gets larger as h gets smaller, not smaller. The slider is unlocked, so see for yourself.'
+    same:'Have a look and see. The factor is 1/dx, and 1/dx does not settle anywhere as dx heads for zero. The slider is unlocked, so check it against what you expected.',
+    grow:'That is right, and the reason is worth naming: the factor is exactly 1/dx. Drive dx down and 1/dx climbs without any ceiling at all. Drag the slider and watch the last card.',
+    one:'The other way. Dividing dx by (dx)&sup2; gives 1/dx, which gets larger as dx gets smaller, not smaller. The slider is unlocked, so see for yourself.'
   },'w-small');
   predict('pr2','half',{
-    same:'Try it. The corner is h&sup2; while the strips are 2xh, so as h falls the corner is losing ground on two counts at once, and its share cannot hold steady.',
-    half:'Correct, and here is why. The share is h&sup2; over 2xh + h&sup2;, which tidies to h/(2x+h). That is very nearly h/20 here, so halving h very nearly halves the share. Drag the slider and check: 4.8% at h = 1, then 2.4% at h = 0.5.',
-    quarter:'A reasonable guess, since the corner itself does quarter when h halves. But the strips halve at the same time, so one of those factors cancels and the share only halves. Drag it and see.'
+    same:'Try it. The corner is (dx)&sup2; while the strips are 2x&middot;dx, so as dx falls the corner is losing ground on two counts at once, and its share cannot hold steady.',
+    half:'Correct, and here is why. The share is (dx)&sup2; over 2x&middot;dx + (dx)&sup2;, which tidies to dx/(2x+dx). That is very nearly dx/20 here, so halving dx very nearly halves the share. Drag the slider and check: 4.8% at dx = 1, then 2.4% at dx = 0.5.',
+    quarter:'A reasonable guess, since the corner itself does quarter when dx halves. But the strips halve at the same time, so one of those factors cancels and the share only halves. Drag it and see.'
   },'w-square');
-})();
-
-/* ---------- 4. The questions ---------- */
-(function(){
-  function lock(id,on){
-    var el=document.getElementById(id);
-    if(!el)return;
-    el.className='tryit step '+(on?'locked':'open');
-    var f=el.querySelectorAll('input,button');
-    for(var i=0;i<f.length;i++){f[i].disabled=on;}
-  }
-  function done(id){
-    var el=document.getElementById(id);
-    if(el){el.className=el.className.replace(/\blocked\b/,'open')+' done';}
-  }
-  lock('a3',true);lock('a4',true);lock('a5',true);lock('a6',true);lock('a7',true);lock('a8',true);
-
-  seg('a1',function(k){
-    TRACK.hit('notation',k==='rate');
-    if(k==='total'){
-      say('a1f','bad','That would just be V on its own. The d and the division are there precisely because we are asking about change rather than amount.');
-    }else if(k==='time'){
-      say('a1f','bad','That is a single number for the whole job. dV/dt is something you could read at any moment, and it may be different at each of them.');
-    }else{
-      say('a1f','good','Right. A little bit of volume, per little bit of time, is a filling rate. If it were litres and seconds, dV/dt would come out in litres per second.');
-    }
-  });
-
-  exercise({
-    input:'a2i',idea:'smallness',check:'a2b',fb:'a2f',answer:0.0001,tol:0.000001,
-    near:[{value:0.02,msg:'That is h doubled. Squaring means multiplying it by itself, so 0.01 &times; 0.01.'},
-          {value:0.001,msg:'One zero short. 0.01 &times; 0.01 moves the point four places, not three.'}],
-    right:'Correct. <span class="eqn">0.01 &times; 0.01 = 0.0001</span>, one ten thousandth.',
-    wrong:'Not quite. Multiply 0.01 by itself.',
-    onRight:function(){done('a2');lock('a3',false);}
-  });
-  exercise({
-    input:'a3i',idea:'smallness',check:'a3b',fb:'a3f',answer:100,tol:0.5,
-    near:[{value:10,msg:'Compare them directly: a hundredth is 0.01 and a ten thousandth is 0.0001, so you need to divide one by the other.'},
-          {value:10000,msg:'That is one over h&sup2;. The question compares h&sup2; with h, not with 1.'}],
-    right:'Correct. <span class="eqn">0.01 &divide; 0.0001 = 100</span>. And notice where that 100 comes from: it is 1/h. The factor is not fixed, it is set by h itself.',
-    wrong:'Not quite. Divide h by h&sup2; and see what you get.',
-    onRight:function(){done('a3');lock('a4',false);}
-  });
-  exercise({
-    input:'a4i',idea:'pieces',check:'a4b',fb:'a4f',answer:2,tol:0.005,
-    near:[{value:1,msg:'That is one strip. There are two of them, one up the side and one along the top.'},
-          {value:0.2,msg:'Check the multiplication: 10 long by 0.1 wide is 1, and there are two.'}],
-    right:'Correct. Each strip is <span class="eqn">10 &times; 0.1 = 1</span>, and there are two, so <span class="eqn">2xh = 2</span>.',
-    wrong:'Not quite. One strip is 10 by 0.1. Work out one and double it.',
-    onRight:function(){done('a4');lock('a5',false);}
-  });
-  exercise({
-    input:'a5i',idea:'pieces',check:'a5b',fb:'a5f',answer:0.01,tol:0.0005,
-    near:[{value:0.2,msg:'That is the strip area, not the corner. The corner is only h by h, and h is 0.1.'},
-          {value:0.1,msg:'That is h itself. The corner is a square of side h, so multiply h by h.'}],
-    right:'Correct. <span class="eqn">0.1 &times; 0.1 = 0.01</span>. Set that beside the 2 from the strips: the corner is one two-hundredth of what the strips brought in.',
-    wrong:'Not quite. The corner is a small square with sides of length h.',
-    onRight:function(){done('a5');lock('a6',false);}
-  });
-  exercise({
-    input:'a6i',idea:'ratio',check:'a6b',fb:'a6f',answer:20.1,tol:0.02,
-    near:[{value:2.01,msg:'That is the extra area itself. The question asks for it per unit of growth, so divide by h = 0.1.'},
-          {value:0.201,msg:'You multiplied by 0.1 rather than dividing. Dividing by a tenth makes the number larger.'},
-          {value:20,msg:'Very close, and that is where this is heading, but the exact answer at h = 0.1 still carries the h.'}],
-    right:'Correct. <span class="eqn">2.01 &divide; 0.1 = 20.1</span>, which is exactly <span class="eqn">2x + h = 20 + 0.1</span>. The 20 came from the strips and the 0.1 from the corner.',
-    wrong:'Not quite. Divide 2.01 by 0.1.',
-    onRight:function(){done('a6');lock('a7',false);}
-  });
-  exercise({
-    input:'a7i',idea:'limit',check:'a7b',fb:'a7f',answer:20,tol:0.005,
-    near:[{value:20.1,msg:'That is the value at one particular h. The question asks where the values are heading as h keeps shrinking.'},
-          {value:10,msg:'That is x. The ratio is 2x + h, so the part that survives is twice x.'},
-          {value:0,msg:'The ratio does not collapse. The h shrinks away but the 2x does not depend on h at all.'}],
-    right:'Correct, 20. The h in <span class="eqn">2x + h</span> can be made as small as you please, and the 2x does not move, so the ratio closes in on <span class="eqn">2x = 20</span>.',
-    wrong:'Not quite. In 2x + h, the 2x stays put and the h shrinks. What is left?',
-    onRight:function(){done('a7');lock('a8',false);}
-  });
-
-  seg('a8',function(k){
-    TRACK.hit('limit',k==='limit');
-    if(k==='ignore'){
-      say('a8f','bad','Understandable, but it would leave the answer approximate, and it is not. Nothing was ignored. Look again at the line where we divided: h was still there afterwards, sitting in 2x + h, perfectly intact.');
-    }else if(k==='zero'){
-      say('a8f','bad','That is what it looks like, but it is not quite honest, because it would mean h changed its mind about being zero halfway through. What we do instead is never set h to anything.');
-    }else{
-      say('a8f','good','That is it. Every step was exact while h was a genuine number, and the division was legal because h was not zero. Only afterwards do we ask a different sort of question: not what 2x + h equals for some particular h, but what it can be brought arbitrarily close to. That answer is 2x, and no rule was bent to get it.');
-      done('a8');
-    }
-  });
 })();
 
 /* ---------- theme + nav ---------- */
