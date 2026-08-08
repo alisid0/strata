@@ -285,6 +285,7 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
     <a href="#s5">5. What you have</a>
     <a href="#s6">6. Worth another look</a>
   </div>
+  <p style="margin:10px 0 0;font-size:13px"><a href="calculus-2-the-pattern.html" style="color:var(--accent);text-decoration:none">2. The pattern &rarr;</a></p>
 </nav>
 
 <main>
@@ -527,6 +528,8 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
 
 <div id="rvOut"></div>
 
+<p>Chapter 2 does these same three lines to a cube, watches a pattern appear, and turns it into a rule that handles any power at all. <a href="calculus-2-the-pattern.html" style="color:var(--accent)">Carry on to chapter 2</a>.</p>
+
 <footer>
   <p>Chapter one of a course in calculus, following the order of Silvanus Thompson's <em>Calculus Made Easy</em> (1910).<br>
   It opens in any browser and needs no internet connection.</p>
@@ -684,19 +687,22 @@ function exercise(o){
 })();
 
 /* ---------- 5. Progress tracking and the adaptive review ---------- */
+/* ---------- Progress, shared across every chapter ---------- */
 var TRACK=(function(){
-  var KEY='calc1-progress';
-  var st={miss:{},done:{},asked:0,clean:0};
+  var KEY='calculus-progress', CH='ch1';
+  var all={};
   try{
     var raw=window.localStorage?localStorage.getItem(KEY):null;
-    if(raw){var p=JSON.parse(raw);if(p&&p.miss){st=p;}}
+    if(raw){var p=JSON.parse(raw);if(p&&typeof p==='object'){all=p;}}
   }catch(e){}
+  if(!all[CH]){all[CH]={miss:{},done:{},asked:0,clean:0};}
+  var st=all[CH];
   function save(){
-    try{if(window.localStorage){localStorage.setItem(KEY,JSON.stringify(st));}}catch(e){}
+    try{if(window.localStorage){localStorage.setItem(KEY,JSON.stringify(all));}}catch(e){}
   }
   return {
     state:st,
-    /* called on every attempt: first-time-right counts as clean, later ones do not */
+    /* first attempt is the one that counts as clean; later ones only clear the flag */
     hit:function(idea,ok){
       if(!idea)return;
       if(!st.done[idea]){
@@ -707,7 +713,7 @@ var TRACK=(function(){
       if(!ok){st.miss[idea]=(st.miss[idea]||0)+1;}
       save();this.paint();
     },
-    reset:function(){st={miss:{},done:{},asked:0,clean:0};save();this.paint();},
+    reset:function(){all[CH]={miss:{},done:{},asked:0,clean:0};st=all[CH];this.state=st;save();this.paint();},
     paint:function(){
       txt('rvA',String(st.asked));
       txt('rvB',String(st.clean));
@@ -717,8 +723,8 @@ var TRACK=(function(){
   };
 })();
 
+/* ---------- The adaptive review ---------- */
 (function(){
-  /* one follow-up per idea, deliberately using different numbers from the chapter */
   var BANK={
     notation:{name:'What the symbols mean',
       type:'choice',
@@ -753,20 +759,14 @@ var TRACK=(function(){
   var out=document.getElementById('rvOut'),go=document.getElementById('rvGo'),
       clr=document.getElementById('rvClear');
   if(!out||!go)return;
-
   function card(key,b){
-    var d=document.createElement('div');
-    d.className='rvcard';
-    var h=document.createElement('p');
-    h.className='q';h.innerHTML=b.name;
-    var q=document.createElement('p');
-    q.className='rvq';q.innerHTML=b.q;
+    var d=document.createElement('div');d.className='rvcard';
+    var h=document.createElement('p');h.className='q';h.innerHTML=b.name;
+    var q=document.createElement('p');q.className='rvq';q.innerHTML=b.q;
+    var fb=document.createElement('p');fb.className='fb';
     d.appendChild(h);d.appendChild(q);
-    var fb=document.createElement('p');
-    fb.className='fb';
     if(b.type==='choice'){
-      var g=document.createElement('div');
-      g.className='segs';
+      var g=document.createElement('div');g.className='segs';
       b.opts.forEach(function(o){
         var btn=document.createElement('button');
         btn.type='button';btn.className='seg';btn.innerHTML=o[1];
@@ -775,16 +775,14 @@ var TRACK=(function(){
           for(var i=0;i<kids.length;i++){kids[i].setAttribute('aria-pressed','false');}
           btn.setAttribute('aria-pressed','true');
           var ok=(o[0]===b.ok);
-          fb.className='fb '+(ok?'good':'bad');
-          fb.innerHTML=ok?b.right:b.wrong;
+          fb.className='fb '+(ok?'good':'bad');fb.innerHTML=ok?b.right:b.wrong;
           if(ok){TRACK.state.miss[key]=0;TRACK.paint();}
         });
         g.appendChild(btn);
       });
       d.appendChild(g);
     }else{
-      var row=document.createElement('div');
-      row.className='answer';
+      var row=document.createElement('div');row.className='answer';
       var inp=document.createElement('input');
       inp.type='text';inp.setAttribute('inputmode','decimal');
       inp.placeholder='answer';inp.setAttribute('aria-label','Answer for '+b.name);
@@ -794,19 +792,15 @@ var TRACK=(function(){
         var v=num(inp.value);
         if(v===null){fb.className='fb';fb.innerHTML='Type a number, then press Check.';return;}
         var ok=Math.abs(v-b.answer)<=(b.tol||0.01);
-        fb.className='fb '+(ok?'good':'bad');
-        fb.innerHTML=ok?b.right:b.wrong;
+        fb.className='fb '+(ok?'good':'bad');fb.innerHTML=ok?b.right:b.wrong;
         if(ok){TRACK.state.miss[key]=0;TRACK.paint();}
       }
       btn2.addEventListener('click',chk);
       inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();chk();}});
-      row.appendChild(inp);row.appendChild(btn2);
-      d.appendChild(row);
+      row.appendChild(inp);row.appendChild(btn2);d.appendChild(row);
     }
-    d.appendChild(fb);
-    return d;
+    d.appendChild(fb);return d;
   }
-
   function build(){
     while(out.firstChild){out.removeChild(out.firstChild);}
     var st=TRACK.state,keys=[],k;
@@ -816,7 +810,7 @@ var TRACK=(function(){
       return;
     }
     if(!keys.length){
-      txt('rvNote','You got every idea right first time, so there is nothing here worth repeating. If you want to push further, the next chapter does the same three lines to x cubed and then to any power at all.');
+      txt('rvNote','You got every idea right first time, so there is nothing here worth repeating. Chapter 2 does the same three lines to a cube, and then to any power at all.');
       return;
     }
     var names=[];
@@ -829,7 +823,7 @@ var TRACK=(function(){
   if(clr){clr.addEventListener('click',function(){
     TRACK.reset();
     while(out.firstChild){out.removeChild(out.firstChild);}
-    txt('rvNote','Cleared. Your answers above are still on screen, but the record of them has been reset.');
+    txt('rvNote','Cleared for this chapter. Your answers above are still on screen, but the record of them has been reset.');
   });}
   TRACK.paint();
 })();

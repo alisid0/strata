@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" id="tcolor" content="#faf9f7" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Integration" />
+<meta name="description" content="Chapter two of a calculus course: growing a cube, and the power rule that follows from it." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23185fa5'/%3E%3Ctext x='16' y='24' font-size='23' font-family='Georgia,serif' fill='%23fff' text-anchor='middle'%3E%E2%88%AB%3C/text%3E%3C/svg%3E" />
+<title>The pattern</title>
+<style>
+:root{
+  --bg:#faf9f7; --surface:#ffffff; --surface2:#f1efe8;
+  --text:#1a1a19; --muted:#5f5e5a; --faint:#898781;
+  --border:#e1e0d9; --border2:#c3c2b7;
+  --accent:#185fa5; --accentbg:#e6f1fb; --accentline:#378add;
+  --warm:#ba7517; --warmbg:#faeeda; --coral:#f5c4b3;
+  --ok:#3b6d11; --okbg:#eaf3de;
+}
+html[data-theme="dark"]{
+  --bg:#151514; --surface:#1e1e1c; --surface2:#2c2c2a;
+  --text:#f2f1ec; --muted:#b5b4ac; --faint:#898781;
+  --border:#33332f; --border2:#4a4a45;
+  --accent:#85b7eb; --accentbg:#0c447c; --accentline:#378add;
+  --warm:#ef9f27; --warmbg:#412402; --coral:#993c1d;
+  --ok:#97c459; --okbg:#173404;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);overflow-x:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{display:flex;gap:40px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav{width:230px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;padding:32px 0 40px}
+nav .brand{font-size:15px;font-weight:600;margin:0 0 4px}
+nav .sub{font-size:13px;color:var(--muted);margin:0 0 20px}
+nav a{display:block;text-decoration:none;color:var(--muted);font-size:14px;
+  padding:5px 10px;border-left:2px solid transparent;border-radius:0;line-height:1.4}
+nav a:hover{color:var(--text);background:var(--surface2)}
+nav a.on{color:var(--accent);border-left-color:var(--accent);font-weight:500}
+nav .nav-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:0 0 4px}
+nav .themebtn{position:static;flex-shrink:0;margin:0}
+main{flex:1;min-width:0;max-width:780px;padding:40px 0 120px}
+h1{font-size:34px;line-height:1.25;font-weight:600;margin:0 0 8px;letter-spacing:-0.02em}
+h2{font-size:24px;font-weight:600;margin:56px 0 14px;letter-spacing:-0.01em;scroll-margin-top:24px}
+h3{font-size:18px;font-weight:600;margin:32px 0 10px}
+p{margin:0 0 16px}
+.lede{font-size:19px;color:var(--muted);margin:0 0 8px}
+.sec-no{font-size:13px;color:var(--warm);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:0}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin:0 0 8px}
+strong{font-weight:600}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
+  background:var(--surface2);padding:1px 5px;border-radius:4px}
+.math{font-family:Georgia,"Times New Roman",serif;font-size:1.06em;font-style:italic}
+.eq{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:16px 20px;margin:20px 0;font-family:Georgia,"Times New Roman",serif;
+  font-size:19px;text-align:center;overflow-x:auto;line-height:1.9}
+.eq .lbl{display:block;font-family:inherit;font-size:13px;font-style:normal;
+  color:var(--faint);margin-top:8px;font-family:-apple-system,sans-serif}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--warm);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:22px 0}
+.callout p:last-child{margin:0}
+.callout .tag{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--warm);margin:0 0 6px}
+.tryit{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin:22px 0}
+.tryit .q{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 12px}
+.tryit svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+.tryit .ask{margin:12px 0 12px}
+.tryit p:last-child{margin-bottom:0}
+.answer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.answer input{width:120px;padding:8px 11px;font-size:16px;font-family:inherit;
+  border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--text)}
+.answer input:focus{outline:2px solid var(--accentline);outline-offset:1px}
+.answer .go{padding:9px 18px;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:var(--bg);border-radius:8px}
+.answer .go:hover{opacity:.88}
+.answer .hint{padding:9px 14px;font-size:14px;font-family:inherit;cursor:pointer;
+  border:1px solid var(--border2);background:transparent;color:var(--muted);border-radius:8px}
+.answer .hint:hover{color:var(--text);border-color:var(--faint)}
+.answer .unit{font-size:14px;color:var(--muted)}
+.fb{font-size:15px;margin:0;min-height:26px;color:var(--muted)}
+.fb.good{color:var(--ok)}
+.fb.bad{color:var(--warm)}
+.fb .eqn{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:1.04em}
+/* Integral sign with its limits stacked properly, instead of a sub and a sup
+   sitting side by side and reading as "int-a-b". */
+.intg{display:inline-flex;align-items:center;vertical-align:-0.32em;margin:0 2px}
+.intg .sgn{font-family:Georgia,"Times New Roman",serif;font-size:1.85em;
+  line-height:.72;font-style:normal}
+.intg .lim{display:inline-flex;flex-direction:column;justify-content:center;
+  font-size:.62em;line-height:1.12;text-align:left;margin-left:1px;font-style:normal}
+.intg .lim .hi{margin-bottom:.42em}
+.eq .intg{vertical-align:-0.36em}
+/* keep the sign in proportion where the surrounding type is small */
+.lbl .intg .sgn,td .intg .sgn,.k .intg .sgn{font-size:1.35em}
+.lbl .intg,td .intg,.k .intg{vertical-align:-0.22em}
+/* workshop steps: each one stays dimmed and inert until the step above it is right */
+.step.locked{opacity:.42}
+.step.locked .ask,.step.locked svg{filter:grayscale(1)}
+.step .lockmsg{font-size:13px;color:var(--faint);margin:8px 0 0;font-style:italic}
+.step.open .lockmsg{display:none}
+.stepnum{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;background:var(--surface2);
+  color:var(--muted);font-size:12px;font-weight:600;margin-right:8px;font-style:normal}
+.step.done .stepnum{background:var(--okbg);color:var(--ok)}
+/* commit to a guess before the slider will move */
+.predict{border:1px dashed var(--border2);border-radius:12px;padding:14px 16px;margin:0 0 16px}
+.predict .pq{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--warm);margin:0 0 8px}
+.predict.answered{border-style:solid;border-color:var(--border)}
+.locked-widget{opacity:.5;pointer-events:none}
+.rvcard{border-left:3px solid var(--warm);background:var(--surface2);border-radius:0 10px 10px 0;
+  padding:14px 16px;margin:0 0 14px}
+.rvcard .rvq{margin:0 0 10px}
+.rvcard:last-child{margin-bottom:0}
+.jarrow{display:flex;align-items:flex-end;gap:20px;margin:0 0 18px}
+.jarrow .jarsvg{width:132px;max-width:132px;flex:0 0 132px;height:auto;display:block;margin:0}
+.jarrow>div{flex:1;min-width:0}
+/* shape figures — used inside .tryit cards and the strip widget.
+   Scoped to svg so the short class names can't collide with page styles. */
+.tryit svg,.widget svg{display:block;width:100%;max-width:430px;height:auto;margin:0 auto}
+svg .fill{fill:var(--accentline);fill-opacity:.16}
+svg .edge{fill:none;stroke:var(--accent);stroke-width:2.5;
+  stroke-linejoin:round;stroke-linecap:round}
+svg .wfill{fill:var(--warm);fill-opacity:.20}
+svg .wedge{fill:none;stroke:var(--warm);stroke-width:2.5;
+  stroke-linejoin:round;stroke-linecap:round}
+svg .dim{fill:none;stroke:var(--border2);stroke-width:1.25}
+svg .tick{fill:none;stroke:var(--border2);stroke-width:1.25}
+svg .hmark{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:4 4;opacity:.7}
+svg .dl{fill:var(--muted);font-size:13.5px;text-anchor:middle;
+  font-family:Georgia,"Times New Roman",serif;font-style:italic}
+.widget{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin:26px 0}
+.wtitle{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 16px}
+.ctrl{display:flex;align-items:center;gap:14px;margin:0 0 16px}
+.ctrl label{font-size:14px;color:var(--muted);white-space:nowrap}
+.ctrl .out{font-size:14px;font-weight:600;min-width:76px;text-align:right;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;
+  background:var(--border2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;
+  border-radius:50%;background:var(--accentline);cursor:pointer;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+  background:var(--accentline);cursor:pointer;border:2px solid var(--surface)}
+.segs{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+.seg{font-size:13px;padding:6px 13px;border-radius:8px;border:1px solid var(--border2);
+  background:transparent;color:var(--text);cursor:pointer;font-family:inherit}
+.seg:hover{background:var(--surface2)}
+.seg[aria-pressed=true]{background:var(--accentbg);border-color:var(--accentline);color:var(--accent);font-weight:600}
+.presets{display:flex;gap:6px;margin:-6px 0 16px;flex-wrap:wrap;align-items:center}
+.presets .plab{font-size:12px;color:var(--faint);margin-right:2px}
+.preset{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);
+  background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;
+  font-variant-numeric:tabular-nums}
+.preset:hover{background:var(--surface2);color:var(--text)}
+.preset[aria-pressed=true]{background:var(--accentbg);border-color:var(--accentline);color:var(--accent);font-weight:600}
+.cvwrap{position:relative;width:100%;margin:0 0 14px}
+canvas{display:block}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.cap{font-size:12px;color:var(--faint);margin:0 0 6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin:0 0 14px}
+.card{background:var(--surface2);border-radius:9px;padding:10px 13px}
+.card .k{font-size:12px;color:var(--muted);margin:0 0 3px}
+.card .v{font-size:19px;font-weight:600;margin:0;font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--muted);margin:0;line-height:1.6}
+details{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;margin:10px 0}
+details summary{cursor:pointer;font-size:15px;font-weight:500;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"?";display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:50%;background:var(--accentbg);color:var(--accent);
+  font-size:12px;font-weight:700;margin-right:10px;vertical-align:1px}
+details[open] summary{margin-bottom:10px}
+details .ans{font-size:15px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px}
+details .ans p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 20px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border)}
+th{font-weight:600;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.n{font-variant-numeric:tabular-nums}
+.ref{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:8px 22px 18px}
+.ref h3{font-size:15px;margin:22px 0 6px;color:var(--warm)}
+.themebtn{font-size:13px;padding:7px 13px;
+  border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);
+  cursor:pointer;font-family:inherit}
+.themebtn:hover{background:var(--surface2)}
+.jar-sketch{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0 0}
+.jar-sketch .pane{background:var(--surface2);border-radius:9px;padding:12px 14px}
+.jar-sketch .pt{font-size:12px;color:var(--muted);margin:0 0 8px}
+.jar-sketch .bars{display:flex;align-items:flex-end;gap:5px;height:56px}
+.jar-sketch .b{flex:1;border-radius:3px 3px 0 0;background:var(--accentline);opacity:.85}
+.jar-sketch .run{height:8px;border-radius:4px;background:var(--warm);margin-top:10px}
+.signed{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 8px}
+.signed .box{background:var(--surface2);border-radius:9px;padding:12px 14px}
+.signed .box .k{font-size:12px;color:var(--muted);margin:0 0 4px}
+.signed .box .v{font-size:15px;margin:0;line-height:1.45}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);
+  font-size:14px;color:var(--faint)}
+/* ---------- tablet and below: the sidebar becomes a bar across the top ---------- */
+@media(max-width:900px){
+  .wrap{flex-direction:column;gap:0;padding:0 18px}
+  nav{width:auto;position:sticky;top:0;z-index:20;height:auto;padding:0;
+    background:var(--bg);border-bottom:1px solid var(--border);
+    padding-top:env(safe-area-inset-top)}
+  nav .nav-top{padding:12px 0 8px;margin:0;align-items:center}
+  nav .sub{display:none}
+  nav .brand{font-size:16px;margin:0}
+  /* one scrolling strip rather than a block of wrapped links eating the screen */
+  nav .links{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding:0 0 10px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  nav .links::-webkit-scrollbar{display:none}
+  nav a{flex:0 0 auto;white-space:nowrap;border-left:none;border-radius:999px;
+    padding:7px 13px;font-size:13px;background:var(--surface2);scroll-snap-align:start}
+  nav a.on{border-left-color:transparent;background:var(--accent);color:var(--bg);font-weight:600}
+  main{padding:22px 0 80px}
+  h1{font-size:27px} h2{font-size:21px;margin:44px 0 12px} body{font-size:16px}
+  .jar-sketch,.signed{grid-template-columns:1fr}
+}
+/* ---------- phones ---------- */
+@media(max-width:620px){
+  .wrap{padding:0 14px}
+  main{padding:18px 0 calc(64px + env(safe-area-inset-bottom))}
+  h1{font-size:24px} h2{font-size:20px;margin:38px 0 10px} h3{font-size:17px}
+  body{font-size:16px;line-height:1.65}
+  .lede{font-size:17px}
+  .widget,.tryit{padding:15px;border-radius:12px}
+  .eq{padding:14px 12px;font-size:17px;margin:16px 0}
+  .callout{padding:14px 15px}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:8px}
+  .card .v{font-size:17px}
+  /* thumbs need a bigger target than a mouse pointer does */
+  .ctrl{gap:10px}
+  .ctrl label{font-size:13px}
+  input[type=range]{height:22px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--border2)}
+  input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:var(--border2)}
+  input[type=range]::-webkit-slider-thumb{width:28px;height:28px;margin-top:-11.5px}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px}
+  .seg,.preset{min-height:42px;padding:9px 14px;font-size:14px}
+  .segs{gap:7px}
+  .answer{gap:8px}
+  .answer input{flex:1 1 100px;min-width:0;min-height:44px;font-size:16px}
+  .answer .go,.answer .hint{min-height:44px;padding:11px 18px}
+  .themebtn{min-height:36px;padding:6px 12px}
+  .tryit svg,.widget svg{max-width:100%}
+  .jarrow{gap:12px}
+  .jarrow .jarsvg{width:88px;max-width:88px;flex:0 0 88px}
+  table{font-size:14px}
+  .stepnum{width:20px;height:20px;font-size:11px;margin-right:6px}
+}
+/* very narrow phones: let the jar sit above the bars instead of beside them */
+@media(max-width:400px){
+  .jarrow{flex-direction:column;align-items:center;gap:10px}
+  .jarrow .jarsvg{width:104px;max-width:104px;flex:0 0 auto}
+  .jarrow>div{width:100%}
+  .cards{grid-template-columns:1fr 1fr}
+  .answer input{flex:1 1 100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="nav-top">
+    <div>
+      <p class="brand">Calculus</p>
+      <p class="sub">2. The pattern</p>
+    </div>
+    <button class="themebtn" id="themebtn" type="button" aria-label="Toggle colour theme">Dark</button>
+  </div>
+  <div class="links">
+    <a href="#s1">1. Growing together</a>
+    <a href="#s2">2. A cube that grows</a>
+    <a href="#s3">3. The ratio again</a>
+    <a href="#s4">4. The pattern</a>
+    <a href="#s5">5. Beyond whole powers</a>
+    <a href="#s6">6. Worth another look</a>
+  </div>
+  <p style="margin:10px 0 0;font-size:13px"><a href="calculus-1-small-things.html" style="color:var(--accent);text-decoration:none">&larr; 1. Small things</a></p>
+</nav>
+
+<main>
+
+<p class="sec-no">Chapter two</p>
+<h1>The pattern</h1>
+<p class="lede">Chapter 1 differentiated one thing, <span class="math">x&sup2;</span>, using nothing but school algebra and the observation that some pieces are too small to count. This chapter does the same to a cube, notices that the answers are forming a pattern, and turns that pattern into a rule that handles any power at all.</p>
+
+<h2 id="s1">1. Growing together</h2>
+<p>Two quantities are tied together when one of them settles the other. The side of a square settles its area. The radius of a balloon settles its volume. The hours you work settle your pay.</p>
+<p>Tied together does not mean they grow at the same pace, and that is the interesting part. Add a centimetre to a small square and it gains very little area. Add the same centimetre to a large one and it gains a great deal. The relationship between the two is itself something that varies, and pinning it down is what the whole subject is for.</p>
+
+<div class="tryit step open" id="b1">
+  <p class="q"><span class="stepnum">1</span>Before any algebra</p>
+  <p class="ask">A square of side 3 grows to side 4, gaining 7 units of area. A square of side 30 grows to side 31, gaining the same one unit of side. Without working it out exactly, roughly how much area does the second square gain?</p>
+  <div class="segs" role="group" aria-label="How much the larger square gains">
+    <button class="seg" data-b1="same" aria-pressed="false">About 7, the same</button>
+    <button class="seg" data-b1="ten" aria-pressed="false">About ten times as much</button>
+    <button class="seg" data-b1="hundred" aria-pressed="false">About a hundred times as much</button>
+  </div>
+  <p class="fb" id="b1f">Pick one. The point is the rough size, not the exact figure.</p>
+</div>
+
+<h2 id="s2">2. A cube that grows</h2>
+<p>Now the same treatment as the square, one dimension further up. A cube of side <span class="math">x</span> has volume <span class="math">x&sup3;</span>. Push every face out by a little bit <span class="math">h</span> and it gains volume in three sorts of piece.</p>
+
+<div class="widget">
+  <p class="wtitle">What a growing cube gains, taken apart</p>
+  <svg viewBox="0 0 400 210" role="img" aria-labelledby="cube-fallback" style="max-width:420px">
+    <title id="cube-fallback">The original cube, then the three kinds of piece added when it grows: three flat slabs, three thin bars, and one tiny corner cube</title>
+    <path class="cb t" d="M70.0 98.0 L115.0 124.0 L70.0 150.0 L25.0 124.0 Z" />
+    <path class="cb r" d="M70.0 150.0 L115.0 176.0 L115.0 124.0 L70.0 98.0 Z" />
+    <path class="cb l" d="M70.0 150.0 L25.0 176.0 L25.0 124.0 L70.0 98.0 Z" />
+    <path class="sl t" d="M190.0 131.7 L235.0 157.7 L190.0 183.7 L145.0 157.7 Z" />
+    <path class="sl r" d="M190.0 140.0 L235.0 166.0 L235.0 157.7 L190.0 131.7 Z" />
+    <path class="sl l" d="M190.0 140.0 L145.0 166.0 L145.0 157.7 L190.0 131.7 Z" />
+    <path class="br t" d="M282.0 111.7 L327.0 137.7 L319.8 141.8 L274.8 115.8 Z" />
+    <path class="br r" d="M282.0 120.0 L327.0 146.0 L327.0 137.7 L282.0 111.7 Z" />
+    <path class="br l" d="M282.0 120.0 L274.8 124.2 L274.8 115.8 L282.0 111.7 Z" />
+    <path class="cn t" d="M352.0 103.7 L359.2 107.8 L352.0 112.0 L344.8 107.8 Z" />
+    <path class="cn r" d="M352.0 112.0 L359.2 116.2 L359.2 107.8 L352.0 103.7 Z" />
+    <path class="cn l" d="M352.0 112.0 L344.8 116.2 L344.8 107.8 L352.0 103.7 Z" />
+    <text class="dl" x="70" y="200">the cube</text>
+    <text class="dl" x="190" y="200">3 slabs</text>
+    <text class="dl" x="282" y="200">3 bars</text>
+    <text class="dl" x="352" y="200">1 corner</text>
+    <text class="dl" x="70" y="212">x&sup3;</text>
+    <text class="dl" x="190" y="212">3x&sup2;h</text>
+    <text class="dl" x="282" y="212">3xh&sup2;</text>
+    <text class="dl" x="352" y="212">h&sup3;</text>
+  </svg>
+  <p class="cap">The slabs and bars are drawn thicker than they would really be, so that you can see them at all.</p>
+</div>
+
+<p>A flat slab on each of the three faces you can see, a thin bar along each of the three edges where two slabs meet, and one small cube in the corner where all three meet. Written out, that is a line of algebra you may already know.</p>
+
+<div class="eq">(x + h)&sup3; = x&sup3; + 3x&sup2;h + 3xh&sup2; + h&sup3;<span class="lbl">the cube, three slabs, three bars, one corner</span></div>
+
+<p>Chapter 1 had one piece worth keeping and one worth discarding. Here there is one worth keeping and <em>two</em> worth discarding, and they are not even equally negligible.</p>
+
+<div class="predict" id="pc1">
+  <p class="pq">Before you look at the numbers</p>
+  <p>Take a cube of side 10 and grow it by <span class="math">h = 0.1</span>. The three slabs will clearly contribute the most. Where do you think the three bars and the single corner cube will land beside them?</p>
+  <div class="segs" role="group" aria-label="Predict the sizes of the pieces">
+    <button class="seg" data-pc1="close" aria-pressed="false">All three roughly comparable</button>
+    <button class="seg" data-pc1="tenth" aria-pressed="false">Bars a bit smaller, corner smaller again</button>
+    <button class="seg" data-pc1="tiny" aria-pressed="false">Bars a hundredth of the slabs, corner far below that</button>
+  </div>
+  <p class="fb" id="pc1f">Commit to one, then the slider unlocks.</p>
+</div>
+
+<div class="widget locked-widget" id="w-cube">
+  <p class="wtitle">Growing a cube of side 10</p>
+  <div class="ctrl">
+    <label for="cbh">Grow by h</label>
+    <input type="range" id="cbh" min="1" max="200" step="1" value="100" disabled />
+    <span class="out" id="cbo">1.00</span>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">3 slabs (3x&sup2;h)</p><p class="v" id="cbS">&mdash;</p></div>
+    <div class="card"><p class="k">3 bars (3xh&sup2;)</p><p class="v" id="cbB">&mdash;</p></div>
+    <div class="card"><p class="k">corner (h&sup3;)</p><p class="v" id="cbC">&mdash;</p></div>
+    <div class="card"><p class="k">bars + corner, as a share</p><p class="v" id="cbP">&mdash;</p></div>
+  </div>
+  <p class="note" id="cbt"></p>
+</div>
+
+<h2 id="s3">3. The ratio again</h2>
+<p>Same three lines as chapter 1. Take what the growth added, divide by <span class="math">h</span>, and see what survives when <span class="math">h</span> is driven towards nothing.</p>
+
+<div class="eq">[ (x + h)&sup3; &minus; x&sup3; ] / h = (3x&sup2;h + 3xh&sup2; + h&sup3;) / h = 3x&sup2; + 3xh + h&sup2;<span class="lbl">exact, with nothing yet discarded</span></div>
+
+<div class="tryit step locked" id="b2">
+  <p class="q"><span class="stepnum">2</span>Put numbers in</p>
+  <p class="ask">With <span class="math">x = 10</span> and <span class="math">h = 0.1</span>, the cube gained <strong>30.301</strong> in volume. Divide that by <span class="math">h</span> to get the gain per unit of growth.</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="b2i" aria-label="Volume gained divided by h" placeholder="ratio" />
+    <button type="button" class="go" id="b2b">Check</button>
+  </div>
+  <p class="fb" id="b2f"></p>
+  <p class="lockmsg">Answer step 1 first.</p>
+</div>
+
+<div class="tryit step locked" id="b3">
+  <p class="q"><span class="stepnum">3</span>Shrink h away</p>
+  <p class="ask">The ratio is <span class="math">3x&sup2; + 3xh + h&sup2;</span>, and at <span class="math">x = 10</span> that is <span class="math">300 + 3h + h&sup2;</span>. What number does it close in on as <span class="math">h</span> goes to nothing?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="b3i" aria-label="The value the ratio approaches" placeholder="value" />
+    <button type="button" class="go" id="b3b">Check</button>
+  </div>
+  <p class="fb" id="b3f"></p>
+  <p class="lockmsg">Answer step 2 first.</p>
+</div>
+
+<div class="eq">y = x&sup3;&nbsp;&nbsp;&rArr;&nbsp;&nbsp; dy/dx = 3x&sup2;<span class="lbl">the slabs survived, the bars and the corner did not</span></div>
+
+<h2 id="s4">4. The pattern</h2>
+<p>Two results is not a pattern. Three might be. Here is <span class="math">x</span> itself as well, which needs no picture: grow <span class="math">x</span> by <span class="math">h</span> and it gains exactly <span class="math">h</span>, so the gain per unit of growth is 1, whatever <span class="math">x</span> happens to be.</p>
+
+<table>
+  <tr><th>The quantity</th><th>What it gains, per unit of growth</th></tr>
+  <tr><td class="math">x</td><td class="math">1</td></tr>
+  <tr><td class="math">x&sup2;</td><td class="math">2x</td></tr>
+  <tr><td class="math">x&sup3;</td><td class="math">3x&sup2;</td></tr>
+</table>
+
+<div class="tryit step locked" id="b4">
+  <p class="q"><span class="stepnum">4</span>Guess the next line</p>
+  <p class="ask">Read down the two columns and continue the pattern. If <span class="math">y = x&#8308;</span>, what should <span class="math">dy/dx</span> be? Type it using a caret for the power, so <span class="math">4x&sup3;</span> would be typed as <code>4x^3</code>.</p>
+  <div class="segs" role="group" aria-label="What the derivative of x to the fourth is">
+    <button class="seg" data-b4="a" aria-pressed="false">3x&#8308;</button>
+    <button class="seg" data-b4="b" aria-pressed="false">4x&sup3;</button>
+    <button class="seg" data-b4="c" aria-pressed="false">x&sup3;</button>
+    <button class="seg" data-b4="d" aria-pressed="false">4x&#8309;</button>
+  </div>
+  <p class="fb" id="b4f">The two moves are always the same.</p>
+  <p class="lockmsg">Answer step 3 first.</p>
+</div>
+
+<p>The rule is doing two things, and they are worth saying separately because it is easy to remember one and forget the other. <strong>The old power comes down and multiplies.</strong> Then <strong>the power itself drops by one.</strong></p>
+
+<div class="eq">y = x<sup>n</sup>&nbsp;&nbsp;&rArr;&nbsp;&nbsp; dy/dx = n&middot;x<sup>n&minus;1</sup><span class="lbl">the power rule, and almost everything else is built on it</span></div>
+
+<p>You do not have to take it on trust. Multiply out <span class="math">(x+h)<sup>n</sup></span> and every term carries at least one <span class="math">h</span> except the leading <span class="math">x<sup>n</sup></span>, which cancels against the original. Exactly one term carries a single <span class="math">h</span> and no more, and there are <span class="math">n</span> ways of picking it, which is where the <span class="math">n</span> comes from. Everything else carries <span class="math">h&sup2;</span> or worse and is in the smaller league from chapter 1.</p>
+
+<div class="widget">
+  <p class="wtitle">Test it against a direct measurement</p>
+  <p style="font-size:14px;color:var(--muted);margin:0 0 14px">The left card measures the gain per unit of growth by brute force, using a very small step. The right card uses the rule. They should agree.</p>
+  <div class="ctrl">
+    <label for="prn">Power n</label>
+    <input type="range" id="prn" min="1" max="6" step="1" value="3" />
+    <span class="out" id="prno">3</span>
+  </div>
+  <div class="ctrl">
+    <label for="prx">At x</label>
+    <input type="range" id="prx" min="5" max="40" step="1" value="20" />
+    <span class="out" id="prxo">2.0</span>
+  </div>
+  <div class="cards">
+    <div class="card"><p class="k">Measured directly</p><p class="v" id="prA">&mdash;</p></div>
+    <div class="card"><p class="k">From the rule</p><p class="v" id="prB">&mdash;</p></div>
+    <div class="card"><p class="k">Difference</p><p class="v" id="prC">&mdash;</p></div>
+  </div>
+  <p class="note" id="prt"></p>
+</div>
+
+<h2 id="s5">5. Beyond whole powers</h2>
+<p>The cube and the square gave the rule an honest start, but pictures run out at three dimensions. There is no fourth face to grow, and there is certainly no picture for a power of one half. So does the rule survive where the picture cannot follow?</p>
+<p>It does, and you can check it without any theory at all. A square root is a power: <span class="math">&radic;x = x<sup>1/2</sup></span>. A reciprocal is a power: <span class="math">1/x = x<sup>&minus;1</sup></span>. Put those into the rule and then measure directly to see whether the answer holds.</p>
+
+<div class="tryit step locked" id="b5">
+  <p class="q"><span class="stepnum">5</span>Trust the rule where you cannot draw it</p>
+  <p class="ask">Apply the rule to <span class="math">y = &radic;x</span>, which is <span class="math">x<sup>1/2</sup></span>. Bring the half down and drop the power by one, giving <span class="math">&frac12;x<sup>&minus;1/2</sup></span>, which is the same as <span class="math">1/(2&radic;x)</span>. What is that at <span class="math">x = 4</span>?</p>
+  <div class="answer">
+    <input type="text" inputmode="decimal" id="b5i" aria-label="Derivative of root x at 4" placeholder="value" />
+    <button type="button" class="go" id="b5b">Check</button>
+  </div>
+  <p class="fb" id="b5f"></p>
+  <p class="lockmsg">Answer step 4 first.</p>
+</div>
+
+<p>Measured directly, the gain per unit of growth of <span class="math">&radic;x</span> at <span class="math">x = 4</span> comes out as 0.2500 to four places, so the rule holds in territory where no cube can be drawn. It does the same for <span class="math">1/x</span>, where the rule gives <span class="math">&minus;x<sup>&minus;2</sup></span>, and the minus sign is telling the truth: as <span class="math">x</span> grows, <span class="math">1/x</span> shrinks, so its rate of change is negative.</p>
+
+<div class="callout">
+  <span class="tag">What you can now differentiate</span>
+  <p>Any single power of <span class="math">x</span>, whole or fractional, positive or negative. That is a narrow-sounding class that turns out to include a great deal, and the next chapter widens it to anything built out of such powers by adding, subtracting or multiplying by a constant, which covers every polynomial there is.</p>
+</div>
+
+<p>What it will not yet do is anything with two variable quantities multiplied together, or a power raised to a power, or a sine. None of those change the method. They only need the same three lines applied more carefully, and they are what chapter 3 is for.</p>
+
+<h2 id="s6">6. Worth another look</h2>
+<p>As in chapter 1, the page kept track of which ideas needed a second attempt, and can build a short review from those alone. Your record carries across both chapters.</p>
+
+<div class="widget">
+  <p class="wtitle">Your run through this chapter</p>
+  <div class="cards">
+    <div class="card"><p class="k">Questions answered</p><p class="v" id="rvA">0</p></div>
+    <div class="card"><p class="k">Right first time</p><p class="v" id="rvB">0</p></div>
+    <div class="card"><p class="k">Ideas to revisit</p><p class="v" id="rvC">0</p></div>
+  </div>
+  <div class="answer">
+    <button type="button" class="go" id="rvGo">Build my review</button>
+    <button type="button" class="hint" id="rvClear">Start again</button>
+  </div>
+  <p class="note" id="rvNote">Work through the chapter first, then build a review from whatever tripped you up.</p>
+</div>
+
+<div id="rvOut"></div>
+
+<footer>
+  <p>Chapter two of a course in calculus. <a href="calculus-1-small-things.html" style="color:var(--accent)">Chapter one is here</a>.<br>
+  It opens in any browser and needs no internet connection.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+"use strict";
+var draws=[];
+function reg(fn){draws.push(fn);}
+function redrawAll(){
+  for(var i=0;i<draws.length;i++){
+    try{draws[i]();}catch(e){if(window.console&&console.warn){console.warn('widget '+i+' failed',e);}}
+  }
+}
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+function P(){
+  var d=isDark();
+  return {area:d?'#0c447c':'#e6f1fb',rect:d?'#378add':'#85b7eb',rect2:d?'#185fa5':'#b5d4f4',
+    sliv:d?'#993c1d':'#f5c4b3',line:d?'#b5d4f4':'#185fa5',warm:d?'#ef9f27':'#ba7517',
+    axis:d?'#4a4a45':'#c3c2b7',ink:d?'#898781':'#898781',off:d?'#2c2c2a':'#e8e6de',
+    txt:d?'#b5d4f4':'#0c447c'};
+}
+function fit(cv){
+  var w=cv.parentNode.clientWidth,h=cv.parentNode.clientHeight,dp=window.devicePixelRatio||1;
+  cv.width=Math.max(w*dp,1);cv.height=Math.max(h*dp,1);
+  cv.style.width=w+'px';cv.style.height=h+'px';
+  var c=cv.getContext('2d');c.setTransform(dp,0,0,dp,0,0);c.clearRect(0,0,w,h);
+  return {c:c,W:w,H:h};
+}
+function seg(attr,cb){
+  var bs=document.querySelectorAll('[data-'+attr+']');
+  for(var i=0;i<bs.length;i++){
+    (function(b){
+      b.addEventListener('click',function(){
+        for(var j=0;j<bs.length;j++){bs[j].setAttribute('aria-pressed','false');}
+        b.setAttribute('aria-pressed','true');
+        cb(b.getAttribute('data-'+attr));
+      });
+    })(bs[i]);
+  }
+}
+function txt(id,v){var e=document.getElementById(id);if(e){e.textContent=v;}}
+function setFallback(id,msg){var e=document.getElementById(id);if(e){e.textContent=msg;}}
+function num(v){
+  v=String(v).replace(/[, ]/g,'').replace(/cm2|cm²|£|\$/gi,'').trim();
+  if(v==='')return null;
+  var fr=v.match(/^(-?\d*\.?\d+)\/(-?\d*\.?\d+)$/);   /* answers typed as 8/3 */
+  if(fr){var d=parseFloat(fr[2]);return d?parseFloat(fr[1])/d:null;}
+  var n=parseFloat(v);
+  return isFinite(n)?n:null;
+}
+function say(id,cls,html){
+  var e=document.getElementById(id);
+  if(!e)return;
+  e.className='fb'+(cls?' '+cls:'');
+  e.innerHTML=html;
+}
+/* A question with a box to type in. o.near lets a specific wrong answer get
+   its own reply, which is usually more useful than a generic "not quite". */
+function exercise(o){
+  var inp=document.getElementById(o.input),btn=document.getElementById(o.check),
+      hint=o.hint?document.getElementById(o.hint):null,i;
+  if(!inp||!btn)return;
+  function check(){
+    var v=num(inp.value);
+    if(v===null){say(o.fb,'','Type a number in the box, then press Check.');return;}
+    var tol=(o.tol===undefined)?0.01:o.tol;
+    if(Math.abs(v-o.answer)<=tol){
+      say(o.fb,'good',o.right);
+      if(typeof TRACK!=='undefined'&&o.idea){TRACK.hit(o.idea,true);}
+      if(o.onRight){o.onRight();}
+      return;
+    }
+    if(typeof TRACK!=='undefined'&&o.idea){TRACK.hit(o.idea,false);}
+    if(o.near){
+      for(i=0;i<o.near.length;i++){
+        if(Math.abs(v-o.near[i].value)<=Math.max(tol,0.01)){say(o.fb,'bad',o.near[i].msg);return;}
+      }
+    }
+    say(o.fb,'bad',o.wrong);
+  }
+  btn.addEventListener('click',check);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();check();}});
+  if(hint){hint.addEventListener('click',function(){say(o.fb,'',o.reveal);});}
+}
+
+/* ---------- Progress, shared across every chapter ---------- */
+var TRACK=(function(){
+  var KEY='calculus-progress', CH='ch2';
+  var all={};
+  try{
+    var raw=window.localStorage?localStorage.getItem(KEY):null;
+    if(raw){var p=JSON.parse(raw);if(p&&typeof p==='object'){all=p;}}
+  }catch(e){}
+  if(!all[CH]){all[CH]={miss:{},done:{},asked:0,clean:0};}
+  var st=all[CH];
+  function save(){
+    try{if(window.localStorage){localStorage.setItem(KEY,JSON.stringify(all));}}catch(e){}
+  }
+  return {
+    state:st,
+    /* first attempt is the one that counts as clean; later ones only clear the flag */
+    hit:function(idea,ok){
+      if(!idea)return;
+      if(!st.done[idea]){
+        st.asked++;
+        if(ok&&!st.miss[idea]){st.clean++;}
+        if(ok){st.done[idea]=1;}
+      }
+      if(!ok){st.miss[idea]=(st.miss[idea]||0)+1;}
+      save();this.paint();
+    },
+    reset:function(){all[CH]={miss:{},done:{},asked:0,clean:0};st=all[CH];this.state=st;save();this.paint();},
+    paint:function(){
+      txt('rvA',String(st.asked));
+      txt('rvB',String(st.clean));
+      var n=0,k;for(k in st.miss){if(st.miss[k]>0){n++;}}
+      txt('rvC',String(n));
+    }
+  };
+})();
+
+/* ---------- The adaptive review ---------- */
+(function(){
+  var BANK={
+    relative:{name:'Growing together',type:'num',answer:11,tol:0.5,
+      q:'A square of side <strong>5</strong> grows by <strong>1</strong>. Roughly how much area does it gain? The rough answer <span class="math">2x + h</span> is fine.',
+      right:'Correct, 11. Two strips of 5 make 10, and the corner adds 1. Grow a square of side 50 by the same amount and it would gain about 101, ten times as much for the same nudge.',
+      wrong:'Two strips, each 5 long and 1 wide, plus a corner of 1 by 1.'},
+    ratio3:{name:'The ratio for a cube',type:'num',answer:76.51,tol:0.05,
+      q:'A cube of side <strong>5</strong> is grown by <strong>0.1</strong> and gains <strong>7.651</strong> in volume. What is the gain per unit of growth?',
+      right:'Correct. <span class="eqn">7.651 &divide; 0.1 = 76.51</span>, which is <span class="eqn">3x&sup2; + 3xh + h&sup2; = 75 + 1.5 + 0.01</span>.',
+      wrong:'Divide the volume gained by h, which is 0.1 here.'},
+    limit3:{name:'Letting h go for a cube',type:'num',answer:108,tol:0.5,
+      q:'For <span class="math">y = x&sup3;</span> the rate is <span class="math">3x&sup2;</span>. What is it at <span class="math">x = 6</span>?',
+      right:'Correct, 108. Six squared is 36, and three times that is 108.',
+      wrong:'Square 6 first, then multiply by 3.'},
+    powerrule:{name:'The power rule',type:'choice',
+      q:'If <span class="math">y = x&#8311;</span>, what is <span class="math">dy/dx</span>?',
+      opts:[['a','7x&#8310;'],['b','6x&#8310;'],['c','7x&#8312;'],['d','x&#8310;']],ok:'a',
+      right:'Correct. The 7 comes down in front and the power drops to 6.',
+      wrong:'Two moves, both every time: the old power comes down in front, and the power itself falls by one.'},
+    fracpower:{name:'Powers you cannot draw',type:'num',answer:-0.04,tol:0.002,
+      q:'Apply the rule to <span class="math">y = 1/x</span>, which is <span class="math">x<sup>&minus;1</sup></span>. It gives <span class="math">&minus;x<sup>&minus;2</sup></span>, that is <span class="math">&minus;1/x&sup2;</span>. What is it at <span class="math">x = 5</span>?',
+      right:'Correct, &minus;0.04. The minus sign is doing real work: as x grows, 1/x shrinks, so its rate of change is negative.',
+      wrong:'Square 5 to get 25, take one over it, and keep the minus sign.'}
+};
+  var out=document.getElementById('rvOut'),go=document.getElementById('rvGo'),
+      clr=document.getElementById('rvClear');
+  if(!out||!go)return;
+  function card(key,b){
+    var d=document.createElement('div');d.className='rvcard';
+    var h=document.createElement('p');h.className='q';h.innerHTML=b.name;
+    var q=document.createElement('p');q.className='rvq';q.innerHTML=b.q;
+    var fb=document.createElement('p');fb.className='fb';
+    d.appendChild(h);d.appendChild(q);
+    if(b.type==='choice'){
+      var g=document.createElement('div');g.className='segs';
+      b.opts.forEach(function(o){
+        var btn=document.createElement('button');
+        btn.type='button';btn.className='seg';btn.innerHTML=o[1];
+        btn.addEventListener('click',function(){
+          var kids=g.querySelectorAll('button');
+          for(var i=0;i<kids.length;i++){kids[i].setAttribute('aria-pressed','false');}
+          btn.setAttribute('aria-pressed','true');
+          var ok=(o[0]===b.ok);
+          fb.className='fb '+(ok?'good':'bad');fb.innerHTML=ok?b.right:b.wrong;
+          if(ok){TRACK.state.miss[key]=0;TRACK.paint();}
+        });
+        g.appendChild(btn);
+      });
+      d.appendChild(g);
+    }else{
+      var row=document.createElement('div');row.className='answer';
+      var inp=document.createElement('input');
+      inp.type='text';inp.setAttribute('inputmode','decimal');
+      inp.placeholder='answer';inp.setAttribute('aria-label','Answer for '+b.name);
+      var btn2=document.createElement('button');
+      btn2.type='button';btn2.className='go';btn2.textContent='Check';
+      function chk(){
+        var v=num(inp.value);
+        if(v===null){fb.className='fb';fb.innerHTML='Type a number, then press Check.';return;}
+        var ok=Math.abs(v-b.answer)<=(b.tol||0.01);
+        fb.className='fb '+(ok?'good':'bad');fb.innerHTML=ok?b.right:b.wrong;
+        if(ok){TRACK.state.miss[key]=0;TRACK.paint();}
+      }
+      btn2.addEventListener('click',chk);
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();chk();}});
+      row.appendChild(inp);row.appendChild(btn2);d.appendChild(row);
+    }
+    d.appendChild(fb);return d;
+  }
+  function build(){
+    while(out.firstChild){out.removeChild(out.firstChild);}
+    var st=TRACK.state,keys=[],k;
+    for(k in BANK){if(st.miss[k]>0){keys.push(k);}}
+    if(st.asked===0){
+      txt('rvNote','Nothing to go on yet. Work through the questions above and then come back.');
+      return;
+    }
+    if(!keys.length){
+      txt('rvNote','You got every idea right first time, so there is nothing here worth repeating. Chapter 3 takes the rule to anything built out of powers.');
+      return;
+    }
+    var names=[];
+    for(var i=0;i<keys.length;i++){names.push(BANK[keys[i]].name);}
+    txt('rvNote','Second attempts went into '+(names.length===1?'one idea':names.length+' ideas')+
+      ': '+names.join(', ')+'. Here is a fresh question on each, using different numbers.');
+    for(var j=0;j<keys.length;j++){out.appendChild(card(keys[j],BANK[keys[j]]));}
+  }
+  go.addEventListener('click',build);
+  if(clr){clr.addEventListener('click',function(){
+    TRACK.reset();
+    while(out.firstChild){out.removeChild(out.firstChild);}
+    txt('rvNote','Cleared for this chapter. Your answers above are still on screen, but the record of them has been reset.');
+  });}
+  TRACK.paint();
+})();
+
+/* ---------- 1. Growing cube: the three kinds of piece ---------- */
+(function(){
+  var sl=document.getElementById('cbh');
+  if(!sl)return;
+  var X=10;
+  function draw(){
+    var h=+sl.value/100;
+    var slabs=3*X*X*h, bars=3*X*h*h, corner=h*h*h, extra=slabs+bars+corner;
+    txt('cbo',h.toFixed(2));
+    txt('cbS',slabs.toFixed(3));
+    txt('cbB',bars.toFixed(4));
+    txt('cbC',corner.toFixed(6));
+    txt('cbP',(100*(bars+corner)/extra).toFixed(2)+'%');
+    txt('cbt','Growing the side by '+h.toFixed(2)+' adds '+extra.toFixed(4)+
+      ' in all. The slabs bring '+slabs.toFixed(3)+', the bars '+bars.toFixed(4)+
+      ' and the corner '+corner.toFixed(6)+'. Everything except the slabs accounts for '+
+      (100*(bars+corner)/extra).toFixed(2)+'% of the gain, and that share falls roughly in step with h.');
+  }
+  sl.addEventListener('input',draw); reg(draw);
+})();
+
+/* ---------- 2. Power rule against a direct measurement ---------- */
+(function(){
+  var sn=document.getElementById('prn'), sx=document.getElementById('prx');
+  if(!sn||!sx)return;
+  function draw(){
+    var n=+sn.value, x=+sx.value/10, h=1e-6;
+    var measured=(Math.pow(x+h,n)-Math.pow(x,n))/h;
+    var rule=n*Math.pow(x,n-1);
+    txt('prno',String(n));
+    txt('prxo',x.toFixed(1));
+    txt('prA',measured.toFixed(4));
+    txt('prB',rule.toFixed(4));
+    txt('prC',Math.abs(measured-rule).toExponential(1));
+    txt('prt','For y = x^'+n+' at x = '+x.toFixed(1)+
+      ', nudging x by a millionth and dividing gives '+measured.toFixed(4)+
+      '. The rule says n·x^(n−1) = '+n+' × '+x.toFixed(1)+'^'+(n-1)+' = '+rule.toFixed(4)+
+      '. They differ only in the last decimals, and that difference is the leftover h, not a fault in the rule.');
+  }
+  sn.addEventListener('input',draw); sx.addEventListener('input',draw); reg(draw);
+})();
+
+/* ---------- 3. Questions ---------- */
+(function(){
+  function lock(id,on){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.className='tryit step '+(on?'locked':'open');
+    var f=el.querySelectorAll('input,button');
+    for(var i=0;i<f.length;i++){f[i].disabled=on;}
+  }
+  function done(id){
+    var el=document.getElementById(id);
+    if(el){el.className=el.className.replace(/\blocked\b/,'open')+' done';}
+  }
+  lock('b2',true);lock('b3',true);lock('b4',true);lock('b5',true);
+
+  seg('b1',function(k){
+    TRACK.hit('relative',k==='ten');
+    if(k==='same'){
+      say('b1f','bad','No. The gain is roughly two strips, each as long as the side, so a square ten times longer gains roughly ten times as much from the same one unit of growth. The relationship between side and area is not fixed, and that is the whole reason this subject exists.');
+    }else if(k==='hundred'){
+      say('b1f','bad','Too much. A hundred times would be the ratio of the two <em>areas</em>. The gain goes as 2x, not x&sup2;, so ten times is nearer the mark.');
+    }else{
+      say('b1f','good','Right, and the reason is the rule you are about to derive. The gain is about 2x per unit of growth, so ten times the side means about ten times the gain. The exact figures are 7 and 61.');
+    }
+  });
+
+  exercise({
+    input:'b2i',check:'b2b',fb:'b2f',answer:303.01,tol:0.05,idea:'ratio3',
+    near:[{value:30.301,msg:'That is the volume gained. Divide it by h = 0.1 to get the gain per unit of growth.'},
+          {value:3.0301,msg:'You multiplied by 0.1 instead of dividing by it. Dividing by a tenth makes the number bigger.'},
+          {value:300,msg:'Very close, and that is where it is heading, but at h = 0.1 the exact answer still carries the extra 3.01.'}],
+    right:'Correct. <span class="eqn">30.301 &divide; 0.1 = 303.01</span>, which is exactly <span class="eqn">3x&sup2; + 3xh + h&sup2; = 300 + 3 + 0.01</span>. The 300 is the slabs, the 3 is the bars and the 0.01 is the corner.',
+    wrong:'Not quite. Divide 30.301 by 0.1.',
+    onRight:function(){done('b2');lock('b3',false);}
+  });
+  exercise({
+    input:'b3i',check:'b3b',fb:'b3f',answer:300,tol:0.05,idea:'limit3',
+    near:[{value:303.01,msg:'That is the value at one particular h. The question asks where the values head as h keeps shrinking.'},
+          {value:100,msg:'That is x&sup2;. The rule brings the 3 down in front, so it is three times that.'},
+          {value:30,msg:'That is 3x. Check the expression again: the surviving term is 3x&sup2;, not 3x.'}],
+    right:'Correct, 300. Both the <span class="eqn">3xh</span> and the <span class="eqn">h&sup2;</span> can be made as small as you like, while <span class="eqn">3x&sup2;</span> does not depend on h at all.',
+    wrong:'Not quite. In 300 + 3h + h&sup2;, which part survives when h goes to nothing?',
+    onRight:function(){done('b3');lock('b4',false);}
+  });
+
+  seg('b4',function(k){
+    TRACK.hit('powerrule',k==='b');
+    if(k==='a'){
+      say('b4f','bad','Half right. You have brought a number down in front, but the power has to drop as well, and the number that comes down is the power you started with, which is 4.');
+    }else if(k==='c'){
+      say('b4f','bad','You dropped the power correctly but forgot to bring the old power down in front. Both things happen, every time.');
+    }else if(k==='d'){
+      say('b4f','bad','The power went up rather than down. Compare the table: x&sup3; gave 3x&sup2;, so the power fell from 3 to 2.');
+    }else{
+      say('b4f','good','Correct. The 4 comes down in front and the power drops from 4 to 3, giving 4x&sup3;. Look back at the table and you will see both moves happening on every line.');
+      done('b4');lock('b5',false);
+    }
+  });
+
+  exercise({
+    input:'b5i',check:'b5b',fb:'b5f',answer:0.25,tol:0.005,idea:'fracpower',
+    near:[{value:4,msg:'That is x. Work out 1/(2&radic;x): the root of 4 is 2, doubled is 4, and then you want one over that.'},
+          {value:2,msg:'That is &radic;4. There are two more steps: double it, then take the reciprocal.'},
+          {value:0.5,msg:'Close. You have 1/(2) rather than 1/(2&radic;4). The root of 4 is 2, so the bottom of the fraction is 4.'}],
+    right:'Correct, 0.25. And measured by brute force the answer is 0.2500 as well, so the rule holds for a power of one half, where no cube can be drawn.',
+    wrong:'Not quite. &radic;4 is 2, so 1/(2&radic;x) is 1 divided by 4.',
+    onRight:function(){done('b5');}
+  });
+})();
+
+/* ---------- 4. Predict before the cube slider moves ---------- */
+(function(){
+  var w=document.getElementById('w-cube');
+  seg('pc1',function(k){
+    var ok=(k==='tiny');
+    TRACK.hit('predict-cube',ok);
+    if(k==='close'){
+      say('pc1f','bad','Not close at all, as the numbers will show. Each bar carries an h&sup2; and the corner an h&sup3;, and chapter 1 established what squaring a small number does to it. Unlock and look.');
+    }else if(k==='tenth'){
+      say('pc1f','bad','The direction is right but the scale is far out. The bars are down by a factor of h against the slabs, which at h = 0.1 means a hundredth, not a bit smaller. Unlock and see.');
+    }else{
+      say('pc1f','good','Right. Slabs 30, bars 0.3, corner 0.001. Each step down the list costs a factor of h, which is why only the slabs survive the division. Drag the slider and watch all three move.');
+    }
+    if(w){
+      w.className=w.className.replace(/\blocked-widget\b/,'').replace(/\s+$/,'');
+      var r=w.querySelectorAll('input[type=range]');
+      for(var i=0;i<r.length;i++){r[i].disabled=false;}
+    }
+    var box=document.getElementById('pc1');
+    if(box&&box.className.indexOf('answered')<0){box.className+=' answered';}
+  });
+})();
+
+/* ---------- theme + nav ---------- */
+(function(){
+  var btn=document.getElementById('themebtn');
+  var stored=null;
+  try{stored=window.localStorage?localStorage.getItem('int-theme'):null;}catch(e){stored=null;}
+  var init=stored||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  function apply(t){
+    document.documentElement.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?'Light':'Dark';
+    /* the static theme-color metas follow the OS, not this button */
+    var m=document.getElementById('tcolor');
+    if(m){m.setAttribute('content',t==='dark'?'#151514':'#faf9f7');}
+    redrawAll();
+  }
+  apply(init);
+  btn.addEventListener('click',function(){
+    var t=isDark()?'light':'dark';
+    try{if(window.localStorage){localStorage.setItem('int-theme',t);}}catch(e){}
+    apply(t);
+  });
+
+  var links=document.querySelectorAll('nav a'),heads=[],strip=document.querySelector('nav .links');
+  for(var i=0;i<links.length;i++){
+    var h=document.getElementById(links[i].getAttribute('href').slice(1));
+    if(h){heads.push({a:links[i],h:h});}
+  }
+  function spy(){
+    var best=null,y=window.pageYOffset+120;
+    for(var i=0;i<heads.length;i++){
+      if(heads[i].h.offsetTop<=y){best=heads[i];}
+    }
+    var changed=false;
+    for(var j=0;j<heads.length;j++){
+      var on=(heads[j]===best);
+      if(on!==(heads[j].a.className==='on')){changed=true;}
+      heads[j].a.className=on?'on':'';
+    }
+    /* on a phone the links are a horizontal strip, so keep the current one visible */
+    if(changed&&best&&strip&&strip.scrollWidth>strip.clientWidth+4){
+      var l=best.a.offsetLeft-strip.clientWidth/2+best.a.offsetWidth/2;
+      if(strip.scrollTo){strip.scrollTo({left:l,behavior:'smooth'});}else{strip.scrollLeft=l;}
+    }
+  }
+  window.addEventListener('scroll',spy,{passive:true});spy();
+})();
+
+var rt;
+
+window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(redrawAll,120);});
+redrawAll();
+})();
+</script>
+</body>
+</html>
