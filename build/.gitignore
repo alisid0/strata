@@ -1,0 +1,10 @@
+# Dev-only toolchain for the Calculus Made Easy edition.
+node_modules/
+
+# Derived from content-drafts/33283-t.tex by split-chapters.mjs — regenerate
+# with `node build/split-chapters.mjs` rather than committing 400 kB of copies.
+# manifest.json IS committed: it records the book's structure at a glance.
+chapters/*.tex
+
+# Scratch output from the pre-renderer self-test.
+_*.html

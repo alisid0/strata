@@ -1,0 +1,234 @@
+[
+  {
+    "file": "00-i-to-deliver-you-from-the-preliminary-terrors.tex",
+    "number": "I",
+    "title": "To deliver you from the Preliminary Terrors",
+    "lines": 49,
+    "exercises": [],
+    "mathDisplay": 0,
+    "mathInline": 17
+  },
+  {
+    "file": "01-ii-on-different-degrees-of-smallness.tex",
+    "number": "II",
+    "title": "On Different Degrees of Smallness",
+    "lines": 185,
+    "exercises": [],
+    "mathDisplay": 0,
+    "mathInline": 85
+  },
+  {
+    "file": "02-iii-on-relative-growings.tex",
+    "number": "III",
+    "title": "On Relative Growings",
+    "lines": 266,
+    "exercises": [],
+    "mathDisplay": 5,
+    "mathInline": 187
+  },
+  {
+    "file": "03-iv-simplest-cases.tex",
+    "number": "IV",
+    "title": "Simplest Cases",
+    "lines": 305,
+    "exercises": [
+      "I"
+    ],
+    "mathDisplay": 11,
+    "mathInline": 123
+  },
+  {
+    "file": "04-v-next-stage-what-to-do-with-constants.tex",
+    "number": "V",
+    "title": "Next Stage. What to do with Constants",
+    "lines": 352,
+    "exercises": [
+      "II"
+    ],
+    "mathDisplay": 12,
+    "mathInline": 158
+  },
+  {
+    "file": "05-vi-sums-differences-products-and-quotients.tex",
+    "number": "VI",
+    "title": "Sums, Differences, Products and Quotients",
+    "lines": 565,
+    "exercises": [
+      "III"
+    ],
+    "mathDisplay": 33,
+    "mathInline": 151
+  },
+  {
+    "file": "06-vii-successive-differentiation.tex",
+    "number": "VII",
+    "title": "Successive Differentiation",
+    "lines": 97,
+    "exercises": [
+      "IV"
+    ],
+    "mathDisplay": 2,
+    "mathInline": 26
+  },
+  {
+    "file": "07-viii-when-time-varies.tex",
+    "number": "VIII",
+    "title": "When Time Varies",
+    "lines": 536,
+    "exercises": [
+      "V"
+    ],
+    "mathDisplay": 22,
+    "mathInline": 250
+  },
+  {
+    "file": "08-ix-introducing-a-useful-dodge.tex",
+    "number": "IX",
+    "title": "Introducing a Useful Dodge",
+    "lines": 362,
+    "exercises": [
+      "VI",
+      "VII"
+    ],
+    "mathDisplay": 27,
+    "mathInline": 72
+  },
+  {
+    "file": "09-x-geometrical-meaning-of-differentiation.tex",
+    "number": "X",
+    "title": "Geometrical Meaning of Differentiation",
+    "lines": 448,
+    "exercises": [
+      "VIII"
+    ],
+    "mathDisplay": 16,
+    "mathInline": 214
+  },
+  {
+    "file": "10-xi-maxima-and-minima.tex",
+    "number": "XI",
+    "title": "Maxima and Minima",
+    "lines": 664,
+    "exercises": [
+      "IX"
+    ],
+    "mathDisplay": 39,
+    "mathInline": 201
+  },
+  {
+    "file": "11-xii-curvature-of-curves.tex",
+    "number": "XII",
+    "title": "Curvature of Curves",
+    "lines": 289,
+    "exercises": [
+      "X"
+    ],
+    "mathDisplay": 20,
+    "mathInline": 85
+  },
+  {
+    "file": "12-xiii-other-useful-dodges.tex",
+    "number": "XIII",
+    "title": "Other Useful Dodges",
+    "lines": 486,
+    "exercises": [
+      "XI"
+    ],
+    "mathDisplay": 36,
+    "mathInline": 153
+  },
+  {
+    "file": "13-xiv-on-true-compound-interest-and-the-law-of-organic.tex",
+    "number": "XIV",
+    "title": "On true Compound Interest and the Law of Organic Growth",
+    "lines": 1204,
+    "exercises": [
+      "XII",
+      "XIII"
+    ],
+    "mathDisplay": 63,
+    "mathInline": 450
+  },
+  {
+    "file": "14-xv-how-to-deal-with-sines-and-cosines.tex",
+    "number": "XV",
+    "title": "How to deal with Sines and Cosines",
+    "lines": 365,
+    "exercises": [
+      "XIV"
+    ],
+    "mathDisplay": 21,
+    "mathInline": 99
+  },
+  {
+    "file": "15-xvi-partial-differentiation.tex",
+    "number": "XVI",
+    "title": "Partial Differentiation",
+    "lines": 285,
+    "exercises": [
+      "XV"
+    ],
+    "mathDisplay": 17,
+    "mathInline": 84
+  },
+  {
+    "file": "16-xvii-integration.tex",
+    "number": "XVII",
+    "title": "Integration",
+    "lines": 235,
+    "exercises": [
+      "XVI"
+    ],
+    "mathDisplay": 7,
+    "mathInline": 92
+  },
+  {
+    "file": "17-xviii-integrating-as-the-reverse-of-differentiating.tex",
+    "number": "XVIII",
+    "title": "Integrating as the Reverse of Differentiating",
+    "lines": 557,
+    "exercises": [],
+    "mathDisplay": 30,
+    "mathInline": 168
+  },
+  {
+    "file": "18-xix-on-finding-areas-by-integrating.tex",
+    "number": "XIX",
+    "title": "On Finding Areas by Integrating",
+    "lines": 662,
+    "exercises": [
+      "XVIII"
+    ],
+    "mathDisplay": 33,
+    "mathInline": 235
+  },
+  {
+    "file": "19-xx-dodges-pitfalls-and-triumphs.tex",
+    "number": "XX",
+    "title": "Dodges, Pitfalls, and Triumphs",
+    "lines": 318,
+    "exercises": [
+      "XIX"
+    ],
+    "mathDisplay": 17,
+    "mathInline": 46
+  },
+  {
+    "file": "20-xxi-finding-some-solutions.tex",
+    "number": "XXI",
+    "title": "Finding some Solutions",
+    "lines": 584,
+    "exercises": [],
+    "mathDisplay": 39,
+    "mathInline": 120
+  },
+  {
+    "file": "21-epilogue-and-apologue.tex",
+    "number": null,
+    "title": "Epilogue and Apologue",
+    "lines": 1339,
+    "exercises": [],
+    "mathDisplay": 5,
+    "mathInline": 520
+  }
+]

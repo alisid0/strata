@@ -1,0 +1,10 @@
+{
+  "name": "cme-build",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Build tooling for the Calculus Made Easy interactive edition: TeX->SVG equation pre-renderer and chapter parser. Dev-only; not part of the Qubix app.",
+  "dependencies": {
+    "mathjax-full": "^3.2.2"
+  }
+}
