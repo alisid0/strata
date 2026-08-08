@@ -1,3 +1,7 @@
+> **Superseded.** This planned a course *inspired by* Thompson's running order.
+> The project is now a conversion *of* the book. See `INTERACTIVE-EDITION-PLAN.md`.
+> Kept because the per-chapter hooks and the conventions list are still useful.
+
 # Calculus course — the full arc
 
 Working plan. Thompson's *Calculus Made Easy* (1910, public domain) is the **syllabus**,
