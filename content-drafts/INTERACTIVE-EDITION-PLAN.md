@@ -55,12 +55,26 @@ network. Faithful mathematics has to be rendered somehow. Three options:
 | Bundle KaTeX into every page | About 300 kB per page including fonts | Yes, but files get heavy |
 | Hand-code with HTML entities, as the existing pages do | Free, but only good for simple expressions | Yes |
 
-**Recommendation: pre-rendered SVG**, with the existing entity approach kept for anything
-simple enough not to need it. It keeps pages light and standalone, and the maths is
-identical on every device with no font loading. The cost is a build step, which this
-project needs anyway.
+**Settled: pre-rendered SVG**, with the existing entity approach kept for anything simple
+enough not to need it.
 
-Decide this before chapter I is built, not after chapter VI.
+The pipeline is tested and works. MathJax renders TeX to standalone SVG in Node with no
+browser, using `mathjax-full`, the `liteAdaptor` and the SVG output jax. Thompson's kind
+of expression comes out cleanly: `dy/dx`, the expansion of `(x+dx)²`, the difference
+quotient, the power rule, a definite integral with limits, and a square root all render
+correctly.
+
+**Use `fontCache: 'global'`.** Measured on a realistic chapter of 40 expressions:
+
+| Setting | Size |
+|---|---|
+| `fontCache: 'local'` | 155 kB, every glyph repeated in every expression |
+| `fontCache: 'global'` | 61 kB, with one shared 8 kB glyph table per page |
+
+So a maths-heavy chapter costs roughly 60 kB of SVG. That is comparable to bundling
+KaTeX, and the size is not really the argument. The wins are that it needs no JavaScript
+at runtime, loads no fonts, and looks identical on every device. A reader on a poor
+connection or an old phone gets exactly the same page.
 
 ## 5. Architecture
 
@@ -99,9 +113,10 @@ Repeatable, so chapters get faster rather than slower.
 
 ## 7. Phases
 
-**Phase 0. Decisions and shell.** Settle the equation rendering. Build `index.html` and
-the shared assets. Repair the 96 damaged lines in chapters I to V. Redraw Figs. 4, 5, 6
-and convert the page 22 table to HTML. Nothing user-facing ships.
+**Phase 0. Shell and toolchain.** Build `index.html` and the shared assets. Build the
+equation pre-renderer around `mathjax-full`. Parse the Gutenberg LaTeX into per-chapter
+source. Redraw Figs. 4, 5, 6 and convert the page 22 table to HTML. Nothing user-facing
+ships. The OCR repair is no longer part of this, since the source is proofread.
 
 **Phase 1. Chapters I to III.** Short, expository, no exercises. Proves the pipeline on
 the easy case and produces something openable.
@@ -139,7 +154,9 @@ a first release, plus one for phase 0.
 
 ## 10. Still open
 
-- Equation rendering. Recommendation above, needs a decision.
 - Whether phase 1 ships publicly or stays internal until phase 2 is done.
-- Whether the Gutenberg source gets used from the start, which would let phases run in
-  any order rather than being stuck behind OCR repair.
+
+Settled since first writing: equations pre-render to SVG with a global font cache, and
+the Gutenberg LaTeX is the source from the start, so the OCR repair in phase 0 is no
+longer needed. The extracted chapters stay useful for checking a passage against this
+particular edition.
