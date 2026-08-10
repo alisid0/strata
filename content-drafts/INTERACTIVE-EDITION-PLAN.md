@@ -64,17 +64,48 @@ of expression comes out cleanly: `dy/dx`, the expansion of `(x+dx)²`, the diffe
 quotient, the power rule, a definite integral with limits, and a square root all render
 correctly.
 
-**Use `fontCache: 'global'`.** Measured on a realistic chapter of 40 expressions:
+**Correction: use `fontCache: 'local'`, not global.** My earlier recommendation of the
+global cache was wrong, and the toolchain in `build/render-math.mjs` is right to reject
+it.
 
-| Setting | Size |
+Global caching defines each glyph once and `<use>`-references it from every later
+expression. Those references cross `<svg>` roots, and a cross-root `#id` does not resolve
+in a file opened by double-clicking, which is exactly the context these pages have to
+survive. Verified: with the global cache, all 47 glyph references in a three-expression
+sample dangle. The failure is silent and vicious — fraction bars draw, every letter and
+digit disappears. With the local cache, zero dangle.
+
+**But pre-rendering everything does not scale, and the size numbers say so.**
+
+| | Expressions | Pre-rendered SVG |
+|---|---|---|
+| Chapter III alone | 192 | about 920 kB |
+| Chapters I to V | 598 | about 2.9 MB |
+| The whole book | 3,991 | about 18.7 MB |
+
+Nearly a megabyte for one chapter is not a phone-friendly page.
+
+**So render selectively.** Measured across chapters I to V, most of his inline maths is
+not complex at all:
+
+| What the expression is | Share |
 |---|---|
-| `fontCache: 'local'` | 155 kB, every glyph repeated in every expression |
-| `fontCache: 'global'` | 61 kB, with one shared 8 kB glyph table per page |
+| A single symbol, such as `x` or `dx` | 47.5% |
+| Trivial, a few characters | 19.5% |
+| Nothing but a sub or superscript | 12.1% |
+| Genuinely needs rendering: fractions, integrals, roots | 10.5% |
+| Other | 10.4% |
 
-So a maths-heavy chapter costs roughly 60 kB of SVG. That is comparable to bundling
-KaTeX, and the size is not really the argument. The wins are that it needs no JavaScript
-at runtime, loads no fonts, and looks identical on every device. A reader on a poor
-connection or an old phone gets exactly the same page.
+Four fifths of it renders perfectly well as HTML entities and `<sup>` tags, which is what
+the existing pages already do and what keeps them light. Send only the remaining fifth
+through MathJax.
+
+That brings chapters I to V down from about 2.9 MB to roughly 570 kB, and makes a chapter
+weigh about what a photograph does.
+
+**The rule:** display equations and anything containing a fraction, integral, root or
+stacked construction becomes SVG. Everything else stays as markup. The classifier for
+this is about ten lines and belongs in the build.
 
 ## 5. Architecture
 
