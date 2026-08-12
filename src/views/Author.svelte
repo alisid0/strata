@@ -39,7 +39,7 @@
 
   async function submit() {
     if (!title.trim()) { error = 'Title is required'; return; }
-    if (!floors[0].trim()) { error = 'Floor 0 (the swipe card) is required'; return; }
+    if (!floors[0].trim()) { error = 'Floor 0 (the board cover) is required'; return; }
 
     submitting = true;
     error = '';
@@ -68,7 +68,7 @@
 <div class="author-view">
   <button class="back-link" on:click={() => onNavigate?.('stats')}>‹ back</button>
 
-  <h1>Author a new BB</h1>
+  <h1>Author a new board</h1>
   <p class="sub">Fill the template. Submit. We'll review, number, and slot it into the deck.</p>
 
   {#if !submitted}
@@ -136,7 +136,7 @@
   {:else}
     <div class="success-card">
       <h2>Submitted ✓</h2>
-      <p>Your BB draft has been saved. A reviewer will check it, number it, and slot it into the deck.</p>
+      <p>Your board draft has been saved. A reviewer will check it, number it, and slot it into the deck.</p>
       <ChalkButton fullWidth on:click={() => submitted = false}>Write another</ChalkButton>
     </div>
   {/if}

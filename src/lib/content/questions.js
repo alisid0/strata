@@ -344,7 +344,7 @@ export const PATH_QUESTIONS = {
         ['Newton\'s third law', 'Every force has an equal and opposite reaction'],
         ['Mass', 'Resistance to a change in an object\'s motion, independent of location']
       ],
-      explain: 'Inertia, friction, mass, and Newton\'s third law are the core mechanisms behind BB 01-07.'
+      explain: 'Inertia, friction, mass, and Newton\'s third law are the core mechanisms behind Boards 01-07.'
     })),
   ],
 

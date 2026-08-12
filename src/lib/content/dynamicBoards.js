@@ -5,6 +5,7 @@ import { FUNCTION_BOARDS } from './functionBoards.js';
 import { MATRIX_BOARDS } from './matrixBoards.js';
 import { PUBLISHABLE_TOPIC_BOARDS } from './publishableTopicBoards.js';
 import { TOPIC_EXPANSION_BOARDS } from './topicExpansionBoards.js';
+import { learnerBoard } from './displayText.js';
 
 const KEY = 'strata-dynamic-boards-v2';
 
@@ -35,14 +36,14 @@ function normalize(row) {
     };
   });
 
-  return {
+  return learnerBoard({
     act: row.act,
     kicker: row.kicker,
     title: row.title,
     layers,
     img: row.img_url || null,
     tags: row.tags || null
-  };
+  });
 }
 
 /**
@@ -80,11 +81,11 @@ export async function fetchBoardsByNumbers(numbers) {
   const merged = get(dynamicBoards);
   for (const n of numbers) {
     if (n <= DECK.length) result[n] = DECK[n - 1];
-    else if (merged[n]) result[n] = merged[n];
-    else if (FUNCTION_BOARDS[n]) result[n] = FUNCTION_BOARDS[n];
-    else if (MATRIX_BOARDS[n]) result[n] = MATRIX_BOARDS[n];
-    else if (PUBLISHABLE_TOPIC_BOARDS[n]) result[n] = PUBLISHABLE_TOPIC_BOARDS[n];
-    else if (TOPIC_EXPANSION_BOARDS[n]) result[n] = TOPIC_EXPANSION_BOARDS[n];
+    else if (merged[n]) result[n] = learnerBoard(merged[n]);
+    else if (FUNCTION_BOARDS[n]) result[n] = learnerBoard(FUNCTION_BOARDS[n]);
+    else if (MATRIX_BOARDS[n]) result[n] = learnerBoard(MATRIX_BOARDS[n]);
+    else if (PUBLISHABLE_TOPIC_BOARDS[n]) result[n] = learnerBoard(PUBLISHABLE_TOPIC_BOARDS[n]);
+    else if (TOPIC_EXPANSION_BOARDS[n]) result[n] = learnerBoard(TOPIC_EXPANSION_BOARDS[n]);
   }
   return result;
 }
@@ -104,7 +105,7 @@ export async function fetchSnippets() {
     .order('sort_order');
 
   if (error) throw error;
-  return (data || []).map(r => ({
+  return (data || []).map(r => learnerBoard({
     kicker: r.kicker,
     title: r.title,
     layers: r.layers,
@@ -115,7 +116,7 @@ export async function fetchSnippets() {
 /** Resolve a single board by number: static DECK first, then the dynamic cache. */
 export function getBoard(number) {
   if (number <= DECK.length) return DECK[number - 1];
-  return get(dynamicBoards)[number] || FUNCTION_BOARDS[number] || MATRIX_BOARDS[number] || PUBLISHABLE_TOPIC_BOARDS[number] || TOPIC_EXPANSION_BOARDS[number] || null;
+  return learnerBoard(get(dynamicBoards)[number] || FUNCTION_BOARDS[number] || MATRIX_BOARDS[number] || PUBLISHABLE_TOPIC_BOARDS[number] || TOPIC_EXPANSION_BOARDS[number] || null);
 }
 
 /** Numbers currently resolvable without a fetch (static + already-cached dynamic). */

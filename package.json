@@ -14,6 +14,7 @@
     "content:export-staging-sql": "node scripts/export-staging-content-sql.mjs",
     "audit:live-catalogue": "node scripts/export-live-path-catalogue.mjs",
     "audit:live-media": "node scripts/export-live-path-catalogue.mjs && node scripts/build-gif-eligibility-audit.mjs",
+    "audit:maths-media": "node scripts/audit-maths-media.mjs",
     "preview": "vite preview",
     "deploy": "node scripts/deploy.mjs"
   },

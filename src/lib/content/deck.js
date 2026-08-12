@@ -1,10 +1,12 @@
+import { learnerBoard } from './displayText.js';
+
 /**
  * Strata — The full BB deck.
  * Ported from the legacy index.html DECK array.
  * BB shape: { act, kicker, title, layers, img, tags }
  */
 function C(act, kicker, title, layers, img, tags) {
-  return { act, kicker, title, layers, img: img || null, tags: tags || null };
+  return learnerBoard({ act, kicker, title, layers, img: img || null, tags: tags || null });
 }
 
 export const ACTS = {
@@ -443,7 +445,7 @@ export const DECK = [
 
   /* ---------- Mechanics 3.12-3.18: Mechanics foundations, Tier 1 (mathematical formulation) ---------- */
   C("I","Mechanics 3.12","How physics expresses a law mathematically",[
-    "<p>A physical law is a precise relationship between measurable quantities, expressed as an equation rather than a description. Each quantity in that equation has a defined unit, and the equation holds regardless of which specific numbers are substituted into it.</p><p>Newton's second law, introduced in Mechanics 3.4, is one example: F = ma relates force (measured in newtons), mass (in kilograms), and acceleration (in metres per second squared). The equation does not just describe the relationship in words, it specifies exactly how the three quantities trade off against each other, for any values at all. The BBs that follow formalize the qualitative ideas from Mechanics 3.0-3.6 into equations of this kind.</p>"
+    "<p>A physical law is a precise relationship between measurable quantities, expressed as an equation rather than a description. Each quantity in that equation has a defined unit, and the equation holds regardless of which specific numbers are substituted into it.</p><p>Newton's second law, introduced in Mechanics 3.4, is one example: F = ma relates force (measured in newtons), mass (in kilograms), and acceleration (in metres per second squared). The equation does not just describe the relationship in words, it specifies exactly how the three quantities trade off against each other, for any values at all. The boards that follow formalize the qualitative ideas from Mechanics 3.0-3.6 into equations of this kind.</p>"
   ],null,{subject:"physics",topic:"foundations",concept:"law-as-equation; units",ground:"g1",buildsOn:["Mechanics 3.0"]}),
 
   C("I","Mechanics 3.13","Mass, weight, and units",[

@@ -10,6 +10,8 @@ Then read:
 2. `docs/LAUNCH-HANDOVER.md` for the public-launch checklist.
 3. `docs/RELEASE-MODEL.md` for how code, Supabase content, schema, and the
    Android shell reach users.
+4. `docs/INTERACTION-DESIGN-STANDARD.md` before creating or changing any
+   board-level interaction.
 
 ## Non-negotiable source rules
 

@@ -3,6 +3,7 @@
   import { PATHS, SUBJECT_LABELS } from '../lib/content/paths.js';
   import { progress } from '../lib/stores/progress.js';
   import { getBoard, fetchBoardsByNumbers } from '../lib/content/dynamicBoards.js';
+  import { boardDescription } from '../lib/content/displayText.js';
   import SubjectMark from '../lib/components/SubjectMark.svelte';
   import QxButton from '../lib/components/qubix/QxButton.svelte';
   import { getWorkshopsForPath } from './WorkshopLab.svelte';
@@ -115,7 +116,9 @@
             </span>
             <div class="row-info">
               <div class="row-title">{c.board.title || 'Untitled'}</div>
-              <div class="row-kicker">{c.board.kicker || ''}</div>
+              {#if boardDescription(c.board)}
+                <div class="row-description">{boardDescription(c.board)}</div>
+              {/if}
             </div>
             {#if c.number === nextBoardNumber}
               <span class="row-tag">Next</span>
@@ -198,7 +201,10 @@
   }
   .row-info { flex: 1; min-width: 0; }
   .row-title { font-size: 14px; font-weight: 700; color: var(--qx-text); line-height: 1.3; }
-  .row-kicker { font-size: 12px; font-weight: 500; color: var(--qx-text-faint); margin-top: 1px; }
+  .row-description {
+    display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 1;
+    font-size: 12px; font-weight: 500; color: var(--qx-text-faint); line-height: 1.35; margin-top: 2px;
+  }
   .row-tag { font-size: 11px; font-weight: 700; color: var(--qx-accent-text); background: var(--qx-accent-soft); border-radius: var(--qx-radius-pill); padding: 3px 10px; }
   .row-chev { font-size: 18px; color: var(--qx-text-faintest); }
 
