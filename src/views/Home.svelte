@@ -161,9 +161,15 @@
     ...GATEWAY_META[gid]
   }));
 
-  // Home doors are quick starts; the Path tab remains the place for browsing.
-  // This keeps the two entry points useful for different jobs.
+  // Broad subjects get a topic chooser; the other doors remain quick starts.
   function openDoor(door) {
+    // Mathematics and Physics have broad curricula, so their Home doors open
+    // a subject hub where learners can choose a topic before starting boards.
+    if (door.gid === 'line' || door.gid === 'unit') {
+      onNavigate?.('subject', door.gid);
+      return;
+    }
+
     const firstPath = PATH_GROUPS[door.gid]?.firstTopic;
     const numbers = PATHS[firstPath]?.cards || [];
     if (numbers.length) onNavigate?.('reader', { numbers, start: numbers[0] });
