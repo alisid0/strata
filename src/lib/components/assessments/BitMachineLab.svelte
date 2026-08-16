@@ -166,7 +166,7 @@
       <button class="primary" on:click={checkProgram}>Run check</button>
     {/if}
 
-    <p>{@html feedback}</p>
+    <p>{feedback}</p>
   </section>
 
   <div class="actions">

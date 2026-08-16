@@ -45,7 +45,7 @@ These files still use `--chalk-*` / `--board-*` tokens from `tokens.css`:
 | `src/lib/components/ChalkButton.svelte` | Legacy button | P3 — replace with QxButton |
 | `src/lib/components/ChalkInput.svelte` | Legacy input | P3 — replace with Qubix-styled input |
 | `src/lib/components/ChalkDiagram.svelte` | Diagram renderer | P2 — port to `--qx-*` tokens (used by Reader) |
-| `src/lib/components/FormulaBox.svelte` | Math display | P3 — port to `--qx-*` tokens |
+| `src/lib/components/FormulaBox.svelte` | Math display | **Removed 2026-08-05** (unused; unsanitised `{@html}`) |
 | `src/lib/components/VideoPlayer.svelte` | Video embed | P3 — port to `--qx-*` tokens |
 | `src/lib/components/AudioPlayer.svelte` | Audio embed | P3 — port to `--qx-*` tokens |
 | `src/views/Author.svelte` | Internal BB submission form | P4 — low priority, internal tool |
@@ -128,7 +128,7 @@ review. "Today's session" on Home.
   planes, GeoGebra embeds — these need dark/light theme support)
 - Port or sunset `ChalkButton`, `ChalkInput` (check if any view still uses them;
   if not, delete)
-- Port `FormulaBox`, `VideoPlayer`, `AudioPlayer` to Qubix tokens
+- Port `VideoPlayer`, `AudioPlayer` to Qubix tokens (`FormulaBox` removed)
 - `Author.svelte`: port or leave as-is (internal tool, not user-facing)
 - `global.css`: replace `--chalk-faint` scrollbar with `--qx-text-faintest`
 - Delete `tokens.css` and its `@import` when zero references remain

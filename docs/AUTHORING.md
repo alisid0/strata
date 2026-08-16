@@ -68,7 +68,7 @@ Floor 1 requires an explicit reason that the target learner already has the intu
 
 For every formula BB, record the prerequisite, concrete model, plain-language
 relationship, symbol decoding, worked example, likely misconception, and required
-interaction. Verify the current live BB and floor first with `pnpm run
+interaction. Verify the current live BB and floor first with `npm run
 audit:live-media`; working exports belong in ignored `.audit-cache/`, not in a
 committed draft inventory.
 

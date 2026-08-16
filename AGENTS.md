@@ -19,7 +19,7 @@ Then read:
 - Bundled topic-board modules are fallbacks, not a second live inventory.
 - `content-drafts/`, prompt banks, old exports, and archived plans are never a
   production inventory.
-- Before reporting catalogue or media coverage, run `pnpm run
+- Before reporting catalogue or media coverage, run `npm run
   audit:live-media`. If it was not run in the current task, call the numbers a
   dated snapshot.
 - Do not infer the production deployment from Git. Fetch before comparing local
@@ -50,14 +50,17 @@ contain a service-role key.
 
 ## Safe commands
 
+This repo locks with `package-lock.json` (npm). Do not introduce a pnpm lockfile.
+
 ```bash
-pnpm run dev
-pnpm run build:staging
-pnpm run build:production
-pnpm run audit:live-media
+npm install
+npm run dev
+npm run build:staging
+npm run build:production
+npm run audit:live-media
 ```
 
-`pnpm run dev` uses staging. Treat `pnpm run dev:production` as exceptional
+`npm run dev` uses staging. Treat `npm run dev:production` as exceptional
 because it connects local code to production services.
 
 ## Release flow
@@ -65,8 +68,8 @@ because it connects local code to production services.
 1. Work on a feature branch.
 2. Build and test against staging.
 3. Merge approved code into `main`.
-4. Run `pnpm run build:production`.
-5. Run `pnpm run deploy` from a clean worktree.
+4. Run `npm run build:production`.
+5. Run `npm run deploy` from a clean worktree.
 6. Smoke-test the public URL and affected media URLs.
 
 Supabase content changes do not follow this Git flow; verify them directly in

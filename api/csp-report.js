@@ -2,10 +2,9 @@
 //
 // See docs/engineering/CSP-REPORTING.md for the full design.
 //
-// DORMANT until vercel.json references it. Nothing sends reports here yet:
-// the CSP in vercel.json has no `report-to` / `report-uri` directive. This
-// endpoint deploys as a no-op that simply 204s, so it is safe to ship ahead of
-// the header change. Wire it only after confirming it responds.
+// Wired from vercel.json via `report-uri` / `report-to` under the enforcing
+// CSP. Browsers POST violation reports here; this handler 204s quickly and
+// logs a trimmed, non-identifying summary for Vercel log tails.
 //
 // Design constraints (a CSP endpoint is public and spam-heavy by nature):
 //   - Accept POST only.

@@ -1,12 +1,12 @@
 /**
- * Strata — Paths Manifest (launch curriculum)
+ * Strata — Paths Manifest (live course membership)
  * Subject → topic → ordered board numbers.
  *
- * Launch content is the audited set: 78 reviewed boards, ingested into
- * Supabase as dynamic cards at sort_order 1000-1077 (see
- * scripts/ingest-final-review.mjs, source 1945_BBs/_PUBLISHABLE.md).
- * Topic groupings need re-audit after 2026-06-28 ingest (3 new boards
- * appended: molecule, bond angles, DNA/proteins shifted numbering).
+ * This file is the live Path-screen inventory for a deployed build. BB
+ * titles and floors for these numbers come from the environment's Supabase
+ * `cards` table (see dynamicBoards.js). Do not treat June-2026 ingest notes,
+ * drafts, or row counts alone as the catalogue — run `npm run audit:live-media`
+ * before reporting coverage.
  */
 export const PATHS = {
   // ── Physics ──

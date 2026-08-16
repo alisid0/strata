@@ -16,21 +16,22 @@ Staging: `https://qubix-staging.vercel.app`
 - `docs/PHASE-1.1-EXPANSION.md` — the Learn → Solve → Recall engagement loop.
 
 Do not use `content-drafts/` or archived exports to count live BBs or floors.
-Run `pnpm run audit:live-media` first.
+Run `npm run audit:live-media` first.
 
 ## Run locally
 
 ```bash
-pnpm install
-pnpm run dev
-pnpm run build:staging
-pnpm run build:production
-pnpm run preview
+npm install
+npm run dev
+npm run build:staging
+npm run build:production
+npm run preview
 ```
 
 Local development uses the isolated staging configuration. Copy
 `.env.staging.example` to `.env.staging.local` and supply the staging project's
 public URL and anon key. Never place a service-role key in a `VITE_*` variable.
+This repository uses npm (`package-lock.json`); do not add a pnpm lockfile.
 
 ## Live content architecture
 
@@ -66,8 +67,8 @@ SVG, canvas, or Three.js assets.
 ## Live audit
 
 ```bash
-pnpm run audit:live-catalogue
-pnpm run audit:live-media
+npm run audit:live-catalogue
+npm run audit:live-media
 ```
 
 These are read-only production-public-data audits. Disposable exports go under
@@ -80,8 +81,8 @@ Pushing `main` updates the current staging deployment. Production remains a
 manual release:
 
 ```bash
-pnpm run build:production
-pnpm run deploy
+npm run build:production
+npm run deploy
 ```
 
 Deploy from a clean worktree so unrelated local changes cannot be uploaded.

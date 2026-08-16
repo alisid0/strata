@@ -1,6 +1,6 @@
 # Current state and what's left
 
-Last updated: 2026-07-29.
+Last updated: 2026-08-05.
 Current release actions are below. The remainder of this document is retained
 as the archived 2026-07-25 Solve First port record.
 
@@ -17,9 +17,9 @@ as the archived 2026-07-25 Solve First port record.
 | Expansion, Solve First and arcade regression suites | ✅ passing |
 | Production stable URL | ✅ tracked build verified 2026-07-29 |
 | F-01 sanitiser | ✅ tracked and live |
-| F-02 report-only security headers | ✅ tracked and live |
+| F-02 security headers (CSP enforcing + reporting wired) | ✅ enforcing since 2026-07-30; reporting directives added 2026-08-05 |
 | F-10 immutable asset caching | ✅ tracked and live |
-| CSP reporting endpoint and enforcement decision | ⬜ still open |
+| CSP reporting endpoint live confirmation | 🟡 wired in `vercel.json`; confirm 204 + logs after next deploy |
 
 The production regression described by local commit `beeb166` is resolved.
 Live Terms contains the real support address, the expected security headers are
@@ -76,8 +76,8 @@ click blind inside a git client.
 The only correctness check I could not run. Everything else is verified.
 
 ```bash
-pnpm install
-pnpm run dev
+npm install
+npm run dev
 ```
 
 Open a Computer Science → Networks workshop → **Solve First**. Confirm:
@@ -91,7 +91,7 @@ Open a Computer Science → Networks workshop → **Solve First**. Confirm:
 - readable in light and dark, no sideways scrolling at phone width.
 
 The logic behind all of this is already proven by an automated playthrough
-(`pnpm run test:solve-first`). What needs human eyes is pixels and legibility.
+(`npm run test:solve-first`). What needs human eyes is pixels and legibility.
 
 ---
 
@@ -103,13 +103,13 @@ Only after Steps 1 and 2.
 git checkout staging
 git merge claude/solve-first-port
 git status                 # must be clean
-pnpm run deploy
+npm run deploy
 ```
 
 `deploy.mjs` now builds production explicitly, so it can no longer ship a
 staging bundle to the live alias.
 
-**Never run `pnpm run deploy` from the parent `Strata` folder.** It is guarded
+**Never run `npm run deploy` from the parent `Strata` folder.** It is guarded
 and will refuse, but the rule stands.
 
 ---
@@ -138,7 +138,7 @@ host:
   wrong visual language on the Solve First bar, and an unclamped reward.
 - **Ran the production and staging builds** — the check that had been open
   since the Networks work began.
-- Added `pnpm run test:solve-first`, the first automated test for these games.
+- Added `npm run test:solve-first`, the first automated test for these games.
 - Fixed two release hazards: the duplicate production alias, and `deploy.mjs`
   inferring its build mode (which could have shipped a staging bundle, pointed
   at the staging database, to live users).

@@ -37,14 +37,22 @@ any tab.
 
 ## Running it
 
-There is no build step, but ES modules will not load over `file://`. Serve the
-folder over HTTP:
+There is no app build step for this lab, but ES modules will not load over
+`file://`. Serve the folder over HTTP:
 
 ```
 python -m http.server 8000        # or:  npx serve .
 ```
 
 Then open <http://localhost:8000>.
+
+Three.js is **vendored** under `vendor/three/` (same major line as the main
+app dependency). Import maps in `index.html`, `single-tyre.html`, and
+`standalone-mustang.html` point at that tree — not at unpkg. Refresh the
+vendor copy from `node_modules/three` when bumping the app's `three` version.
+
+This lab is a standalone exhibit under `public/labs/mustang/`; it is not yet
+wired into Path/Workshop navigation in `src/`.
 
 ## Testing the physics
 

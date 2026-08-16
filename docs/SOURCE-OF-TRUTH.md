@@ -34,7 +34,7 @@ counts alone.
 Run:
 
 ```bash
-pnpm run audit:live-media
+npm run audit:live-media
 ```
 
 The command is read-only. It:

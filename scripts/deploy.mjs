@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // One-command production deploy: build -> vercel --prod -> alias to the stable
-// production URL. Run with:  pnpm run deploy
+// production URL. Run with:  npm run deploy
 //
 // WHY: this project has no git-push auto-deploy. Committing/pushing puts code on
 // GitHub but does NOTHING to Vercel until someone runs the deploy + alias by
