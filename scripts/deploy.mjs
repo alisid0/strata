@@ -7,16 +7,16 @@
 // hand. That gap keeps stranding changes as "committed but not live". This
 // chains all three steps so a deploy is a single command.
 //
-// THIS REPO DOES NOT OWN THE APEX DOMAIN. `https://qubix.university` is served
-// by alisid0/QUBIX_UNI- (Qubix University). Aliasing this STEM build onto the
-// apex would replace the live University product. Default aliases are the
-// stable STEM host and www (which currently still points here). To retake the
-// apex you must set QUBIX_FORCE_APEX_ALIAS=1 — do not do that by accident.
+// THIS REPO DOES NOT OWN qubix.university OR www.qubix.university.
+// Both hostnames are Qubix University (alisid0/QUBIX_UNI-, Vercel project
+// qubix-university). Aliasing this STEM build onto either hostname replaces
+// the live data-science site with the old swipe app. The only default alias
+// is the dedicated STEM host. To retake a University domain you must set
+// QUBIX_FORCE_APEX_ALIAS=1 — do not do that by accident.
 import { execSync } from 'node:child_process';
 
 const STABLE_ALIAS = 'strata-nine-pi.vercel.app';
-const STEM_ALIASES = ['www.qubix.university'];
-const APEX_ALIAS = 'qubix.university';
+const UNIVERSITY_ALIASES = ['qubix.university', 'www.qubix.university'];
 
 // Build production EXPLICITLY. `npm run build` with no argument infers the mode
 // from the local environment, so on a machine configured for staging it would
@@ -42,26 +42,20 @@ function aliasTo(alias) {
 console.log(`▸ aliasing ${url} → ${STABLE_ALIAS}…`);
 aliasTo(STABLE_ALIAS);
 
-for (const alias of STEM_ALIASES) {
-  try {
-    aliasTo(alias);
-  } catch {
-    console.warn(`  ⚠ ${alias} not aliased yet — add + DNS-verify the domain in Vercel first (continuing)`);
-  }
-}
-
 if (process.env.QUBIX_FORCE_APEX_ALIAS === '1') {
-  console.warn(`▸ QUBIX_FORCE_APEX_ALIAS=1 — aliasing STEM build onto ${APEX_ALIAS}`);
-  try {
-    aliasTo(APEX_ALIAS);
-  } catch {
-    console.warn(`  ⚠ ${APEX_ALIAS} not aliased`);
+  console.warn('▸ QUBIX_FORCE_APEX_ALIAS=1 — aliasing STEM over Qubix University domains');
+  for (const alias of UNIVERSITY_ALIASES) {
+    try {
+      aliasTo(alias);
+    } catch {
+      console.warn(`  ⚠ ${alias} not aliased`);
+    }
   }
 } else {
-  console.warn(`  ⚠ not aliasing ${APEX_ALIAS} — that origin is Qubix University (alisid0/QUBIX_UNI-).`);
-  console.warn('    Set QUBIX_FORCE_APEX_ALIAS=1 only if you intend to replace it.');
+  for (const alias of UNIVERSITY_ALIASES) {
+    console.warn(`  ⚠ not aliasing ${alias} — that origin is Qubix University (alisid0/QUBIX_UNI-).`);
+  }
 }
 
 console.log(`\n✅ live STEM: https://${STABLE_ALIAS}`);
-console.log(`   www.qubix.university 301s to https://${APEX_ALIAS} (University)`);
-console.log(`   apex University remains https://${APEX_ALIAS}`);
+console.log('   University remains https://qubix.university (and www).');
