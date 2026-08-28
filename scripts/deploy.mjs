@@ -63,5 +63,5 @@ if (process.env.QUBIX_FORCE_APEX_ALIAS === '1') {
 }
 
 console.log(`\n✅ live STEM: https://${STABLE_ALIAS}`);
-console.log(`   www: https://www.qubix.university`);
+console.log(`   www.qubix.university 301s to https://${APEX_ALIAS} (University)`);
 console.log(`   apex University remains https://${APEX_ALIAS}`);
