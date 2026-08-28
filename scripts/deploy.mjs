@@ -1,23 +1,22 @@
 #!/usr/bin/env node
-// One-command production deploy: build -> vercel --prod -> alias to the stable
-// production URL. Run with:  pnpm run deploy
+// One-command STEM deploy: build -> vercel --prod -> alias to the stable
+// STEM URL. Run with:  pnpm run deploy
 //
 // WHY: this project has no git-push auto-deploy. Committing/pushing puts code on
 // GitHub but does NOTHING to Vercel until someone runs the deploy + alias by
 // hand. That gap keeps stranding changes as "committed but not live". This
 // chains all three steps so a deploy is a single command.
 //
-// THIS REPO OWNS PRODUCTION. `qubix.university` is served from here.
-// The legacy untracked `Strata` folder is a different Vercel project and is
-// blocked from taking this alias — see ../scripts/deploy.mjs there.
+// THIS REPO DOES NOT OWN qubix.university OR www.qubix.university.
+// Both hostnames are Qubix University (alisid0/QUBIX_UNI-, Vercel project
+// qubix-university). Aliasing this STEM build onto either hostname replaces
+// the live data-science site with the old swipe app. The only default alias
+// is the dedicated STEM host. To retake a University domain you must set
+// QUBIX_FORCE_APEX_ALIAS=1 — do not do that by accident.
 import { execSync } from 'node:child_process';
 
-// Stable Vercel-owned alias that always resolves, plus the public custom
-// domain(s). The custom domains are best-effort: until they are added to the
-// project AND DNS-verified in Vercel, aliasing them fails, and that must not
-// abort the deploy or stop the stable alias from updating.
 const STABLE_ALIAS = 'strata-nine-pi.vercel.app';
-const CUSTOM_ALIASES = ['qubix.university', 'www.qubix.university'];
+const UNIVERSITY_ALIASES = ['qubix.university', 'www.qubix.university'];
 
 // Build production EXPLICITLY. `npm run build` with no argument infers the mode
 // from the local environment, so on a machine configured for staging it would
@@ -35,17 +34,28 @@ if (!url) {
 }
 console.log('  deployed: ' + url);
 
-console.log(`▸ aliasing ${url} → ${STABLE_ALIAS}…`);
-execSync(`npx vercel alias set ${url} ${STABLE_ALIAS}`, { stdio: 'inherit' });
+function aliasTo(alias) {
+  execSync(`npx vercel alias set ${url} ${alias}`, { stdio: 'inherit' });
+  console.log(`  ✓ aliased ${alias}`);
+}
 
-for (const alias of CUSTOM_ALIASES) {
-  try {
-    execSync(`npx vercel alias set ${url} ${alias}`, { stdio: 'inherit' });
-    console.log(`  ✓ aliased ${alias}`);
-  } catch {
-    console.warn(`  ⚠ ${alias} not aliased yet — add + DNS-verify the domain in Vercel first (continuing)`);
+console.log(`▸ aliasing ${url} → ${STABLE_ALIAS}…`);
+aliasTo(STABLE_ALIAS);
+
+if (process.env.QUBIX_FORCE_APEX_ALIAS === '1') {
+  console.warn('▸ QUBIX_FORCE_APEX_ALIAS=1 — aliasing STEM over Qubix University domains');
+  for (const alias of UNIVERSITY_ALIASES) {
+    try {
+      aliasTo(alias);
+    } catch {
+      console.warn(`  ⚠ ${alias} not aliased`);
+    }
+  }
+} else {
+  for (const alias of UNIVERSITY_ALIASES) {
+    console.warn(`  ⚠ not aliasing ${alias} — that origin is Qubix University (alisid0/QUBIX_UNI-).`);
   }
 }
 
-console.log(`\n✅ live: https://${STABLE_ALIAS}`);
-console.log(`   → https://qubix.university once its DNS is verified in Vercel`);
+console.log(`\n✅ live STEM: https://${STABLE_ALIAS}`);
+console.log('   University remains https://qubix.university (and www).');
